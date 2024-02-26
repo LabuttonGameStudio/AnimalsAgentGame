@@ -62,6 +62,33 @@ public partial class @PlayerInputAction : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Fire"",
+                    ""type"": ""Button"",
+                    ""id"": ""019ac342-a4a1-4605-9bd1-ec465fcea81f"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""AltFire"",
+                    ""type"": ""Button"",
+                    ""id"": ""80bcabea-3316-4395-8c62-b89b94588081"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Ability1"",
+                    ""type"": ""Button"",
+                    ""id"": ""35e9f65b-d734-4b1b-9874-81baa60e45dd"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -152,6 +179,39 @@ public partial class @PlayerInputAction : IInputActionCollection2, IDisposable
                     ""action"": ""Interact"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""bae47676-1747-42bc-b4dd-43e1115e7424"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Fire"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""5790b939-e7a2-4fb0-b080-9f2ef7b6a8b8"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""AltFire"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c194d1c3-5eb4-4335-9ceb-20d778426a1b"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Ability1"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -164,6 +224,9 @@ public partial class @PlayerInputAction : IInputActionCollection2, IDisposable
         m_Armadillo_Jump = m_Armadillo.FindAction("Jump", throwIfNotFound: true);
         m_Armadillo_Look = m_Armadillo.FindAction("Look", throwIfNotFound: true);
         m_Armadillo_Interact = m_Armadillo.FindAction("Interact", throwIfNotFound: true);
+        m_Armadillo_Fire = m_Armadillo.FindAction("Fire", throwIfNotFound: true);
+        m_Armadillo_AltFire = m_Armadillo.FindAction("AltFire", throwIfNotFound: true);
+        m_Armadillo_Ability1 = m_Armadillo.FindAction("Ability1", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -227,6 +290,9 @@ public partial class @PlayerInputAction : IInputActionCollection2, IDisposable
     private readonly InputAction m_Armadillo_Jump;
     private readonly InputAction m_Armadillo_Look;
     private readonly InputAction m_Armadillo_Interact;
+    private readonly InputAction m_Armadillo_Fire;
+    private readonly InputAction m_Armadillo_AltFire;
+    private readonly InputAction m_Armadillo_Ability1;
     public struct ArmadilloActions
     {
         private @PlayerInputAction m_Wrapper;
@@ -235,6 +301,9 @@ public partial class @PlayerInputAction : IInputActionCollection2, IDisposable
         public InputAction @Jump => m_Wrapper.m_Armadillo_Jump;
         public InputAction @Look => m_Wrapper.m_Armadillo_Look;
         public InputAction @Interact => m_Wrapper.m_Armadillo_Interact;
+        public InputAction @Fire => m_Wrapper.m_Armadillo_Fire;
+        public InputAction @AltFire => m_Wrapper.m_Armadillo_AltFire;
+        public InputAction @Ability1 => m_Wrapper.m_Armadillo_Ability1;
         public InputActionMap Get() { return m_Wrapper.m_Armadillo; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -256,6 +325,15 @@ public partial class @PlayerInputAction : IInputActionCollection2, IDisposable
                 @Interact.started -= m_Wrapper.m_ArmadilloActionsCallbackInterface.OnInteract;
                 @Interact.performed -= m_Wrapper.m_ArmadilloActionsCallbackInterface.OnInteract;
                 @Interact.canceled -= m_Wrapper.m_ArmadilloActionsCallbackInterface.OnInteract;
+                @Fire.started -= m_Wrapper.m_ArmadilloActionsCallbackInterface.OnFire;
+                @Fire.performed -= m_Wrapper.m_ArmadilloActionsCallbackInterface.OnFire;
+                @Fire.canceled -= m_Wrapper.m_ArmadilloActionsCallbackInterface.OnFire;
+                @AltFire.started -= m_Wrapper.m_ArmadilloActionsCallbackInterface.OnAltFire;
+                @AltFire.performed -= m_Wrapper.m_ArmadilloActionsCallbackInterface.OnAltFire;
+                @AltFire.canceled -= m_Wrapper.m_ArmadilloActionsCallbackInterface.OnAltFire;
+                @Ability1.started -= m_Wrapper.m_ArmadilloActionsCallbackInterface.OnAbility1;
+                @Ability1.performed -= m_Wrapper.m_ArmadilloActionsCallbackInterface.OnAbility1;
+                @Ability1.canceled -= m_Wrapper.m_ArmadilloActionsCallbackInterface.OnAbility1;
             }
             m_Wrapper.m_ArmadilloActionsCallbackInterface = instance;
             if (instance != null)
@@ -272,6 +350,15 @@ public partial class @PlayerInputAction : IInputActionCollection2, IDisposable
                 @Interact.started += instance.OnInteract;
                 @Interact.performed += instance.OnInteract;
                 @Interact.canceled += instance.OnInteract;
+                @Fire.started += instance.OnFire;
+                @Fire.performed += instance.OnFire;
+                @Fire.canceled += instance.OnFire;
+                @AltFire.started += instance.OnAltFire;
+                @AltFire.performed += instance.OnAltFire;
+                @AltFire.canceled += instance.OnAltFire;
+                @Ability1.started += instance.OnAbility1;
+                @Ability1.performed += instance.OnAbility1;
+                @Ability1.canceled += instance.OnAbility1;
             }
         }
     }
@@ -282,5 +369,8 @@ public partial class @PlayerInputAction : IInputActionCollection2, IDisposable
         void OnJump(InputAction.CallbackContext context);
         void OnLook(InputAction.CallbackContext context);
         void OnInteract(InputAction.CallbackContext context);
+        void OnFire(InputAction.CallbackContext context);
+        void OnAltFire(InputAction.CallbackContext context);
+        void OnAbility1(InputAction.CallbackContext context);
     }
 }

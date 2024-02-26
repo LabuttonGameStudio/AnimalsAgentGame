@@ -4,13 +4,20 @@ using UnityEngine;
 
 public class PlayerCamera : MonoBehaviour
 {
+    //Singleton
+    static public PlayerCamera Instance;
+
     [SerializeField]private float sensibilityX= 400,sensibilityY = 400;
 
     private ArmadilloPlayerInputController inputController;
-    private Camera mainCamera;
+    [System.NonSerialized]public Camera mainCamera;
+    public Transform cameraFollowPoint;
 
     float xRotation, yRotation;
-
+    private void Awake()
+    {
+        Instance = this;
+    }
     private void Start()
     {
         mainCamera = Camera.main;
