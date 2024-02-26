@@ -119,7 +119,7 @@ public class ArmadilloMovementController : MonoBehaviour
     //------ Change Forms ------
     public void ChangeToBallForm(InputAction.CallbackContext value)
     {
-        ArmadilloPlayerController.Instance.cameraControl.cameraFollowPoint.transform.localPosition = new Vector3(0, 0.5f, -5f);
+        Tween.MoveTransformLocalPosition(this, ArmadilloPlayerController.Instance.cameraControl.cameraFollowPoint, new Vector3(0, 1, -5f), 0.1f);
         playerVisual_Default.SetActive(false);
         playerVisual_Ball.SetActive(true);
         inputController.inputAction.Armadillo.Ability1.performed -= ChangeToBallForm;
@@ -136,13 +136,20 @@ public class ArmadilloMovementController : MonoBehaviour
 
         inputController.inputAction.Armadillo.Ability1.performed += ReturnToDefaultForm;
     }
+
+    private Coroutine ChangeToBallFormRef;
+    private IEnumerator ChangeToBallForm_Coroutine()
+    {
+        return null;
+    }
+
     public void ReturnToDefaultForm(InputAction.CallbackContext value)
     {
+        Tween.MoveTransformLocalPosition(this, ArmadilloPlayerController.Instance.cameraControl.cameraFollowPoint, new Vector3(0, 0.5f, 0f), 0.1f);
         playerVisual_Ball.SetActive(false);
         playerVisual_Default.SetActive(true);
         inputController.inputAction.Armadillo.Ability1.performed -= ReturnToDefaultForm;
         ChangeState(defaultState);
-        rb.AddForce(transform.up * 10f, ForceMode.Impulse);
         foreach (Collider collider in playerCollider_Default)
         {
             collider.enabled = true;
