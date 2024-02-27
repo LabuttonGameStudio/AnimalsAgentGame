@@ -65,13 +65,13 @@ public class ArmadilloBallState : ArmadilloBaseState
     }
     private void CheckForGrounded()
     {
-        movementCtrl.grounded = Physics.Raycast(movementCtrl.transform.position, Vector3.down, movementCtrl.playerHeight_Default * 0.5f + 0.1f, movementCtrl.whatIsGround);
+        movementCtrl.grounded = Physics.Raycast(movementCtrl.transform.position, Vector3.down, movementCtrl.playerHeight_Ball * 0.5f + 0.1f, movementCtrl.whatIsGround);
         if (movementCtrl.grounded)
         {
-            movementCtrl.rb.drag = movementCtrl.groundDrag_Default;
+            movementCtrl.rb.drag = movementCtrl.groundDrag_Ball ;
 
             if (!movementCtrl.readyToJump) movementCtrl.StartJumpCooldown();
         }
-        else movementCtrl.rb.drag = movementCtrl.airDrag_Default;
+        else movementCtrl.rb.drag = movementCtrl.airDrag_Ball;
     }
 }

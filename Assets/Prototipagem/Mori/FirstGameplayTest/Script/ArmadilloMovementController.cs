@@ -39,8 +39,12 @@ public class ArmadilloMovementController : MonoBehaviour
 
     [SerializeField, Header(" Ball Form Stats")] public float moveSpeed_Ball = 1f;
     [SerializeField] public float maxMoveSpeed_Ball = 10f;
+
+    [SerializeField] public float onAirSpeedMultiplier_Ball = 0.6f;
+
     [SerializeField, Space] public float groundDrag_Ball = 2;
     [SerializeField] public float airDrag_Ball = 1;
+    public float playerHeight_Ball;
 
     [SerializeField] private GameObject playerVisual_Ball;
     [SerializeField] private Collider[] playerCollider_Ball;
@@ -55,7 +59,7 @@ public class ArmadilloMovementController : MonoBehaviour
     public void OnDrawGizmos()
     {
         //Check for grounded
-        Gizmos.DrawRay(transform.position, Vector3.down * (playerHeight_Default * 0.5f + 0.1f));
+        Gizmos.DrawRay(transform.position, Vector3.down * (playerHeight_Ball * 0.5f + 0.1f));
     }
 
     private void Awake()
@@ -107,6 +111,7 @@ public class ArmadilloMovementController : MonoBehaviour
     public Coroutine jumpCooldownRef;
     public IEnumerator JumpCooldown_Coroutine()
     {
+        //Espera o tempo de cooldown apos o pulo pra checar se esta no chao pra evitar que durante o subir do pulo ele detecte o chao
         yield return new WaitForSeconds(jumpCooldown_Default);
         while (!grounded)
         {
@@ -119,37 +124,56 @@ public class ArmadilloMovementController : MonoBehaviour
     //------ Change Forms ------
     public void ChangeToBallForm(InputAction.CallbackContext value)
     {
-        Tween.MoveTransformLocalPosition(this, ArmadilloPlayerController.Instance.cameraControl.cameraFollowPoint, new Vector3(0, 1, -5f), 0.1f);
+        if (changeToBallFormRef == null) changeToBallFormRef = StartCoroutine(ChangeToBallForm_Coroutine());
+    }
+
+    private Coroutine changeToBallFormRef;
+    private IEnumerator ChangeToBallForm_Coroutine()
+    {
+        //Move a camera para terceira pessoa em 0.2 segundos 
+        Tween.MoveTransformLocalPosition(this, ArmadilloPlayerController.Instance.cameraControl.cameraFollowPoint, new Vector3(0, 1, -5f), 0.2f);
+        //Muda o visual do personagem, futuramente so colocar a opcao de mudar a animacao do model
         playerVisual_Default.SetActive(false);
         playerVisual_Ball.SetActive(true);
+        //Retira a funcao do input de transformar em bola e altera a state machine pra interpretar como o modo bola
         inputController.inputAction.Armadillo.Ability1.performed -= ChangeToBallForm;
         ChangeState(ballState);
 
-        foreach(Collider collider in playerCollider_Ball)
+        foreach (Collider collider in playerCollider_Ball)
         {
             collider.enabled = true;
         }
-        foreach(Collider collider in playerCollider_Default)
+        foreach (Collider collider in playerCollider_Default)
         {
             collider.enabled = false;
         }
-
+        //Espera 0.5 segundos pra dar tempo pro model do player em modo bola encostar o chao, tempo de travessia da camera e evitar spam de transformacao 
+        yield return new WaitForSeconds(0.5f);
         inputController.inputAction.Armadillo.Ability1.performed += ReturnToDefaultForm;
-    }
 
-    private Coroutine ChangeToBallFormRef;
-    private IEnumerator ChangeToBallForm_Coroutine()
-    {
-        return null;
+        changeToBallFormRef=null;
     }
 
     public void ReturnToDefaultForm(InputAction.CallbackContext value)
     {
-        Tween.MoveTransformLocalPosition(this, ArmadilloPlayerController.Instance.cameraControl.cameraFollowPoint, new Vector3(0, 0.5f, 0f), 0.1f);
+        if (returnToDefaultFormRef == null) returnToDefaultFormRef = StartCoroutine(ReturnToDefaultForm_Coroutine());
+    }
+
+    private Coroutine returnToDefaultFormRef;
+    private IEnumerator ReturnToDefaultForm_Coroutine()
+    {
+        //Move a camera para terceira pessoa em 0.2 segundos 
+        Tween.MoveTransformLocalPosition(this, ArmadilloPlayerController.Instance.cameraControl.cameraFollowPoint, new Vector3(0, 0.5f, 0f), 0.2f);
+        //Muda o visual do personagem, futuramente so colocar a opcao de mudar a animacao do model
         playerVisual_Ball.SetActive(false);
         playerVisual_Default.SetActive(true);
+        //Retira a funcao do input de transformar no modo normal e altera a state machine pra interpretar como modo normal
         inputController.inputAction.Armadillo.Ability1.performed -= ReturnToDefaultForm;
         ChangeState(defaultState);
+        //Aplica uma forca para cima para dar espaco pra troca de collider para de capsula 
+        rb.AddForce(transform.up * 5f,ForceMode.Impulse);
+        //Espera 0.25 segundos para a forca ter tempo de mover o objeto e o tempo de travessia da camera
+        yield return new WaitForSeconds(0.25f);
         foreach (Collider collider in playerCollider_Default)
         {
             collider.enabled = true;
@@ -158,7 +182,9 @@ public class ArmadilloMovementController : MonoBehaviour
         {
             collider.enabled = false;
         }
+        //Espera 0.25 segundos para deixar o objeto cair ate encostar no chao e evitar spam de transformacao 
+        yield return new WaitForSeconds(0.25f);
         inputController.inputAction.Armadillo.Ability1.performed += ChangeToBallForm;
+        returnToDefaultFormRef = null;
     }
-
 }
