@@ -13,7 +13,7 @@ public class PlayerSpeedTracker : MonoBehaviour
     }
     private void Update()
     {
-        float playerSpeed = rb.velocity.magnitude;
+        float playerSpeed = new Vector2(rb.velocity.x,rb.velocity.z).magnitude;
         playerSpeed=Mathf.Round(playerSpeed * 10000)/10000;
         speedTracker.text = playerSpeed.ToString();
     }

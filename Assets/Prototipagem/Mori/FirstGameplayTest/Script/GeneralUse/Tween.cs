@@ -5,6 +5,11 @@ using UnityEngine;
 
 public class Tween
 {
+    public enum LerpType
+    {
+        Lerp,
+        Slerp
+    }
     /// <summary>
     /// Move a posicao do transform ate o ponto final no tempo determinado
     /// </summary>

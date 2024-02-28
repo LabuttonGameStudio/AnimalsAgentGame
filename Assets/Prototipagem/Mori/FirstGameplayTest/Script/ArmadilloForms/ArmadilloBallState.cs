@@ -39,8 +39,8 @@ public class ArmadilloBallState : ArmadilloBaseState
         if (movementCtrl.grounded) movementCtrl.rb.AddForce(moveDirection.normalized * movementCtrl.moveSpeed_Ball * 10, ForceMode.Force);
         else
         {
-            Vector3 movementInAir = moveDirection.normalized * movementCtrl.moveSpeed_Ball * 10 * movementCtrl.onAirSpeedMultiplier_Default;
-            if (movementCtrl.rb.velocity.y < 0) movementInAir += Vector3.up * Physics.gravity.y * 1.5f;
+            Vector3 movementInAir = moveDirection.normalized * movementCtrl.moveSpeed_Ball * 10 * movementCtrl.onAirSpeedMultiplier_Ball;
+            if (movementCtrl.rb.velocity.y < 0) movementInAir += Vector3.up * Physics.gravity.y * 2.0f;
             movementCtrl.rb.AddForce(movementInAir, ForceMode.Force);
         }
     }
@@ -56,12 +56,13 @@ public class ArmadilloBallState : ArmadilloBaseState
     }
     private void SpeedControl()
     {
-        Vector3 flatVel = new Vector3(movementCtrl.rb.velocity.x, 0, movementCtrl.rb.velocity.z);
-        if (flatVel.magnitude > movementCtrl.maxMoveSpeed_Ball)
-        {
-            Vector3 limitedVel = flatVel.normalized * movementCtrl.maxMoveSpeed_Ball;
-            movementCtrl.rb.velocity = new Vector3(limitedVel.x, movementCtrl.rb.velocity.y, limitedVel.z);
-        }
+        //Vector3 flatVel = new Vector3(movementCtrl.rb.velocity.x, 0, movementCtrl.rb.velocity.z);
+
+        //if (flatVel.magnitude > movementCtrl.maxMoveSpeed_Ball)
+        //{
+        //    Vector3 limitedVel = flatVel.normalized * movementCtrl.maxMoveSpeed_Ball;
+        //    movementCtrl.rb.velocity = new Vector3(limitedVel.x, movementCtrl.rb.velocity.y, limitedVel.z);
+        //}
     }
     private void CheckForGrounded()
     {

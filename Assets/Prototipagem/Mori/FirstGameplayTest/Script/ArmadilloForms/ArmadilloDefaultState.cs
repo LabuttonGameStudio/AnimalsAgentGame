@@ -42,7 +42,7 @@ public class ArmadilloDefaultState : ArmadilloBaseState
         else
         {
             Vector3 movementInAir = moveDirection.normalized * movementCtrl.moveSpeed_Default * 10 * movementCtrl.onAirSpeedMultiplier_Default;
-            if (movementCtrl.rb.velocity.y < 0) movementInAir += Vector3.up * Physics.gravity.y * 1.5f;
+            if (movementCtrl.rb.velocity.y < 0) movementInAir += Vector3.up * Physics.gravity.y * 2f;
             movementCtrl.rb.AddForce(movementInAir, ForceMode.Force);
         }
     }
