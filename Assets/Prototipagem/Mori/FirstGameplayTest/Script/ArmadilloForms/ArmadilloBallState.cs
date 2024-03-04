@@ -35,12 +35,16 @@ public class ArmadilloBallState : ArmadilloBaseState
     {
         Vector3 moveDirection = ArmadilloPlayerController.Instance.cameraControl.mainCamera.transform.forward * movementCtrl.movementInputVector.y
             + ArmadilloPlayerController.Instance.cameraControl.mainCamera.transform.right * movementCtrl.movementInputVector.x;
-
+        moveDirection.y = 0;
         if (movementCtrl.grounded) movementCtrl.rb.AddForce(moveDirection.normalized * movementCtrl.moveSpeed_Ball * 10, ForceMode.Force);
         else
         {
             Vector3 movementInAir = moveDirection.normalized * movementCtrl.moveSpeed_Ball * 10 * movementCtrl.onAirSpeedMultiplier_Ball;
-            if (movementCtrl.rb.velocity.y < 0) movementInAir += Vector3.up * Physics.gravity.y * 2.0f;
+            if (movementCtrl.rb.velocity.y < 0)
+            {
+                movementInAir += Vector3.up * Physics.gravity.y * 2.0f;
+                Debug.Log("Gravity Applied");
+            }
             movementCtrl.rb.AddForce(movementInAir, ForceMode.Force);
         }
     }
