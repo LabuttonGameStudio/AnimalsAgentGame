@@ -8,13 +8,15 @@ public class PlayerCamera : MonoBehaviour
     //Singleton
     static public PlayerCamera Instance;
 
-    public float firstPersonSensibilityX= 10, firstPersonSensibilityY = 10;
+    public float firstPersonSensibilityX = 10, firstPersonSensibilityY = 10;
 
     private ArmadilloPlayerInputController inputController;
-    [System.NonSerialized]public Camera mainCamera;
+    [System.NonSerialized] public Camera activeCamera;
+    public Camera firstPersonCamera;
+    public Camera thirdPersonCamera;
     public Transform cameraFollowPoint;
 
-    [HideInInspector]public float xRotation, yRotation;
+    [HideInInspector] public float xRotation, yRotation;
 
     //State Machine
     private CameraBaseState currentCameraState;
@@ -22,10 +24,12 @@ public class PlayerCamera : MonoBehaviour
     public CameraFirstPersonState firstPersonCameraState;
     public CameraThirdPersonState thirdPersonCameraState;
 
+    [Space, Header("Cinemachine")]
     public CinemachineFreeLook cinemachineFreeLook;
+    public CinemachineCameraOffset cinemachineCameraOffset;
     public void ChangeCameraState(CameraBaseState nextState)
     {
-        if(currentCameraState != null)currentCameraState.ExitState();
+        if (currentCameraState != null) currentCameraState.ExitState();
         nextState.EnterState(this);
         currentCameraState = nextState;
     }
@@ -36,8 +40,6 @@ public class PlayerCamera : MonoBehaviour
     }
     private void Start()
     {
-        mainCamera = Camera.main;
-
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
@@ -45,10 +47,11 @@ public class PlayerCamera : MonoBehaviour
         inputController.inputAction.Armadillo.Look.Enable();
 
         //Instancia os estados da camera
-        firstPersonCameraState= new CameraFirstPersonState();
-        thirdPersonCameraState= new CameraThirdPersonState();
+        firstPersonCameraState = new CameraFirstPersonState();
+        thirdPersonCameraState = new CameraThirdPersonState();
 
         //Define o estado padrao da camera para primeira pessoa
+        activeCamera = firstPersonCamera;
         ChangeCameraState(firstPersonCameraState);
     }
 

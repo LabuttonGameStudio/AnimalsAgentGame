@@ -25,11 +25,11 @@ public class ArmadilloPlayerController : MonoBehaviour
 
     //Player Forms
     [Header("Default Form")]
-    [SerializeField] private GameObject playerVisual_Default;
-    [SerializeField] private Collider[] playerCollider_Default;
+    [SerializeField] public GameObject playerVisual_Default;
+    [SerializeField] public Collider[] playerCollider_Default;
     [Header("Ball Form")]
-    [SerializeField] private GameObject playerVisual_Ball;
-    [SerializeField] private Collider[] playerCollider_Ball;
+    [SerializeField] public GameObject playerVisual_Ball;
+    [SerializeField] public Collider[] playerCollider_Ball;
 
 
     private void Awake()

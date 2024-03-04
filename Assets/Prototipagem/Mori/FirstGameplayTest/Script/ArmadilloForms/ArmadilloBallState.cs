@@ -33,8 +33,9 @@ public class ArmadilloBallState : ArmadilloBaseState
     //-----Player Movement-----
     private void MovePlayer()
     {
-        Vector3 moveDirection = ArmadilloPlayerController.Instance.cameraControl.mainCamera.transform.forward * movementCtrl.movementInputVector.y
-            + ArmadilloPlayerController.Instance.cameraControl.mainCamera.transform.right * movementCtrl.movementInputVector.x;
+        Camera mainCamera = ArmadilloPlayerController.Instance.cameraControl.thirdPersonCamera;
+        Vector3 moveDirection = mainCamera.transform.forward * movementCtrl.movementInputVector.y
+            + mainCamera.transform.right * movementCtrl.movementInputVector.x;
         moveDirection.y = 0;
         if (movementCtrl.grounded) movementCtrl.rb.AddForce(moveDirection.normalized * movementCtrl.moveSpeed_Ball * 10, ForceMode.Force);
         else
@@ -47,6 +48,7 @@ public class ArmadilloBallState : ArmadilloBaseState
             }
             movementCtrl.rb.AddForce(movementInAir, ForceMode.Force);
         }
+        movementCtrl.transform.LookAt(movementCtrl.transform.position + moveDirection);
     }
     //-----Player Jump-----
     private void Jump(InputAction.CallbackContext value)
