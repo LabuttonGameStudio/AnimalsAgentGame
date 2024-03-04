@@ -64,7 +64,7 @@ public class ArmadilloInteractController : MonoBehaviour
         interactHUD.alpha = 0;
     }
 
-    public int interactiveObjectsInRange;
+    private int interactiveObjectsInRange;
     public void OnInteractiveObjectEnterRange()
     {
         interactiveObjectsInRange++;

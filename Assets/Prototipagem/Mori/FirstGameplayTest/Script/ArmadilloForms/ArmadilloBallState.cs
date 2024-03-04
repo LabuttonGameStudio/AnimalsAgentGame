@@ -33,8 +33,8 @@ public class ArmadilloBallState : ArmadilloBaseState
     //-----Player Movement-----
     private void MovePlayer()
     {
-        Vector3 moveDirection = movementCtrl.transform.forward * movementCtrl.movementInputVector.y
-            + movementCtrl.transform.right * movementCtrl.movementInputVector.x;
+        Vector3 moveDirection = ArmadilloPlayerController.Instance.cameraControl.mainCamera.transform.forward * movementCtrl.movementInputVector.y
+            + ArmadilloPlayerController.Instance.cameraControl.mainCamera.transform.right * movementCtrl.movementInputVector.x;
 
         if (movementCtrl.grounded) movementCtrl.rb.AddForce(moveDirection.normalized * movementCtrl.moveSpeed_Ball * 10, ForceMode.Force);
         else

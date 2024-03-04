@@ -6,6 +6,5 @@ public abstract class CameraBaseState
 {
     public abstract void EnterState(PlayerCamera playerCamera);
     public abstract void UpdateState();
-    public abstract void FixedUpdateState();
     public abstract void ExitState();
 }

@@ -8,8 +8,8 @@ public class ArmadilloMovementController : MonoBehaviour
     //State Machine
     ArmadilloBaseState currentState;
 
-    ArmadilloDefaultState defaultState;
-    ArmadilloBallState ballState;
+    public ArmadilloDefaultState defaultState;
+    public ArmadilloBallState ballState;
 
     //Componentes
     [System.NonSerialized]public Rigidbody rb;
@@ -77,8 +77,6 @@ public class ArmadilloMovementController : MonoBehaviour
         inputController.inputAction.Armadillo.Movement.Enable();
         inputController.inputAction.Armadillo.Jump.Enable();
 
-        inputController.inputAction.Armadillo.Ability1.Enable();
-        inputController.inputAction.Armadillo.Ability1.performed += ChangeToBallForm;
 
         ChangeState(defaultState);
     }
@@ -119,72 +117,5 @@ public class ArmadilloMovementController : MonoBehaviour
         }
         jumpCooldownRef = null;
         readyToJump = true;
-    }
-
-    //------ Change Forms ------
-    public void ChangeToBallForm(InputAction.CallbackContext value)
-    {
-        if (changeToBallFormRef == null) changeToBallFormRef = StartCoroutine(ChangeToBallForm_Coroutine());
-    }
-
-    private Coroutine changeToBallFormRef;
-    private IEnumerator ChangeToBallForm_Coroutine()
-    {
-        //Move a camera para terceira pessoa em 0.2 segundos 
-        Tween.MoveTransformLocalPosition(this, ArmadilloPlayerController.Instance.cameraControl.cameraFollowPoint, new Vector3(0, 1, -5f), 0.2f);
-        //Muda o visual do personagem, futuramente so colocar a opcao de mudar a animacao do model
-        playerVisual_Default.SetActive(false);
-        playerVisual_Ball.SetActive(true);
-        //Retira a funcao do input de transformar em bola e altera a state machine pra interpretar como o modo bola
-        inputController.inputAction.Armadillo.Ability1.performed -= ChangeToBallForm;
-        ChangeState(ballState);
-
-        foreach (Collider collider in playerCollider_Ball)
-        {
-            collider.enabled = true;
-        }
-        foreach (Collider collider in playerCollider_Default)
-        {
-            collider.enabled = false;
-        }
-        //Espera 0.5 segundos pra dar tempo pro model do player em modo bola encostar o chao, tempo de travessia da camera e evitar spam de transformacao 
-        yield return new WaitForSeconds(0.5f);
-        inputController.inputAction.Armadillo.Ability1.performed += ReturnToDefaultForm;
-
-        changeToBallFormRef=null;
-    }
-
-    public void ReturnToDefaultForm(InputAction.CallbackContext value)
-    {
-        if (returnToDefaultFormRef == null) returnToDefaultFormRef = StartCoroutine(ReturnToDefaultForm_Coroutine());
-    }
-
-    private Coroutine returnToDefaultFormRef;
-    private IEnumerator ReturnToDefaultForm_Coroutine()
-    {
-        //Move a camera para terceira pessoa em 0.2 segundos 
-        Tween.MoveTransformLocalPosition(this, ArmadilloPlayerController.Instance.cameraControl.cameraFollowPoint, new Vector3(0, 0.5f, 0f), 0.2f);
-        //Muda o visual do personagem, futuramente so colocar a opcao de mudar a animacao do model
-        playerVisual_Ball.SetActive(false);
-        playerVisual_Default.SetActive(true);
-        //Retira a funcao do input de transformar no modo normal e altera a state machine pra interpretar como modo normal
-        inputController.inputAction.Armadillo.Ability1.performed -= ReturnToDefaultForm;
-        ChangeState(defaultState);
-        //Aplica uma forca para cima para dar espaco pra troca de collider para de capsula 
-        rb.AddForce(transform.up * 5f,ForceMode.Impulse);
-        //Espera 0.25 segundos para a forca ter tempo de mover o objeto e o tempo de travessia da camera
-        yield return new WaitForSeconds(0.25f);
-        foreach (Collider collider in playerCollider_Default)
-        {
-            collider.enabled = true;
-        }
-        foreach (Collider collider in playerCollider_Ball)
-        {
-            collider.enabled = false;
-        }
-        //Espera 0.25 segundos para deixar o objeto cair ate encostar no chao e evitar spam de transformacao 
-        yield return new WaitForSeconds(0.25f);
-        inputController.inputAction.Armadillo.Ability1.performed += ChangeToBallForm;
-        returnToDefaultFormRef = null;
     }
 }

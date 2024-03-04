@@ -1,19 +1,35 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Cinemachine;
 
 public class PlayerCamera : MonoBehaviour
 {
     //Singleton
     static public PlayerCamera Instance;
 
-    [SerializeField]private float sensibilityX= 400,sensibilityY = 400;
+    public float firstPersonSensibilityX= 10, firstPersonSensibilityY = 10;
 
     private ArmadilloPlayerInputController inputController;
     [System.NonSerialized]public Camera mainCamera;
     public Transform cameraFollowPoint;
 
-    float xRotation, yRotation;
+    [HideInInspector]public float xRotation, yRotation;
+
+    //State Machine
+    private CameraBaseState currentCameraState;
+
+    public CameraFirstPersonState firstPersonCameraState;
+    public CameraThirdPersonState thirdPersonCameraState;
+
+    public CinemachineFreeLook cinemachineFreeLook;
+    public void ChangeCameraState(CameraBaseState nextState)
+    {
+        if(currentCameraState != null)currentCameraState.ExitState();
+        nextState.EnterState(this);
+        currentCameraState = nextState;
+    }
+
     private void Awake()
     {
         Instance = this;
@@ -27,6 +43,13 @@ public class PlayerCamera : MonoBehaviour
 
         inputController = GetComponent<ArmadilloPlayerInputController>();
         inputController.inputAction.Armadillo.Look.Enable();
+
+        //Instancia os estados da camera
+        firstPersonCameraState= new CameraFirstPersonState();
+        thirdPersonCameraState= new CameraThirdPersonState();
+
+        //Define o estado padrao da camera para primeira pessoa
+        ChangeCameraState(firstPersonCameraState);
     }
 
     public Vector2 GetMouseDelta()
@@ -36,12 +59,6 @@ public class PlayerCamera : MonoBehaviour
 
     public void Update()
     {
-        Vector2 mouseDelta = GetMouseDelta();
-        xRotation -= mouseDelta.y * Time.fixedDeltaTime * sensibilityY;
-        yRotation += mouseDelta.x * Time.fixedDeltaTime * sensibilityX;
-
-        xRotation = Mathf.Clamp(xRotation, -90, 90);
-        mainCamera.transform.rotation = Quaternion.Euler(xRotation, yRotation, 0);
-        transform.rotation = Quaternion.Euler(0,yRotation, 0);
+        currentCameraState.UpdateState();
     }
 }
