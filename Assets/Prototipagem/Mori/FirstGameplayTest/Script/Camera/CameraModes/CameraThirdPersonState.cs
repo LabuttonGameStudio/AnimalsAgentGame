@@ -29,11 +29,42 @@ public class CameraThirdPersonState : CameraBaseState
     }
     public IEnumerator OnEnterLerpCamera_Coroutine()
     {
-        Vector3 playerCameraDeltaPos = playerCamera.firstPersonCamera.transform.position - playerCamera.transform.forward;
-        Quaternion lookAtPoint = Quaternion.LookRotation(playerCamera.firstPersonCamera.transform.forward, playerCamera.firstPersonCamera.transform.up);
-        GameObject.Find("Roberto").transform.position = playerCameraDeltaPos;
+        //Vector3 playerCameraDeltaPos = playerCamera.transform.position;
+        
+        //float firstPersonRotationX = playerCamera.firstPersonCamera.transform.rotation.eulerAngles.x;
+
+        //float distanceMultiplier;
+        //float height;
+
+        //if(firstPersonRotationX <= 90 && firstPersonRotationX > 30)
+        //{
+        //    //Bottom rig
+        //    distanceMultiplier = playerCamera.cinemachineFreeLook.m_Orbits[0].m_Radius;
+        //    height = playerCamera.cinemachineFreeLook.m_Orbits[0].m_Height;
+        //    Debug.Log("Top Rig| Radius="+distanceMultiplier+"| Height="+height);
+        //}
+        //else if(firstPersonRotationX <= 30 || (firstPersonRotationX <= 360 && firstPersonRotationX > 330))
+        //{
+        //    //Middle rig
+        //    distanceMultiplier = playerCamera.cinemachineFreeLook.m_Orbits[1].m_Radius;
+        //    height = playerCamera.cinemachineFreeLook.m_Orbits[1].m_Height;
+        //    Debug.Log("Middle Rig| Radius=" + distanceMultiplier + "| Height=" + height);
+        //}
+        //else
+        //{
+        //    //Top rig
+        //    distanceMultiplier = playerCamera.cinemachineFreeLook.m_Orbits[2].m_Radius;
+        //    height = playerCamera.cinemachineFreeLook.m_Orbits[2].m_Height;
+        //    Debug.Log("Bottom Rig| Radius=" + distanceMultiplier + "| Height=" + height);
+        //}
+
+        //playerCameraDeltaPos -= playerCamera.transform.forward * distanceMultiplier;
+        //playerCameraDeltaPos.y += height;
+        //GameObject.Find("Roberto").transform.position = playerCameraDeltaPos;
         playerCamera.cinemachineFreeLook.gameObject.SetActive(true);
-        playerCamera.cinemachineFreeLook.ForceCameraPosition(playerCameraDeltaPos, Quaternion.identity);
+        yield return new WaitForSeconds(1);
+        playerCamera.cinemachineFreeLook.OnTargetObjectWarped(playerCamera.transform, playerCamera.transform.position,playerCamera.firstPersonCamera.transform.position);
+        //playerCamera.cinemachineFreeLook.ForceCameraPosition(playerCameraDeltaPos, Quaternion.identity);
 
         yield return null;
     }
