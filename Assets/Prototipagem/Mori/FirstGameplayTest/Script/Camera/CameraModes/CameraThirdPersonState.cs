@@ -11,10 +11,10 @@ public class CameraThirdPersonState : CameraBaseState
 
         playerCamera.activeCamera.gameObject.SetActive(false);
         playerCamera.activeCamera = playerCamera.thirdPersonCamera;
+        playerCamera.StartCoroutine(OnEnterLerpCamera_Coroutine());
         playerCamera.activeCamera.gameObject.SetActive(true);
 
         //Tween.MoveTransformLocalPosition(playerCamera, playerCamera.cameraFollowPoint, new Vector3(0, 1, -5f), 0.2f);
-        playerCamera.cinemachineFreeLook.gameObject.SetActive(true);
         //playerCamera.StartCoroutine(OnEnterLerpCamera_Coroutine());
     }
 
@@ -29,19 +29,12 @@ public class CameraThirdPersonState : CameraBaseState
     }
     public IEnumerator OnEnterLerpCamera_Coroutine()
     {
-        Vector3 deltaPositionCamera;
-        deltaPositionCamera = playerCamera.thirdPersonCamera.transform.position;
+        Vector3 playerCameraDeltaPos = playerCamera.firstPersonCamera.transform.position - playerCamera.transform.forward;
+        Quaternion lookAtPoint = Quaternion.LookRotation(playerCamera.firstPersonCamera.transform.forward, playerCamera.firstPersonCamera.transform.up);
+        GameObject.Find("Roberto").transform.position = playerCameraDeltaPos;
         playerCamera.cinemachineFreeLook.gameObject.SetActive(true);
+        playerCamera.cinemachineFreeLook.ForceCameraPosition(playerCameraDeltaPos, Quaternion.identity);
+
         yield return null;
-        deltaPositionCamera -= playerCamera.thirdPersonCamera.transform.position;
-        playerCamera.cinemachineCameraOffset.m_Offset = deltaPositionCamera;
-        float timer = 0f;
-        while (timer<0.25f)
-        {
-            playerCamera.cinemachineCameraOffset.m_Offset = Vector3.Lerp(deltaPositionCamera, Vector3.zero, timer / 0.25f);
-            timer += Time.deltaTime;
-            yield return null;
-        }
-        playerCamera.cinemachineCameraOffset.m_Offset = Vector3.zero;
     }
 }
