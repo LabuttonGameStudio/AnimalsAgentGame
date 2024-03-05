@@ -63,7 +63,7 @@ public class CameraThirdPersonState : CameraBaseState
         //GameObject.Find("Roberto").transform.position = playerCameraDeltaPos;
         playerCamera.cinemachineFreeLook.gameObject.SetActive(true);
         yield return new WaitForSeconds(1);
-        playerCamera.cinemachineFreeLook.OnTargetObjectWarped(playerCamera.transform, playerCamera.transform.position,playerCamera.firstPersonCamera.transform.position);
+        //playerCamera.cinemachineFreeLook.OnTargetObjectWarped(playerCamera.transform, playerCamera.transform.position,playerCamera.firstPersonCamera.transform.position);
         //playerCamera.cinemachineFreeLook.ForceCameraPosition(playerCameraDeltaPos, Quaternion.identity);
 
         yield return null;
