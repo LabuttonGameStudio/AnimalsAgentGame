@@ -27,6 +27,7 @@ public class PlayerCamera : MonoBehaviour
     [Space, Header("Cinemachine")]
     public CinemachineFreeLook cinemachineFreeLook;
     public CinemachineCameraOffset cinemachineCameraOffset;
+
     public void ChangeCameraState(CameraBaseState nextState)
     {
         if (currentCameraState != null) currentCameraState.ExitState();

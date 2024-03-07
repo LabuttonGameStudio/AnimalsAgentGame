@@ -31,40 +31,30 @@ public class CameraThirdPersonState : CameraBaseState
     {
         //Vector3 playerCameraDeltaPos = playerCamera.transform.position;
         
-        //float firstPersonRotationX = playerCamera.firstPersonCamera.transform.rotation.eulerAngles.x;
+        float firstPersonRotationX = playerCamera.firstPersonCamera.transform.rotation.eulerAngles.x;
 
         //float distanceMultiplier;
         //float height;
 
-        //if(firstPersonRotationX <= 90 && firstPersonRotationX > 30)
-        //{
-        //    //Bottom rig
-        //    distanceMultiplier = playerCamera.cinemachineFreeLook.m_Orbits[0].m_Radius;
-        //    height = playerCamera.cinemachineFreeLook.m_Orbits[0].m_Height;
-        //    Debug.Log("Top Rig| Radius="+distanceMultiplier+"| Height="+height);
-        //}
-        //else if(firstPersonRotationX <= 30 || (firstPersonRotationX <= 360 && firstPersonRotationX > 330))
-        //{
-        //    //Middle rig
-        //    distanceMultiplier = playerCamera.cinemachineFreeLook.m_Orbits[1].m_Radius;
-        //    height = playerCamera.cinemachineFreeLook.m_Orbits[1].m_Height;
-        //    Debug.Log("Middle Rig| Radius=" + distanceMultiplier + "| Height=" + height);
-        //}
-        //else
-        //{
-        //    //Top rig
-        //    distanceMultiplier = playerCamera.cinemachineFreeLook.m_Orbits[2].m_Radius;
-        //    height = playerCamera.cinemachineFreeLook.m_Orbits[2].m_Height;
-        //    Debug.Log("Bottom Rig| Radius=" + distanceMultiplier + "| Height=" + height);
-        //}
-
+        playerCamera.cinemachineFreeLook.gameObject.SetActive(true);
+        if (firstPersonRotationX <= 90)
+        {
+            float percentage = firstPersonRotationX / 77.5f;
+            if(percentage>1) percentage = 1;
+            playerCamera.cinemachineFreeLook.m_YAxis.Value = Mathf.Lerp(0.5f, 1, percentage);
+        }
+        else if (firstPersonRotationX >= 270 && firstPersonRotationX <= 360)
+        {
+            float percentage = (firstPersonRotationX - 270) / 78;
+            if (percentage > 1) percentage = 1;
+            playerCamera.cinemachineFreeLook.m_YAxis.Value = Mathf.Lerp(0.5f, 0, percentage);
+        }
         //playerCameraDeltaPos -= playerCamera.transform.forward * distanceMultiplier;
         //playerCameraDeltaPos.y += height;
         //GameObject.Find("Roberto").transform.position = playerCameraDeltaPos;
-        playerCamera.cinemachineFreeLook.gameObject.SetActive(true);
-        yield return new WaitForSeconds(1);
+        //yield return new WaitForSeconds(1);
+        //playerCamera.cinemachineFreeLook.ForceCameraPosition(playerCamera.Roberto.position, Quaternion.identity);
         //playerCamera.cinemachineFreeLook.OnTargetObjectWarped(playerCamera.transform, playerCamera.transform.position,playerCamera.firstPersonCamera.transform.position);
-        //playerCamera.cinemachineFreeLook.ForceCameraPosition(playerCameraDeltaPos, Quaternion.identity);
 
         yield return null;
     }
