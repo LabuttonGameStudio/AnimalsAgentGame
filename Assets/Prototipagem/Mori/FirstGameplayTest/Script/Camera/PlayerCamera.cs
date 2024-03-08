@@ -11,9 +11,7 @@ public class PlayerCamera : MonoBehaviour
     public float firstPersonSensibilityX = 10, firstPersonSensibilityY = 10;
 
     private ArmadilloPlayerInputController inputController;
-    [System.NonSerialized] public Camera activeCamera;
-    public Camera firstPersonCamera;
-    public Camera thirdPersonCamera;
+    public Camera mainCamera;
     public Transform cameraFollowPoint;
 
     [HideInInspector] public float xRotation, yRotation;
@@ -25,8 +23,8 @@ public class PlayerCamera : MonoBehaviour
     public CameraThirdPersonState thirdPersonCameraState;
 
     [Space, Header("Cinemachine")]
-    public CinemachineFreeLook cinemachineFreeLook;
-    public CinemachineCameraOffset cinemachineCameraOffset;
+    public CinemachineFreeLook thirdPersonCinemachine;
+    public CinemachineVirtualCamera firstPersonCinemachine;
 
     public void ChangeCameraState(CameraBaseState nextState)
     {
@@ -52,7 +50,6 @@ public class PlayerCamera : MonoBehaviour
         thirdPersonCameraState = new CameraThirdPersonState();
 
         //Define o estado padrao da camera para primeira pessoa
-        activeCamera = firstPersonCamera;
         ChangeCameraState(firstPersonCameraState);
     }
 

@@ -33,7 +33,7 @@ public class ArmadilloBallState : ArmadilloBaseState
     //-----Player Movement-----
     private void MovePlayer()
     {
-        Camera mainCamera = ArmadilloPlayerController.Instance.cameraControl.thirdPersonCamera;
+        Camera mainCamera = ArmadilloPlayerController.Instance.cameraControl.mainCamera;
         Vector3 moveDirection = mainCamera.transform.forward * movementCtrl.movementInputVector.y
             + mainCamera.transform.right * movementCtrl.movementInputVector.x;
         moveDirection.y = 0;

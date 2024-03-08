@@ -99,7 +99,7 @@ public class ArmadilloInteractController : MonoBehaviour
     public IEnumerator CheckForInteractiveItemInAim_Coroutine()
     {
         Transform activeInteractive = null;
-        Transform cameraTransform = PlayerCamera.Instance.activeCamera.transform;
+        Transform cameraTransform = PlayerCamera.Instance.mainCamera.transform;
         while (true)
         {
             if (Physics.Raycast(cameraTransform.position, cameraTransform.forward, out RaycastHit hitInfo, 10f, whatIsInteractive, QueryTriggerInteraction.Ignore))

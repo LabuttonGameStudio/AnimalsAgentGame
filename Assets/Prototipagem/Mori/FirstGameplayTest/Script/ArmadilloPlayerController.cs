@@ -22,6 +22,7 @@ public class ArmadilloPlayerController : MonoBehaviour
     [System.NonSerialized] public ArmadilloMovementController movementControl;
     [System.NonSerialized] public PlayerCamera cameraControl;
     [System.NonSerialized] public ArmadilloInteractController interactControl;
+    [System.NonSerialized] public ArmadilloHPControl hpControl;
 
     //Player Forms
     [Header("Default Form")]
@@ -131,5 +132,11 @@ public class ArmadilloPlayerController : MonoBehaviour
         yield return new WaitForSeconds(0.25f);
         inputControl.inputAction.Armadillo.Ability1.performed += ChangeToBallForm;
         changeToDefaultFormRef = null;
+    }
+
+    //----- Die -----
+    public void Die()
+    {
+        Debug.Log("Player Die");
     }
 }
