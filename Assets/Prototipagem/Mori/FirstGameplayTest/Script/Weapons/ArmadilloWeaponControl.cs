@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class ArmadilloWeaponControl : MonoBehaviour
@@ -8,8 +9,9 @@ public class ArmadilloWeaponControl : MonoBehaviour
 
     [System.NonSerialized] public int currentWeaponID;
 
-    public ParticleSystem chargedVisual;
-    public ParticleSystem onFireVisual;
+    [SerializeField] private Camera weaponCamera;
+
+    public TextMeshProUGUI currentWeaponUI;
 
     public void Start()
     {
@@ -17,6 +19,10 @@ public class ArmadilloWeaponControl : MonoBehaviour
         weaponsInInventory[0] = new EletricPistol(this);
         currentWeaponID = 0;
         ChangeWeapon(0);
+    }
+    public GameObject LoadModel(GameObject model,Vector3 position,Quaternion rotation)
+    {
+        return Instantiate(model, position, rotation, weaponCamera.transform);
     }
     public void ChangeWeapon(int nextWeapon)
     {

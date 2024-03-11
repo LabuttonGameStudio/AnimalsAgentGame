@@ -14,12 +14,39 @@ public class EletricPistol : Weapon
         maxAmmoAmount = 100;
         name = "Pistola Eletrica";
         description = "Pressione pra atirar, segure para carregar ";
+        LoadVisual();
+        UpdateOverHeat();
     }
-
+    //----- Stats -----
     readonly private int unchargedHitDamage = 20;
     readonly private int chargedHitDamage = 50;
 
     readonly private float chargeTime = 0.25f;
+
+    //----- Visual -----
+    private EletricPistolVisual visualHandler;
+    private void LoadVisual()
+    {
+        GameObject modelPrefab;
+        modelPrefab = Resources.Load<GameObject>("Prefabs/Weapons/EletricPistol");
+        if(modelPrefab == null )
+        {
+            Debug.LogError("Erro ao encontrar Eletric Pistol Prefab em Prefabs/Weapons/EletricPistol");
+        }
+        Debug.Log(modelPrefab);
+        Vector3 position = new Vector3(0.6f, -0.25f, 0.9f);
+        Quaternion rotation = Quaternion.Euler(new Vector3(0, 85, 357.5f));
+        GameObject model;
+        model = weaponControl.LoadModel(modelPrefab, position,rotation);
+        if (model.TryGetComponent(out EletricPistolVisual eletricPistolVisual))
+        {
+            visualHandler = eletricPistolVisual;
+        }
+        else Debug.LogError("Erro ao encontrar visual handler EletricPistolVisual no prefab");
+    }
+    //LoadModel
+
+
     //Fire
     #region
     public override void OnFireButtonPerformed(InputAction.CallbackContext performed)
@@ -48,7 +75,6 @@ public class EletricPistol : Weapon
     }
     public void Fire(float timer)
     {
-        weaponControl.onFireVisual.Play();
         if (timer < chargeTime)
         {
             UnChargedFire();
@@ -70,6 +96,7 @@ public class EletricPistol : Weapon
                 break;
             }
         }
+        visualHandler.OnUnchargedFire();
     }
     public void ChargedFire()
     {
@@ -85,7 +112,7 @@ public class EletricPistol : Weapon
                 idamageable.TakeDamage(chargedHitDamage);
             }
         }
-        weaponControl.chargedVisual.gameObject.SetActive(false);
+        visualHandler.OnChargedFire();
     }
 
     public Coroutine holdOrPressTimerRef;
@@ -98,7 +125,7 @@ public class EletricPistol : Weapon
             holdOrPressTimer += Time.deltaTime;
             yield return null;
         }
-        weaponControl.chargedVisual.gameObject.SetActive(true);
+        visualHandler.OnCharge();
         while (true)
         {
             holdOrPressTimer += Time.deltaTime;
@@ -129,6 +156,14 @@ public class EletricPistol : Weapon
     public override void OnReloadButtonCanceled(InputAction.CallbackContext performed)
     {
 
+    }
+    #endregion
+
+    //OverHeat
+    #region
+    public void UpdateOverHeat()
+    {
+        weaponControl.currentWeaponUI.text = currentAmmoAmount.ToString()+"|"+maxAmmoAmount.ToString();
     }
     #endregion
 }
