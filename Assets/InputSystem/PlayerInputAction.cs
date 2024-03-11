@@ -82,6 +82,15 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
+                    ""name"": ""Reload"",
+                    ""type"": ""Button"",
+                    ""id"": ""0d220268-d878-463e-afe1-eb81e6ead356"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
                     ""name"": ""Ability1"",
                     ""type"": ""Button"",
                     ""id"": ""35e9f65b-d734-4b1b-9874-81baa60e45dd"",
@@ -212,6 +221,17 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
                     ""action"": ""Ability1"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""3e0bcc69-d3f9-42df-b4b7-4d4dd496a456"",
+                    ""path"": ""<Keyboard>/r"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Reload"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -226,6 +246,7 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
         m_Armadillo_Interact = m_Armadillo.FindAction("Interact", throwIfNotFound: true);
         m_Armadillo_Fire = m_Armadillo.FindAction("Fire", throwIfNotFound: true);
         m_Armadillo_AltFire = m_Armadillo.FindAction("AltFire", throwIfNotFound: true);
+        m_Armadillo_Reload = m_Armadillo.FindAction("Reload", throwIfNotFound: true);
         m_Armadillo_Ability1 = m_Armadillo.FindAction("Ability1", throwIfNotFound: true);
     }
 
@@ -294,6 +315,7 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
     private readonly InputAction m_Armadillo_Interact;
     private readonly InputAction m_Armadillo_Fire;
     private readonly InputAction m_Armadillo_AltFire;
+    private readonly InputAction m_Armadillo_Reload;
     private readonly InputAction m_Armadillo_Ability1;
     public struct ArmadilloActions
     {
@@ -305,6 +327,7 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
         public InputAction @Interact => m_Wrapper.m_Armadillo_Interact;
         public InputAction @Fire => m_Wrapper.m_Armadillo_Fire;
         public InputAction @AltFire => m_Wrapper.m_Armadillo_AltFire;
+        public InputAction @Reload => m_Wrapper.m_Armadillo_Reload;
         public InputAction @Ability1 => m_Wrapper.m_Armadillo_Ability1;
         public InputActionMap Get() { return m_Wrapper.m_Armadillo; }
         public void Enable() { Get().Enable(); }
@@ -333,6 +356,9 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
             @AltFire.started += instance.OnAltFire;
             @AltFire.performed += instance.OnAltFire;
             @AltFire.canceled += instance.OnAltFire;
+            @Reload.started += instance.OnReload;
+            @Reload.performed += instance.OnReload;
+            @Reload.canceled += instance.OnReload;
             @Ability1.started += instance.OnAbility1;
             @Ability1.performed += instance.OnAbility1;
             @Ability1.canceled += instance.OnAbility1;
@@ -358,6 +384,9 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
             @AltFire.started -= instance.OnAltFire;
             @AltFire.performed -= instance.OnAltFire;
             @AltFire.canceled -= instance.OnAltFire;
+            @Reload.started -= instance.OnReload;
+            @Reload.performed -= instance.OnReload;
+            @Reload.canceled -= instance.OnReload;
             @Ability1.started -= instance.OnAbility1;
             @Ability1.performed -= instance.OnAbility1;
             @Ability1.canceled -= instance.OnAbility1;
@@ -386,6 +415,7 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
         void OnInteract(InputAction.CallbackContext context);
         void OnFire(InputAction.CallbackContext context);
         void OnAltFire(InputAction.CallbackContext context);
+        void OnReload(InputAction.CallbackContext context);
         void OnAbility1(InputAction.CallbackContext context);
     }
 }

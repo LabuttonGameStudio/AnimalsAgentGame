@@ -23,6 +23,7 @@ public class ArmadilloPlayerController : MonoBehaviour
     [System.NonSerialized] public PlayerCamera cameraControl;
     [System.NonSerialized] public ArmadilloInteractController interactControl;
     [System.NonSerialized] public ArmadilloHPControl hpControl;
+    [System.NonSerialized] public ArmadilloWeaponControl weaponControl;
 
     //Player Forms
     [Header("Default Form")]
@@ -36,13 +37,15 @@ public class ArmadilloPlayerController : MonoBehaviour
     private void Awake()
     {
         Instance = this;
-    }
-    private void Start()
-    {
+
         inputControl = GetComponent<ArmadilloPlayerInputController>();
         movementControl = GetComponent<ArmadilloMovementController>();
         cameraControl = GetComponent<PlayerCamera>();
         interactControl = GetComponent<ArmadilloInteractController>();
+
+    }
+    private void Start()
+    {
 
         inputControl.inputAction.Armadillo.Ability1.Enable();
         inputControl.inputAction.Armadillo.Ability1.performed += ChangeToBallForm;

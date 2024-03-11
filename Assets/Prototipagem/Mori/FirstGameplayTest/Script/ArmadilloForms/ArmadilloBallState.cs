@@ -44,7 +44,6 @@ public class ArmadilloBallState : ArmadilloBaseState
             if (movementCtrl.rb.velocity.y < 0)
             {
                 movementInAir += Vector3.up * Physics.gravity.y * 2.0f;
-                Debug.Log("Gravity Applied");
             }
             movementCtrl.rb.AddForce(movementInAir, ForceMode.Force);
         }
