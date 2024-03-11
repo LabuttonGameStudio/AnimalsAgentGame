@@ -9,6 +9,7 @@ public class EnemyMelee : MonoBehaviour,IDamageable
     private NavMeshAgent navMeshAgent;
 
     [SerializeField]List<Transform> aiPathList;
+
     private int currentAiPathID;
     private bool isInReversePath;
     public void TakeDamage(int damageAmount)
@@ -37,6 +38,7 @@ public class EnemyMelee : MonoBehaviour,IDamageable
     }
     private void MoveToNextPosition()
     {
+        if (aiPathList.Count <= 0) return;
         if(!isInReversePath)
         {
             if (currentAiPathID + 1 > (aiPathList.Count - 1))
