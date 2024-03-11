@@ -22,7 +22,10 @@ public class ArmadilloWeaponControl : MonoBehaviour
     }
     public GameObject LoadModel(GameObject model,Vector3 position,Quaternion rotation)
     {
-        return Instantiate(model, position, rotation, weaponCamera.transform);
+        GameObject objectInstantiated = Instantiate(model, weaponCamera.transform);
+        objectInstantiated.transform.localPosition = position;
+        objectInstantiated.transform.localRotation = rotation;
+        return objectInstantiated;
     }
     public void ChangeWeapon(int nextWeapon)
     {
