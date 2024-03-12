@@ -18,10 +18,13 @@ public class EletricPistol : Weapon
         UpdateOverheatHUD();
     }
     //----- Stats -----
+    //Tiro normal
     readonly private int unchargedHitDamage = 20;
+    //Tiro carregado
     readonly private int chargedHitDamage = 50;
-
     readonly private float chargeTime = 0.25f;
+    //Overheat
+    private bool isOverheating;
 
     //----- Visual -----
     private EletricPistolVisual visualHandler;
@@ -164,6 +167,7 @@ public class EletricPistol : Weapon
     public void UpdateOverheatHUD()
     {
         weaponControl.currentWeaponUI.text = currentAmmoAmount.ToString() + "|" + maxAmmoAmount.ToString();
+        //weaponControl.currentWeaponUI.color = new Color() lerp white to red text
     }
     public void OnOverheatCharge(int chargeAmount)
     {
@@ -180,7 +184,8 @@ public class EletricPistol : Weapon
     }
     public void OnOverheat()
     {
-
+        isOverheating = true;
+        //start timer 
     }
     #endregion
 }
