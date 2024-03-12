@@ -15,7 +15,7 @@ public class EletricPistol : Weapon
         name = "Pistola Eletrica";
         description = "Pressione pra atirar, segure para carregar ";
         LoadVisual();
-        UpdateOverHeat();
+        UpdateOverheatHUD();
     }
     //----- Stats -----
     readonly private int unchargedHitDamage = 20;
@@ -29,7 +29,7 @@ public class EletricPistol : Weapon
     {
         GameObject modelPrefab;
         modelPrefab = Resources.Load<GameObject>("Prefabs/Weapons/EletricPistol");
-        if(modelPrefab == null )
+        if (modelPrefab == null)
         {
             Debug.LogError("Erro ao encontrar Eletric Pistol Prefab em Prefabs/Weapons/EletricPistol");
         }
@@ -37,7 +37,7 @@ public class EletricPistol : Weapon
         Vector3 position = new Vector3(0.6f, -0.25f, 0.9f);
         Quaternion rotation = Quaternion.Euler(new Vector3(0, 85, 357.5f));
         GameObject model;
-        model = weaponControl.LoadModel(modelPrefab, position,rotation);
+        model = weaponControl.LoadModel(modelPrefab, position, rotation);
         if (model.TryGetComponent(out EletricPistolVisual eletricPistolVisual))
         {
             visualHandler = eletricPistolVisual;
@@ -88,7 +88,7 @@ public class EletricPistol : Weapon
         targetsHit = Physics.RaycastAll(camera.position, camera.forward, 20f);
         foreach (RaycastHit raycastHit in targetsHit)
         {
-            if(raycastHit.collider.isTrigger) continue;
+            if (raycastHit.collider.isTrigger) continue;
             Debug.Log(raycastHit.transform.name);
             if (raycastHit.transform.TryGetComponent(out IDamageable idamageable))
             {
@@ -120,7 +120,7 @@ public class EletricPistol : Weapon
     public IEnumerator HoldOrPressTimer_Coroutine()
     {
         holdOrPressTimer = 0;
-        while (holdOrPressTimer< chargeTime)
+        while (holdOrPressTimer < chargeTime)
         {
             holdOrPressTimer += Time.deltaTime;
             yield return null;
@@ -161,9 +161,26 @@ public class EletricPistol : Weapon
 
     //OverHeat
     #region
-    public void UpdateOverHeat()
+    public void UpdateOverheatHUD()
     {
-        weaponControl.currentWeaponUI.text = currentAmmoAmount.ToString()+"|"+maxAmmoAmount.ToString();
+        weaponControl.currentWeaponUI.text = currentAmmoAmount.ToString() + "|" + maxAmmoAmount.ToString();
+    }
+    public void OnOverheatCharge(int chargeAmount)
+    {
+        if (currentAmmoAmount + chargeAmount <= maxAmmoAmount)
+        {
+            currentAmmoAmount += chargeAmount;
+        }
+        else
+        {
+            currentAmmoAmount = maxAmmoAmount;
+            OnOverheat();
+        }
+        UpdateOverheatHUD();
+    }
+    public void OnOverheat()
+    {
+
     }
     #endregion
 }
