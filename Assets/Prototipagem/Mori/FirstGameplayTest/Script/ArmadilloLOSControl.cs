@@ -33,13 +33,15 @@ public class ArmadilloLOSControl : MonoBehaviour
             layer |= 1 << whatIsPickable;
             layer |= 1 << whatIsInteractive;
             raycastHits = Physics.RaycastAll(camera.transform.position, camera.transform.forward, distanceOfChecking, layer, QueryTriggerInteraction.Ignore);
-            if(raycastHits.Length <= 0 ) continue;
-            foreach(RaycastHit hit in raycastHits )
+            if (raycastHits.Length > 0)
             {
-                int hitLayerInt = hit.transform.gameObject.layer;
-                if( hitLayerInt == whatIsEnemies.value) OnEnemyObjectFound.Invoke(hit);
-                else if( hitLayerInt == whatIsPickable.value) OnPickableObjectFound.Invoke(hit);
-                else if( hitLayerInt == whatIsInteractive.value) OnInteractiveObjectFound.Invoke(hit);
+                foreach (RaycastHit hit in raycastHits)
+                {
+                    int hitLayerInt = hit.transform.gameObject.layer;
+                    if (hitLayerInt == whatIsEnemies.value) OnEnemyObjectFound.Invoke(hit);
+                    else if (hitLayerInt == whatIsPickable.value) OnPickableObjectFound.Invoke(hit);
+                    else if (hitLayerInt == whatIsInteractive.value) OnInteractiveObjectFound.Invoke(hit);
+                }
             }
             yield return new WaitForFixedUpdate();
         }
