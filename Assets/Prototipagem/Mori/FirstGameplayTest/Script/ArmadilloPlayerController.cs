@@ -24,6 +24,7 @@ public class ArmadilloPlayerController : MonoBehaviour
     [System.NonSerialized] public ArmadilloInteractController interactControl;
     [System.NonSerialized] public ArmadilloHPControl hpControl;
     [System.NonSerialized] public ArmadilloWeaponControl weaponControl;
+    [System.NonSerialized] public ArmadilloPickUpControl pickUpControl;
 
     //Player Forms
     [Header("Default Form")]
@@ -42,6 +43,9 @@ public class ArmadilloPlayerController : MonoBehaviour
         movementControl = GetComponent<ArmadilloMovementController>();
         cameraControl = GetComponent<PlayerCamera>();
         interactControl = GetComponent<ArmadilloInteractController>();
+        hpControl = GetComponent<ArmadilloHPControl>();
+        weaponControl = GetComponent<ArmadilloWeaponControl>();
+        pickUpControl = GetComponent<ArmadilloPickUpControl>();
 
     }
     private void Start()

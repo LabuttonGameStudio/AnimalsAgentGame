@@ -5,9 +5,9 @@ using UnityEngine;
 
 public class ArmadilloWeaponControl : MonoBehaviour
 {
-    [System.NonSerialized]public Weapon[] weaponsInInventory;
+    [System.NonSerialized] public Weapon[] weaponsInInventory;
 
-    [System.NonSerialized] public int currentWeaponID;
+    [System.NonSerialized] public int currentWeaponID = -1;
 
     [SerializeField] private Camera weaponCamera;
 
@@ -17,10 +17,9 @@ public class ArmadilloWeaponControl : MonoBehaviour
     {
         weaponsInInventory = new Weapon[2];
         weaponsInInventory[0] = new EletricPistol(this);
-        currentWeaponID = 0;
         ChangeWeapon(0);
     }
-    public GameObject LoadModel(GameObject model,Vector3 position,Quaternion rotation)
+    public GameObject LoadModel(GameObject model, Vector3 position, Quaternion rotation)
     {
         GameObject objectInstantiated = Instantiate(model, weaponCamera.transform);
         objectInstantiated.transform.localPosition = position;
@@ -30,16 +29,47 @@ public class ArmadilloWeaponControl : MonoBehaviour
     public void ChangeWeapon(int nextWeapon)
     {
         PlayerInputAction.ArmadilloActions playerInput = ArmadilloPlayerController.Instance.inputControl.inputAction.Armadillo;
-        playerInput.Fire.Enable();
-        playerInput.Fire.performed += weaponsInInventory[currentWeaponID].OnFireButtonPerformed;
-        playerInput.Fire.canceled += weaponsInInventory[currentWeaponID].OnFireButtonCanceled;
+        if (nextWeapon < 0 || nextWeapon > weaponsInInventory.Length)
+        {
+            playerInput.Fire.performed -= weaponsInInventory[currentWeaponID].OnFireButtonPerformed;
+            playerInput.Fire.canceled -= weaponsInInventory[currentWeaponID].OnFireButtonCanceled;
+            playerInput.Fire.Disable();
 
-        playerInput.AltFire.Enable();
-        playerInput.AltFire.performed += weaponsInInventory[currentWeaponID].OnAltFireButtonPerformed;
-        playerInput.AltFire.canceled += weaponsInInventory[currentWeaponID].OnAltFireButtonCanceled;
+            playerInput.AltFire.performed -= weaponsInInventory[currentWeaponID].OnAltFireButtonPerformed;
+            playerInput.AltFire.canceled -= weaponsInInventory[currentWeaponID].OnAltFireButtonCanceled;
+            playerInput.AltFire.Disable();
 
-        playerInput.Reload.Enable();
-        playerInput.Reload.performed += weaponsInInventory[currentWeaponID].OnReloadButtonPerformed;
-        playerInput.Reload.canceled += weaponsInInventory[currentWeaponID].OnReloadButtonCanceled;
+            playerInput.Reload.performed -= weaponsInInventory[currentWeaponID].OnReloadButtonPerformed;
+            playerInput.Reload.canceled -= weaponsInInventory[currentWeaponID].OnReloadButtonCanceled;
+            playerInput.Reload.Disable();
+            currentWeaponID = -1;
+            return;
+        }
+        if (currentWeaponID != -1)
+        {
+            playerInput.Fire.performed -= weaponsInInventory[currentWeaponID].OnFireButtonPerformed;
+            playerInput.Fire.canceled -= weaponsInInventory[currentWeaponID].OnFireButtonCanceled;
+
+            playerInput.AltFire.performed -= weaponsInInventory[currentWeaponID].OnAltFireButtonPerformed;
+            playerInput.AltFire.canceled -= weaponsInInventory[currentWeaponID].OnAltFireButtonCanceled;
+
+            playerInput.Reload.performed -= weaponsInInventory[currentWeaponID].OnReloadButtonPerformed;
+            playerInput.Reload.canceled -= weaponsInInventory[currentWeaponID].OnReloadButtonCanceled;
+        }
+        else
+        {
+            playerInput.Fire.Enable();
+            playerInput.AltFire.Enable();
+            playerInput.Reload.Enable();
+        }
+        playerInput.Fire.performed += weaponsInInventory[nextWeapon].OnFireButtonPerformed;
+        playerInput.Fire.canceled += weaponsInInventory[nextWeapon].OnFireButtonCanceled;
+
+        playerInput.AltFire.performed += weaponsInInventory[nextWeapon].OnAltFireButtonPerformed;
+        playerInput.AltFire.canceled += weaponsInInventory[nextWeapon].OnAltFireButtonCanceled;
+
+        playerInput.Reload.performed += weaponsInInventory[nextWeapon].OnReloadButtonPerformed;
+        playerInput.Reload.canceled += weaponsInInventory[nextWeapon].OnReloadButtonCanceled;
+        currentWeaponID = nextWeapon;
     }
 }

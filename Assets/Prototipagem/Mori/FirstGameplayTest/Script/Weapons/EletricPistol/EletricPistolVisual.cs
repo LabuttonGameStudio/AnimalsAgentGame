@@ -19,14 +19,18 @@ public class EletricPistolVisual : MonoBehaviour
     }
     public void OnCharge()
     {
-        chargedParticle.gameObject.SetActive(true);
+        chargedParticle.Play();
     }
     public void OnUnCharge()
     {
-        chargedParticle.gameObject.SetActive(false);
+        chargedParticle.Stop();
     }
-    public void OnOverheat()
+    public void OnEnterOverheatMode()
     {
-
+        onOverheat.Play();
+    }
+    public void OnLeaveOverheatMode()
+    {
+        onOverheat.Stop();
     }
 }

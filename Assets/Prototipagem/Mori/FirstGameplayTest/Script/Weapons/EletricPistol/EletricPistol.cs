@@ -20,16 +20,20 @@ public class EletricPistol : Weapon
     //----- Stats -----
     //Tiro normal
     readonly private int unchargedHitDamage = 20;
-    readonly private int unchargedOverheatCharge = 20; 
+    readonly private int unchargedOverheatCharge = 15;
     //Tiro carregado
     readonly private int chargedHitDamage = 50;
     readonly private float chargeTime = 0.25f;
-    readonly private int chargedOverheatCharge = 60; 
+    readonly private int chargedOverheatCharge = 55;
     //Overheat
     private bool isOverheating;
-
+    readonly private float overheatDuration = 2f;
+    readonly private float timeUntilPassiveCoolOffStarts = 1f;
+    readonly private float timeToFullCoolOff = 1.5f;
     //----- Visual -----
     private EletricPistolVisual visualHandler;
+
+    //LoadModel
     private void LoadVisual()
     {
         GameObject modelPrefab;
@@ -49,8 +53,6 @@ public class EletricPistol : Weapon
         }
         else Debug.LogError("Erro ao encontrar visual handler EletricPistolVisual no prefab");
     }
-    //LoadModel
-
 
     //Fire
     #region
@@ -65,18 +67,24 @@ public class EletricPistol : Weapon
 
     public void StartHoldOrPressTimer()
     {
-        if (holdOrPressTimerRef == null) holdOrPressTimerRef = weaponControl.StartCoroutine(HoldOrPressTimer_Coroutine());
-        else
+        if (!isOverheating)
         {
-            StopHoldOrPressTimer();
-            holdOrPressTimerRef = weaponControl.StartCoroutine(HoldOrPressTimer_Coroutine());
+            if (holdOrPressTimerRef == null) holdOrPressTimerRef = weaponControl.StartCoroutine(HoldOrPressTimer_Coroutine());
+            else
+            {
+                StopHoldOrPressTimer();
+                holdOrPressTimerRef = weaponControl.StartCoroutine(HoldOrPressTimer_Coroutine());
+            }
         }
     }
     public void StopHoldOrPressTimer()
     {
-        weaponControl.StopCoroutine(holdOrPressTimerRef);
-        holdOrPressTimerRef = null;
-        Fire(holdOrPressTimer);
+        if (holdOrPressTimerRef != null)
+        {
+            weaponControl.StopCoroutine(holdOrPressTimerRef);
+            holdOrPressTimerRef = null;
+            Fire(holdOrPressTimer);
+        }
     }
     public void Fire(float timer)
     {
@@ -171,27 +179,88 @@ public class EletricPistol : Weapon
     public void UpdateOverheatHUD()
     {
         weaponControl.currentWeaponUI.text = currentAmmoAmount.ToString() + "|" + maxAmmoAmount.ToString();
-        float currentPercentage = currentAmmoAmount / maxAmmoAmount;
-        Debug.Log(currentPercentage);
-        weaponControl.currentWeaponUI.color = new Color(1, currentPercentage,  currentPercentage);
+        float currentPercentage = ((float)currentAmmoAmount) / ((float)maxAmmoAmount);
+        if (currentPercentage > 1) currentPercentage = 1;
+        weaponControl.currentWeaponUI.color = new Color(1, 1 - currentPercentage, 1 - currentPercentage);
     }
     public void OnOverheatCharge(int chargeAmount)
     {
-        if (currentAmmoAmount + chargeAmount <= maxAmmoAmount)
-        {
-            currentAmmoAmount += chargeAmount;
-        }
+        currentAmmoAmount += chargeAmount;
+        StopPassiveCoolOff();
+        if (currentAmmoAmount >= maxAmmoAmount) OnOverheat();
         else
         {
-            currentAmmoAmount = maxAmmoAmount;
-            OnOverheat();
+            StartPassiveCoolOff();
         }
         UpdateOverheatHUD();
     }
     public void OnOverheat()
     {
         isOverheating = true;
+        visualHandler.OnEnterOverheatMode();
+        if (overheatTimer_Ref == null)
+        {
+            overheatTimer_Ref = weaponControl.StartCoroutine(OverheatTimer_Coroutine());
+        }
+        else
+        {
+            weaponControl.StopCoroutine(overheatTimer_Ref);
+            overheatTimer_Ref = weaponControl.StartCoroutine(OverheatTimer_Coroutine());
+        }
         //start timer 
+    }
+
+    private Coroutine overheatTimer_Ref;
+    public IEnumerator OverheatTimer_Coroutine()
+    {
+        yield return new WaitForSeconds(0.25f);
+        float timer = 0;
+        int startingAmmoAmount = currentAmmoAmount;
+        while (timer < overheatDuration)
+        {
+            Debug.Log(startingAmmoAmount);
+            currentAmmoAmount = Mathf.RoundToInt(Mathf.Lerp(startingAmmoAmount, 0, timer / (overheatDuration-0.25f)));
+            UpdateOverheatHUD();
+            timer += 0.05f;
+            yield return new WaitForSeconds(0.05f);
+        }
+        isOverheating = false;
+        visualHandler.OnLeaveOverheatMode();
+        currentAmmoAmount = 0;
+        UpdateOverheatHUD();
+    }
+
+
+    private void StartPassiveCoolOff()
+    {
+        if (passiveCoolOff_Ref == null) passiveCoolOff_Ref = weaponControl.StartCoroutine(PassiveCoolOff_Coroutine());
+    }
+    private void StopPassiveCoolOff()
+    {
+        if (passiveCoolOff_Ref != null)
+        {
+            weaponControl.StopCoroutine(passiveCoolOff_Ref);
+            passiveCoolOff_Ref = null;
+        }
+    }
+    private Coroutine passiveCoolOff_Ref;
+    public IEnumerator PassiveCoolOff_Coroutine()
+    {
+        yield return new WaitForSeconds(timeUntilPassiveCoolOffStarts);
+
+        float timer = 0;
+        float ammoAmountAsFloat = currentAmmoAmount;
+        while (ammoAmountAsFloat > 0)
+        {
+            currentAmmoAmount = Mathf.RoundToInt(ammoAmountAsFloat);
+            UpdateOverheatHUD();
+            timer += 0.05f;
+            yield return new WaitForSeconds(0.05f);
+            ammoAmountAsFloat -= (maxAmmoAmount / timeToFullCoolOff) * 0.05f;
+        }
+        currentAmmoAmount = 0;
+        UpdateOverheatHUD();
+        passiveCoolOff_Ref = null;
     }
     #endregion
 }
