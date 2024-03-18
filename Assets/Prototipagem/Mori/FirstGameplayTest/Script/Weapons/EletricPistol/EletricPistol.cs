@@ -33,7 +33,8 @@ public class EletricPistol : Weapon
     //----- Visual -----
     private EletricPistolVisual visualHandler;
 
-    //LoadModel
+    //Visual
+    #region
     private void LoadVisual()
     {
         GameObject modelPrefab;
@@ -50,10 +51,16 @@ public class EletricPistol : Weapon
         if (model.TryGetComponent(out EletricPistolVisual eletricPistolVisual))
         {
             visualHandler = eletricPistolVisual;
+            visualHandler.gameObject.SetActive(false);
         }
         else Debug.LogError("Erro ao encontrar visual handler EletricPistolVisual no prefab");
     }
 
+    public override void ToggleVisual(bool state)
+    {
+        visualHandler.gameObject.SetActive(state);
+    }
+    #endregion
     //Fire
     #region
     public override void OnFireButtonPerformed(InputAction.CallbackContext performed)

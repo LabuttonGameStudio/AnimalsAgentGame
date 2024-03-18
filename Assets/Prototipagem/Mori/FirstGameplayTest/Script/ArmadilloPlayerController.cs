@@ -73,7 +73,8 @@ public class ArmadilloPlayerController : MonoBehaviour
     private Coroutine changeToBallFormRef;
     private IEnumerator ChangeToBallForm_Coroutine()
     {
-        //Move a camera para terceira pessoa em 0.2 segundos 
+        //Move a camera para terceira pessoa em 0.5 segundos 
+        weaponControl.ChangeWeapon(-1);
         cameraControl.ChangeCameraState(cameraControl.thirdPersonCameraState);
 
         //Muda o visual do personagem, futuramente so colocar a opcao de mudar a animacao do model
@@ -106,7 +107,7 @@ public class ArmadilloPlayerController : MonoBehaviour
     private Coroutine changeToDefaultFormRef;
     private IEnumerator ChangeToDefaultForm_Coroutine()
     {
-        //Move a camera para terceira pessoa em 0.2 segundos 
+        //Move a camera para terceira pessoa em 0.5 segundos 
         cameraControl.ChangeCameraState(cameraControl.firstPersonCameraState);
 
         //Muda o visual do personagem, futuramente so colocar a opcao de mudar a animacao do model
@@ -121,7 +122,6 @@ public class ArmadilloPlayerController : MonoBehaviour
 
         //Espera 0.25 segundos para a forca ter tempo de mover o objeto e o tempo de travessia da camera
         yield return new WaitForSeconds(0.25f);
-
         //Troca os colliders
         foreach (Collider collider in playerCollider_Default)
         {
@@ -137,6 +137,7 @@ public class ArmadilloPlayerController : MonoBehaviour
 
         //Espera 0.25 segundos para deixar o objeto cair ate encostar no chao e evitar spam de transformacao 
         yield return new WaitForSeconds(0.25f);
+        weaponControl.ChangeWeapon(0);
         inputControl.inputAction.Armadillo.Ability1.performed += ChangeToBallForm;
         changeToDefaultFormRef = null;
     }

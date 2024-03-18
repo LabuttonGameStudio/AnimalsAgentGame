@@ -32,5 +32,6 @@ public abstract class Weapon
     public abstract void OnReloadButtonPerformed(InputAction.CallbackContext performed);
     public abstract void OnReloadButtonCanceled(InputAction.CallbackContext performed);
 
-
+    //Visual
+    public abstract void ToggleVisual(bool state);
 }

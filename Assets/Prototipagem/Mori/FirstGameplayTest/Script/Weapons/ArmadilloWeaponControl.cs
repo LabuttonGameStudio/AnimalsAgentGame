@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class ArmadilloWeaponControl : MonoBehaviour
 {
@@ -26,50 +27,74 @@ public class ArmadilloWeaponControl : MonoBehaviour
         objectInstantiated.transform.localRotation = rotation;
         return objectInstantiated;
     }
+    private enum DelegateType
+    {
+        Add,
+        Remove,
+    }
+    private void DefineDelegates(PlayerInputAction.ArmadilloActions playerInput, DelegateType delegateType, int weaponID)
+    {
+        switch (delegateType)
+        {
+            case DelegateType.Add:
+                playerInput.Fire.performed += weaponsInInventory[weaponID].OnFireButtonPerformed;
+                playerInput.Fire.canceled += weaponsInInventory[weaponID].OnFireButtonCanceled;
+
+                playerInput.AltFire.performed += weaponsInInventory[weaponID].OnAltFireButtonPerformed;
+                playerInput.AltFire.canceled += weaponsInInventory[weaponID].OnAltFireButtonCanceled;
+
+                playerInput.Reload.performed += weaponsInInventory[weaponID].OnReloadButtonPerformed;
+                playerInput.Reload.canceled += weaponsInInventory[weaponID].OnReloadButtonCanceled;
+                break;
+            case DelegateType.Remove:
+                playerInput.Fire.performed -= weaponsInInventory[weaponID].OnFireButtonPerformed;
+                playerInput.Fire.canceled -= weaponsInInventory[weaponID].OnFireButtonCanceled;
+
+                playerInput.AltFire.performed -= weaponsInInventory[weaponID].OnAltFireButtonPerformed;
+                playerInput.AltFire.canceled -= weaponsInInventory[weaponID].OnAltFireButtonCanceled;
+
+                playerInput.Reload.performed -= weaponsInInventory[weaponID].OnReloadButtonPerformed;
+                playerInput.Reload.canceled -= weaponsInInventory[weaponID].OnReloadButtonCanceled;
+                break;
+        }
+    }
+    private void ToggleStateInputs(PlayerInputAction.ArmadilloActions playerInput, bool state)
+    {
+        if (state)
+        {
+            playerInput.Fire.Enable();
+            playerInput.AltFire.Enable();
+            playerInput.Reload.Enable();
+            return;
+        }
+        playerInput.Fire.Disable();
+        playerInput.AltFire.Disable();
+        playerInput.Reload.Disable();
+    }
+
     public void ChangeWeapon(int nextWeapon)
     {
         PlayerInputAction.ArmadilloActions playerInput = ArmadilloPlayerController.Instance.inputControl.inputAction.Armadillo;
         if (nextWeapon < 0 || nextWeapon > weaponsInInventory.Length)
         {
-            playerInput.Fire.performed -= weaponsInInventory[currentWeaponID].OnFireButtonPerformed;
-            playerInput.Fire.canceled -= weaponsInInventory[currentWeaponID].OnFireButtonCanceled;
-            playerInput.Fire.Disable();
-
-            playerInput.AltFire.performed -= weaponsInInventory[currentWeaponID].OnAltFireButtonPerformed;
-            playerInput.AltFire.canceled -= weaponsInInventory[currentWeaponID].OnAltFireButtonCanceled;
-            playerInput.AltFire.Disable();
-
-            playerInput.Reload.performed -= weaponsInInventory[currentWeaponID].OnReloadButtonPerformed;
-            playerInput.Reload.canceled -= weaponsInInventory[currentWeaponID].OnReloadButtonCanceled;
-            playerInput.Reload.Disable();
+            DefineDelegates(playerInput, DelegateType.Remove, currentWeaponID);
+            ToggleStateInputs(playerInput,false);
+            weaponsInInventory[currentWeaponID].ToggleVisual(false);
             currentWeaponID = -1;
             return;
         }
         if (currentWeaponID != -1)
         {
-            playerInput.Fire.performed -= weaponsInInventory[currentWeaponID].OnFireButtonPerformed;
-            playerInput.Fire.canceled -= weaponsInInventory[currentWeaponID].OnFireButtonCanceled;
-
-            playerInput.AltFire.performed -= weaponsInInventory[currentWeaponID].OnAltFireButtonPerformed;
-            playerInput.AltFire.canceled -= weaponsInInventory[currentWeaponID].OnAltFireButtonCanceled;
-
-            playerInput.Reload.performed -= weaponsInInventory[currentWeaponID].OnReloadButtonPerformed;
-            playerInput.Reload.canceled -= weaponsInInventory[currentWeaponID].OnReloadButtonCanceled;
+            DefineDelegates(playerInput, DelegateType.Remove, currentWeaponID);
+            weaponsInInventory[currentWeaponID].ToggleVisual(false);
         }
         else
         {
-            playerInput.Fire.Enable();
-            playerInput.AltFire.Enable();
-            playerInput.Reload.Enable();
+            ToggleStateInputs(playerInput, true);
         }
-        playerInput.Fire.performed += weaponsInInventory[nextWeapon].OnFireButtonPerformed;
-        playerInput.Fire.canceled += weaponsInInventory[nextWeapon].OnFireButtonCanceled;
-
-        playerInput.AltFire.performed += weaponsInInventory[nextWeapon].OnAltFireButtonPerformed;
-        playerInput.AltFire.canceled += weaponsInInventory[nextWeapon].OnAltFireButtonCanceled;
-
-        playerInput.Reload.performed += weaponsInInventory[nextWeapon].OnReloadButtonPerformed;
-        playerInput.Reload.canceled += weaponsInInventory[nextWeapon].OnReloadButtonCanceled;
         currentWeaponID = nextWeapon;
+        DefineDelegates(playerInput, DelegateType.Add, nextWeapon);
+        weaponsInInventory[nextWeapon].ToggleVisual(true);
     }
+
 }
