@@ -10,7 +10,15 @@ public class ArmadilloLOSControl : MonoBehaviour
     [SerializeField] private LayerMask whatIsEnemies;
     [SerializeField] private LayerMask whatIsPickable;
     [SerializeField] private LayerMask whatIsInteractive;
-    [HideInInspector] public RaycastHit[] raycastHits;
+    [HideInInspector] public RaycastHit currentRaycastHit;
+
+    private enum RaycastTypes
+    {
+        Enemy,
+        Pickable,
+        Interactive
+    }
+    private RaycastTypes currentRaycastHitType;
 
     private void Awake()
     {
@@ -32,23 +40,53 @@ public class ArmadilloLOSControl : MonoBehaviour
             layer |= 1 << whatIsEnemies;
             layer |= 1 << whatIsPickable;
             layer |= 1 << whatIsInteractive;
-            raycastHits = Physics.RaycastAll(camera.transform.position, camera.transform.forward, distanceOfChecking, layer, QueryTriggerInteraction.Ignore);
-            if (raycastHits.Length > 0)
+            RaycastHit newRaycastHit;
+            if (Physics.Raycast(camera.transform.position, camera.transform.forward, out newRaycastHit, distanceOfChecking, layer, QueryTriggerInteraction.Ignore))
             {
-                foreach (RaycastHit hit in raycastHits)
+                if (currentRaycastHit.rigidbody != newRaycastHit.rigidbody)
                 {
-                    int hitLayerInt = hit.transform.gameObject.layer;
-                    if (hitLayerInt == whatIsEnemies.value) OnEnemyObjectFound.Invoke(hit);
-                    else if (hitLayerInt == whatIsPickable.value) OnPickableObjectFound.Invoke(hit);
-                    else if (hitLayerInt == whatIsInteractive.value) OnInteractiveObjectFound.Invoke(hit);
+                    switch (currentRaycastHitType)
+                    {
+                        case RaycastTypes.Enemy:
+                            OnEnemyObjectLostLOS.Invoke();
+                            break;
+                        case RaycastTypes.Pickable:
+                            OnPickableObjectLostLOS.Invoke();
+                            break;
+                        case RaycastTypes.Interactive: 
+                            OnInteractiveObjectLostLOS.Invoke();
+                            break;
+                    }
+                }
+                int hitLayerInt = currentRaycastHit.transform.gameObject.layer;
+
+                if (hitLayerInt == whatIsEnemies.value)
+                {
+                    OnEnemyObjectFound.Invoke(currentRaycastHit);
+                    currentRaycastHitType = RaycastTypes.Enemy;
+                }
+                else if (hitLayerInt == whatIsPickable.value)
+                {
+                    OnPickableObjectFound.Invoke(currentRaycastHit);
+                    currentRaycastHitType = RaycastTypes.Pickable;
+                }
+                else if (hitLayerInt == whatIsInteractive.value)
+                {
+                    OnInteractiveObjectFound.Invoke(currentRaycastHit);
+                    currentRaycastHitType = RaycastTypes.Interactive;
                 }
             }
-            yield return new WaitForFixedUpdate();
+            yield return null;
         }
     }
     [HideInInspector] public OnRaycastHitEvent OnEnemyObjectFound;
+    [HideInInspector] public UnityEvent OnEnemyObjectLostLOS;
+
     [HideInInspector] public OnRaycastHitEvent OnPickableObjectFound;
+    [HideInInspector] public UnityEvent OnPickableObjectLostLOS;
+
     [HideInInspector] public OnRaycastHitEvent OnInteractiveObjectFound;
+    [HideInInspector] public UnityEvent OnInteractiveObjectLostLOS;
 }
 [System.Serializable]
 public class OnRaycastHitEvent : UnityEvent<RaycastHit>

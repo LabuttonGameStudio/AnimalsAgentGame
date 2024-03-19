@@ -7,21 +7,23 @@ public class ArmadilloPickUpControl : MonoBehaviour
     [SerializeField] private LayerMask whatIsPickable;
 
     private Rigidbody objectRb;
-    private Transform objectTransform;
+
+    float objectDefaultDrag;
 
     public void Grab(Transform grabbedObjectTransform)
     {
-        objectTransform = grabbedObjectTransform;
         objectRb = grabbedObjectTransform.GetComponent<Rigidbody>();
         objectRb.freezeRotation = true;
-        objectRb.isKinematic = true;
+        objectDefaultDrag = objectRb.drag;
+        objectRb.drag = 10;
+        objectRb.useGravity = false;
         ToggleHoldObjectCoroutine(true);
     }
     public void Drop()
     {
         objectRb.freezeRotation = false;
-        objectRb.isKinematic = false;
-        objectTransform = null;
+        objectRb.useGravity = true;
+        objectRb.drag = objectDefaultDrag;
         objectRb = null;
         ToggleHoldObjectCoroutine(false);
     }
@@ -46,7 +48,12 @@ public class ArmadilloPickUpControl : MonoBehaviour
         Transform cameraTransform = ArmadilloPlayerController.Instance.cameraControl.mainCamera.transform;
         while (true)
         {
-            objectRb.MovePosition(cameraTransform.position + cameraTransform.forward * 3f);
+            Vector3 holdArea = cameraTransform.position + cameraTransform.forward * 3f;
+            if (Vector3.Distance(holdArea, objectRb.position) > 0.1f)
+            {
+                Vector3 moveDirection = holdArea - objectRb.position;
+                objectRb.AddForce(moveDirection*1.5f,ForceMode.VelocityChange);
+            }
             yield return new WaitForFixedUpdate();
         }
     }

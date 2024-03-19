@@ -2171,7 +2171,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   whatIsPickable:
     serializedVersion: 2
-    m_Bits: 320
+    m_Bits: 256
 --- !u!114 &1823648082
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2179,7 +2179,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1823648058}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a12cb65a698796d4fb3db2dc412fba4f, type: 3}
   m_Name: 
@@ -2187,20 +2187,29 @@ MonoBehaviour:
   distanceOfChecking: 15
   whatIsEnemies:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 512
   whatIsPickable:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 256
   whatIsInteractive:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 64
   OnEnemyObjectFound:
+    m_PersistentCalls:
+      m_Calls: []
+  OnEnemyObjectLostLOS:
     m_PersistentCalls:
       m_Calls: []
   OnPickableObjectFound:
     m_PersistentCalls:
       m_Calls: []
+  OnPickableObjectLostLOS:
+    m_PersistentCalls:
+      m_Calls: []
   OnInteractiveObjectFound:
+    m_PersistentCalls:
+      m_Calls: []
+  OnInteractiveObjectLostLOS:
     m_PersistentCalls:
       m_Calls: []
 --- !u!850595691 &1846515523
@@ -2327,7 +2336,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2139572423}
   serializedVersion: 4
-  m_Mass: 1
+  m_Mass: 20
   m_Drag: 0
   m_AngularDrag: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
@@ -2564,6 +2573,10 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5235694852302022701, guid: eb11bd31773d7a64aa560b99e8e3727a, type: 3}
+      propertyPath: whatIsGround.m_Bits
+      value: 328
+      objectReference: {fileID: 0}
     - target: {fileID: 5707324081081399211, guid: eb11bd31773d7a64aa560b99e8e3727a, type: 3}
       propertyPath: m_LocalPosition.y
       value: 1.74
@@ -2634,11 +2647,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8226333730346917077, guid: eb11bd31773d7a64aa560b99e8e3727a, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.000000008520035
+      value: -0.0000000085200345
       objectReference: {fileID: 0}
     - target: {fileID: 8226333730346917077, guid: eb11bd31773d7a64aa560b99e8e3727a, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.0000000011932728
+      value: 0.0000000011932727
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
