@@ -6,7 +6,7 @@ public class EnemyControl : MonoBehaviour
 {
     public static EnemyControl Instance { get; private set;}
 
-    public List<IEnemy> enemiesList;
+    [HideInInspector]public List<IEnemy> enemiesList;
 
     private void Awake()
     {

@@ -1,5 +1,36 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &154578782728204254
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 32397443727743545}
+  m_Layer: 9
+  m_Name: EyePosition
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &32397443727743545
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 154578782728204254}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.5, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2656009777182241637}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6506296491401831491
 GameObject:
   m_ObjectHideFlags: 0
@@ -13,7 +44,7 @@ GameObject:
   - component: {fileID: 6366795290159764640}
   - component: {fileID: 1962071742389329076}
   - component: {fileID: 3431224432270005878}
-  - component: {fileID: 6377797542342380938}
+  - component: {fileID: 6642128611854272822}
   - component: {fileID: 4480567394583016987}
   m_Layer: 0
   m_Name: Enemy
@@ -34,7 +65,8 @@ Transform:
   m_LocalPosition: {x: 13.8111515, y: -2.6821032, z: 1.9720259}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 32397443727743545}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &8840931300133399876
@@ -137,7 +169,7 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 112
   m_CollisionDetection: 0
---- !u!114 &6377797542342380938
+--- !u!114 &6642128611854272822
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -149,8 +181,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 83fe3b4cdbc37de41b6601ca1c603747, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentHp: 50
+  isStatic: 1
+  pathLoopType: 0
   aiPathList: []
+  currentHp: 50
+  maxHp: 50
+  eyeTransform: {fileID: 32397443727743545}
+  fieldOfView: 60
+  viewDistance: 16.4
+  viewHeight: 0.81
+  colorOfFovMesh: {r: 0.9780209, g: 1, b: 0, a: 0.4392157}
+  visionBlockLayers:
+    serializedVersion: 2
+    m_Bits: 511
 --- !u!195 &4480567394583016987
 NavMeshAgent:
   m_ObjectHideFlags: 0

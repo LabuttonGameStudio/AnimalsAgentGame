@@ -1,11 +1,30 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
+[Serializable]
+public class AIPathPoint
+{
+    [SerializeField] public Transform transformOfPathPoint;
+    [SerializeField, Tooltip("Wait time in seconds")] public float waitTimeOnPoint;
+}
 public abstract class IEnemy : MonoBehaviour
 {
     [SerializeField] protected bool isStatic;
+    protected enum PathLoopTypes
+    {
+        DontLoop,
+        Loop,
+        Boomerang
+    }
+    [SerializeField] protected PathLoopTypes pathLoopType;
+    private bool isBoomerangForward;
+    [SerializeField]protected int currentPathPoint = 0;
+    protected bool isMoving;
+    protected bool isWaitingOnPoint;
+    [SerializeField] protected AIPathPoint[] aiPathList;
     [Header("HP")]
     [SerializeField] protected int currentHp = 50;
     [SerializeField] protected int maxHp = 50;
@@ -27,7 +46,7 @@ public abstract class IEnemy : MonoBehaviour
         {
             if (CheckForLOS(ArmadilloPlayerController.Instance.gameObject))
             {
-                Color red= Color.red;
+                Color red = Color.red;
                 red.a = colorOfFovMesh.a;
                 Gizmos.color = red;
             }
@@ -44,9 +63,14 @@ public abstract class IEnemy : MonoBehaviour
     private void Start()
     {
         EnemyControl.Instance.enemiesList.Add(this);
+        if (!isStatic) MoveToNextPosition();
         OnStart();
     }
-
+    private void FixedUpdate()
+    {
+        if (!isStatic) MoveToNextPosition();
+        OnFixedUpdate();
+    }
     private Mesh CreateFovWedgeMesh()
     {
         Mesh mesh = new Mesh();
@@ -135,9 +159,92 @@ public abstract class IEnemy : MonoBehaviour
         fovWedgeMesh = CreateFovWedgeMesh();
     }
 
-    public bool navmesh_SetDestination(Vector3 destination)
+    public void MoveToNextPosition()
     {
-        return navMeshAgent.SetDestination(destination);
+        if (isWaitingOnPoint) return;
+        if (isMoving)
+        {
+            CheckForProximityOfPoint();
+            return;
+        }
+        if (navMeshAgent.SetDestination(aiPathList[currentPathPoint].transformOfPathPoint.position))
+        {
+            isMoving = true;
+        }
+        else Debug.LogError("Error in " + name + " in setting destination of point " + aiPathList[currentPathPoint].transformOfPathPoint.name);
+    }
+    private void NextPathPoint()
+    {
+        //Checka se é o caso de loopar a rota ou somente ir para o proximo ponto 
+        switch (pathLoopType)
+        {
+            case PathLoopTypes.DontLoop:
+                if (currentPathPoint + 1 >= aiPathList.Length)
+                {
+                    isStatic = true;
+                    isMoving = false;
+                    isWaitingOnPoint = false;
+                }
+                else currentPathPoint++;
+
+                break;
+            case PathLoopTypes.Loop:
+                if ((currentPathPoint + 1) >= aiPathList.Length)
+                {
+                    currentPathPoint = 0;
+                }
+                else currentPathPoint++;
+                isMoving = false;
+                isWaitingOnPoint = false;
+                break;
+            case PathLoopTypes.Boomerang:
+                if (isBoomerangForward)
+                {
+                    if (currentPathPoint + 1 >= aiPathList.Length)
+                    {
+                        isBoomerangForward = false;
+                        currentPathPoint--;
+                    }
+                    else currentPathPoint++;
+                }
+                else
+                {
+                    if (currentPathPoint - 1 < 0)
+                    {
+                        isBoomerangForward = true;
+                        currentPathPoint++;
+                    }
+                    else currentPathPoint--;
+                }
+                isMoving = false;
+                isWaitingOnPoint = false;
+                break;
+
+        }
+    }
+    private void CheckForProximityOfPoint()
+    {
+        if (navMeshAgent.remainingDistance < 0.1f)
+        {
+            if (aiPathList[currentPathPoint].waitTimeOnPoint <= 0)
+            {
+                NextPathPoint();
+            }
+            else
+            {
+                isWaitingOnPoint = true;
+                isMoving = false;
+                navMeshAgent.isStopped = true;
+                StartCoroutine(WaitTillEndTimer_Coroutine(aiPathList[currentPathPoint].waitTimeOnPoint));
+            }
+            Debug.Log("Reached point");
+        }
+    }
+    private IEnumerator WaitTillEndTimer_Coroutine(float duration)
+    {
+        yield return new WaitForSeconds(duration);
+        NextPathPoint();
+        navMeshAgent.isStopped = false;
     }
     public bool CheckForLOS(GameObject objectLooked)
     {
@@ -154,7 +261,7 @@ public abstract class IEnemy : MonoBehaviour
 
         if (Physics.Linecast(origin, destination, out RaycastHit hitInfo, visionBlockLayers, QueryTriggerInteraction.Ignore))
         {
-            if (hitInfo.rigidbody != null && !hitInfo.rigidbody.CompareTag("Player")) return false;
+            if (hitInfo.rigidbody == null || !hitInfo.rigidbody.CompareTag("Player")) return false;
         }
 
 
@@ -163,4 +270,7 @@ public abstract class IEnemy : MonoBehaviour
 
     protected abstract void OnStart();
     protected abstract void OnAwake();
+
+    protected abstract void OnFixedUpdate();
 }
+
