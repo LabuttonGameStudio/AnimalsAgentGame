@@ -2979,6 +2979,14 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: -7
       objectReference: {fileID: 0}
+    - target: {fileID: 4775020203850268374, guid: eb11bd31773d7a64aa560b99e8e3727a, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4775020203850268374, guid: eb11bd31773d7a64aa560b99e8e3727a, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4901640169616748894, guid: eb11bd31773d7a64aa560b99e8e3727a, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -3037,11 +3045,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7465006554175338826, guid: eb11bd31773d7a64aa560b99e8e3727a, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.00000001766842
+      value: -0.00000001766842
       objectReference: {fileID: 0}
     - target: {fileID: 7465006554175338826, guid: eb11bd31773d7a64aa560b99e8e3727a, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.0000000015460271
+      value: 0.0000000015460271
       objectReference: {fileID: 0}
     - target: {fileID: 8226333730346917077, guid: eb11bd31773d7a64aa560b99e8e3727a, type: 3}
       propertyPath: m_LocalPosition.y
@@ -3061,11 +3069,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8226333730346917077, guid: eb11bd31773d7a64aa560b99e8e3727a, type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0.0000000085200345
+      value: 0.000000008520035
       objectReference: {fileID: 0}
     - target: {fileID: 8226333730346917077, guid: eb11bd31773d7a64aa560b99e8e3727a, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.0000000011932727
+      value: -0.0000000011932728
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -3098,7 +3106,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2520706849553578126, guid: 5e6fc123e444e7f45ab78b704561dbb1, type: 3}
       propertyPath: pathLoopType
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2520706849553578126, guid: 5e6fc123e444e7f45ab78b704561dbb1, type: 3}
       propertyPath: aiPathList.Array.size
@@ -3259,6 +3267,10 @@ PrefabInstance:
     - target: {fileID: 9044015245498109999, guid: 5e6fc123e444e7f45ab78b704561dbb1, type: 3}
       propertyPath: m_Name
       value: MeleeEnemy
+      objectReference: {fileID: 0}
+    - target: {fileID: 9044015245498109999, guid: 5e6fc123e444e7f45ab78b704561dbb1, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

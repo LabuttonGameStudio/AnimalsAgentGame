@@ -20,8 +20,9 @@ public abstract class IEnemy : MonoBehaviour
         Boomerang
     }
     [SerializeField] protected PathLoopTypes pathLoopType;
+
     private bool isBoomerangForward;
-    [SerializeField]protected int currentPathPoint = 0;
+    protected int currentPathPoint = 0;
     protected bool isMoving;
     protected bool isWaitingOnPoint;
     [SerializeField] protected AIPathPoint[] aiPathList;
@@ -63,12 +64,10 @@ public abstract class IEnemy : MonoBehaviour
     private void Start()
     {
         EnemyControl.Instance.enemiesList.Add(this);
-        if (!isStatic) MoveToNextPosition();
         OnStart();
     }
     private void FixedUpdate()
     {
-        if (!isStatic) MoveToNextPosition();
         OnFixedUpdate();
     }
     private Mesh CreateFovWedgeMesh()
@@ -161,6 +160,7 @@ public abstract class IEnemy : MonoBehaviour
 
     public void MoveToNextPosition()
     {
+        if(isStatic) return;
         if (isWaitingOnPoint) return;
         if (isMoving)
         {
@@ -182,11 +182,10 @@ public abstract class IEnemy : MonoBehaviour
                 if (currentPathPoint + 1 >= aiPathList.Length)
                 {
                     isStatic = true;
-                    isMoving = false;
-                    isWaitingOnPoint = false;
                 }
                 else currentPathPoint++;
-
+                isMoving = false;
+                isWaitingOnPoint = false;
                 break;
             case PathLoopTypes.Loop:
                 if ((currentPathPoint + 1) >= aiPathList.Length)
