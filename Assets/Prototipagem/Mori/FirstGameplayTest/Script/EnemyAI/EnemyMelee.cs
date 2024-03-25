@@ -3,11 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class EnemyMelee : MonoBehaviour,IDamageable
+public class EnemyMelee : IEnemy,IDamageable
 {
-    [SerializeField]int currentHp = 50;
-    private NavMeshAgent navMeshAgent;
-
     [SerializeField]List<Transform> aiPathList;
 
     private int currentAiPathID;
@@ -21,13 +18,13 @@ public class EnemyMelee : MonoBehaviour,IDamageable
             gameObject.SetActive(false);
         }
     }
-    private void Awake()
+    protected override void OnAwake()
     {
         navMeshAgent = GetComponent<NavMeshAgent>();
     }
-    public void Start()
+    protected override void OnStart()
     {
-        MoveToNextPosition();
+        if(!isStatic)MoveToNextPosition();
     }
     private void FixedUpdate()
     {
