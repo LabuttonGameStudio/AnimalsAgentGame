@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Events;
+using UnityEngine.SceneManagement;
 
 [Serializable]
 public class AIPathPoint
@@ -15,19 +17,32 @@ public abstract class IEnemy : MonoBehaviour
     //----- Path Finding -----
     [Header("Path Finding")]
     protected NavMeshAgent navMeshAgent;
-    [SerializeField] protected bool isStatic;
+    [SerializeField,Tooltip("Static = O inimigo não se move")] protected bool isStatic;
     protected enum PathLoopTypes
     {
         DontLoop,
         Loop,
         Boomerang
     }
-    [SerializeField,Tooltip("Dont Loop = Stop at final point| ")] protected PathLoopTypes pathLoopType;
+    [SerializeField,Tooltip(
+        "Dont Loop = Para no ponto final | Loop = No ponto final retorna ao ponto incial | Boomerang = No ponto final retorna pelo caminho inverso"
+        )] protected PathLoopTypes pathLoopType;
 
     private bool isBoomerangForward;
+
     protected int currentPathPoint = 0;
-    protected bool isMoving;
-    protected bool isWaitingOnPoint;
+
+    protected enum AIState
+    {
+        WaitingForNextOrder,
+        Moving,
+        Waiting,
+        Looking,
+        FollowingPlayer,
+        Attacking
+    }
+    [HideInInspector]protected AIState aiCurrentState;
+
     [SerializeField] protected AIPathPoint[] aiPathList;
 
     //----- Stats -----
@@ -44,6 +59,7 @@ public abstract class IEnemy : MonoBehaviour
     [SerializeField] protected Color colorOfFovMesh;
     protected Mesh fovWedgeMesh;
     [SerializeField] protected LayerMask visionBlockLayers;
+
     private void OnDrawGizmos()
     {
         if (!fovWedgeMesh) return;
@@ -67,14 +83,19 @@ public abstract class IEnemy : MonoBehaviour
     }
     private void Start()
     {
-        EnemyControl.Instance.enemiesList.Add(this);
+        EnemyControl.Instance.allEnemiesList.Add(this);
+        if (!isStatic)
+        { 
+            EnemyControl.Instance.allMovableEnemiesList.Add(this);
+            ChangeCurrentAIState(AIState.WaitingForNextOrder);
+        }
         OnStart();
     }
     private void FixedUpdate()
     {
         OnFixedUpdate();
     }
-    private Mesh CreateFovWedgeMesh()
+    private Mesh CreateFovWedgeMesh()   
     {
         Mesh mesh = new Mesh();
 
@@ -162,18 +183,37 @@ public abstract class IEnemy : MonoBehaviour
         fovWedgeMesh = CreateFovWedgeMesh();
     }
 
-    public void MoveToNextPosition()
+    public void MovementUpdate()
     {
-        if(isStatic) return;
-        if (isWaitingOnPoint) return;
-        if (isMoving)
+        OnMovementUpdateOfControl.Invoke();
+    }
+    private UnityEvent OnMovementUpdateOfControl = new UnityEvent();
+    private void ChangeCurrentAIState(AIState nextAIState)
+    {
+        OnMovementUpdateOfControl.RemoveAllListeners();
+        aiCurrentState = nextAIState;
+        switch(nextAIState)
         {
-            CheckForProximityOfPoint();
-            return;
+            case AIState.WaitingForNextOrder:
+                OnMovementUpdateOfControl.AddListener(SetNextDestinationOfNavmesh);
+                break;
+            case AIState.Moving:
+                OnMovementUpdateOfControl.AddListener(CheckForProximityOfPoint);
+                break;
+            case AIState.Waiting:
+            case AIState.Looking:
+                navMeshAgent.isStopped = true;
+                break;
+            default:
+                return;
+
         }
+    }
+    private void SetNextDestinationOfNavmesh()
+    {
         if (navMeshAgent.SetDestination(aiPathList[currentPathPoint].transformOfPathPoint.position))
         {
-            isMoving = true;
+            ChangeCurrentAIState(AIState.Moving);
         }
         else Debug.LogError("Error in " + name + " in setting destination of point " + aiPathList[currentPathPoint].transformOfPathPoint.name);
     }
@@ -186,19 +226,21 @@ public abstract class IEnemy : MonoBehaviour
                 if (currentPathPoint + 1 >= aiPathList.Length)
                 {
                     isStatic = true;
+                    ChangeCurrentAIState(AIState.Waiting);
                 }
-                else currentPathPoint++;
-                isMoving = false;
-                isWaitingOnPoint = false;
-                break;
+                else
+                {
+                    currentPathPoint++;
+                    ChangeCurrentAIState(AIState.WaitingForNextOrder);
+                }
+                    break;
             case PathLoopTypes.Loop:
                 if ((currentPathPoint + 1) >= aiPathList.Length)
                 {
                     currentPathPoint = 0;
                 }
                 else currentPathPoint++;
-                isMoving = false;
-                isWaitingOnPoint = false;
+                ChangeCurrentAIState(AIState.WaitingForNextOrder);
                 break;
             case PathLoopTypes.Boomerang:
                 if (isBoomerangForward)
@@ -219,8 +261,7 @@ public abstract class IEnemy : MonoBehaviour
                     }
                     else currentPathPoint--;
                 }
-                isMoving = false;
-                isWaitingOnPoint = false;
+                ChangeCurrentAIState(AIState.WaitingForNextOrder);
                 break;
 
         }
@@ -235,9 +276,7 @@ public abstract class IEnemy : MonoBehaviour
             }
             else
             {
-                isWaitingOnPoint = true;
-                isMoving = false;
-                navMeshAgent.isStopped = true;
+                ChangeCurrentAIState(AIState.Waiting);
                 StartCoroutine(WaitTillEndTimer_Coroutine(aiPathList[currentPathPoint].waitTimeOnPoint));
             }
             Debug.Log("Reached point");
@@ -264,15 +303,15 @@ public abstract class IEnemy : MonoBehaviour
 
         if (Physics.Linecast(origin, destination, out RaycastHit hitInfo, visionBlockLayers, QueryTriggerInteraction.Ignore))
         {
-            if (hitInfo.rigidbody == null || !hitInfo.rigidbody.CompareTag("Player")) return false;
+            if (hitInfo.collider.gameObject != objectLooked) return false;
         }
 
 
         return true;
     }
 
-    protected abstract void OnStart();
     protected abstract void OnAwake();
+    protected abstract void OnStart();
 
     protected abstract void OnFixedUpdate();
 }
