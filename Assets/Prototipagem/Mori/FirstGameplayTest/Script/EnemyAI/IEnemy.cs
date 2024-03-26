@@ -12,6 +12,9 @@ public class AIPathPoint
 }
 public abstract class IEnemy : MonoBehaviour
 {
+    //----- Path Finding -----
+    [Header("Path Finding")]
+    protected NavMeshAgent navMeshAgent;
     [SerializeField] protected bool isStatic;
     protected enum PathLoopTypes
     {
@@ -19,19 +22,20 @@ public abstract class IEnemy : MonoBehaviour
         Loop,
         Boomerang
     }
-    [SerializeField] protected PathLoopTypes pathLoopType;
+    [SerializeField,Tooltip("Dont Loop = Stop at final point| ")] protected PathLoopTypes pathLoopType;
 
     private bool isBoomerangForward;
     protected int currentPathPoint = 0;
     protected bool isMoving;
     protected bool isWaitingOnPoint;
     [SerializeField] protected AIPathPoint[] aiPathList;
+
+    //----- Stats -----
     [Header("HP")]
     [SerializeField] protected int currentHp = 50;
     [SerializeField] protected int maxHp = 50;
 
-    protected NavMeshAgent navMeshAgent;
-
+    //----- Visibility -----
     [Header("Field Of View")]
     [SerializeField] protected Transform eyeTransform;
     [SerializeField] protected float fieldOfView;
