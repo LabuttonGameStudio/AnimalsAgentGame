@@ -59,6 +59,7 @@ public class ArmadilloMovementController : MonoBehaviour
     public void OnDrawGizmos()
     {
         //Check for grounded
+        Gizmos.color = Color.magenta;
         Gizmos.DrawRay(transform.position, Vector3.down * (playerHeight_Ball * 0.5f + 0.1f));
     }
 
