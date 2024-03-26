@@ -7,15 +7,18 @@ public class EletricPistolVisual : MonoBehaviour
     [SerializeField]private GameObject model;
     [SerializeField]private ParticleSystem chargedParticle;
     [SerializeField]private ParticleSystem onFireParticle;
+    [SerializeField]private ParticleSystem onFireTrail;
     [SerializeField]private ParticleSystem onOverheat;
     public void OnUnchargedFire()
     {
         onFireParticle.Play();
+        onFireTrail.Play();
     }
     public void OnChargedFire()
     {
         OnUnCharge();
         onFireParticle.Play();
+        onFireTrail.Play();
     }
     public void OnCharge()
     {

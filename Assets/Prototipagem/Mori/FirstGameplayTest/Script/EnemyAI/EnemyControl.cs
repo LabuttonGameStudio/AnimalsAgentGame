@@ -39,7 +39,7 @@ public class EnemyControl : MonoBehaviour
             yield return null;
             enemiesList[currentEnemyIndex].MoveToNextPosition();
             currentEnemyIndex++;
-            if(currentEnemyIndex>enemiesList.Count)currentEnemyIndex = 0;
+            if(currentEnemyIndex>=enemiesList.Count)currentEnemyIndex = 0;
             yield return null;
         }
     }
