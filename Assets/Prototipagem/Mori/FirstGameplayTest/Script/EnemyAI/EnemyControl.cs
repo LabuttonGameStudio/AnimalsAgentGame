@@ -8,12 +8,10 @@ public class EnemyControl : MonoBehaviour
 
 
     [HideInInspector]public List<IEnemy> allEnemiesList;
-    [HideInInspector]public List<IEnemy> allMovableEnemiesList;
 
     private void Awake()
     {
         allEnemiesList = new List<IEnemy>();
-        allMovableEnemiesList = new List<IEnemy>();
         Instance = this;
     }
     private void Start()
@@ -36,22 +34,16 @@ public class EnemyControl : MonoBehaviour
     private IEnumerator EnemyControlLoop_Coroutine()
     {
         int currentEnemyIndex = 0;
-        int currentEnemyMovementIndex = 0;
-        float interval = 0.05f / allEnemiesList.Count;
+        float interval = 0.025f / allEnemiesList.Count;
         while(true)
         {
-            if(allEnemiesList[currentEnemyIndex].CheckForLOS(ArmadilloPlayerController.Instance.gameObject))
-            {
-
-            }
+            allEnemiesList[currentEnemyIndex].VisibilityUpdate();
             yield return null;
-            allMovableEnemiesList[currentEnemyMovementIndex].MovementUpdate();
+            allEnemiesList[currentEnemyIndex].ActionUpdate();
+
 
             currentEnemyIndex++;
-            currentEnemyMovementIndex++;
-
             if(currentEnemyIndex>=allEnemiesList.Count)currentEnemyIndex = 0;
-            if(currentEnemyMovementIndex >= allMovableEnemiesList.Count) currentEnemyMovementIndex = 0;
             yield return new WaitForSecondsRealtime(interval);
         }
     }
