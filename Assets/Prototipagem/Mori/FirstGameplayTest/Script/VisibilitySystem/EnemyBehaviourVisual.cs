@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using static IEnemy;
 
-public class EnemyCurrentStateVisual : MonoBehaviour
+public class EnemyBehaviourVisual : MonoBehaviour
 {
     public static Camera mainCamera;
 
@@ -23,20 +23,20 @@ public class EnemyCurrentStateVisual : MonoBehaviour
     {
         transform.LookAt(mainCamera.transform);
     }
-    public void ChangeVisualState(AIState aiState)
+    public void ChangeVisualState(AIBehaviour AIBehaviour)
     {
-        switch(aiState)
+        switch(AIBehaviour)
         {
-            case AIState.Roaming:
+            case AIBehaviour.Roaming:
                 spriteRenderer.sprite = null;
                 break;
-            case AIState.Observing:
+            case AIBehaviour.Observing:
                 spriteRenderer.sprite = confusedIcon;
                 break;
-            case AIState.Searching:
+            case AIBehaviour.Searching:
                 spriteRenderer.sprite = visibleIcon;
                 break;
-            case AIState.Attacking:
+            case AIBehaviour.Attacking:
                 spriteRenderer.sprite = battleIcon;
                 break;
         }

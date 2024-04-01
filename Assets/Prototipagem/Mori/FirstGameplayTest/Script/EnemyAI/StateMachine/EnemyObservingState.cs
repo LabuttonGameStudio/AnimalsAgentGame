@@ -9,21 +9,29 @@ public class EnemyObservingState : EnemyState
     {
         enemyControl = enemyCtrl;
     }
-
+    Vector3 lastKnownPlayerPos;
     public override void OnVisibilityUpdate()
     {
-        enemyControl.ToggleIncreaseDetectionCoroutine(enemyControl.CheckForLOS(ArmadilloPlayerController.Instance.gameObject));
-
+        GameObject playerGO = ArmadilloPlayerController.Instance.gameObject;
+        if (enemyControl.CheckForLOS(playerGO))
+        {
+            enemyControl.ToggleIncreaseDetectionCoroutine(true);
+            lastKnownPlayerPos = playerGO.transform.position;
+        }
+        else
+        {
+            enemyControl.ToggleIncreaseDetectionCoroutine(false);
+        }
     }
 
     public override void OnActionUpdate()
     {
-
+        enemyControl.transform.LookAt(lastKnownPlayerPos);
     }
     public override void OnEnterState()
     {
         enemyControl.navMeshAgent.isStopped = true;
-        enemyControl.ToggleIncreaseDetectionCoroutine(true);
+        enemyControl.navMeshAgent.updateRotation = false;
     }
 
     public override void OnExitState()

@@ -104,7 +104,6 @@ public class ArmadilloInteractController : MonoBehaviour
         {
             if (Physics.Raycast(cameraTransform.position, cameraTransform.forward, out RaycastHit hitInfo, 10f, whatIsInteractive, QueryTriggerInteraction.Ignore))
             {
-                Debug.Log(hitInfo.transform.gameObject.name);
                 if (activeInteractive != hitInfo.transform)
                 {
                     activeInteractive = hitInfo.transform;

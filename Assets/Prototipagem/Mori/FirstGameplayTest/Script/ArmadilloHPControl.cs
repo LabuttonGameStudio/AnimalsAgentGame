@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ArmadilloHPControl : MonoBehaviour
+public class ArmadilloHPControl : MonoBehaviour,IDamageable
 {
     [Header("HP Stats")]
     public float maxHp;
@@ -17,19 +17,19 @@ public class ArmadilloHPControl : MonoBehaviour
     [Space, Header("Invulnerabiliy Time")]
     [System.NonSerialized] public bool isInvulnerable;
     public float invulnerabilityDuration;
-    public void OnTakeDamage(float damage)
+    public void TakeDamage(int damageAmount)
     {
         if (!isInvulnerable)
         {
-            if (currentHp - damage < 0)
+            if (currentHp - damageAmount < 0)
             {
                 ArmadilloPlayerController.Instance.Die();
                 currentHp = 0;
                 UpdateHealthBar();
                 return;
             }
-            currentHp -= damage;
-            currentGreyHp = damage / 2;
+            currentHp -= damageAmount;
+            currentGreyHp = damageAmount / 2;
             UpdateHealthBar();
         }
     }
@@ -49,5 +49,9 @@ public class ArmadilloHPControl : MonoBehaviour
     {
         currentHpSlider.value = currentHp / maxHp;
         currentGreyHpSlider.value = (currentHp + currentGreyHp) / maxHp;
+    }
+    private void Start()
+    {
+        UpdateHealthBar();
     }
 }

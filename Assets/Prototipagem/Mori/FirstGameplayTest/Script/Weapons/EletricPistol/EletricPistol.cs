@@ -43,7 +43,6 @@ public class EletricPistol : Weapon
         {
             Debug.LogError("Erro ao encontrar Eletric Pistol Prefab em Prefabs/Weapons/EletricPistol");
         }
-        Debug.Log(modelPrefab);
         Vector3 position = new Vector3(0.6f, -0.25f, 0.9f);
         Quaternion rotation = Quaternion.Euler(new Vector3(0, 85, 357.5f));
         GameObject model;

@@ -11,10 +11,7 @@ public class EnemyRoamingState : EnemyState
     }
     public override void OnVisibilityUpdate()
     {
-        if(enemyControl.CheckForLOS(ArmadilloPlayerController.Instance.gameObject))
-        {
-            enemyControl.ChangeCurrentAIState(AIState.Observing);
-        }
+        enemyControl.ToggleIncreaseDetectionCoroutine(enemyControl.CheckForLOS(ArmadilloPlayerController.Instance.gameObject));
     }
 
     public override void OnActionUpdate()
@@ -24,11 +21,11 @@ public class EnemyRoamingState : EnemyState
 
     public override void OnEnterState()
     {
-        enemyControl.SetNextDestinationOfNavmesh();
+        enemyControl.SetNextDestinationOfNavmesh(enemyControl.aiPathList[enemyControl.currentPathPoint].transformOfPathPoint.position);
     }
 
     public override void OnExitState()
     {
-
+        enemyControl.BreakOnWaitPointCoroutine();
     }
 }

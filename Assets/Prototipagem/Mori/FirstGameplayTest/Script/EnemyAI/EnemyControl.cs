@@ -7,12 +7,14 @@ public class EnemyControl : MonoBehaviour
     public static EnemyControl Instance { get; private set;}
 
 
-    [HideInInspector]public List<IEnemy> allEnemiesList;
+    [HideInInspector]public List<IEnemy> allEnemiesList = new List<IEnemy>();
+    [HideInInspector]public List<IEnemy> allAttackingEnemiesList = new List<IEnemy>();
+    [HideInInspector]public List<IEnemy> allMeleeAttackingEnemiesList = new List<IEnemy>();
 
     private void Awake()
     {
-        allEnemiesList = new List<IEnemy>();
         Instance = this;
+
     }
     private void Start()
     {
@@ -33,6 +35,11 @@ public class EnemyControl : MonoBehaviour
     private Coroutine enemyControlLoop_Ref;
     private IEnumerator EnemyControlLoop_Coroutine()
     {
+        while(true)
+        {
+            if (allEnemiesList.Count > 0) break;
+            yield return new WaitForSeconds(0.1f);
+        }
         int currentEnemyIndex = 0;
         float interval = 0.025f / allEnemiesList.Count;
         while(true)

@@ -1,15 +1,27 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Events;
+
+public class VisibilityCone
+{
+    public float fieldOfView;
+    public float viewDistance;
+    public float viewHeight;
+
+    public Mesh visibilityMesh;
+}
 
 [Serializable]
 public class AIPathPoint
 {
     [SerializeField] public Transform transformOfPathPoint;
     [SerializeField, Tooltip("Wait time in seconds")] public float waitTimeOnPoint;
+    [SerializeField] public bool lookAroundOnPoint;
+
 }
 public abstract class IEnemy : MonoBehaviour
 {
@@ -30,17 +42,30 @@ public abstract class IEnemy : MonoBehaviour
 
     private bool isBoomerangForward;
 
-    protected int currentPathPoint = 0;
+    [HideInInspector] public int currentPathPoint = 0;
 
 
-    [SerializeField] protected AIPathPoint[] aiPathList;
+    [SerializeField] public AIPathPoint[] aiPathList;
 
     //----- Stats -----
     [Header("HP")]
     [SerializeField] protected int currentHp = 50;
     [SerializeField] protected int maxHp = 50;
 
+    [Header("Attack")]
+    [SerializeField] public float attackRangeInMeters = 2;
+    [SerializeField] public int hitDamage = 20;
+
     //----- Visibility -----
+
+    private static List<VisibilityCone> visibilityCones;
+
+    [SerializeField] protected Material visibilityConeMaterial;
+    [SerializeField] protected Material visibilityConeOnViewMaterial;
+
+    [SerializeField] protected MeshFilter visibilityMeshFilter;
+    [SerializeField] protected MeshRenderer visibilityMeshRenderer;
+
     [Header("Field Of View")]
     [SerializeField] protected Transform eyeTransform;
     [SerializeField] protected float fieldOfView;
@@ -51,26 +76,38 @@ public abstract class IEnemy : MonoBehaviour
     [SerializeField] protected LayerMask visionBlockLayers;
 
     //----- State Machine -----
-    public enum AIState
+    public enum AIBehaviour
     {
+        Static,
         Roaming,
         Observing,
         Searching,
         Attacking,
     }
-    [HideInInspector] public AIState currentAIState { get; private set; }
+    [SerializeField] public AIBehaviour currentAIBehaviour;
 
-    protected EnemyState currentEnemyState;
+
+    [HideInInspector]public EnemyState currentEnemyState;
 
     protected EnemyRoamingState enemyRoamingState;
     protected EnemyObservingState enemyObservingState;
     protected EnemySearchingState enemySearchingState;
     protected EnemyAttackingState enemyAttackingState;
 
-    [SerializeField]protected EnemyCurrentStateVisual enemyStateVisual;
+    [SerializeField] protected EnemyBehaviourVisual enemyBehaviourVisual;
 
-    protected int currentVisibilityOfPlayer;
+    //0-100
+    //0-10 Roaming
+    //10-66 Observing
+    //66-99 Searching
+    //100+ Attacking
+    protected float detectionLevel;
+    readonly protected float detectionDuration = 2.25f;
 
+    [HideInInspector] public Rigidbody rb;
+
+    public int thisEnemyIDDebug;
+    public int totalEnemiesDebug;
     private void OnDrawGizmos()
     {
         if (!fovWedgeMesh) return;
@@ -86,35 +123,59 @@ public abstract class IEnemy : MonoBehaviour
         }
         else Gizmos.color = colorOfFovMesh;
         Gizmos.DrawMesh(fovWedgeMesh, eyeTransform.position, eyeTransform.rotation);
+
+        Gizmos.color = Color.red;
+        Gizmos.DrawCube(transform.position + transform.forward, Vector3.one / 3);
+
+        Gizmos.color = Color.blue;
     }
     private void Awake()
     {
+        if (visibilityCones == null) visibilityCones = new List<VisibilityCone>();
+
+        if (SearchForMatchingVisibilityCones(out Mesh coneMesh))
+        {
+            visibilityMeshFilter.mesh = coneMesh;
+            visibilityMeshRenderer.material = visibilityConeMaterial;
+
+        }
+        else
+        {
+            Mesh createdConeMesh = CreateFovWedgeMesh();
+            visibilityCones.Add(new VisibilityCone()
+            {
+                fieldOfView = fieldOfView,
+                viewDistance = viewDistance,
+                viewHeight = viewHeight,
+                visibilityMesh = createdConeMesh
+            });
+            visibilityMeshFilter.mesh = createdConeMesh;
+            visibilityMeshRenderer.material = visibilityConeMaterial;
+        }
+
         navMeshAgent = GetComponent<NavMeshAgent>();
+        rb = GetComponent<Rigidbody>();
 
         enemyRoamingState = new EnemyRoamingState(this);
         enemyObservingState = new EnemyObservingState(this);
         enemySearchingState = new EnemySearchingState(this);
         enemyAttackingState = new EnemyAttackingState(this);
 
-        if(isStatic)
-        {
-            ChangeCurrentAIState(AIState.Observing);
-            return;
-        }
-        ChangeCurrentAIState(AIState.Roaming);
+        if (isStatic) ChangeCurrentAIBehaviour(AIBehaviour.Static);
+        else ChangeCurrentAIBehaviour(AIBehaviour.Roaming);
 
         OnAwake();
     }
     private void Start()
     {
         EnemyControl.Instance.allEnemiesList.Add(this);
-        enemyStateVisual.ChangeVisualState(currentAIState);
         OnStart();
     }
     private void FixedUpdate()
     {
         OnFixedUpdate();
     }
+
     private Mesh CreateFovWedgeMesh()
     {
         Mesh mesh = new Mesh();
@@ -198,6 +259,22 @@ public abstract class IEnemy : MonoBehaviour
         return mesh;
     }
 
+    private bool SearchForMatchingVisibilityCones(out Mesh visibilityConeMesh)
+    {
+        foreach (VisibilityCone cone in visibilityCones)
+        {
+            if (cone.viewDistance == viewDistance &&
+                cone.viewHeight == viewHeight &&
+                cone.fieldOfView == fieldOfView)
+            {
+                visibilityConeMesh = cone.visibilityMesh;
+                return true;
+            }
+        }
+        visibilityConeMesh = null;
+        return false;
+    }
+
     private void OnValidate()
     {
         fovWedgeMesh = CreateFovWedgeMesh();
@@ -211,33 +288,35 @@ public abstract class IEnemy : MonoBehaviour
     {
         currentEnemyState.OnActionUpdate();
     }
-    public void ChangeCurrentAIState(AIState nextAIState)
+    public void ChangeCurrentAIBehaviour(AIBehaviour nextAIBehaviour)
     {
-        if(currentEnemyState != null)currentEnemyState.OnExitState();
-        switch (nextAIState)
+        if (currentAIBehaviour == nextAIBehaviour) return;
+        if (currentEnemyState != null) currentEnemyState.OnExitState();
+        enemyBehaviourVisual.ChangeVisualState(nextAIBehaviour);
+        switch (nextAIBehaviour)
         {
-            case AIState.Roaming:
-                enemyRoamingState.OnEnterState();
+            case AIBehaviour.Roaming:
                 currentEnemyState = enemyRoamingState;
+                currentEnemyState.OnEnterState();
                 break;
-            case AIState.Observing:
-                enemyObservingState.OnEnterState();
+            case AIBehaviour.Observing:
                 currentEnemyState = enemyObservingState;
+                currentEnemyState.OnEnterState();
                 break;
-            case AIState.Searching:
-                enemySearchingState.OnEnterState();
+            case AIBehaviour.Searching:
                 currentEnemyState = enemySearchingState;
+                currentEnemyState.OnEnterState();
                 break;
-            case AIState.Attacking:
-                enemyAttackingState.OnEnterState();
+            case AIBehaviour.Attacking:
                 currentEnemyState = enemyAttackingState;
+                currentEnemyState.OnEnterState();
                 break;
         }
-        currentAIState = nextAIState;
+        currentAIBehaviour = nextAIBehaviour;
     }
-    public void SetNextDestinationOfNavmesh()
+    public void SetNextDestinationOfNavmesh(Vector3 position)
     {
-        if (navMeshAgent.SetDestination(aiPathList[currentPathPoint].transformOfPathPoint.position)) { }
+        if (navMeshAgent.SetDestination(position)) { }
         else Debug.LogError("Error in " + name + " in setting destination of point " + aiPathList[currentPathPoint].transformOfPathPoint.name);
     }
     private void NextPathPoint()
@@ -248,7 +327,7 @@ public abstract class IEnemy : MonoBehaviour
             case PathLoopTypes.DontLoop:
                 if (currentPathPoint + 1 >= aiPathList.Length)
                 {
-                    ChangeCurrentAIState(AIState.Observing);
+                    ChangeCurrentAIBehaviour(AIBehaviour.Observing);
                     return;
                 }
                 else
@@ -285,7 +364,7 @@ public abstract class IEnemy : MonoBehaviour
                 break;
 
         }
-        SetNextDestinationOfNavmesh();
+        SetNextDestinationOfNavmesh(aiPathList[currentPathPoint].transformOfPathPoint.position);
     }
     public void CheckForProximityOfPoint()
     {
@@ -297,19 +376,66 @@ public abstract class IEnemy : MonoBehaviour
             }
             else
             {
-                if (waitOnPointTimer_Ref == null) waitOnPointTimer_Ref = StartCoroutine(WaitOnPointTimer_Coroutine(aiPathList[currentPathPoint].waitTimeOnPoint));
+                if (waitOnPointTimer_Ref == null)
+                {
+                    waitOnPointTimer_Ref = StartCoroutine(WaitOnPointTimer_Coroutine(aiPathList[currentPathPoint].waitTimeOnPoint, aiPathList[currentPathPoint].lookAroundOnPoint));
+                }
             }
             Debug.Log("Reached point");
         }
     }
+    public void BreakOnWaitPointCoroutine()
+    {
+        if(waitOnPointTimer_Ref != null)
+        {
+            StopCoroutine(waitOnPointTimer_Ref);
+            navMeshAgent.isStopped = false;
+            waitOnPointTimer_Ref = null;
+        }
+        if(lookAround_Ref != null)
+        {
+            StopCoroutine(lookAround_Ref);
+            navMeshAgent.updateRotation = true;
+        }
+    }
     private Coroutine waitOnPointTimer_Ref;
-    private IEnumerator WaitOnPointTimer_Coroutine(float duration)
+    private IEnumerator WaitOnPointTimer_Coroutine(float duration, bool lookAround)
     {
         navMeshAgent.isStopped = true;
-        yield return new WaitForSeconds(duration);
+        if (lookAround)
+        {
+            navMeshAgent.updateRotation = false;
+            yield return new WaitForSeconds(duration / 5);
+            lookAround_Ref = StartCoroutine(LookAround_Coroutine(-45, duration / 5));
+            yield return lookAround_Ref;
+
+            lookAround_Ref = StartCoroutine(LookAround_Coroutine(90, duration / 2.5f));
+            yield return lookAround_Ref;
+
+            lookAround_Ref = StartCoroutine(LookAround_Coroutine(-45, duration / 5));
+            yield return lookAround_Ref;
+
+            navMeshAgent.updateRotation = true;
+        }
+        else yield return new WaitForSeconds(duration);
         NextPathPoint();
         navMeshAgent.isStopped = false;
         waitOnPointTimer_Ref = null;
+    }
+    private Coroutine lookAround_Ref;
+    public IEnumerator LookAround_Coroutine(float rotation, float duration)
+    {
+        float timer = 0f;
+        Quaternion startLookAtRotation = transform.localRotation;
+        Quaternion finalLookAtRotation = Quaternion.Euler(transform.localRotation.eulerAngles + new Vector3(0, rotation, 0));
+        Debug.Log("Rotating" + finalLookAtRotation);
+        while (timer < duration)
+        {
+            transform.localRotation = Quaternion.Slerp(startLookAtRotation, finalLookAtRotation, timer / duration);
+            timer += Time.deltaTime;
+            yield return null;
+        }
+        transform.localRotation = finalLookAtRotation;
     }
     public bool CheckForLOS(GameObject objectLooked)
     {
@@ -333,54 +459,51 @@ public abstract class IEnemy : MonoBehaviour
 
     public void ToggleIncreaseDetectionCoroutine(bool state)
     {
-        if(state)
+        if (state)
         {
-            if (decreaseDetectionLevel_Ref != null)
-            {
-                StopCoroutine(decreaseDetectionLevel_Ref);
-                decreaseDetectionLevel_Ref = null;
-            }
             if (increaseDetectionLevel_Ref == null) increaseDetectionLevel_Ref = StartCoroutine(IncreaseDetectionLevel_Coroutine());
             return;
         }
-        if(increaseDetectionLevel_Ref != null)
+        if (increaseDetectionLevel_Ref != null)
         {
             StopCoroutine(increaseDetectionLevel_Ref);
             increaseDetectionLevel_Ref = null;
-            if (currentVisibilityOfPlayer > 0)
-            {
-                if (decreaseDetectionLevel_Ref == null) decreaseDetectionLevel_Ref = StartCoroutine(DecreaseDetectionLevel_Coroutine());
-            }
         }
     }
 
     protected Coroutine increaseDetectionLevel_Ref;
     protected IEnumerator IncreaseDetectionLevel_Coroutine()
     {
+        float interval = 0.05f;
+        float increasePerTick = 100 / (detectionDuration / interval);
         while (true)
         {
-            if (currentVisibilityOfPlayer+1 > 100) currentVisibilityOfPlayer = 100;
-            else currentVisibilityOfPlayer++;
-
-            if (currentVisibilityOfPlayer.Equals(1)) enemyStateVisual.ChangeVisualState(AIState.Observing);
-            else if (currentVisibilityOfPlayer.Equals(51)) enemyStateVisual.ChangeVisualState(AIState.Searching);
-            else if(currentVisibilityOfPlayer.Equals(100)) enemyStateVisual.ChangeVisualState(AIState.Attacking);
-
-            yield return new WaitForSeconds(0.015f);
+            if (detectionLevel + increasePerTick > 100)
+            {
+                detectionLevel = 100;
+                ChangeCurrentAIBehaviour(AIBehaviour.Attacking);
+                break;
+            }
+            else detectionLevel += increasePerTick;
+            if (detectionLevel < 10) break;
+            if (detectionLevel >= 10 && detectionLevel < 66)
+            {
+                ChangeCurrentAIBehaviour(AIBehaviour.Observing);
+            }
+            else
+            {
+                ChangeCurrentAIBehaviour(AIBehaviour.Searching);
+            }
+            yield return new WaitForSeconds(interval);
         }
+        increaseDetectionLevel_Ref = null;
     }
     protected Coroutine decreaseDetectionLevel_Ref;
     protected IEnumerator DecreaseDetectionLevel_Coroutine()
     {
         while (true)
         {
-            if (currentVisibilityOfPlayer - 1 <0) currentVisibilityOfPlayer = 0;
-            else currentVisibilityOfPlayer--;
-
-            if (currentVisibilityOfPlayer.Equals(0)) enemyStateVisual.ChangeVisualState(AIState.Roaming);
-            else if (currentVisibilityOfPlayer.Equals(50)) enemyStateVisual.ChangeVisualState(AIState.Observing);
-            else if (currentVisibilityOfPlayer.Equals(99)) enemyStateVisual.ChangeVisualState(AIState.Searching);
-
+            
             yield return new WaitForSeconds(0.015f);
         }
     }

@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class IDetector
 {
-    public int detection;
+    public float detectionLevel;
+    public float maxDetectionLevel;
+
+
     
 }
