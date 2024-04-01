@@ -5,6 +5,7 @@ using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Events;
+using static AIBehaviourEnums;
 
 public class VisibilityCone
 {
@@ -20,14 +21,15 @@ public class AIPathPoint
 {
     [SerializeField] public Transform transformOfPathPoint;
     [SerializeField, Tooltip("Wait time in seconds")] public float waitTimeOnPoint;
-    [SerializeField] public bool lookAroundOnPoint;
+    [SerializeField, Tooltip("Se o personagem for parar no ponto ele olha ao redor")] public bool lookAroundOnPoint;
 
 }
+
 public abstract class IEnemy : MonoBehaviour
 {
-    //----- Path Finding -----
-    [Header("Path Finding")]
+    #region Path Finding|NavMesh Variables
     [HideInInspector] public NavMeshAgent navMeshAgent;
+    [Header("Path Finding | Navmesh")]
     [SerializeField, Tooltip("Static = O inimigo não se move")] protected bool isStatic;
     protected enum PathLoopTypes
     {
@@ -46,18 +48,24 @@ public abstract class IEnemy : MonoBehaviour
 
 
     [SerializeField] public AIPathPoint[] aiPathList;
+    #endregion
 
+    #region EnemyStats Variables
     //----- Stats -----
     [Header("HP")]
     [SerializeField] protected int currentHp = 50;
     [SerializeField] protected int maxHp = 50;
 
     [Header("Attack")]
-    [SerializeField] public float attackRangeInMeters = 2;
+    [SerializeField] public float primaryAttackRangeInMeters = 2;
     [SerializeField] public int hitDamage = 20;
+    #endregion
 
-    //----- Visibility -----
+    #region EnemyComponents
+    [HideInInspector] public Rigidbody rb;
+    #endregion
 
+    #region Visibility Variables
     private static List<VisibilityCone> visibilityCones;
 
     [SerializeField] protected Material visibilityConeMaterial;
@@ -75,59 +83,47 @@ public abstract class IEnemy : MonoBehaviour
     protected Mesh fovWedgeMesh;
     [SerializeField] protected LayerMask visionBlockLayers;
 
-    //----- State Machine -----
-    public enum AIBehaviour
-    {
-        Static,
-        Roaming,
-        Observing,
-        Searching,
-        Attacking,
-    }
+    #endregion
+
+    #region AI Enemy States  
+    [Header("AI Behaviour")]
     [SerializeField] public AIBehaviour currentAIBehaviour;
-
-
-    [HideInInspector]public EnemyState currentEnemyState;
-
-    protected EnemyRoamingState enemyRoamingState;
-    protected EnemyObservingState enemyObservingState;
-    protected EnemySearchingState enemySearchingState;
-    protected EnemyAttackingState enemyAttackingState;
-
     [SerializeField] protected EnemyBehaviourVisual enemyBehaviourVisual;
-
     //0-100
     //0-10 Roaming
     //10-66 Observing
     //66-99 Searching
     //100+ Attacking
-    protected float detectionLevel;
-    readonly protected float detectionDuration = 2.25f;
+    [Tooltip("De 0 a 100")]protected float detectionLevel;
+    [Tooltip("Tempo necessario para ir ao estado mais alto de detecção")]readonly protected float timeToMaxDetect = 2.25f;
+    #endregion
 
-    [HideInInspector] public Rigidbody rb;
 
     public int thisEnemyIDDebug;
     public int totalEnemiesDebug;
     private void OnDrawGizmos()
     {
-        if (!fovWedgeMesh) return;
-        if (ArmadilloPlayerController.Instance != null)
+        if (Application.isPlaying)
         {
-            if (CheckForLOS(ArmadilloPlayerController.Instance.gameObject))
+            if (!fovWedgeMesh) return;
+            if (ArmadilloPlayerController.Instance != null)
             {
-                Color red = Color.red;
-                red.a = colorOfFovMesh.a;
-                Gizmos.color = red;
+                if (CheckForLOS(ArmadilloPlayerController.Instance.gameObject))
+                {
+                    Color red = Color.red;
+                    red.a = colorOfFovMesh.a;
+                    Gizmos.color = red;
+                }
+                else Gizmos.color = colorOfFovMesh;
             }
             else Gizmos.color = colorOfFovMesh;
+            Gizmos.DrawMesh(fovWedgeMesh, eyeTransform.position, eyeTransform.rotation);
+
+            Gizmos.color = Color.red;
+            Gizmos.DrawCube(transform.position + transform.forward, Vector3.one / 3);
+
+            Gizmos.color = Color.blue;
         }
-        else Gizmos.color = colorOfFovMesh;
-        Gizmos.DrawMesh(fovWedgeMesh, eyeTransform.position, eyeTransform.rotation);
-
-        Gizmos.color = Color.red;
-        Gizmos.DrawCube(transform.position + transform.forward, Vector3.one / 3);
-
-        Gizmos.color = Color.blue;
     }
     private void Awake()
     {
@@ -156,13 +152,7 @@ public abstract class IEnemy : MonoBehaviour
         navMeshAgent = GetComponent<NavMeshAgent>();
         rb = GetComponent<Rigidbody>();
 
-        enemyRoamingState = new EnemyRoamingState(this);
-        enemyObservingState = new EnemyObservingState(this);
-        enemySearchingState = new EnemySearchingState(this);
-        enemyAttackingState = new EnemyAttackingState(this);
 
-        if (isStatic) ChangeCurrentAIBehaviour(AIBehaviour.Static);
-        else ChangeCurrentAIBehaviour(AIBehaviour.Roaming);
 
         OnAwake();
     }
@@ -279,41 +269,16 @@ public abstract class IEnemy : MonoBehaviour
     {
         fovWedgeMesh = CreateFovWedgeMesh();
     }
-
     public void VisibilityUpdate()
     {
-        currentEnemyState.OnVisibilityUpdate();
+        OnVisibilityUpdate();
     }
+    public abstract void OnVisibilityUpdate();
     public void ActionUpdate()
     {
-        currentEnemyState.OnActionUpdate();
+        OnActionUpdate();
     }
-    public void ChangeCurrentAIBehaviour(AIBehaviour nextAIBehaviour)
-    {
-        if (currentAIBehaviour == nextAIBehaviour) return;
-        if (currentEnemyState != null) currentEnemyState.OnExitState();
-        enemyBehaviourVisual.ChangeVisualState(nextAIBehaviour);
-        switch (nextAIBehaviour)
-        {
-            case AIBehaviour.Roaming:
-                currentEnemyState = enemyRoamingState;
-                currentEnemyState.OnEnterState();
-                break;
-            case AIBehaviour.Observing:
-                currentEnemyState = enemyObservingState;
-                currentEnemyState.OnEnterState();
-                break;
-            case AIBehaviour.Searching:
-                currentEnemyState = enemySearchingState;
-                currentEnemyState.OnEnterState();
-                break;
-            case AIBehaviour.Attacking:
-                currentEnemyState = enemyAttackingState;
-                currentEnemyState.OnEnterState();
-                break;
-        }
-        currentAIBehaviour = nextAIBehaviour;
-    }
+    public abstract void OnActionUpdate();
     public void SetNextDestinationOfNavmesh(Vector3 position)
     {
         if (navMeshAgent.SetDestination(position)) { }
@@ -327,7 +292,7 @@ public abstract class IEnemy : MonoBehaviour
             case PathLoopTypes.DontLoop:
                 if (currentPathPoint + 1 >= aiPathList.Length)
                 {
-                    ChangeCurrentAIBehaviour(AIBehaviour.Observing);
+                    OnRoamingPathEnd();
                     return;
                 }
                 else
@@ -366,6 +331,7 @@ public abstract class IEnemy : MonoBehaviour
         }
         SetNextDestinationOfNavmesh(aiPathList[currentPathPoint].transformOfPathPoint.position);
     }
+    protected abstract void OnRoamingPathEnd();
     public void CheckForProximityOfPoint()
     {
         if (navMeshAgent.remainingDistance < 1f)
@@ -386,13 +352,13 @@ public abstract class IEnemy : MonoBehaviour
     }
     public void BreakOnWaitPointCoroutine()
     {
-        if(waitOnPointTimer_Ref != null)
+        if (waitOnPointTimer_Ref != null)
         {
             StopCoroutine(waitOnPointTimer_Ref);
             navMeshAgent.isStopped = false;
             waitOnPointTimer_Ref = null;
         }
-        if(lookAround_Ref != null)
+        if (lookAround_Ref != null)
         {
             StopCoroutine(lookAround_Ref);
             navMeshAgent.updateRotation = true;
@@ -456,58 +422,6 @@ public abstract class IEnemy : MonoBehaviour
         }
         return true;
     }
-
-    public void ToggleIncreaseDetectionCoroutine(bool state)
-    {
-        if (state)
-        {
-            if (increaseDetectionLevel_Ref == null) increaseDetectionLevel_Ref = StartCoroutine(IncreaseDetectionLevel_Coroutine());
-            return;
-        }
-        if (increaseDetectionLevel_Ref != null)
-        {
-            StopCoroutine(increaseDetectionLevel_Ref);
-            increaseDetectionLevel_Ref = null;
-        }
-    }
-
-    protected Coroutine increaseDetectionLevel_Ref;
-    protected IEnumerator IncreaseDetectionLevel_Coroutine()
-    {
-        float interval = 0.05f;
-        float increasePerTick = 100 / (detectionDuration / interval);
-        while (true)
-        {
-            if (detectionLevel + increasePerTick > 100)
-            {
-                detectionLevel = 100;
-                ChangeCurrentAIBehaviour(AIBehaviour.Attacking);
-                break;
-            }
-            else detectionLevel += increasePerTick;
-            if (detectionLevel < 10) break;
-            if (detectionLevel >= 10 && detectionLevel < 66)
-            {
-                ChangeCurrentAIBehaviour(AIBehaviour.Observing);
-            }
-            else
-            {
-                ChangeCurrentAIBehaviour(AIBehaviour.Searching);
-            }
-            yield return new WaitForSeconds(interval);
-        }
-        increaseDetectionLevel_Ref = null;
-    }
-    protected Coroutine decreaseDetectionLevel_Ref;
-    protected IEnumerator DecreaseDetectionLevel_Coroutine()
-    {
-        while (true)
-        {
-            
-            yield return new WaitForSeconds(0.015f);
-        }
-    }
-
     protected abstract void OnAwake();
     protected abstract void OnStart();
 

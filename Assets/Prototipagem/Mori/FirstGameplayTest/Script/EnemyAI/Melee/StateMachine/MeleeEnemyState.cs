@@ -2,13 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class EnemyState
+public abstract class MeleeEnemyState
 {
-    public EnemyState(IEnemy enemyCtrl)
+    public MeleeEnemyState(EnemyMelee enemyCtrl)
     {
         enemyControl = enemyCtrl;
     }
-    protected IEnemy enemyControl;
+    protected EnemyMelee enemyControl;
     public abstract void OnActionUpdate();
     public abstract void OnVisibilityUpdate();
 

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using static IEnemy;
 
-public class EnemyRoamingState : EnemyState
+public class EnemyRoamingState : MeleeEnemyState
 {
-    public EnemyRoamingState(IEnemy enemyCtrl) : base(enemyCtrl)
+    public EnemyRoamingState(EnemyMelee enemyCtrl) : base(enemyCtrl)
     {
         enemyControl = enemyCtrl;
     }

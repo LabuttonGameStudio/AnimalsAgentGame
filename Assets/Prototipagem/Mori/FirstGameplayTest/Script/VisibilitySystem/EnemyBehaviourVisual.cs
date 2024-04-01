@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using static IEnemy;
+using static AIBehaviourEnums;
 
 public class EnemyBehaviourVisual : MonoBehaviour
 {

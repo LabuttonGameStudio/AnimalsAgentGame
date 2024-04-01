@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class EnemyAttackingState : EnemyState
+public class EnemyAttackingState : MeleeEnemyState
 {
-    public EnemyAttackingState(IEnemy enemyCtrl) : base(enemyCtrl)
+    public EnemyAttackingState(EnemyMelee enemyCtrl) : base(enemyCtrl)
     {
         enemyControl = enemyCtrl;
     }

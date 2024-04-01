@@ -1,10 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static IEnemy;
 
-public class EnemySearchingState : EnemyState
+public class EnemyObservingState : MeleeEnemyState
 {
-    public EnemySearchingState(IEnemy enemyCtrl) : base(enemyCtrl)
+    public EnemyObservingState(EnemyMelee enemyCtrl) : base(enemyCtrl)
     {
         enemyControl = enemyCtrl;
     }
@@ -21,19 +22,16 @@ public class EnemySearchingState : EnemyState
         {
             enemyControl.ToggleIncreaseDetectionCoroutine(false);
         }
-
     }
 
     public override void OnActionUpdate()
     {
-        enemyControl.SetNextDestinationOfNavmesh(lastKnownPlayerPos);
-        enemyControl.transform.LookAt(new Vector3(lastKnownPlayerPos.x,enemyControl.transform.position.y,lastKnownPlayerPos.z));
+        enemyControl.transform.LookAt(lastKnownPlayerPos);
     }
     public override void OnEnterState()
     {
-        enemyControl.navMeshAgent.isStopped = false;
-        enemyControl.SetNextDestinationOfNavmesh(lastKnownPlayerPos);
-        enemyControl.navMeshAgent.stoppingDistance = 10;
+        enemyControl.navMeshAgent.isStopped = true;
+        enemyControl.navMeshAgent.updateRotation = false;
     }
 
     public override void OnExitState()
