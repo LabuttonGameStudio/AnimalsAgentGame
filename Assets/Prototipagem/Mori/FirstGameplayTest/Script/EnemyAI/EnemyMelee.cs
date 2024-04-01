@@ -117,8 +117,8 @@ public class EnemyMelee : IEnemy, IDamageable
                 break;
             }
             else detectionLevel += increasePerTick;
-            if (detectionLevel < 10) break;
-            if (detectionLevel >= 10 && detectionLevel < 66)
+            if (detectionLevel < observingStateBreakPoint) break;
+            if (detectionLevel >= observingStateBreakPoint && detectionLevel < searchingStateBreakPoint)
             {
                 ChangeCurrentAIBehaviour(AIBehaviour.Observing);
             }
