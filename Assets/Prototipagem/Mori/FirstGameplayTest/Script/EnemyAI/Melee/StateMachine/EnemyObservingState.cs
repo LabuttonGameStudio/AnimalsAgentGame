@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
 using UnityEngine;
 using static IEnemy;
 
@@ -9,14 +10,14 @@ public class EnemyObservingState : MeleeEnemyState
     {
         enemyControl = enemyCtrl;
     }
-    Vector3 lastKnownPlayerPos;
+
     public override void OnVisibilityUpdate()
     {
         GameObject playerGO = ArmadilloPlayerController.Instance.gameObject;
         if (enemyControl.CheckForLOS(playerGO))
         {
             enemyControl.IncreaseDetection();
-            lastKnownPlayerPos = playerGO.transform.position;
+            enemyControl.lastKnownPlayerPos = playerGO.transform.position;
         }
         else
         {
@@ -26,7 +27,7 @@ public class EnemyObservingState : MeleeEnemyState
 
     public override void OnActionUpdate()
     {
-        enemyControl.transform.LookAt(lastKnownPlayerPos);
+
     }
     public override void OnEnterState()
     {
@@ -38,5 +39,14 @@ public class EnemyObservingState : MeleeEnemyState
     {
         enemyControl.navMeshAgent.isStopped = false;
         enemyControl.navMeshAgent.updateRotation = true;
+    }
+
+    public override void OnFixedUpdate()
+    {
+        Vector3 direction = enemyControl.lastKnownPlayerPos;
+        direction.y = 0;
+        direction -= enemyControl.transform.position;
+        Quaternion lookAtRotation = Quaternion.LookRotation(direction);
+        enemyControl.transform.rotation = Quaternion.Lerp(enemyControl.transform.rotation, lookAtRotation, 3 * Time.fixedDeltaTime);
     }
 }

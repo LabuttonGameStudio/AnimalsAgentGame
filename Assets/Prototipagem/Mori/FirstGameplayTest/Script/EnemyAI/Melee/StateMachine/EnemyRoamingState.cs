@@ -35,4 +35,9 @@ public class EnemyRoamingState : MeleeEnemyState
     {
         enemyControl.BreakOnWaitPointCoroutine();
     }
+
+    public override void OnFixedUpdate()
+    {
+        
+    }
 }

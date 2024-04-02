@@ -66,6 +66,7 @@ public abstract class IEnemy : MonoBehaviour
     #endregion
 
     #region Visibility Variables
+    [HideInInspector] public Vector3 lastKnownPlayerPos;
     private static List<VisibilityCone> visibilityCones;
 
     [SerializeField] protected Material visibilityConeMaterial;
@@ -94,13 +95,10 @@ public abstract class IEnemy : MonoBehaviour
     //10-66 Observing
     //66-99 Searching
     //100+ Attacking
-    [Tooltip("De 0 a 100")]protected float detectionLevel;
-    [Tooltip("Tempo necessario para ir ao estado mais alto de detecção")]readonly protected float timeToMaxDetect = 2.25f;
+    [Tooltip("De 0 a 100"),SerializeField]protected float detectionLevel;
     #endregion
 
 
-    public int thisEnemyIDDebug;
-    public int totalEnemiesDebug;
     private void OnDrawGizmos()
     {
         if (Application.isPlaying)

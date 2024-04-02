@@ -9,9 +9,9 @@ public abstract class MeleeEnemyState
         enemyControl = enemyCtrl;
     }
     protected EnemyMelee enemyControl;
-    public abstract void OnActionUpdate();
     public abstract void OnVisibilityUpdate();
-
+    public abstract void OnActionUpdate();
+    public abstract void OnFixedUpdate();
     public abstract void OnEnterState();
     public abstract void OnExitState();
 }

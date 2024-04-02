@@ -18,33 +18,32 @@ public class EnemyAttackingState : MeleeEnemyState
     public override void OnActionUpdate()
     {
         Vector3 playerPosRef = ArmadilloPlayerController.Instance.transform.position;
-        if (!isAttackOnCooldown && Vector3.Distance(enemyControl.transform.position,playerPosRef)<attackRange)
-        {
+        if (!isAttackOnCooldown && Vector3.Distance(enemyControl.transform.position, playerPosRef) < attackRange)
+        { 
             Attack();
         }
         else
         {
-            if (isMoving) CircleAroundPlayer(enemyControl.thisEnemyIDDebug, enemyControl.totalEnemiesDebug);
-            if (isLookingAtPlayer) enemyControl.transform.LookAt(new Vector3(playerPosRef.x, enemyControl.transform.position.y, playerPosRef.z));
+            if (isMoving) CircleAroundPlayer();
         }
     }
     private float attackRange = 5;
     private float minimalDistanceFromPlayer = 5;
-    private void CircleAroundPlayer(int selfID, int totalOfAttackingEnemies)
+    private void CircleAroundPlayer()
     {
         Vector3 target = ArmadilloPlayerController.Instance.transform.position;
         Vector3 goToPosition = new Vector3
             (
-            target.x + minimalDistanceFromPlayer * Mathf.Cos((1 + Time.time / 2) * 2 * Mathf.PI * selfID / totalOfAttackingEnemies),
+            target.x + minimalDistanceFromPlayer * Mathf.Cos(2 * Mathf.PI),
             target.y,
-            target.z + minimalDistanceFromPlayer * Mathf.Sin((1 + Time.time / 2) * 2 * Mathf.PI * selfID / totalOfAttackingEnemies)
+            target.z + minimalDistanceFromPlayer * Mathf.Sin(2 * Mathf.PI)
             );
         enemyControl.SetNextDestinationOfNavmesh(goToPosition);
     }
 
     private bool isAttackOnCooldown;
-    private bool isMoving;
-    private bool isLookingAtPlayer;
+    private bool isMoving = true;
+    private bool isLookingAtPlayer = true;
     private void Attack()
     {
         isAttackOnCooldown = true;
@@ -77,7 +76,7 @@ public class EnemyAttackingState : MeleeEnemyState
                 if (hit.collider.CompareTag("Player"))
                 {
                     ArmadilloPlayerController.Instance.hpControl.TakeDamage(enemyControl.hitDamage);
-                    enemyControl.rb.velocity = enemyControl.rb.velocity *-1;
+                    enemyControl.rb.velocity = enemyControl.rb.velocity * -1;
                     timer = 1;
                     break;
                 }
@@ -104,5 +103,17 @@ public class EnemyAttackingState : MeleeEnemyState
     {
         enemyControl.navMeshAgent.isStopped = true;
         enemyControl.navMeshAgent.updateRotation = true;
+    }
+
+    public override void OnFixedUpdate()
+    {
+        if (isLookingAtPlayer)
+        {
+            Vector3 direction = ArmadilloPlayerController.Instance.transform.position;
+            direction.y = 0;
+            direction -= enemyControl.transform.position;
+            Quaternion lookAtRotation = Quaternion.LookRotation(direction);
+            enemyControl.transform.rotation = Quaternion.Lerp(enemyControl.transform.rotation, lookAtRotation, 6 * Time.fixedDeltaTime);
+        }
     }
 }

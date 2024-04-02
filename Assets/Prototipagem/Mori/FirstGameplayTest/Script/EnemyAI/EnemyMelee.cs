@@ -6,6 +6,9 @@ using static AIBehaviourEnums;
 
 public class EnemyMelee : IEnemy, IDamageable
 {
+    #region Detection
+    [Tooltip("Tempo necessario para ir ao estado mais alto de detecção")] readonly protected float timeToMaxDetect = 1.5f;
+    #endregion
     #region StateMachine
 
     [HideInInspector] public MeleeEnemyState currentEnemyState;
@@ -35,7 +38,7 @@ public class EnemyMelee : IEnemy, IDamageable
     }
     protected override void OnFixedUpdate()
     {
-
+        currentEnemyState.OnFixedUpdate();
     }
     public override void OnVisibilityUpdate()
     {
@@ -152,14 +155,4 @@ public class EnemyMelee : IEnemy, IDamageable
         }
     }
     private float timeSincePlayerLastSeen;
-    protected Coroutine decreaseDetectionLevel_Ref;
-    protected IEnumerator DecreaseDetectionLevel_Coroutine()
-    {
-        while (true)
-        {
-
-            yield return new WaitForSeconds(0.015f);
-        }
-    }
-
 }
