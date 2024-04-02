@@ -11,9 +11,12 @@ public class EnemyControl : MonoBehaviour
     [HideInInspector]public List<IEnemy> allAttackingEnemiesList = new List<IEnemy>();
     [HideInInspector]public List<IEnemy> allMeleeAttackingEnemiesList = new List<IEnemy>();
 
+    public float tickInterval;
+
     private void Awake()
     {
         Instance = this;
+        tickInterval = 0.025f;
 
     }
     private void Start()
@@ -41,7 +44,7 @@ public class EnemyControl : MonoBehaviour
             yield return new WaitForSeconds(0.1f);
         }
         int currentEnemyIndex = 0;
-        float interval = 0.025f / allEnemiesList.Count;
+        float interval = tickInterval / allEnemiesList.Count;
         while(true)
         {
             allEnemiesList[currentEnemyIndex].VisibilityUpdate();

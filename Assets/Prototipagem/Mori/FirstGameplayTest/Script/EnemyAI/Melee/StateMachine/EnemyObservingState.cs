@@ -15,12 +15,12 @@ public class EnemyObservingState : MeleeEnemyState
         GameObject playerGO = ArmadilloPlayerController.Instance.gameObject;
         if (enemyControl.CheckForLOS(playerGO))
         {
-            enemyControl.ToggleIncreaseDetectionCoroutine(true);
+            enemyControl.IncreaseDetection();
             lastKnownPlayerPos = playerGO.transform.position;
         }
         else
         {
-            enemyControl.ToggleIncreaseDetectionCoroutine(false);
+            enemyControl.DecreaseDetection();
         }
     }
 
@@ -36,6 +36,7 @@ public class EnemyObservingState : MeleeEnemyState
 
     public override void OnExitState()
     {
-
+        enemyControl.navMeshAgent.isStopped = false;
+        enemyControl.navMeshAgent.updateRotation = true;
     }
 }

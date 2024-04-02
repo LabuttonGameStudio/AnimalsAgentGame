@@ -11,7 +11,14 @@ public class EnemyRoamingState : MeleeEnemyState
     }
     public override void OnVisibilityUpdate()
     {
-        enemyControl.ToggleIncreaseDetectionCoroutine(enemyControl.CheckForLOS(ArmadilloPlayerController.Instance.gameObject));
+        if (enemyControl.CheckForLOS(ArmadilloPlayerController.Instance.gameObject))
+        {
+            enemyControl.IncreaseDetection();
+        }
+        else
+        {
+            enemyControl.DecreaseDetection();
+        }
     }
 
     public override void OnActionUpdate()

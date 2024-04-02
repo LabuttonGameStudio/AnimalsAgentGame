@@ -14,12 +14,12 @@ public class EnemySearchingState : MeleeEnemyState
         GameObject playerGO = ArmadilloPlayerController.Instance.gameObject;
         if (enemyControl.CheckForLOS(playerGO))
         {
-            enemyControl.ToggleIncreaseDetectionCoroutine(true);
+            enemyControl.IncreaseDetection();
             lastKnownPlayerPos = playerGO.transform.position;
         }
         else
         {
-            enemyControl.ToggleIncreaseDetectionCoroutine(false);
+            enemyControl.DecreaseDetection();
         }
 
     }
@@ -32,12 +32,15 @@ public class EnemySearchingState : MeleeEnemyState
     public override void OnEnterState()
     {
         enemyControl.navMeshAgent.isStopped = false;
+        enemyControl.navMeshAgent.updateRotation = false;
         enemyControl.SetNextDestinationOfNavmesh(lastKnownPlayerPos);
         enemyControl.navMeshAgent.stoppingDistance = 10;
     }
 
     public override void OnExitState()
     {
-
+        enemyControl.navMeshAgent.isStopped = true;
+        enemyControl.navMeshAgent.updateRotation = true;
+        enemyControl.navMeshAgent.stoppingDistance = 0;
     }
 }

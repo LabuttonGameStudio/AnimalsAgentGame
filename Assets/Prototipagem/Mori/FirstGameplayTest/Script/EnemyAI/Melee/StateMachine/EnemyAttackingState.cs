@@ -96,10 +96,13 @@ public class EnemyAttackingState : MeleeEnemyState
     {
         //enemyControl.navMeshAgent.speed = enemyControl.navMeshAgent.speed * 1.5f;
         enemyControl.navMeshAgent.stoppingDistance = 0;
+        enemyControl.navMeshAgent.isStopped = false;
+        enemyControl.navMeshAgent.updateRotation = false;
     }
 
     public override void OnExitState()
     {
-
+        enemyControl.navMeshAgent.isStopped = true;
+        enemyControl.navMeshAgent.updateRotation = true;
     }
 }

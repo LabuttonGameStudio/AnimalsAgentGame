@@ -87,38 +87,61 @@ public class EnemyMelee : IEnemy, IDamageable
         currentAIBehaviour = nextAIBehaviour;
     }
 
-    public void ToggleIncreaseDetectionCoroutine(bool state)
+    public void IncreaseDetection()
     {
-        //Se for para ligar, precisa q corotina ja exista 
-        if (state)
+        timeSincePlayerLastSeen = 0;
+        float increasePerTick = 100 / (timeToMaxDetect / EnemyControl.Instance.tickInterval);
+        if (detectionLevel + increasePerTick >= 100)
         {
-            if (increaseDetectionLevel_Ref == null) increaseDetectionLevel_Ref = StartCoroutine(IncreaseDetectionLevel_Coroutine());
+            detectionLevel = 100;
+            ChangeCurrentAIBehaviour(AIBehaviour.Attacking);
             return;
         }
-        //Se for para desligar, precisa q corotina ja exista 
-        if (increaseDetectionLevel_Ref != null)
+        else detectionLevel += increasePerTick;
+        if (detectionLevel < observingStateBreakPoint) return;
+        else if (detectionLevel >= observingStateBreakPoint && detectionLevel < searchingStateBreakPoint)
         {
-            StopCoroutine(increaseDetectionLevel_Ref);
-            increaseDetectionLevel_Ref = null;
+            ChangeCurrentAIBehaviour(AIBehaviour.Observing);
+        }
+        else
+        {
+            ChangeCurrentAIBehaviour(AIBehaviour.Searching);
         }
     }
-    //Corotina de aumentar o nivel de detecao do player
-    protected Coroutine increaseDetectionLevel_Ref;
-    protected IEnumerator IncreaseDetectionLevel_Coroutine()
+    public void DecreaseDetection()
     {
-        float interval = 0.05f;
-        float increasePerTick = 100 / (timeToMaxDetect / interval);
-        while (true)
+        timeSincePlayerLastSeen += EnemyControl.Instance.tickInterval;
+        bool doesTimeExceedDelay;
+
+        //Delay based on current ai behaviour
+        switch (currentAIBehaviour)
         {
-            if (detectionLevel + increasePerTick >= 100)
-            {
-                detectionLevel = 100;
-                ChangeCurrentAIBehaviour(AIBehaviour.Attacking);
+            case AIBehaviour.Roaming:
+                doesTimeExceedDelay = timeSincePlayerLastSeen >= 1;
                 break;
+            case AIBehaviour.Observing:
+                doesTimeExceedDelay = timeSincePlayerLastSeen >= 2;
+                break;
+            case AIBehaviour.Searching:
+            default:
+                doesTimeExceedDelay = timeSincePlayerLastSeen >= 5;
+                break;
+            case AIBehaviour.Attacking:
+                doesTimeExceedDelay = false;
+                break;
+        }
+        if (doesTimeExceedDelay)
+        {
+            float decreasePerTick = 100 / (timeToMaxDetect*1.5f / EnemyControl.Instance.tickInterval);
+            if (detectionLevel - decreasePerTick < 0)
+            {
+                detectionLevel = 0;
+                ChangeCurrentAIBehaviour(AIBehaviour.Roaming);
+                return;
             }
-            else detectionLevel += increasePerTick;
-            if (detectionLevel < observingStateBreakPoint) break;
-            if (detectionLevel >= observingStateBreakPoint && detectionLevel < searchingStateBreakPoint)
+            else detectionLevel -= decreasePerTick;
+            if (detectionLevel < observingStateBreakPoint) ChangeCurrentAIBehaviour(AIBehaviour.Roaming);
+            else if (detectionLevel >= observingStateBreakPoint && detectionLevel < searchingStateBreakPoint)
             {
                 ChangeCurrentAIBehaviour(AIBehaviour.Observing);
             }
@@ -126,12 +149,9 @@ public class EnemyMelee : IEnemy, IDamageable
             {
                 ChangeCurrentAIBehaviour(AIBehaviour.Searching);
             }
-            yield return new WaitForSeconds(interval);
         }
-        increaseDetectionLevel_Ref = null;
     }
-
-
+    private float timeSincePlayerLastSeen;
     protected Coroutine decreaseDetectionLevel_Ref;
     protected IEnumerator DecreaseDetectionLevel_Coroutine()
     {
