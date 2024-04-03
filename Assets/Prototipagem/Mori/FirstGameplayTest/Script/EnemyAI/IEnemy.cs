@@ -59,6 +59,8 @@ public abstract class IEnemy : MonoBehaviour
     [Header("Attack")]
     [SerializeField] public float primaryAttackRangeInMeters = 2;
     [SerializeField] public int hitDamage = 20;
+
+    public bool isDead;
     #endregion
 
     #region EnemyComponents

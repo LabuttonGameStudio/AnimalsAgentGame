@@ -18,27 +18,45 @@ public class EnemyAttackingState : MeleeEnemyState
     public override void OnActionUpdate()
     {
         Vector3 playerPosRef = ArmadilloPlayerController.Instance.transform.position;
-        if (!isAttackOnCooldown && Vector3.Distance(enemyControl.transform.position, playerPosRef) < attackRange)
-        { 
-            Attack();
+        if (!isAttackOnCooldown)
+        {
+            if (Vector3.Distance(enemyControl.transform.position, playerPosRef) <= attackRange+0.1f)
+            {
+                Attack();
+            }
+            else if (isMoving) GoToPlayer();
         }
         else
         {
-            if (isMoving) CircleAroundPlayer();
+
+            if (isMoving)
+            {
+                GoAwayFromPlayer();
+            }
         }
     }
     private float attackRange = 5;
     private float minimalDistanceFromPlayer = 5;
-    private void CircleAroundPlayer()
+    private void GoToPlayer()
     {
-        Vector3 target = ArmadilloPlayerController.Instance.transform.position;
-        Vector3 goToPosition = new Vector3
-            (
-            target.x + minimalDistanceFromPlayer * Mathf.Cos(2 * Mathf.PI),
-            target.y,
-            target.z + minimalDistanceFromPlayer * Mathf.Sin(2 * Mathf.PI)
-            );
-        enemyControl.SetNextDestinationOfNavmesh(goToPosition);
+        Debug.Log("Go to player");
+        Vector3 target = enemyControl.transform.position - ArmadilloPlayerController.Instance.transform.position;
+        target.y = 0;
+        target = Vector3.Normalize(target);
+        target = target * minimalDistanceFromPlayer;
+        target += ArmadilloPlayerController.Instance.transform.position;
+        enemyControl.SetNextDestinationOfNavmesh(target);
+    }
+    private void GoAwayFromPlayer()
+    {
+        Debug.Log("Go away from player");
+        Vector3 target = enemyControl.transform.position - ArmadilloPlayerController.Instance.transform.position;
+        target.y = 0;
+        target += enemyControl.transform.right * Mathf.Sin(Time.time/2);
+        target = Vector3.Normalize(target);
+        target = target * minimalDistanceFromPlayer*1.5f;
+        target += ArmadilloPlayerController.Instance.transform.position;
+        enemyControl.SetNextDestinationOfNavmesh(target);
     }
 
     private bool isAttackOnCooldown;
@@ -66,7 +84,7 @@ public class EnemyAttackingState : MeleeEnemyState
         float timer = 0;
         Vector3 bottomCapsulePoint;
         Vector3 topCapsulePoint;
-        while (timer < 0.75f)
+        while (timer < 1)
         {
             bottomCapsulePoint = enemyControl.transform.position - new Vector3(0, enemyControl.navMeshAgent.height / 2, 0);
             topCapsulePoint = enemyControl.transform.position + new Vector3(0, enemyControl.navMeshAgent.height / 2, 0);
@@ -84,11 +102,10 @@ public class EnemyAttackingState : MeleeEnemyState
             timer += Time.fixedDeltaTime;
             yield return new WaitForFixedUpdate();
         }
-        yield return new WaitForSeconds(1f);
         isLookingAtPlayer = true;
         isMoving = true;
         enemyControl.navMeshAgent.isStopped = false;
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(4f);
         isAttackOnCooldown = false;
     }
     public override void OnEnterState()

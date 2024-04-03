@@ -54,6 +54,7 @@ public class EnemyMelee : IEnemy, IDamageable
         Debug.Log("HP=" + currentHp + "| Damage taken=" + damageAmount);
         if (currentHp <= 0)
         {
+            isDead = true;
             gameObject.SetActive(false);
         }
     }

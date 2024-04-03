@@ -47,10 +47,13 @@ public class EnemyControl : MonoBehaviour
         float interval = tickInterval / allEnemiesList.Count;
         while(true)
         {
-            allEnemiesList[currentEnemyIndex].VisibilityUpdate();
-            yield return null;
-            allEnemiesList[currentEnemyIndex].ActionUpdate();
-
+            if (allEnemiesList[currentEnemyIndex].isDead) yield return null;
+            else
+            {
+                allEnemiesList[currentEnemyIndex].VisibilityUpdate();
+                yield return null;
+                allEnemiesList[currentEnemyIndex].ActionUpdate();
+            }
 
             currentEnemyIndex++;
             if(currentEnemyIndex>=allEnemiesList.Count)currentEnemyIndex = 0;
