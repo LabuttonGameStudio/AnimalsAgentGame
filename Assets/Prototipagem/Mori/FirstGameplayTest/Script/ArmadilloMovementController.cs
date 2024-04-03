@@ -1,8 +1,31 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+
+[Serializable]
+public class FormMovementStats
+{
+    [Header("Moving")]
+    public float moveSpeedAcceleration;
+    public float moveSpeed = 7.5f;
+    [Header("Colliders e Rigidbody")]
+    public PhysicMaterial physicMaterial;
+    public Collider[] playerCollider;
+    public float mass;
+    [Header("Jump")]
+    //Jump
+    public float jumpForce_Default = 15;
+    public float jumpCooldown_Default = 0.25f;
+    public float onAirSpeedMultiplier_Default = 0.4f;
+    public float groundDrag_Default = 5;
+    public float airDrag_Default = 3;
+    public float playerHeight_Default;
+    private GameObject playerVisual_Default;
+
+}
 public class ArmadilloMovementController : MonoBehaviour
 {
     //State Machine
