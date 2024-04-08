@@ -98,6 +98,24 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Sprint"",
+                    ""type"": ""Button"",
+                    ""id"": ""c16972dc-5bf0-495e-a8de-e7889141ea0f"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Lurk"",
+                    ""type"": ""Button"",
+                    ""id"": ""59f99fe8-91eb-4bf0-b0dd-bf5587b1382c"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -232,6 +250,28 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
                     ""action"": ""Reload"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""cf45d7a3-483e-41e5-9ec5-33c8d75d6b44"",
+                    ""path"": ""<Keyboard>/shift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Sprint"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""d892bb9f-218c-400b-840b-fd1bd91e6455"",
+                    ""path"": ""<Keyboard>/leftCtrl"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Lurk"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -248,6 +288,8 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
         m_Armadillo_AltFire = m_Armadillo.FindAction("AltFire", throwIfNotFound: true);
         m_Armadillo_Reload = m_Armadillo.FindAction("Reload", throwIfNotFound: true);
         m_Armadillo_Ability1 = m_Armadillo.FindAction("Ability1", throwIfNotFound: true);
+        m_Armadillo_Sprint = m_Armadillo.FindAction("Sprint", throwIfNotFound: true);
+        m_Armadillo_Lurk = m_Armadillo.FindAction("Lurk", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -317,6 +359,8 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
     private readonly InputAction m_Armadillo_AltFire;
     private readonly InputAction m_Armadillo_Reload;
     private readonly InputAction m_Armadillo_Ability1;
+    private readonly InputAction m_Armadillo_Sprint;
+    private readonly InputAction m_Armadillo_Lurk;
     public struct ArmadilloActions
     {
         private @PlayerInputAction m_Wrapper;
@@ -329,6 +373,8 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
         public InputAction @AltFire => m_Wrapper.m_Armadillo_AltFire;
         public InputAction @Reload => m_Wrapper.m_Armadillo_Reload;
         public InputAction @Ability1 => m_Wrapper.m_Armadillo_Ability1;
+        public InputAction @Sprint => m_Wrapper.m_Armadillo_Sprint;
+        public InputAction @Lurk => m_Wrapper.m_Armadillo_Lurk;
         public InputActionMap Get() { return m_Wrapper.m_Armadillo; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -362,6 +408,12 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
             @Ability1.started += instance.OnAbility1;
             @Ability1.performed += instance.OnAbility1;
             @Ability1.canceled += instance.OnAbility1;
+            @Sprint.started += instance.OnSprint;
+            @Sprint.performed += instance.OnSprint;
+            @Sprint.canceled += instance.OnSprint;
+            @Lurk.started += instance.OnLurk;
+            @Lurk.performed += instance.OnLurk;
+            @Lurk.canceled += instance.OnLurk;
         }
 
         private void UnregisterCallbacks(IArmadilloActions instance)
@@ -390,6 +442,12 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
             @Ability1.started -= instance.OnAbility1;
             @Ability1.performed -= instance.OnAbility1;
             @Ability1.canceled -= instance.OnAbility1;
+            @Sprint.started -= instance.OnSprint;
+            @Sprint.performed -= instance.OnSprint;
+            @Sprint.canceled -= instance.OnSprint;
+            @Lurk.started -= instance.OnLurk;
+            @Lurk.performed -= instance.OnLurk;
+            @Lurk.canceled -= instance.OnLurk;
         }
 
         public void RemoveCallbacks(IArmadilloActions instance)
@@ -417,5 +475,7 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
         void OnAltFire(InputAction.CallbackContext context);
         void OnReload(InputAction.CallbackContext context);
         void OnAbility1(InputAction.CallbackContext context);
+        void OnSprint(InputAction.CallbackContext context);
+        void OnLurk(InputAction.CallbackContext context);
     }
 }

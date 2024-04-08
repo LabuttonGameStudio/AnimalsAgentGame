@@ -4,7 +4,14 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem.XInput;
 using UnityEngine.InputSystem;
-
+public class ArmadilloForms
+{
+    public enum ArmadilloForm
+    {
+        Default = 0,
+        Ball = 1
+    }
+}
 public class ArmadilloPlayerController : MonoBehaviour
 {
     public static ArmadilloPlayerController Instance { get; private set; }

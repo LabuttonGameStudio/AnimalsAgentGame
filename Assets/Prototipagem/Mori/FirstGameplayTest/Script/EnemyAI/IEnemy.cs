@@ -394,7 +394,6 @@ public abstract class IEnemy : MonoBehaviour
         float timer = 0f;
         Quaternion startLookAtRotation = transform.localRotation;
         Quaternion finalLookAtRotation = Quaternion.Euler(transform.localRotation.eulerAngles + new Vector3(0, rotation, 0));
-        Debug.Log("Rotating" + finalLookAtRotation);
         while (timer < duration)
         {
             transform.localRotation = Quaternion.Slerp(startLookAtRotation, finalLookAtRotation, timer / duration);

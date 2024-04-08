@@ -1,89 +1,80 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 
 [Serializable]
-public class FormMovementStats
+public class MovementFormStats
 {
     [Header("Moving")]
     public float moveSpeedAcceleration;
-    public float moveSpeed = 7.5f;
-    [Header("Colliders e Rigidbody")]
-    public PhysicMaterial physicMaterial;
+    public float moveSpeedMax = 7.5f;
+
+    [Header("Colliders")]
     public Collider[] playerCollider;
     public float mass;
-    [Header("Jump")]
-    //Jump
-    public float jumpForce_Default = 15;
-    public float jumpCooldown_Default = 0.25f;
-    public float onAirSpeedMultiplier_Default = 0.4f;
-    public float groundDrag_Default = 5;
-    public float airDrag_Default = 3;
-    public float playerHeight_Default;
-    private GameObject playerVisual_Default;
 
+    [Header("Jump")]
+    public float jumpForce = 15;
+    public float onAirSpeedMultiplier = 0.4f;
+    public float groundDrag = 5;
+    public float airDrag = 3;
+
+    [Header("Height e Visual")]
+    public float playerHeight;
+    private GameObject playerVisual;
+
+    [Header("Sprint e Lurk")]
+    public float sprintSpeedMultiplier;
+    public float lurkSpeedMultiplier;
 }
 public class ArmadilloMovementController : MonoBehaviour
 {
     //State Machine
-    ArmadilloBaseState currentState;
+    MovementState currentState;
 
     public ArmadilloDefaultState defaultState;
     public ArmadilloBallState ballState;
 
     //Componentes
-    [System.NonSerialized]public Rigidbody rb;
-
+    [System.NonSerialized] public Rigidbody rb;
 
     //Input system
     [System.NonSerialized] public ArmadilloPlayerInputController inputController;
+    [HideInInspector]public Vector2 movementInputVector;
 
-    //-----Default Form-----
     //Variables
-    [System.NonSerialized]public Vector2 movementInputVector;
-    [Header(" Default Form Stats")] public float moveSpeed_Default = 7.5f;
+    public readonly float jumpCooldown = 0.25f;
 
-    //Jump
-    [SerializeField] public float jumpForce_Default = 15;
-    [SerializeField] public float jumpCooldown_Default = 0.25f;
-    [SerializeField] public float onAirSpeedMultiplier_Default = 0.4f;
+    public MovementFormStats defaultFormStats;
+    public MovementFormStats ballFormStats;
 
-    [SerializeField, Space] public float groundDrag_Default = 5;
-    [SerializeField] public float airDrag_Default = 3;
-    [SerializeField] public float playerHeight_Default;
+    [HideInInspector] public float movementTypeMultiplier = 1;
 
-    [SerializeField] private GameObject playerVisual_Default;
-    [SerializeField] private Collider[] playerCollider_Default;
-
-    //----- Ball Form------
-
-    [SerializeField, Header(" Ball Form Stats")] public float moveSpeed_Ball = 1f;
-    [SerializeField] public float maxMoveSpeed_Ball = 10f;
-
-    [SerializeField] public float onAirSpeedMultiplier_Ball = 0.6f;
-
-    [SerializeField, Space] public float groundDrag_Ball = 2;
-    [SerializeField] public float airDrag_Ball = 1;
-    public float playerHeight_Ball;
-
-    [SerializeField] private GameObject playerVisual_Ball;
-    [SerializeField] private Collider[] playerCollider_Ball;
-
-
+    public enum MovementType
+    {
+        Default,
+        Sprinting,
+        Lurking
+    }
+    [HideInInspector]public MovementType currentMovementType;
 
     [Header("Ground Check")]
     public LayerMask whatIsGround;
     public bool readyToJump = true;
-    [System.NonSerialized]public bool grounded;
+    [HideInInspector]public bool grounded;
 
     public void OnDrawGizmos()
     {
         //Check for grounded
         Gizmos.color = Color.magenta;
-        Gizmos.DrawRay(transform.position, Vector3.down * (playerHeight_Ball * 0.5f + 0.1f));
+        if (ArmadilloPlayerController.Instance != null)
+        {
+            Gizmos.DrawSphere(transform.position - new Vector3(0, GetCurrentFormStats().playerHeight / 2 + 0.1f, 0),0.25f);
+        }
     }
 
     private void Awake()
@@ -97,17 +88,40 @@ public class ArmadilloMovementController : MonoBehaviour
     private void Start()
     {
         //Salva a classe de controle do input system e liga a deteccao dos inputs
-        inputController = GetComponent<ArmadilloPlayerInputController>();
+        inputController = ArmadilloPlayerController.Instance.inputControl;
         inputController.inputAction.Armadillo.Movement.Enable();
         inputController.inputAction.Armadillo.Jump.Enable();
+        inputController.inputAction.Armadillo.Sprint.Enable();
+        inputController.inputAction.Armadillo.Lurk.Enable();
 
+        inputController.inputAction.Armadillo.Movement.performed += OnMovement;
+        inputController.inputAction.Armadillo.Movement.canceled += OnMovement;
+
+        inputController.inputAction.Armadillo.Jump.performed += OnJump;
+
+
+        inputController.inputAction.Armadillo.Sprint.performed += OnSprint;
+        inputController.inputAction.Armadillo.Sprint.canceled += OnSprint;
+
+        inputController.inputAction.Armadillo.Lurk.performed += OnLurk;
+        inputController.inputAction.Armadillo.Lurk.canceled += OnLurk;
 
         ChangeState(defaultState);
     }
-
-    public void ChangeState(ArmadilloBaseState state)
+    public MovementFormStats GetCurrentFormStats()
     {
-        if(currentState != null)currentState.ExitState();
+        switch (ArmadilloPlayerController.Instance.currentForm)
+        {
+            case ArmadilloPlayerController.Form.Default:
+            default:
+                return defaultFormStats;
+            case ArmadilloPlayerController.Form.Ball:
+                return ballFormStats;
+        }
+    }
+    public void ChangeState(MovementState state)
+    {
+        if (currentState != null) currentState.ExitState();
         state.EnterState(this);
         currentState = state;
     }
@@ -116,15 +130,55 @@ public class ArmadilloMovementController : MonoBehaviour
     {
         movementInputVector = value.ReadValue<Vector2>();
     }
+    public void OnJump(InputAction.CallbackContext value)
+    {
+        currentState.Jump(value);
+    }
+
+    public void OnSprint(InputAction.CallbackContext value)
+    {
+        if (value.performed)
+        {
+            currentMovementType = MovementType.Sprinting;
+            movementTypeMultiplier = GetCurrentFormStats().sprintSpeedMultiplier;
+        }
+        else
+        {
+            if (currentMovementType == MovementType.Sprinting)
+            {
+                currentMovementType = MovementType.Default;
+                movementTypeMultiplier = 1;
+            }
+        }
+    }
+    public void OnLurk(InputAction.CallbackContext value)
+    {
+        if (value.performed)
+        {
+            currentMovementType = MovementType.Lurking;
+            movementTypeMultiplier = GetCurrentFormStats().lurkSpeedMultiplier;
+        }
+        else
+        {
+            if (currentMovementType == MovementType.Lurking)
+            {
+                currentMovementType = MovementType.Default;
+                movementTypeMultiplier = 1;
+            }
+        }
+    }
+
+
     private void Update()
     {
+        CheckForGrounded();
         currentState.UpdateState();
     }
     private void FixedUpdate()
     {
         currentState.FixedUpdateState();
     }
-    
+
     //----- Jump Cooldown -----
     public void StartJumpCooldown()
     {
@@ -134,12 +188,26 @@ public class ArmadilloMovementController : MonoBehaviour
     public IEnumerator JumpCooldown_Coroutine()
     {
         //Espera o tempo de cooldown apos o pulo pra checar se esta no chao pra evitar que durante o subir do pulo ele detecte o chao
-        yield return new WaitForSeconds(jumpCooldown_Default);
+        yield return new WaitForSeconds(jumpCooldown);
         while (!grounded)
         {
             yield return null;
         }
         jumpCooldownRef = null;
         readyToJump = true;
+    }
+    private void CheckForGrounded()
+    {
+        MovementFormStats stats = GetCurrentFormStats();
+        Vector3 groundCheckPos = transform.position - new Vector3(0, stats.playerHeight/2f,0);
+        Collider[] colliders = Physics.OverlapSphere(groundCheckPos, 0.25f, whatIsGround, QueryTriggerInteraction.Ignore);
+        grounded = colliders.Length > 0;
+        if (grounded)
+        {
+            rb.drag = stats.groundDrag;
+
+            if (!readyToJump) StartJumpCooldown();
+        }
+        else rb.drag = stats.airDrag;
     }
 }

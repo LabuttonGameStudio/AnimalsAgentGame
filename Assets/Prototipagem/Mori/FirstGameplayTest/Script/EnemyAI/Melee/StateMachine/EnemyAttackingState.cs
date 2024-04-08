@@ -39,7 +39,6 @@ public class EnemyAttackingState : MeleeEnemyState
     private float minimalDistanceFromPlayer = 5;
     private void GoToPlayer()
     {
-        Debug.Log("Go to player");
         Vector3 target = enemyControl.transform.position - ArmadilloPlayerController.Instance.transform.position;
         target.y = 0;
         target = Vector3.Normalize(target);
@@ -49,7 +48,6 @@ public class EnemyAttackingState : MeleeEnemyState
     }
     private void GoAwayFromPlayer()
     {
-        Debug.Log("Go away from player");
         Vector3 target = enemyControl.transform.position - ArmadilloPlayerController.Instance.transform.position;
         target.y = 0;
         target += enemyControl.transform.right * Mathf.Sin(Time.time/2);

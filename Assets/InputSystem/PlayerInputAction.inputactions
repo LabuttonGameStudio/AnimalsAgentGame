@@ -76,6 +76,24 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Sprint",
+                    "type": "Button",
+                    "id": "c16972dc-5bf0-495e-a8de-e7889141ea0f",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Lurk",
+                    "type": "Button",
+                    "id": "59f99fe8-91eb-4bf0-b0dd-bf5587b1382c",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -208,6 +226,28 @@
                     "processors": "",
                     "groups": "",
                     "action": "Reload",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "cf45d7a3-483e-41e5-9ec5-33c8d75d6b44",
+                    "path": "<Keyboard>/shift",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Sprint",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "d892bb9f-218c-400b-840b-fd1bd91e6455",
+                    "path": "<Keyboard>/leftCtrl",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Lurk",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

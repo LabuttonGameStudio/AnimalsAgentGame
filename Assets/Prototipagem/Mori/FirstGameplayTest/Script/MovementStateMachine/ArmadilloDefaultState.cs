@@ -5,15 +5,14 @@ using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.XInput;
 using UnityEngine.UIElements;
 
-public class ArmadilloDefaultState : ArmadilloBaseState
+public class ArmadilloDefaultState : MovementState
 {
     ArmadilloMovementController movementCtrl;
+    MovementFormStats stats;
     public override void EnterState(ArmadilloMovementController movementControl)
     {
+        stats = movementControl.defaultFormStats;
         movementCtrl = movementControl;
-        movementCtrl.inputController.inputAction.Armadillo.Movement.performed += movementCtrl.OnMovement;
-        movementCtrl.inputController.inputAction.Armadillo.Movement.canceled += movementCtrl.OnMovement;
-        movementCtrl.inputController.inputAction.Armadillo.Jump.performed += Jump;
     }
 
 
@@ -24,7 +23,6 @@ public class ArmadilloDefaultState : ArmadilloBaseState
 
     public override void UpdateState()
     {
-        CheckForGrounded();
         SpeedControl();
     }
     public override void ExitState()
@@ -37,43 +35,36 @@ public class ArmadilloDefaultState : ArmadilloBaseState
     {
         Vector3 moveDirection = movementCtrl.transform.forward * movementCtrl.movementInputVector.y
             + movementCtrl.transform.right * movementCtrl.movementInputVector.x;
-
-        if (movementCtrl.grounded) movementCtrl.rb.AddForce(moveDirection.normalized * movementCtrl.moveSpeed_Default * 10, ForceMode.Force);
+        Vector3 movementApplied;
+        if (movementCtrl.grounded)
+        {
+            movementApplied = moveDirection.normalized * stats.moveSpeedMax * movementCtrl.movementTypeMultiplier* 10;
+            movementCtrl.rb.AddForce(movementApplied, ForceMode.Acceleration);
+        }
         else
         {
-            Vector3 movementInAir = moveDirection.normalized * movementCtrl.moveSpeed_Default * 10 * movementCtrl.onAirSpeedMultiplier_Default;
-            if (movementCtrl.rb.velocity.y < 0) movementInAir += Vector3.up * Physics.gravity.y * 2f;
-            movementCtrl.rb.AddForce(movementInAir, ForceMode.Force);
+             movementApplied = moveDirection.normalized * stats.moveSpeedMax * stats.onAirSpeedMultiplier * 10;
+            if (movementCtrl.rb.velocity.y < 0) movementApplied += Vector3.up * Physics.gravity.y * 2f;
+            movementCtrl.rb.AddForce(movementApplied, ForceMode.Acceleration);
         }
     }
     //-----Player Jump-----
-    private void Jump(InputAction.CallbackContext value)
+    public override void Jump(InputAction.CallbackContext value)
     {
         if (movementCtrl.readyToJump && movementCtrl.grounded)
         {
             movementCtrl.readyToJump = false;
             movementCtrl.rb.velocity = new Vector3(movementCtrl.rb.velocity.x, 0, movementCtrl.rb.velocity.z);
-            movementCtrl.rb.AddForce(movementCtrl.transform.up * movementCtrl.jumpForce_Default, ForceMode.Impulse);
+            movementCtrl.rb.AddForce(movementCtrl.transform.up * stats.jumpForce, ForceMode.VelocityChange);
         }
     }
     private void SpeedControl()
     {
-        Vector3 flatVel = new Vector3(movementCtrl.rb.velocity.x, 0, movementCtrl.rb.velocity.z);
-        if (flatVel.magnitude > movementCtrl.moveSpeed_Default)
-        {
-            Vector3 limitedVel = flatVel.normalized * movementCtrl.moveSpeed_Default;
-            movementCtrl.rb.velocity = new Vector3(limitedVel.x, movementCtrl.rb.velocity.y, limitedVel.z);
-        }
-    }
-    private void CheckForGrounded()
-    {
-        movementCtrl.grounded = Physics.Raycast(movementCtrl.transform.position, Vector3.down, movementCtrl.playerHeight_Default * 0.5f + 0.1f, movementCtrl.whatIsGround);
-        if (movementCtrl.grounded)
-        {
-            movementCtrl.rb.drag = movementCtrl.groundDrag_Default;
-
-            if (!movementCtrl.readyToJump) movementCtrl.StartJumpCooldown();
-        }
-        else movementCtrl.rb.drag = movementCtrl.airDrag_Default;
+        //Vector3 flatVel = new Vector3(movementCtrl.rb.velocity.x, 0, movementCtrl.rb.velocity.z);
+        //if (flatVel.magnitude > movementCtrl.moveSpeed_Default)
+        //{
+        //    Vector3 limitedVel = flatVel.normalized * movementCtrl.moveSpeed_Default;
+        //    movementCtrl.rb.velocity = new Vector3(limitedVel.x, movementCtrl.rb.velocity.y, limitedVel.z);
+        //}
     }
 }
