@@ -97,13 +97,13 @@ public abstract class IEnemy : MonoBehaviour
     //10-66 Observing
     //66-99 Searching
     //100+ Attacking
-    [Tooltip("De 0 a 100"),SerializeField]protected float detectionLevel;
+    [Tooltip("De 0 a 100")]protected float detectionLevel;
     #endregion
 
 
     private void OnDrawGizmos()
     {
-        if (Application.isPlaying)
+        if (!Application.isPlaying)
         {
             if (!fovWedgeMesh) return;
             if (ArmadilloPlayerController.Instance != null)
@@ -347,7 +347,6 @@ public abstract class IEnemy : MonoBehaviour
                     waitOnPointTimer_Ref = StartCoroutine(WaitOnPointTimer_Coroutine(aiPathList[currentPathPoint].waitTimeOnPoint, aiPathList[currentPathPoint].lookAroundOnPoint));
                 }
             }
-            Debug.Log("Reached point");
         }
     }
     public void BreakOnWaitPointCoroutine()

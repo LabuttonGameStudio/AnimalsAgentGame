@@ -11,7 +11,7 @@ public class EnemyControl : MonoBehaviour
     [HideInInspector]public List<IEnemy> allAttackingEnemiesList = new List<IEnemy>();
     [HideInInspector]public List<IEnemy> allMeleeAttackingEnemiesList = new List<IEnemy>();
 
-    public float tickInterval;
+    [HideInInspector]public float tickInterval;
 
     private void Awake()
     {

@@ -8,14 +8,10 @@ public class EnemyBehaviourVisual : MonoBehaviour
 {
     public static Camera mainCamera;
 
-    private SpriteRenderer spriteRenderer;
+    [SerializeField] private SpriteRenderer spriteRenderer;
     [SerializeField]private Sprite confusedIcon;
     [SerializeField]private Sprite visibleIcon;
     [SerializeField]private Sprite battleIcon;
-    private void Awake()
-    {
-        spriteRenderer = GetComponent<SpriteRenderer>();
-    }
     public void Start()
     {
         if(mainCamera == null) mainCamera = Camera.main;

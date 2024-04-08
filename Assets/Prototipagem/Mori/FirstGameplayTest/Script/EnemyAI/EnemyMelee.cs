@@ -29,7 +29,11 @@ public class EnemyMelee : IEnemy, IDamageable
         enemySearchingState = new EnemySearchingState(this);
         enemyAttackingState = new EnemyAttackingState(this);
 
-        if (isStatic) ChangeCurrentAIBehaviour(AIBehaviour.Static);
+        if (isStatic)
+        {
+            ChangeCurrentAIBehaviour(AIBehaviour.Observing);
+            observingStateBreakPoint = -1;
+        }
         else ChangeCurrentAIBehaviour(AIBehaviour.Roaming);
     }
     protected override void OnStart()
@@ -76,6 +80,7 @@ public class EnemyMelee : IEnemy, IDamageable
                 currentEnemyState.OnEnterState();
                 break;
             case AIBehaviour.Observing:
+            case AIBehaviour.Static:
                 currentEnemyState = enemyObservingState;
                 currentEnemyState.OnEnterState();
                 break;
@@ -140,7 +145,7 @@ public class EnemyMelee : IEnemy, IDamageable
             if (detectionLevel - decreasePerTick < 0)
             {
                 detectionLevel = 0;
-                ChangeCurrentAIBehaviour(AIBehaviour.Roaming);
+                if(!isStatic)ChangeCurrentAIBehaviour(AIBehaviour.Roaming);
                 return;
             }
             else detectionLevel -= decreasePerTick;
