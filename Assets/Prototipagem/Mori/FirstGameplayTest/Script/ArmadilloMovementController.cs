@@ -22,6 +22,7 @@ public class MovementFormStats
     public float onAirSpeedMultiplier = 0.4f;
     public float groundDrag = 5;
     public float airDrag = 3;
+    public float gravityMultiplier;
 
     [Header("Height e Visual")]
     public float playerHeight;

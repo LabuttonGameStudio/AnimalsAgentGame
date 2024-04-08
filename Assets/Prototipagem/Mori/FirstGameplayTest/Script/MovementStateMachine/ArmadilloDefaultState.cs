@@ -48,7 +48,7 @@ public class ArmadilloDefaultState : MovementState
             movementApplied = moveDirection.normalized * stats.moveSpeedMax * stats.onAirSpeedMultiplier * Time.fixedDeltaTime * 500;
             if (movementCtrl.rb.velocity.y < 0)
             {
-                movementCtrl.rb.AddForce(Vector3.up * Physics.gravity.y * 2f,ForceMode.Force);
+                movementCtrl.rb.AddForce(Vector3.up * Physics.gravity.y * stats.gravityMultiplier, ForceMode.Force);
             }
             movementCtrl.rb.AddForce(movementApplied, ForceMode.Acceleration);
         }
