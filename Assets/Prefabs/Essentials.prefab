@@ -2064,7 +2064,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6293525922061499492}
   serializedVersion: 4
-  m_Mass: 1
+  m_Mass: 50
   m_Drag: 0
   m_AngularDrag: 5
   m_CenterOfMass: {x: 0, y: 0, z: 0}
@@ -2126,29 +2126,40 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ee6163e8ee72314d8e14e1513c2cfe8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed_Default: 7.5
-  jumpForce_Default: 10
-  jumpCooldown_Default: 0.05
-  onAirSpeedMultiplier_Default: 0.4
-  groundDrag_Default: 5
-  airDrag_Default: 3
-  playerHeight_Default: 1.7
-  playerVisual_Default: {fileID: 2647468059563199376}
-  playerCollider_Default:
-  - {fileID: 2346160075134265153}
-  moveSpeed_Ball: 8.5
-  maxMoveSpeed_Ball: 15
-  onAirSpeedMultiplier_Ball: 0.3
-  groundDrag_Ball: 3.5
-  airDrag_Ball: 1
-  playerHeight_Ball: 1.25
-  playerVisual_Ball: {fileID: 7463056326791712992}
-  playerCollider_Ball:
-  - {fileID: 8761147212282896686}
+  movementInputVector: {x: 0, y: 0}
+  defaultFormStats:
+    moveSpeedAcceleration: 0
+    moveSpeedMax: 7.25
+    playerCollider:
+    - {fileID: 2346160075134265153}
+    mass: 50
+    jumpForce: 12
+    onAirSpeedMultiplier: 0.4
+    groundDrag: 10
+    airDrag: 3
+    playerHeight: 1.7
+    sprintSpeedMultiplier: 1.5
+    lurkSpeedMultiplier: 0.5
+  ballFormStats:
+    moveSpeedAcceleration: 0
+    moveSpeedMax: 4
+    playerCollider:
+    - {fileID: 8761147212282896686}
+    mass: 50
+    jumpForce: 12
+    onAirSpeedMultiplier: 0.4
+    groundDrag: 5
+    airDrag: 3
+    playerHeight: 1.25
+    sprintSpeedMultiplier: 1
+    lurkSpeedMultiplier: 0.75
+  movementTypeMultiplier: 1
+  currentMovementType: 0
   whatIsGround:
     serializedVersion: 2
     m_Bits: 328
   readyToJump: 1
+  grounded: 0
 --- !u!114 &5827398360590622979
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3276,7 +3287,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4555859652590835368
 Transform:
   m_ObjectHideFlags: 0
