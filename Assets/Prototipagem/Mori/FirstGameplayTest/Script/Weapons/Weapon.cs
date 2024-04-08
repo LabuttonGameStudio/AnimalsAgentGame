@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public abstract class Weapon
 {
@@ -19,6 +20,8 @@ public abstract class Weapon
 
     public int currentAmmoAmount;
     public int maxAmmoAmount;
+
+    public Slider ammoSlider;
 
     //Fire
     public abstract void OnFireButtonPerformed(InputAction.CallbackContext performed);

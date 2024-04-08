@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public class EletricPistol : Weapon
 {
@@ -14,9 +15,11 @@ public class EletricPistol : Weapon
         maxAmmoAmount = 100;
         name = "Pistola Eletrica";
         description = "Pressione pra atirar, segure para carregar ";
+        ammoSlider = armadilloWeaponControl.Weaponammoslider;
         LoadVisual();
         UpdateOverheatHUD();
     }
+
     //----- Stats -----
     //Tiro normal
     readonly private int unchargedHitDamage = 20;
@@ -27,6 +30,7 @@ public class EletricPistol : Weapon
     readonly private int chargedOverheatCharge = 55;
     //Overheat
     private bool isOverheating;
+    private Image AmmoImage;
     readonly private float overheatDuration = 2f;
     readonly private float timeUntilPassiveCoolOffStarts = 1f;
     readonly private float timeToFullCoolOff = 1.5f;
@@ -182,12 +186,17 @@ public class EletricPistol : Weapon
 
     //OverHeat
     #region
+
     public void UpdateOverheatHUD()
     {
-        weaponControl.currentWeaponUI.text = currentAmmoAmount.ToString() + "|" + maxAmmoAmount.ToString();
+        weaponControl.currentWeaponUI.text = " x" + currentAmmoAmount.ToString() + "%";
         float currentPercentage = ((float)currentAmmoAmount) / ((float)maxAmmoAmount);
         if (currentPercentage > 1) currentPercentage = 1;
+        ammoSlider.value = currentPercentage;
         weaponControl.currentWeaponUI.color = new Color(1, 1 - currentPercentage, 1 - currentPercentage);
+        AmmoImage = ammoSlider.GetComponentInChildren<Image>();
+        AmmoImage.color = new Color(1, 1 - currentPercentage, 1 - currentPercentage);
+
     }
     public void OnOverheatCharge(int chargeAmount)
     {
@@ -235,8 +244,6 @@ public class EletricPistol : Weapon
         currentAmmoAmount = 0;
         UpdateOverheatHUD();
     }
-
-
     private void StartPassiveCoolOff()
     {
         if (passiveCoolOff_Ref == null) passiveCoolOff_Ref = weaponControl.StartCoroutine(PassiveCoolOff_Coroutine());
@@ -269,4 +276,5 @@ public class EletricPistol : Weapon
         passiveCoolOff_Ref = null;
     }
     #endregion
+
 }

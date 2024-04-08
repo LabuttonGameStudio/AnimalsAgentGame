@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public class ArmadilloWeaponControl : MonoBehaviour
 {
@@ -13,6 +14,7 @@ public class ArmadilloWeaponControl : MonoBehaviour
     [SerializeField] private Camera weaponCamera;
 
     public TextMeshProUGUI currentWeaponUI;
+    public Slider Weaponammoslider;
 
     public void Start()
     {

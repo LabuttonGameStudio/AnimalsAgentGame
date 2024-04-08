@@ -13,12 +13,14 @@ public class EletricPistolVisual : MonoBehaviour
     {
         onFireParticle.Play();
         onFireTrail.Play();
+        TweenMunicao.Instance.ShakeAmmunition();
     }
     public void OnChargedFire()
     {
         OnUnCharge();
         onFireParticle.Play();
         onFireTrail.Play();
+        TweenMunicao.Instance.ShakeAmmunition();
     }
     public void OnCharge()
     {
