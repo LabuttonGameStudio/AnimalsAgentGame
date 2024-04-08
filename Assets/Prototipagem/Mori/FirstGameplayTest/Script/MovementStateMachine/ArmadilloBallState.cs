@@ -7,10 +7,14 @@ public class ArmadilloBallState : MovementState
 {
     ArmadilloMovementController movementCtrl;
     MovementFormStats stats;
+    Vector3 previousVelocityInput = Vector3.zero;
+    private Vector3 velocity = Vector3.zero;
     public override void EnterState(ArmadilloMovementController movementControl)
     {
         stats = movementControl.ballFormStats;
         movementCtrl = movementControl;
+
+        movementCtrl.rb.constraints = RigidbodyConstraints.None;
     }
 
 
@@ -36,7 +40,14 @@ public class ArmadilloBallState : MovementState
             + mainCamera.transform.right * movementCtrl.movementInputVector.x;
         moveDirection.y = 0;
 
-        if (movementCtrl.grounded) movementCtrl.rb.AddForce(moveDirection.normalized * stats.moveSpeedMax * 10, ForceMode.Acceleration);
+        if (movementCtrl.grounded)
+        {
+
+            moveDirection = moveDirection.normalized * stats.moveSpeedMax * 10;
+            moveDirection = Vector3.SmoothDamp(previousVelocityInput, moveDirection, ref velocity, 1 / stats.moveSpeedAcceleration);
+            movementCtrl.rb.AddForce(moveDirection, ForceMode.Acceleration);
+            previousVelocityInput = moveDirection;
+        }
         else
         {
             Vector3 movementInAir = moveDirection.normalized * stats.moveSpeedMax * stats.onAirSpeedMultiplier * 10;
@@ -44,9 +55,11 @@ public class ArmadilloBallState : MovementState
             {
                 movementInAir += Vector3.up * Physics.gravity.y * 2.0f;
             }
+            movementInAir = Vector3.SmoothDamp(previousVelocityInput, movementInAir, ref velocity, 1 / stats.moveSpeedAcceleration);
             movementCtrl.rb.AddForce(movementInAir, ForceMode.Acceleration);
+            previousVelocityInput = movementInAir;
         }
-        movementCtrl.transform.LookAt(movementCtrl.transform.position + moveDirection);
+        //movementCtrl.transform.LookAt(movementCtrl.transform.position + moveDirection);
     }
     //-----Player Jump-----
     public override void Jump(InputAction.CallbackContext value)
@@ -55,7 +68,7 @@ public class ArmadilloBallState : MovementState
         {
             movementCtrl.readyToJump = false;
             movementCtrl.rb.velocity = new Vector3(movementCtrl.rb.velocity.x, 0, movementCtrl.rb.velocity.z);
-            movementCtrl.rb.AddForce(movementCtrl.transform.up * stats.jumpForce, ForceMode.VelocityChange);
+            movementCtrl.rb.AddForce(Vector3.up * stats.jumpForce, ForceMode.VelocityChange);
         }
     }
     private void SpeedControl()

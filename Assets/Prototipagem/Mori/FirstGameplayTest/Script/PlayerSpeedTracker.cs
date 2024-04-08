@@ -14,7 +14,7 @@ public class PlayerSpeedTracker : MonoBehaviour
     private void Update()
     {
         float playerSpeed = new Vector2(rb.velocity.x,rb.velocity.z).magnitude;
-        playerSpeed=Mathf.Round(playerSpeed * 10000)/10000;
+        playerSpeed=Mathf.Round(playerSpeed * 100)/100;
         speedTracker.text = playerSpeed.ToString();
     }
 }

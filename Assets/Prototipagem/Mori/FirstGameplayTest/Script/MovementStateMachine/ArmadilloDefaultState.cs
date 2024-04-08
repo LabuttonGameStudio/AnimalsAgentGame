@@ -13,6 +13,8 @@ public class ArmadilloDefaultState : MovementState
     {
         stats = movementControl.defaultFormStats;
         movementCtrl = movementControl;
+
+        movementCtrl.rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
     }
 
 
@@ -27,7 +29,7 @@ public class ArmadilloDefaultState : MovementState
     }
     public override void ExitState()
     {
-        
+
     }
 
     //-----Player Movement-----
@@ -38,13 +40,16 @@ public class ArmadilloDefaultState : MovementState
         Vector3 movementApplied;
         if (movementCtrl.grounded)
         {
-            movementApplied = moveDirection.normalized * stats.moveSpeedMax * movementCtrl.movementTypeMultiplier* 10;
+            movementApplied = moveDirection.normalized * stats.moveSpeedMax * movementCtrl.movementTypeMultiplier * Time.fixedDeltaTime * 500;
             movementCtrl.rb.AddForce(movementApplied, ForceMode.Acceleration);
         }
         else
         {
-             movementApplied = moveDirection.normalized * stats.moveSpeedMax * stats.onAirSpeedMultiplier * 10;
-            if (movementCtrl.rb.velocity.y < 0) movementApplied += Vector3.up * Physics.gravity.y * 2f;
+            movementApplied = moveDirection.normalized * stats.moveSpeedMax * stats.onAirSpeedMultiplier * Time.fixedDeltaTime * 500;
+            if (movementCtrl.rb.velocity.y < 0)
+            {
+                movementCtrl.rb.AddForce(Vector3.up * Physics.gravity.y * 2f,ForceMode.Force);
+            }
             movementCtrl.rb.AddForce(movementApplied, ForceMode.Acceleration);
         }
     }
