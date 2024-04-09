@@ -55,6 +55,9 @@ public class ArmadilloMovementController : MonoBehaviour
 
     [HideInInspector] public float movementTypeMultiplier = 1;
 
+
+    [HideInInspector] public float timeSinceTouchedGround;
+
     public enum MovementType
     {
         Default,
@@ -206,10 +209,15 @@ public class ArmadilloMovementController : MonoBehaviour
         grounded = colliders.Length > 0;
         if (grounded)
         {
+            timeSinceTouchedGround = 0;
             rb.drag = stats.groundDrag;
 
             if (!readyToJump) StartJumpCooldown();
         }
-        else rb.drag = stats.airDrag;
+        else
+        {
+            timeSinceTouchedGround += Time.deltaTime;
+            rb.drag = stats.airDrag;
+        }
     }
 }
