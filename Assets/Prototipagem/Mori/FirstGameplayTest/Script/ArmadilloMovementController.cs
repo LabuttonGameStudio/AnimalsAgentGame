@@ -120,6 +120,7 @@ public class ArmadilloMovementController : MonoBehaviour
                 return ballFormStats;
         }
     }
+
     public void ChangeState(MovementState state)
     {
         if (currentState != null) currentState.ExitState();

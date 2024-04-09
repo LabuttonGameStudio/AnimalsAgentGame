@@ -7,6 +7,8 @@ using UnityEngine.UI;
 
 public class ArmadilloWeaponControl : MonoBehaviour
 {
+    [SerializeField] private bool startWithPistol;
+
     [System.NonSerialized] public Weapon[] weaponsInInventory;
 
     [System.NonSerialized] public int currentWeaponID = -1;
@@ -17,6 +19,10 @@ public class ArmadilloWeaponControl : MonoBehaviour
     public Slider Weaponammoslider;
 
     public void Start()
+    {
+        if(startWithPistol) GivePlayerEletricPistol();
+    }
+    public void GivePlayerEletricPistol()
     {
         weaponsInInventory = new Weapon[2];
         weaponsInInventory[0] = new EletricPistol(this);

@@ -16,7 +16,9 @@ public class ArmadilloPlayerController : MonoBehaviour
 {
     public static ArmadilloPlayerController Instance { get; private set; }
 
-
+    [SerializeField]private bool startWithChangeFormAbility;
+    [SerializeField]private bool startWithInvisibilityAbility;
+    [SerializeField]private bool startWithSonarAbility;
     public enum Form
     {
         Default = 0,
@@ -57,7 +59,11 @@ public class ArmadilloPlayerController : MonoBehaviour
     }
     private void Start()
     {
+        if(startWithChangeFormAbility) UnlockChangeFormAbility();
+    }
 
+    public void UnlockChangeFormAbility()
+    {
         inputControl.inputAction.Armadillo.Ability1.Enable();
         inputControl.inputAction.Armadillo.Ability1.performed += ChangeToBallForm;
     }

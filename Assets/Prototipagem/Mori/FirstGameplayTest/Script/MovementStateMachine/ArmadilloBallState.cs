@@ -9,6 +9,8 @@ public class ArmadilloBallState : MovementState
     MovementFormStats stats;
     Vector3 previousVelocityInput = Vector3.zero;
     private Vector3 velocity = Vector3.zero;
+
+    private Transform playerVisual;
     public override void EnterState(ArmadilloMovementController movementControl)
     {
         stats = movementControl.ballFormStats;
@@ -42,11 +44,11 @@ public class ArmadilloBallState : MovementState
 
         if (movementCtrl.grounded)
         {
-
             moveDirection = moveDirection.normalized * stats.moveSpeedMax * 10;
             moveDirection = Vector3.SmoothDamp(previousVelocityInput, moveDirection, ref velocity, 1 / stats.moveSpeedAcceleration);
             movementCtrl.rb.AddForce(moveDirection, ForceMode.Acceleration);
             previousVelocityInput = moveDirection;
+            movementCtrl.rb.AddTorque(new Vector3(moveDirection.z, moveDirection.y, -moveDirection.x)/10, ForceMode.VelocityChange);
         }
         else
         {
@@ -58,6 +60,7 @@ public class ArmadilloBallState : MovementState
             movementInAir = Vector3.SmoothDamp(previousVelocityInput, movementInAir, ref velocity, 1 / stats.moveSpeedAcceleration);
             movementCtrl.rb.AddForce(movementInAir, ForceMode.Acceleration);
             previousVelocityInput = movementInAir;
+            movementCtrl.rb.AddTorque(new Vector3(movementInAir.z, movementInAir.y, -movementInAir.x) / 20, ForceMode.VelocityChange);
         }
         //movementCtrl.transform.LookAt(movementCtrl.transform.position + moveDirection);
     }
