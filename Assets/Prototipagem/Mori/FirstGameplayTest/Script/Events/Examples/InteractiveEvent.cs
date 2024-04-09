@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class DropCoconutEvent : IEvent
+public class InteractiveEvent : IEvent
 {
-    Transform coconut;
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))

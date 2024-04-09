@@ -43,6 +43,7 @@ public class ArmadilloPlayerController : MonoBehaviour
     [SerializeField] public GameObject playerVisual_Ball;
     [SerializeField] public Collider[] playerCollider_Ball;
 
+    private int currentEquipedWeapon;
 
     private void Awake()
     {
@@ -87,6 +88,7 @@ public class ArmadilloPlayerController : MonoBehaviour
     private IEnumerator ChangeToBallForm_Coroutine()
     {
         //Move a camera para terceira pessoa em 0.5 segundos 
+        currentEquipedWeapon = weaponControl.currentWeaponID;
         weaponControl.ChangeWeapon(-1);
         cameraControl.ChangeCameraState(cameraControl.thirdPersonCameraState);
 
@@ -150,7 +152,7 @@ public class ArmadilloPlayerController : MonoBehaviour
 
         //Espera 0.25 segundos para deixar o objeto cair ate encostar no chao e evitar spam de transformacao 
         yield return new WaitForSeconds(0.25f);
-        weaponControl.ChangeWeapon(0);
+        weaponControl.ChangeWeapon(currentEquipedWeapon);
         inputControl.inputAction.Armadillo.Ability1.performed += ChangeToBallForm;
         changeToDefaultFormRef = null;
     }

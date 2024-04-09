@@ -20,11 +20,11 @@ public class ArmadilloWeaponControl : MonoBehaviour
 
     public void Start()
     {
-        if(startWithPistol) GivePlayerEletricPistol();
+        weaponsInInventory = new Weapon[2];
+        if (startWithPistol) GivePlayerEletricPistol();
     }
     public void GivePlayerEletricPistol()
     {
-        weaponsInInventory = new Weapon[2];
         weaponsInInventory[0] = new EletricPistol(this);
         ChangeWeapon(0);
     }
@@ -85,8 +85,10 @@ public class ArmadilloWeaponControl : MonoBehaviour
         PlayerInputAction.ArmadilloActions playerInput = ArmadilloPlayerController.Instance.inputControl.inputAction.Armadillo;
         if (nextWeapon < 0 || nextWeapon > weaponsInInventory.Length)
         {
+
+            if (currentWeaponID == -1) return;
             DefineDelegates(playerInput, DelegateType.Remove, currentWeaponID);
-            ToggleStateInputs(playerInput,false);
+            ToggleStateInputs(playerInput, false);
             weaponsInInventory[currentWeaponID].ToggleVisual(false);
             currentWeaponID = -1;
             return;
