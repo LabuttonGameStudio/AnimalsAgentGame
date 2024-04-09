@@ -8,6 +8,7 @@ public class CameraThirdPersonState : CameraBaseState
     public override void EnterState(PlayerCamera playerCmr)
     {
         playerCamera = playerCmr;
+        playerCamera.thirdPersonCinemachine.Follow.rotation = playerCamera.mainCamera.transform.rotation;
         playerCamera.firstPersonCinemachine.Priority = 10;
         playerCamera.thirdPersonCinemachine.Priority = 11;
         //playerCamera.activeCamera.gameObject.SetActive(false);
@@ -26,6 +27,22 @@ public class CameraThirdPersonState : CameraBaseState
 
     public override void UpdateState()
     {
+        Transform followTransform = playerCamera.thirdPersonCinemachine.Follow;
+        followTransform.rotation *= Quaternion.AngleAxis(playerCamera.GetMouseDelta().x/8, Vector3.up);
+        followTransform.rotation *= Quaternion.AngleAxis(-playerCamera.GetMouseDelta().y/8, Vector3.right);
+        Vector3 angles = followTransform.localEulerAngles;
+        angles.z = 0;
+        float angle = followTransform.localEulerAngles.x;
+
+        if(angle>180 && angle<340)
+        {
+            angles.x = 340;
+        }
+        else if (angle < 180 && angle > 60)
+        {
+            angles.x = 60;
+        }
+        followTransform.localEulerAngles = angles;
 
     }
     public IEnumerator OnEnterLerpCamera_Coroutine()

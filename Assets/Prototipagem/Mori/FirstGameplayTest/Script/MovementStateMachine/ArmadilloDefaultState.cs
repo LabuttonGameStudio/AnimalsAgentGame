@@ -13,7 +13,7 @@ public class ArmadilloDefaultState : MovementState
     {
         stats = movementControl.defaultFormStats;
         movementCtrl = movementControl;
-
+        movementCtrl.rb.angularVelocity = Vector3.zero;
         movementCtrl.rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
     }
 
@@ -48,7 +48,7 @@ public class ArmadilloDefaultState : MovementState
             movementApplied = moveDirection.normalized * stats.moveSpeedMax * stats.onAirSpeedMultiplier * Time.fixedDeltaTime * 500;
             if (movementCtrl.rb.velocity.y < 0)
             {
-                movementCtrl.rb.AddForce(Vector3.up * Physics.gravity.y * stats.gravityMultiplier, ForceMode.Force);
+                movementCtrl.rb.AddForce((Vector3.up * Physics.gravity.y * stats.gravityMultiplier*movementCtrl.timeSinceTouchedGround/15) * (movementCtrl.rb.mass/50), ForceMode.Acceleration);
             }
             movementCtrl.rb.AddForce(movementApplied, ForceMode.Acceleration);
         }

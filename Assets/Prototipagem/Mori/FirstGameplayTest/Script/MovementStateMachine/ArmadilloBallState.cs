@@ -15,7 +15,6 @@ public class ArmadilloBallState : MovementState
     {
         stats = movementControl.ballFormStats;
         movementCtrl = movementControl;
-
         movementCtrl.rb.constraints = RigidbodyConstraints.None;
     }
 
@@ -31,7 +30,8 @@ public class ArmadilloBallState : MovementState
     }
     public override void ExitState()
     {
-
+        previousVelocityInput = Vector3.zero;
+        velocity = Vector3.zero;
     }
 
     //-----Player Movement-----
@@ -48,21 +48,20 @@ public class ArmadilloBallState : MovementState
             moveDirection = Vector3.SmoothDamp(previousVelocityInput, moveDirection, ref velocity, 1 / stats.moveSpeedAcceleration);
             movementCtrl.rb.AddForce(moveDirection, ForceMode.Acceleration);
             previousVelocityInput = moveDirection;
-            movementCtrl.rb.AddTorque(new Vector3(moveDirection.z, moveDirection.y, -moveDirection.x)/10, ForceMode.VelocityChange);
+            movementCtrl.rb.AddTorque(new Vector3(moveDirection.z, moveDirection.y, -moveDirection.x)/5, ForceMode.VelocityChange);
         }
         else
         {
             Vector3 movementInAir = moveDirection.normalized * stats.moveSpeedMax * stats.onAirSpeedMultiplier * 10;
             if (movementCtrl.rb.velocity.y < 0)
             {
-                movementInAir += Vector3.up * Physics.gravity.y * 2.0f;
+                movementCtrl.rb.AddForce((Vector3.up * Physics.gravity.y * 2.0f * movementCtrl.timeSinceTouchedGround * 3/1.5f) * (movementCtrl.rb.mass / 50), ForceMode.Acceleration);
             }
             movementInAir = Vector3.SmoothDamp(previousVelocityInput, movementInAir, ref velocity, 1 / stats.moveSpeedAcceleration);
             movementCtrl.rb.AddForce(movementInAir, ForceMode.Acceleration);
             previousVelocityInput = movementInAir;
-            movementCtrl.rb.AddTorque(new Vector3(movementInAir.z, movementInAir.y, -movementInAir.x) / 20, ForceMode.VelocityChange);
+            movementCtrl.rb.AddTorque(new Vector3(movementInAir.z, movementInAir.y, -movementInAir.x) / 5, ForceMode.VelocityChange);
         }
-        //movementCtrl.transform.LookAt(movementCtrl.transform.position + moveDirection);
     }
     //-----Player Jump-----
     public override void Jump(InputAction.CallbackContext value)

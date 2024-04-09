@@ -23,7 +23,7 @@ public class PlayerCamera : MonoBehaviour
     public CameraThirdPersonState thirdPersonCameraState;
 
     [Space, Header("Cinemachine")]
-    public CinemachineFreeLook thirdPersonCinemachine;
+    public CinemachineVirtualCamera thirdPersonCinemachine;
     public CinemachineVirtualCamera firstPersonCinemachine;
 
     public void ChangeCameraState(CameraBaseState nextState)
