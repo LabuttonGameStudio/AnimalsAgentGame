@@ -48,7 +48,7 @@ public class EletricPistol : Weapon
             Debug.LogError("Erro ao encontrar Eletric Pistol Prefab em Prefabs/Weapons/EletricPistol");
         }
         Vector3 position = new Vector3(0.6f, -0.25f, 0.9f);
-        Quaternion rotation = Quaternion.Euler(new Vector3(0, 85, 357.5f));
+        Quaternion rotation = Quaternion.Euler(new Vector3(0, 89, 0));
         GameObject model;
         model = weaponControl.LoadModel(modelPrefab, position, rotation);
         if (model.TryGetComponent(out EletricPistolVisual eletricPistolVisual))

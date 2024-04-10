@@ -48,20 +48,17 @@ public class ArmadilloDefaultState : MovementState
             movementApplied = moveDirection.normalized * stats.moveSpeedMax * stats.onAirSpeedMultiplier * Time.fixedDeltaTime * 500;
             if (movementCtrl.rb.velocity.y < 0)
             {
-                movementCtrl.rb.AddForce((Vector3.up * Physics.gravity.y * stats.gravityMultiplier*movementCtrl.timeSinceTouchedGround/15) * (movementCtrl.rb.mass/50), ForceMode.Acceleration);
+                movementCtrl.rb.AddForce((Vector3.up * Physics.gravity.y * stats.gravityMultiplier * movementCtrl.timeSinceTouchedGround / 15) * (movementCtrl.rb.mass / 50), ForceMode.Acceleration);
             }
             movementCtrl.rb.AddForce(movementApplied, ForceMode.Acceleration);
         }
     }
     //-----Player Jump-----
-    public override void Jump(InputAction.CallbackContext value)
+    public override void Jump()
     {
-        if (movementCtrl.readyToJump && movementCtrl.grounded)
-        {
-            movementCtrl.readyToJump = false;
-            movementCtrl.rb.velocity = new Vector3(movementCtrl.rb.velocity.x, 0, movementCtrl.rb.velocity.z);
-            movementCtrl.rb.AddForce(movementCtrl.transform.up * stats.jumpForce, ForceMode.VelocityChange);
-        }
+        movementCtrl.readyToJump = false;
+        movementCtrl.rb.velocity = new Vector3(movementCtrl.rb.velocity.x, 0, movementCtrl.rb.velocity.z);
+        movementCtrl.rb.AddForce(movementCtrl.transform.up * stats.jumpForce, ForceMode.VelocityChange);
     }
     private void SpeedControl()
     {

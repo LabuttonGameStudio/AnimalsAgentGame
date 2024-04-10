@@ -48,14 +48,14 @@ public class ArmadilloBallState : MovementState
             moveDirection = Vector3.SmoothDamp(previousVelocityInput, moveDirection, ref velocity, 1 / stats.moveSpeedAcceleration);
             movementCtrl.rb.AddForce(moveDirection, ForceMode.Acceleration);
             previousVelocityInput = moveDirection;
-            movementCtrl.rb.AddTorque(new Vector3(moveDirection.z, moveDirection.y, -moveDirection.x)/5, ForceMode.VelocityChange);
+            movementCtrl.rb.AddTorque(new Vector3(moveDirection.z, moveDirection.y, -moveDirection.x) / 5, ForceMode.VelocityChange);
         }
         else
         {
             Vector3 movementInAir = moveDirection.normalized * stats.moveSpeedMax * stats.onAirSpeedMultiplier * 10;
             if (movementCtrl.rb.velocity.y < 0)
             {
-                movementCtrl.rb.AddForce((Vector3.up * Physics.gravity.y * 2.0f * movementCtrl.timeSinceTouchedGround * 3/1.5f) * (movementCtrl.rb.mass / 50), ForceMode.Acceleration);
+                movementCtrl.rb.AddForce((Vector3.up * Physics.gravity.y * 2.0f * movementCtrl.timeSinceTouchedGround * 3 / 1.5f) * (movementCtrl.rb.mass / 50), ForceMode.Acceleration);
             }
             movementInAir = Vector3.SmoothDamp(previousVelocityInput, movementInAir, ref velocity, 1 / stats.moveSpeedAcceleration);
             movementCtrl.rb.AddForce(movementInAir, ForceMode.Acceleration);
@@ -64,14 +64,11 @@ public class ArmadilloBallState : MovementState
         }
     }
     //-----Player Jump-----
-    public override void Jump(InputAction.CallbackContext value)
+    public override void Jump()
     {
-        if (movementCtrl.readyToJump && movementCtrl.grounded)
-        {
-            movementCtrl.readyToJump = false;
-            movementCtrl.rb.velocity = new Vector3(movementCtrl.rb.velocity.x, 0, movementCtrl.rb.velocity.z);
-            movementCtrl.rb.AddForce(Vector3.up * stats.jumpForce, ForceMode.VelocityChange);
-        }
+        movementCtrl.readyToJump = false;
+        movementCtrl.rb.velocity = new Vector3(movementCtrl.rb.velocity.x, 0, movementCtrl.rb.velocity.z);
+        movementCtrl.rb.AddForce(Vector3.up * stats.jumpForce, ForceMode.VelocityChange);
     }
     private void SpeedControl()
     {

@@ -45,13 +45,18 @@ public class ArmadilloMovementController : MonoBehaviour
 
     //Input system
     [System.NonSerialized] public ArmadilloPlayerInputController inputController;
-    [HideInInspector]public Vector2 movementInputVector;
+    [HideInInspector] public Vector2 movementInputVector;
 
     //Variables
     public readonly float jumpCooldown = 0.25f;
 
     public MovementFormStats defaultFormStats;
     public MovementFormStats ballFormStats;
+
+
+
+    [Space][Header("Movement Helpers")][SerializeField] public float coyoteTime = 0.25f;
+    [SerializeField] public float inputBuffering = 0.25f;
 
     [HideInInspector] public float movementTypeMultiplier = 1;
 
@@ -64,12 +69,12 @@ public class ArmadilloMovementController : MonoBehaviour
         Sprinting,
         Lurking
     }
-    [HideInInspector]public MovementType currentMovementType;
+    [HideInInspector] public MovementType currentMovementType;
 
     [Header("Ground Check")]
     public LayerMask whatIsGround;
     public bool readyToJump = true;
-    [HideInInspector]public bool grounded;
+    [HideInInspector] public bool grounded;
 
     public void OnDrawGizmos()
     {
@@ -77,7 +82,7 @@ public class ArmadilloMovementController : MonoBehaviour
         Gizmos.color = Color.magenta;
         if (ArmadilloPlayerController.Instance != null)
         {
-            Gizmos.DrawSphere(transform.position - new Vector3(0, GetCurrentFormStats().playerHeight / 2 + 0.1f, 0),0.25f);
+            Gizmos.DrawSphere(transform.position - new Vector3(0, GetCurrentFormStats().playerHeight / 2 + 0.1f, 0), 0.25f);
         }
     }
 
@@ -137,9 +142,41 @@ public class ArmadilloMovementController : MonoBehaviour
     }
     public void OnJump(InputAction.CallbackContext value)
     {
-        currentState.Jump(value);
+        if (readyToJump && timeSinceTouchedGround < coyoteTime)
+        {
+            currentState.Jump();
+        }
+        else
+        {
+            StartJumpBuffer();
+        }
     }
-
+    public void StartJumpBuffer()
+    {
+        if (jumpBuffer_Ref == null) jumpBuffer_Ref = StartCoroutine(JumpBuffer_Coroutine());
+        else
+        {
+            StopCoroutine(jumpBuffer_Ref);
+            jumpBuffer_Ref = null;
+            jumpBuffer_Ref = StartCoroutine(JumpBuffer_Coroutine());
+        }
+    }
+    private Coroutine jumpBuffer_Ref;
+    private IEnumerator JumpBuffer_Coroutine()
+    {
+        float timer = 0;
+        while(timer< inputBuffering)
+        {
+            if (readyToJump && timeSinceTouchedGround < coyoteTime)
+            {
+                Debug.Log("Bufferd");
+                jumpBuffer_Ref = null;
+                currentState.Jump();
+            }
+            timer += Time.deltaTime;
+            yield return null;
+        }
+    }
     public void OnSprint(InputAction.CallbackContext value)
     {
         if (value.performed)
@@ -204,7 +241,7 @@ public class ArmadilloMovementController : MonoBehaviour
     private void CheckForGrounded()
     {
         MovementFormStats stats = GetCurrentFormStats();
-        Vector3 groundCheckPos = transform.position - new Vector3(0, stats.playerHeight/2f,0);
+        Vector3 groundCheckPos = transform.position - new Vector3(0, stats.playerHeight / 2f, 0);
         Collider[] colliders = Physics.OverlapSphere(groundCheckPos, 0.25f, whatIsGround, QueryTriggerInteraction.Ignore);
         grounded = colliders.Length > 0;
         if (grounded)
