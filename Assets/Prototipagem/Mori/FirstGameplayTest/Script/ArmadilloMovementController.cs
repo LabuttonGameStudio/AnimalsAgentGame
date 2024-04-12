@@ -54,7 +54,6 @@ public class ArmadilloMovementController : MonoBehaviour
     public MovementFormStats ballFormStats;
 
 
-
     [Space][Header("Movement Helpers")][SerializeField] public float coyoteTime = 0.25f;
     [SerializeField] public float inputBuffering = 0.25f;
 
@@ -72,9 +71,24 @@ public class ArmadilloMovementController : MonoBehaviour
     [HideInInspector] public MovementType currentMovementType;
 
     [Header("Ground Check")]
+    public LayerMask whatIsClimbable;
     public LayerMask whatIsGround;
     public bool readyToJump = true;
     [HideInInspector] public bool grounded;
+
+    [HideInInspector] public bool isPressingJumpButton;
+    [HideInInspector] public bool hasUsedLedgeGrab;
+
+    [Header("Testing")]
+    public bool requireWInputToLedgeGrab;
+    public bool requireJumpInputToLedgeGrab;
+    public bool canUseMultiplesLedgeGrabInSingleJump;
+
+    [Space]
+    [Header("Ledge Grabing")]
+    public float minHeightToLedgeGrab;
+    public float maxHeightToLedgeGrab;
+
 
     public void OnDrawGizmos()
     {
@@ -107,6 +121,7 @@ public class ArmadilloMovementController : MonoBehaviour
         inputController.inputAction.Armadillo.Movement.canceled += OnMovement;
 
         inputController.inputAction.Armadillo.Jump.performed += OnJump;
+        inputController.inputAction.Armadillo.Jump.canceled += OnJump;
 
 
         inputController.inputAction.Armadillo.Sprint.performed += OnSprint;
@@ -142,13 +157,17 @@ public class ArmadilloMovementController : MonoBehaviour
     }
     public void OnJump(InputAction.CallbackContext value)
     {
-        if (readyToJump && timeSinceTouchedGround < coyoteTime)
+        isPressingJumpButton = value.ReadValueAsButton();
+        if (isPressingJumpButton)
         {
-            currentState.Jump();
-        }
-        else
-        {
-            StartJumpBuffer();
+            if (readyToJump && timeSinceTouchedGround < coyoteTime)
+            {
+                currentState.Jump();
+            }
+            else
+            {
+                StartJumpBuffer();
+            }
         }
     }
     public void StartJumpBuffer()
@@ -165,7 +184,7 @@ public class ArmadilloMovementController : MonoBehaviour
     private IEnumerator JumpBuffer_Coroutine()
     {
         float timer = 0;
-        while(timer< inputBuffering)
+        while (timer < inputBuffering)
         {
             if (readyToJump && timeSinceTouchedGround < coyoteTime)
             {
@@ -246,6 +265,7 @@ public class ArmadilloMovementController : MonoBehaviour
         grounded = colliders.Length > 0;
         if (grounded)
         {
+            hasUsedLedgeGrab = false;
             timeSinceTouchedGround = 0;
             rb.drag = stats.groundDrag;
 

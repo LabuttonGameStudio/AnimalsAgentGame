@@ -25,7 +25,7 @@ public class ArmadilloDefaultState : MovementState
 
     public override void UpdateState()
     {
-        SpeedControl();
+
     }
     public override void ExitState()
     {
@@ -46,6 +46,7 @@ public class ArmadilloDefaultState : MovementState
         else
         {
             movementApplied = moveDirection.normalized * stats.moveSpeedMax * stats.onAirSpeedMultiplier * Time.fixedDeltaTime * 500;
+            LedgeGrab();
             if (movementCtrl.rb.velocity.y < 0)
             {
                 movementCtrl.rb.AddForce((Vector3.up * Physics.gravity.y * stats.gravityMultiplier * movementCtrl.timeSinceTouchedGround / 15) * (movementCtrl.rb.mass / 50), ForceMode.Acceleration);
@@ -60,13 +61,46 @@ public class ArmadilloDefaultState : MovementState
         movementCtrl.rb.velocity = new Vector3(movementCtrl.rb.velocity.x, 0, movementCtrl.rb.velocity.z);
         movementCtrl.rb.AddForce(movementCtrl.transform.up * stats.jumpForce, ForceMode.VelocityChange);
     }
-    private void SpeedControl()
+    private void LedgeGrab()
     {
-        //Vector3 flatVel = new Vector3(movementCtrl.rb.velocity.x, 0, movementCtrl.rb.velocity.z);
-        //if (flatVel.magnitude > movementCtrl.moveSpeed_Default)
-        //{
-        //    Vector3 limitedVel = flatVel.normalized * movementCtrl.moveSpeed_Default;
-        //    movementCtrl.rb.velocity = new Vector3(limitedVel.x, movementCtrl.rb.velocity.y, limitedVel.z);
-        //}
+        if (movementCtrl.requireJumpInputToLedgeGrab)
+        {
+            if (!movementCtrl.isPressingJumpButton) return;
+        }
+        if (movementCtrl.requireWInputToLedgeGrab)
+        {
+            if (!(movementCtrl.movementInputVector.y > 0)) return;
+        }
+        if (!movementCtrl.canUseMultiplesLedgeGrabInSingleJump)
+        {
+            if (movementCtrl.hasUsedLedgeGrab) return;
+        }
+        RaycastHit downHit;
+        Vector3 lineDownStart = (movementCtrl.transform.position + Vector3.up * (movementCtrl.maxHeightToLedgeGrab-stats.playerHeight)) + movementCtrl.transform.forward;
+        Vector3 lineDownEnd = (movementCtrl.transform.position + Vector3.up * (movementCtrl.minHeightToLedgeGrab - stats.playerHeight)) + movementCtrl.transform.forward;
+        Physics.Linecast(lineDownStart, lineDownEnd, out downHit, movementCtrl.whatIsClimbable, QueryTriggerInteraction.Ignore);
+        Debug.DrawLine(lineDownStart, lineDownEnd, Color.magenta);
+        if (downHit.collider != null)
+        {
+            Collider[] collidersOnPoint = Physics.OverlapSphere(downHit.point + Vector3.up, 0.25f, movementCtrl.whatIsGround, QueryTriggerInteraction.Ignore);
+            Debug.DrawLine(downHit.point + Vector3.up + new Vector3(0, 0.125f), downHit.point + Vector3.up - new Vector3(0, 0.125f), Color.green);
+            if (collidersOnPoint.Length > 0)
+            {
+                return;
+            }
+            //RaycastHit fwdHit;
+            //Vector3 lineFwdStart = new Vector3(movementCtrl.transform.position.x, downHit.point.y - 0.1f, movementCtrl.transform.position.z);
+            //Vector3 lineFwdEnd = new Vector3(movementCtrl.transform.position.x, downHit.point.y - 0.1f, movementCtrl.transform.position.z) + movementCtrl.transform.forward;
+            //Physics.Linecast(lineFwdStart, lineFwdEnd, out fwdHit, movementCtrl.whatIsGround, QueryTriggerInteraction.Ignore);
+            //Debug.DrawLine(lineFwdStart, lineFwdEnd);
+            //if (fwdHit.collider != null)
+            //{
+
+            movementCtrl.hasUsedLedgeGrab = true;
+            movementCtrl.timeSinceTouchedGround = 0;
+            Jump();
+
+            //}
+        }
     }
 }

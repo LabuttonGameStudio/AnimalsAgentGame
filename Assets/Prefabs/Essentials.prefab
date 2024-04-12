@@ -1068,7 +1068,7 @@ Camera:
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 895
+    m_Bits: 1919
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -1684,13 +1684,26 @@ MonoBehaviour:
     playerHeight: 1.25
     sprintSpeedMultiplier: 1
     lurkSpeedMultiplier: 0.75
+  coyoteTime: 0.25
+  inputBuffering: 0.25
   movementTypeMultiplier: 1
+  timeSinceTouchedGround: 0
   currentMovementType: 0
+  whatIsClimbable:
+    serializedVersion: 2
+    m_Bits: 1024
   whatIsGround:
     serializedVersion: 2
-    m_Bits: 328
+    m_Bits: 1352
   readyToJump: 1
   grounded: 1
+  isPressingJumpButton: 0
+  hasUsedLedgeGrab: 0
+  requireWInputToLedgeGrab: 0
+  requireJumpInputToLedgeGrab: 0
+  canUseMultiplesLedgeGrabInSingleJump: 0
+  minHeightToLedgeGrab: 2
+  maxHeightToLedgeGrab: 2.7
 --- !u!114 &5827398360590622979
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2224,7 +2237,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a35f089cbff330a46bb536619497847f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cameraFollowPoint: {fileID: 4398985997072136297}
+  cameraFollowPoint: {fileID: 2012898067650594436}
+  cameraDistanceFromPlayer: 0.75
 --- !u!1 &6799058332185641824
 GameObject:
   m_ObjectHideFlags: 0
