@@ -42,28 +42,37 @@ Material:
         m_Texture: {fileID: 2800000, guid: 89190fe21e499e2489b5df590ab45646, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _NM_Mask:
+        m_Texture: {fileID: 2800000, guid: 8db0b70286d6f0448b1ec2f89ea84d22, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _NormalMap:
         m_Texture: {fileID: 2800000, guid: 7ed5d871b08bd4a4f91267535e1db4cc, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _HUE: 1
     - _MaskBlue: 1
     - _MaskGreen: 1
     - _MaskMetalicBlue: 0
     - _MaskMetalicGreen: 0
     - _MaskMetalicRed: 0
-    - _MaskRed: 1
-    - _MaskSpecularBlue: 0
-    - _MaskSpecularGreen: 0
-    - _MaskSpecularRed: 0
-    - _Metalic_Controler: 1
+    - _MaskRed: 0
+    - _MaskSpecularBlue: -0.6
+    - _MaskSpecularGreen: -0.74
+    - _MaskSpecularRed: -0.36
+    - _Metalic_Controler: 0
+    - _Normal_Intensity: 1
+    - _Saturation: 1
     - _Smoothness_Controler: 1
+    - _Value: 1
     m_Colors:
     - _Color_Controler: {r: 1, g: 0, b: 0, a: 0}
-    - _MaskBlueColor: {r: 0.5199804, g: 0.52459896, b: 0.5377358, a: 0}
-    - _MaskGreenColor: {r: 0.254717, g: 0.17301533, b: 0.1525899, a: 0}
-    - _MaskRedColor: {r: 0.4056604, g: 0.11306124, b: 0.032529376, a: 0}
+    - _MaskBlueColor: {r: 0.6037736, g: 0.3691878, b: 0.31612673, a: 0}
+    - _MaskGreenColor: {r: 0.6039216, g: 0.36862746, b: 0.31764707, a: 0}
+    - _MaskRedColor: {r: 0.5566038, g: 0.48583862, b: 0.35969207, a: 0}
+    - _UV: {r: 2, g: 2, b: 0, a: 0}
   m_BuildTextureStacks: []
 --- !u!114 &8908641327489692056
 MonoBehaviour:
