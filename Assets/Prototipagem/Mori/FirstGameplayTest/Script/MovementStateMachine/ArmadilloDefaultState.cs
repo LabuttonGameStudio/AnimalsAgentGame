@@ -1,8 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.XInput;
 using UnityEngine.UIElements;
 
 public class ArmadilloDefaultState : MovementState

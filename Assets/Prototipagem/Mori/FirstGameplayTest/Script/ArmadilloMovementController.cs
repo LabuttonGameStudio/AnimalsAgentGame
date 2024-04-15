@@ -42,6 +42,7 @@ public class ArmadilloMovementController : MonoBehaviour
     MovementState currentState;
 
     public ArmadilloDefaultState defaultState;
+    public ArmadilloLadderState ladderState;
     public ArmadilloBallState ballState;
 
     //Componentes
@@ -94,9 +95,11 @@ public class ArmadilloMovementController : MonoBehaviour
     public float maxHeightToLedgeGrab;
 
     [Header("Slope")]
-    [SerializeField]public bool isOnSlope;
-    [SerializeField] private RaycastHit slopeHit;
+    [HideInInspector] public bool isOnSlope;
+    private RaycastHit slopeHit;
 
+    [Header("Ladder")]
+    public float ladderSpeed;
 
     public void OnDrawGizmos()
     {
@@ -115,6 +118,7 @@ public class ArmadilloMovementController : MonoBehaviour
 
         defaultState = new ArmadilloDefaultState();
         ballState = new ArmadilloBallState();
+        ladderState = new ArmadilloLadderState();
     }
     private void Start()
     {
@@ -276,10 +280,10 @@ public class ArmadilloMovementController : MonoBehaviour
             hasUsedLedgeGrab = false;
             timeSinceTouchedGround = 0;
             rb.drag = stats.groundDrag;
-            
-            if(Physics.Raycast(groundCheckPos,Vector3.down,out slopeHit ,0.5f,whatIsGround,QueryTriggerInteraction.Ignore))
+
+            if (Physics.Raycast(groundCheckPos, Vector3.down, out slopeHit, 0.5f, whatIsGround, QueryTriggerInteraction.Ignore))
             {
-                float angle = Vector3.Angle(Vector3.up,slopeHit.normal);
+                float angle = Vector3.Angle(Vector3.up, slopeHit.normal);
                 isOnSlope = (angle < stats.maxSlopeAngle && angle != 0);
             }
 
@@ -290,6 +294,33 @@ public class ArmadilloMovementController : MonoBehaviour
             timeSinceTouchedGround += Time.deltaTime;
             rb.drag = stats.airDrag;
         }
+    }
+    public bool CheckMatchOfCurrentLadder(Transform ladderObject)
+    {
+        if(ladderState.ladderObject == null || ladderObject == null) return false;
+        return ReferenceEquals(ladderObject.gameObject, ladderState.ladderObject.gameObject);
+    }
+    public void EnterLadder(Transform objectTransform, Vector3 minPosition, Vector3 maxPosition)
+    {
+        ladderState.ladderObject = objectTransform;
+        ladderState.minPosition = minPosition;
+        ladderState.maxPosition = maxPosition;
+        ChangeState(ladderState);
+    }
+    public void ExitLadder()
+    {
+        ladderState.ladderObject = null;
+        ladderState.minPosition = Vector3.zero;
+        ladderState.maxPosition = Vector3.zero;
+        ChangeState(defaultState);
+    }
+    public void ExitLadderWithJump()
+    {
+        ladderState.ladderObject = null;
+        ladderState.minPosition = Vector3.zero;
+        ladderState.maxPosition = Vector3.zero;
+        ChangeState(defaultState);
+        defaultState.Jump();
     }
     public Vector3 GetSlopeMoveDirection(Vector3 moveDirection)
     {

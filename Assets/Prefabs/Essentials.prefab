@@ -1670,6 +1670,7 @@ MonoBehaviour:
     playerHeight: 1.7
     sprintSpeedMultiplier: 1.5
     lurkSpeedMultiplier: 0.5
+    maxSlopeAngle: 70
   ballFormStats:
     moveSpeedAcceleration: 3
     moveSpeedMax: 5.25
@@ -1684,6 +1685,7 @@ MonoBehaviour:
     playerHeight: 1.25
     sprintSpeedMultiplier: 1
     lurkSpeedMultiplier: 0.75
+    maxSlopeAngle: 50
   coyoteTime: 0.25
   inputBuffering: 0.25
   movementTypeMultiplier: 1
@@ -1704,6 +1706,8 @@ MonoBehaviour:
   canUseMultiplesLedgeGrabInSingleJump: 0
   minHeightToLedgeGrab: 2
   maxHeightToLedgeGrab: 2.7
+  isOnSlope: 0
+  ladderSpeed: 3
 --- !u!114 &5827398360590622979
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1794,6 +1798,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aec18d3a4d066a74e87cd8be56d162f9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  interactionRange: 3
   whatIsInteractive:
     serializedVersion: 2
     m_Bits: 64

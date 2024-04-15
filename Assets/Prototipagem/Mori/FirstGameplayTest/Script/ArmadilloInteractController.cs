@@ -9,6 +9,7 @@ public class ArmadilloInteractController : MonoBehaviour
     //Singleton
     public static ArmadilloInteractController Instance { get; private set; }
 
+    [SerializeField] private float interactionRange = 3f;
     //Input System
     ArmadilloPlayerInputController inputController;
 
@@ -26,7 +27,11 @@ public class ArmadilloInteractController : MonoBehaviour
         Instance = this;
     }
 
-
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, interactionRange);
+    }
     private void Start()
     {
         inputController = GetComponent<ArmadilloPlayerInputController>();
@@ -92,6 +97,7 @@ public class ArmadilloInteractController : MonoBehaviour
         {
             StopCoroutine(checkForInteractiveItemInAimRef);
             checkForInteractiveItemInAimRef = null;
+            ClearInteractButtonAction();
         }
     }
 
@@ -102,7 +108,7 @@ public class ArmadilloInteractController : MonoBehaviour
         Transform cameraTransform = PlayerCamera.Instance.mainCamera.transform;
         while (true)
         {
-            if (Physics.Raycast(cameraTransform.position, cameraTransform.forward, out RaycastHit hitInfo, 10f, whatIsInteractive, QueryTriggerInteraction.Ignore))
+            if (Physics.Raycast(cameraTransform.position, cameraTransform.forward, out RaycastHit hitInfo, interactionRange, whatIsInteractive, QueryTriggerInteraction.Ignore))
             {
                 if (activeInteractive != hitInfo.transform)
                 {
