@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PipeObject : MonoBehaviour, InteractiveObject
+public class LadderObject : MonoBehaviour, InteractiveObject
 {
     [SerializeField] private Transform minTransform;
     [SerializeField] private Transform maxTransform;
