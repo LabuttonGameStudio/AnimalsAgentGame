@@ -31,6 +31,10 @@ public class MovementFormStats
     [Header("Sprint e Lurk")]
     public float sprintSpeedMultiplier;
     public float lurkSpeedMultiplier;
+
+    [Header("Slope")]
+    public float maxSlopeAngle;
+
 }
 public class ArmadilloMovementController : MonoBehaviour
 {
@@ -88,6 +92,10 @@ public class ArmadilloMovementController : MonoBehaviour
     [Header("Ledge Grabing")]
     public float minHeightToLedgeGrab;
     public float maxHeightToLedgeGrab;
+
+    [Header("Slope")]
+    [SerializeField]public bool isOnSlope;
+    [SerializeField] private RaycastHit slopeHit;
 
 
     public void OnDrawGizmos()
@@ -268,6 +276,12 @@ public class ArmadilloMovementController : MonoBehaviour
             hasUsedLedgeGrab = false;
             timeSinceTouchedGround = 0;
             rb.drag = stats.groundDrag;
+            
+            if(Physics.Raycast(groundCheckPos,Vector3.down,out slopeHit ,0.5f,whatIsGround,QueryTriggerInteraction.Ignore))
+            {
+                float angle = Vector3.Angle(Vector3.up,slopeHit.normal);
+                isOnSlope = (angle < stats.maxSlopeAngle && angle != 0);
+            }
 
             if (!readyToJump) StartJumpCooldown();
         }
@@ -276,5 +290,9 @@ public class ArmadilloMovementController : MonoBehaviour
             timeSinceTouchedGround += Time.deltaTime;
             rb.drag = stats.airDrag;
         }
+    }
+    public Vector3 GetSlopeMoveDirection(Vector3 moveDirection)
+    {
+        return Vector3.ProjectOnPlane(moveDirection, slopeHit.normal);
     }
 }

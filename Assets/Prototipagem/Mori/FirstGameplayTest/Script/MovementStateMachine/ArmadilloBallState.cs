@@ -44,7 +44,9 @@ public class ArmadilloBallState : MovementState
 
         if (movementCtrl.grounded)
         {
-            moveDirection = moveDirection.normalized * stats.moveSpeedMax * 10;
+            if(movementCtrl.isOnSlope) moveDirection = movementCtrl.GetSlopeMoveDirection(moveDirection.normalized) * stats.moveSpeedMax * 10;
+            else moveDirection = moveDirection.normalized * stats.moveSpeedMax * 10;
+
             moveDirection = Vector3.SmoothDamp(previousVelocityInput, moveDirection, ref velocity, 1 / stats.moveSpeedAcceleration);
             movementCtrl.rb.AddForce(moveDirection, ForceMode.Acceleration);
             previousVelocityInput = moveDirection;

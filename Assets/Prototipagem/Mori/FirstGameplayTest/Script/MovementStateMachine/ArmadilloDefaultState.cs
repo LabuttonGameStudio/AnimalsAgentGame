@@ -40,7 +40,8 @@ public class ArmadilloDefaultState : MovementState
         Vector3 movementApplied;
         if (movementCtrl.grounded)
         {
-            movementApplied = moveDirection.normalized * stats.moveSpeedMax * movementCtrl.movementTypeMultiplier * Time.fixedDeltaTime * 500;
+            if(movementCtrl.isOnSlope) movementApplied = movementCtrl.GetSlopeMoveDirection(moveDirection.normalized) * stats.moveSpeedMax * movementCtrl.movementTypeMultiplier * Time.fixedDeltaTime * 500;
+            else movementApplied = moveDirection.normalized * stats.moveSpeedMax * movementCtrl.movementTypeMultiplier * Time.fixedDeltaTime * 500;
             movementCtrl.rb.AddForce(movementApplied, ForceMode.Acceleration);
         }
         else
