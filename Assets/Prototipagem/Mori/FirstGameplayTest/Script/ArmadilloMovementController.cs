@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -300,11 +299,12 @@ public class ArmadilloMovementController : MonoBehaviour
         if(ladderState.ladderObject == null || ladderObject == null) return false;
         return ReferenceEquals(ladderObject.gameObject, ladderState.ladderObject.gameObject);
     }
-    public void EnterLadder(Transform objectTransform, Vector3 minPosition, Vector3 maxPosition)
+    public void EnterLadder(Transform objectTransform, Vector3 minPosition, Vector3 maxPosition,float pipeSize)
     {
         ladderState.ladderObject = objectTransform;
         ladderState.minPosition = minPosition;
         ladderState.maxPosition = maxPosition;
+        ladderState.pipeSize = pipeSize;
         ChangeState(ladderState);
     }
     public void ExitLadder()
@@ -312,6 +312,7 @@ public class ArmadilloMovementController : MonoBehaviour
         ladderState.ladderObject = null;
         ladderState.minPosition = Vector3.zero;
         ladderState.maxPosition = Vector3.zero;
+        ladderState.pipeSize = 0;
         ChangeState(defaultState);
     }
     public void ExitLadderWithJump()
@@ -319,6 +320,7 @@ public class ArmadilloMovementController : MonoBehaviour
         ladderState.ladderObject = null;
         ladderState.minPosition = Vector3.zero;
         ladderState.maxPosition = Vector3.zero;
+        ladderState.pipeSize = 0;
         ChangeState(defaultState);
         defaultState.Jump();
     }

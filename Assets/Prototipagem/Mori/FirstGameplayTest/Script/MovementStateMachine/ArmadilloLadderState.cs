@@ -10,7 +10,7 @@ public class ArmadilloLadderState : MovementState
     public Transform ladderObject;
     public Vector3 minPosition;
     public Vector3 maxPosition;
-
+    public float pipeSize;
     Vector3 targetPosition;
     public override void EnterState(ArmadilloMovementController movementControl)
     {
@@ -18,14 +18,23 @@ public class ArmadilloLadderState : MovementState
         movementCtrl.rb.velocity = Vector3.zero;
         movementCtrl.rb.angularVelocity = Vector3.zero;
         movementCtrl.rb.useGravity = false;
-        if(movementCtrl.rb.position.y< minPosition.y) targetPosition  = minPosition;
-        else if (movementCtrl.rb.position.y > maxPosition.y) targetPosition = maxPosition;
+        Vector3 movePosition;
+        movePosition = (movementCtrl.rb.position - ladderObject.position);
+        movePosition.y = 0;
+        movePosition = movePosition.normalized * (0.6f+pipeSize) + ladderObject.position;
+        if (movementCtrl.rb.position.y < minPosition.y)
+        {
+            movePosition.y = minPosition.y;
+        }
+        else if (movementCtrl.rb.position.y > maxPosition.y)
+        {
+            movePosition.y = maxPosition.y;
+        }
         else
         {
-            Vector3 movePosition = minPosition;
             movePosition.y = movementCtrl.rb.position.y;
-            targetPosition = movePosition;
         }
+        targetPosition = movePosition;
         ArmadilloPlayerController.Instance.inputControl.inputAction.Armadillo.Jump.performed += ExitCurrentPipe;
     }
 
@@ -41,12 +50,17 @@ public class ArmadilloLadderState : MovementState
     }
     private void MovePlayer()
     {
-        Vector3 movementPosition = Vector3.Lerp(movementCtrl.rb.position, targetPosition,Time.deltaTime*10);
-        movementPosition.y = movementCtrl.rb.position.y;
-        movementPosition += movementCtrl.movementInputVector.y * movementCtrl.ladderSpeed * Vector3.up * Time.fixedDeltaTime;
-
-        //if (movementPosition.y > maxPosition.y || movementPosition.y<minPosition.y)return;
-        movementCtrl.rb.MovePosition(movementPosition); 
+        Vector3 movementPosition = Vector3.Lerp(movementCtrl.rb.position, targetPosition, Time.deltaTime * 10);
+        if (!(movementPosition.y > maxPosition.y || movementPosition.y < minPosition.y))
+        {
+            movementPosition.y = movementCtrl.rb.position.y;
+        }
+        Vector3 vectorUpMovement = movementCtrl.movementInputVector.y * movementCtrl.ladderSpeed * Vector3.up * Time.fixedDeltaTime;
+        if (!((movementPosition + vectorUpMovement).y > maxPosition.y || (movementPosition + vectorUpMovement).y < minPosition.y))
+        {
+            movementPosition += movementCtrl.movementInputVector.y * movementCtrl.ladderSpeed * Vector3.up * Time.fixedDeltaTime;
+        }
+        movementCtrl.rb.MovePosition(movementPosition);
     }
     public override void ExitState()
     {
@@ -57,7 +71,7 @@ public class ArmadilloLadderState : MovementState
     //-----Player Jump-----
     public override void Jump()
     {
-        
+
     }
     public void ExitCurrentPipe(InputAction.CallbackContext value)
     {
