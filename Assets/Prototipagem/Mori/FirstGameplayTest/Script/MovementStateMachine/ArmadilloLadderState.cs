@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
@@ -21,7 +23,7 @@ public class ArmadilloLadderState : MovementState
         Vector3 movePosition;
         movePosition = (movementCtrl.rb.position - ladderObject.position);
         movePosition.y = 0;
-        movePosition = movePosition.normalized * (0.6f+pipeSize) + ladderObject.position;
+        movePosition = movePosition.normalized * (0.6f + pipeSize) + ladderObject.position;
         if (movementCtrl.rb.position.y < minPosition.y)
         {
             movePosition.y = minPosition.y;
@@ -50,6 +52,9 @@ public class ArmadilloLadderState : MovementState
     }
     private void MovePlayer()
     {
+        float height = targetPosition.y;
+        targetPosition = RotatePointAroundPivot(movementCtrl.rb.position, ladderObject.position, new Vector3(0, -movementCtrl.movementInputVector.x * 10, 0));
+        targetPosition.y = height;
         Vector3 movementPosition = Vector3.Lerp(movementCtrl.rb.position, targetPosition, Time.deltaTime * 10);
         if (!(movementPosition.y > maxPosition.y || movementPosition.y < minPosition.y))
         {
@@ -61,6 +66,16 @@ public class ArmadilloLadderState : MovementState
             movementPosition += movementCtrl.movementInputVector.y * movementCtrl.ladderSpeed * Vector3.up * Time.fixedDeltaTime;
         }
         movementCtrl.rb.MovePosition(movementPosition);
+    }
+    Vector3 RotatePointAroundPivot(Vector3 point, Vector3 pivot, Vector3 angles)
+    {
+        point.y = 0;
+        pivot.y= 0;
+        Vector3 dir = (point - pivot); // get point direction relative to pivot
+        dir = Quaternion.Euler(angles) * dir; // rotate it
+        Debug.Log(dir);
+        point = dir.normalized * (0.6f + pipeSize) + pivot; // calculate rotated point
+        return point; // return it
     }
     public override void ExitState()
     {
@@ -76,5 +91,6 @@ public class ArmadilloLadderState : MovementState
     public void ExitCurrentPipe(InputAction.CallbackContext value)
     {
         movementCtrl.ExitLadderWithJump();
+        ArmadilloInteractController.Instance.UpdateInteractionHUD();
     }
 }

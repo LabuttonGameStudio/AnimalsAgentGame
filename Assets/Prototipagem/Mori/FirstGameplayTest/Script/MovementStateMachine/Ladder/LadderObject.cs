@@ -10,7 +10,8 @@ public class LadderObject : MonoBehaviour, InteractiveObject
     [SerializeField] private Transform maxTransform;
     public string GetObjectDescription()
     {
-        return "Grab";
+        ArmadilloMovementController movementController = ArmadilloPlayerController.Instance.movementControl;
+        return movementController.CheckMatchOfCurrentLadder(transform) ? "Release" : "Grab";
     }
 
     public string GetObjectName()
@@ -29,6 +30,7 @@ public class LadderObject : MonoBehaviour, InteractiveObject
             movementController.EnterLadder(transform, minTransform.position, maxTransform.position,pipeSize);
         }
         else movementController.ExitLadder();
+        ArmadilloInteractController.Instance.UpdateInteractionHUD();
     }
 
 }

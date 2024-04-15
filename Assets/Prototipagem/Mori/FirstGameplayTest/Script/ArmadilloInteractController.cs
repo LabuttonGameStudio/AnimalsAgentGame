@@ -52,8 +52,11 @@ public class ArmadilloInteractController : MonoBehaviour
 
     public void UpdateInteractionHUD()
     {
-        interactItemName.text = activeInteractiveObject.GetObjectName();
-        interactDescription.text = activeInteractiveObject.GetObjectDescription();
+        if (activeInteractiveObject != null)
+        {
+            interactItemName.text = activeInteractiveObject.GetObjectName();
+            interactDescription.text = activeInteractiveObject.GetObjectDescription();
+        }
     }
 
     public void ClearInteractButtonAction()
