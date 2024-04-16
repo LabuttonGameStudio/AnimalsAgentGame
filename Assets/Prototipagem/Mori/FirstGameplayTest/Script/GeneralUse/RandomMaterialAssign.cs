@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class RandomMaterialAssign : MonoBehaviour
 {
@@ -10,8 +12,10 @@ public class RandomMaterialAssign : MonoBehaviour
     public void SetRandomColors()
     {
         MeshRenderer[] meshRenderers;
-        float randomSeed = Mathf.Pow(Random.value + 1, Random.value + 1);
+        Random.InitState((int)DateTime.Now.Ticks);
+        int randomSeed = Mathf.RoundToInt((Random.value*10 + 1)* (Random.value * 10 + 1));
         meshRenderers = FindObjectsByType<MeshRenderer>(FindObjectsSortMode.None);
+        Debug.Log("Found "+meshRenderers.Length + " matching meshes");
         foreach (MeshRenderer meshRenderer in meshRenderers)
         {
             Mesh mesh = meshRenderer.GetComponent<MeshFilter>().sharedMesh;
@@ -27,15 +31,16 @@ public class RandomMaterialAssign : MonoBehaviour
             if (basedOnParent)
             {
                 if (!doesMatchMesh || meshRenderer.transform.parent == null) continue;
-                float randomGenNumber = Mathf.Abs(Mathf.RoundToInt(meshRenderer.transform.parent.GetInstanceID() * randomSeed / 10f % 1 * 10));
-                meshRenderer.sharedMaterial = materials[Mathf.RoundToInt(randomGenNumber / 1 / (materials.Length - 1))];
+                Random.InitState(meshRenderer.transform.parent.GetInstanceID()* randomSeed);
+                int randomGenNumber = Random.Range(0, materials.Length);
+                meshRenderer.sharedMaterial = materials[randomGenNumber];
             }
             else
             {
                 if (!doesMatchMesh) continue;
-                float randomGenNumber = Mathf.Abs(Mathf.RoundToInt(meshRenderer.transform.GetInstanceID() * randomSeed / 10f % 1 * 10));
-                Debug.Log(Mathf.RoundToInt(randomGenNumber / (1 / (materials.Length - 1))));
-                meshRenderer.sharedMaterial = materials[Mathf.RoundToInt(randomGenNumber / 1 / (materials.Length - 1))];
+                Random.InitState(meshRenderer.transform.GetInstanceID() * randomSeed);
+                int randomGenNumber = Random.Range(0, materials.Length);
+                meshRenderer.sharedMaterial = materials[randomGenNumber];
             }
         }
     }
