@@ -100,9 +100,14 @@ public class EletricPistol : Weapon
     {
         if (timer < chargeTime)
         {
+            FPCameraShake.StartShake(0.05f, 0.25f, 5f);
             UnChargedFire();
         }
-        else ChargedFire();
+        else
+        {
+            FPCameraShake.StartShake(0.1f, 0.5f, 5f);
+            ChargedFire();
+        }
     }
     public void UnChargedFire()
     {
@@ -137,11 +142,14 @@ public class EletricPistol : Weapon
             }
         }
         OnOverheatCharge(chargedOverheatCharge);
+        FPCameraShake.StopShake(holdShakeStats);
+        holdShakeStats = null;
         visualHandler.OnChargedFire();
     }
 
     public Coroutine holdOrPressTimerRef;
     private float holdOrPressTimer;
+    private ShakeStats holdShakeStats;
     public IEnumerator HoldOrPressTimer_Coroutine()
     {
         holdOrPressTimer = 0;
@@ -151,6 +159,7 @@ public class EletricPistol : Weapon
             yield return null;
         }
         visualHandler.OnCharge();
+        holdShakeStats = FPCameraShake.StartShake(0.05f, 1f);
         while (true)
         {
             holdOrPressTimer += Time.deltaTime;

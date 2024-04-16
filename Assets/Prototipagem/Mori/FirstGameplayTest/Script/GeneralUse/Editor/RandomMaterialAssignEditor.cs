@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-[CustomEditor(typeof(RandomContainerGenerator))]
+[CustomEditor(typeof(RandomMaterialAssign))]
 public class RandomContainerGeneratorEditor : Editor
 {
     public override void OnInspectorGUI()
     {
         base.OnInspectorGUI();
-        RandomContainerGenerator mainScript = (RandomContainerGenerator)target;
+        RandomMaterialAssign mainScript = (RandomMaterialAssign)target;
         if (GUILayout.Button("Generate Random Colors"))
         {
             mainScript.SetRandomColors();
