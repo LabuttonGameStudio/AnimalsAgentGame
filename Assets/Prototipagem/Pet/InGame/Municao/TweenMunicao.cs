@@ -15,7 +15,6 @@ public class TweenMunicao : MonoBehaviour
     public float moveDuration = 1f;
     [SerializeField] private float moveTranslationDuration;
 
-    // Start is called before the first frame update
     private void Awake()
     {
         Instance = this;
@@ -24,18 +23,11 @@ public class TweenMunicao : MonoBehaviour
     {
         startPos = objectToMove.anchoredPosition;
     }
-    void Update()
-    {
-
-
-    }
 
     public void ShakeAmmunition()
     {
-        Debug.Log("Clique do mouse detectado!");
         StartShakeAmmunition();
         //Tween.MoveTransformLocalPosition(this, objectToMove, targetPosition, moveDuration, Tween.LerpType.Lerp);
-
     }
     private void StartShakeAmmunition()
     {

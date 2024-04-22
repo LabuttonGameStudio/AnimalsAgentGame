@@ -13,10 +13,14 @@ public class ArmadilloHPControl : MonoBehaviour,IDamageable
     [Space, Header("HP UI")]
     public Slider currentHpSlider;
     public Slider currentGreyHpSlider;
+    public CanvasGroup DamageScreen;
 
     [Space, Header("Invulnerabiliy Time")]
     [System.NonSerialized] public bool isInvulnerable;
     public float invulnerabilityDuration;
+
+    private float initialAlpha = 0f;
+    private float screenAlpha = 0.5f;
     public void TakeDamage(int damageAmount)
     {
         if (!isInvulnerable)
@@ -30,6 +34,7 @@ public class ArmadilloHPControl : MonoBehaviour,IDamageable
             }
             currentHp -= damageAmount;
             currentGreyHp = damageAmount / 2;
+            StartCoroutine(DamageScreenAlpha(1f, 0.2f));
             UpdateHealthBar();
         }
     }
@@ -53,5 +58,31 @@ public class ArmadilloHPControl : MonoBehaviour,IDamageable
     private void Start()
     {
         UpdateHealthBar();
+    }
+
+   
+    private IEnumerator DamageScreenAlpha(float screenAlpha, float time)
+    {
+        float startScreenAlpha = DamageScreen.alpha;
+        float elapsedTime = 0.0f;
+       
+
+        while (elapsedTime < time)
+        {
+           
+            float newAlpha = Mathf.Lerp(startScreenAlpha, screenAlpha, elapsedTime / time);
+            DamageScreen.alpha = newAlpha;
+
+            elapsedTime += Time.deltaTime;
+
+            yield return null;
+        }
+
+        DamageScreen.alpha = screenAlpha;
+
+
+        yield return new WaitForSeconds(0.2f);
+
+        StartCoroutine(DamageScreenAlpha(initialAlpha, 0.2f));
     }
 }
