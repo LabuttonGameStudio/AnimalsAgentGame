@@ -14,13 +14,16 @@ public class ArmadilloHPControl : MonoBehaviour,IDamageable
     public Slider currentHpSlider;
     public Slider currentGreyHpSlider;
     public CanvasGroup DamageScreen;
+    public CanvasGroup DeathScreen;
 
     [Space, Header("Invulnerabiliy Time")]
     [System.NonSerialized] public bool isInvulnerable;
     public float invulnerabilityDuration;
 
-    private float initialAlpha = 0f;
-    private float screenAlpha = 0.5f;
+    private bool isFadingIn = false;
+    private bool isFadingOut = false;
+
+
     public void TakeDamage(int damageAmount)
     {
         if (!isInvulnerable)
@@ -28,13 +31,18 @@ public class ArmadilloHPControl : MonoBehaviour,IDamageable
             if (currentHp - damageAmount < 0)
             {
                 ArmadilloPlayerController.Instance.Die();
+                StartCoroutine(DeathScreenFade(1f, 1f));
                 currentHp = 0;
                 UpdateHealthBar();
                 return;
             }
+
+            if (!isFadingIn && !isFadingOut)
+            {
+                StartCoroutine(DamageScreenFade(1f, 0.5f));
+            }
             currentHp -= damageAmount;
             currentGreyHp = damageAmount / 2;
-            StartCoroutine(DamageScreenAlpha(1f, 0.2f));
             UpdateHealthBar();
         }
     }
@@ -52,6 +60,7 @@ public class ArmadilloHPControl : MonoBehaviour,IDamageable
     }
     public void UpdateHealthBar()
     {
+        
         currentHpSlider.value = currentHp / maxHp;
         currentGreyHpSlider.value = (currentHp + currentGreyHp) / maxHp;
     }
@@ -60,17 +69,18 @@ public class ArmadilloHPControl : MonoBehaviour,IDamageable
         UpdateHealthBar();
     }
 
-   
-    private IEnumerator DamageScreenAlpha(float screenAlpha, float time)
-    {
-        float startScreenAlpha = DamageScreen.alpha;
-        float elapsedTime = 0.0f;
-       
 
-        while (elapsedTime < time)
+    private IEnumerator DamageScreenFade(float targetAlpha, float fadeDuration)
+    {
+        isFadingIn = true;
+
+        float startAlpha = DamageScreen.alpha;
+        float elapsedTime = 0.0f;
+
+        // Faz a tela de dano aumentar o alpha
+        while (elapsedTime < fadeDuration)
         {
-           
-            float newAlpha = Mathf.Lerp(startScreenAlpha, screenAlpha, elapsedTime / time);
+            float newAlpha = Mathf.Lerp(startAlpha, targetAlpha, elapsedTime / fadeDuration);
             DamageScreen.alpha = newAlpha;
 
             elapsedTime += Time.deltaTime;
@@ -78,11 +88,52 @@ public class ArmadilloHPControl : MonoBehaviour,IDamageable
             yield return null;
         }
 
-        DamageScreen.alpha = screenAlpha;
+        DamageScreen.alpha = targetAlpha;
 
-
+        // Espera um tempo antes de começar a diminuir o alpha
         yield return new WaitForSeconds(0.2f);
 
-        StartCoroutine(DamageScreenAlpha(initialAlpha, 0.2f));
+        isFadingIn = false;
+        isFadingOut = true;
+
+        elapsedTime = 0.0f;
+
+        // Faz a tela de dano diminuir o alpha
+        while (elapsedTime < fadeDuration)
+        {
+            float newAlpha = Mathf.Lerp(targetAlpha, 0f, elapsedTime / fadeDuration);
+            DamageScreen.alpha = newAlpha;
+
+            elapsedTime += Time.deltaTime;
+
+            yield return null;
+        }
+
+        DamageScreen.alpha = 0f;
+
+        isFadingOut = false;
+    }
+
+    IEnumerator DeathScreenFade(float targetAlpha, float fadeDuration)
+    {
+        float startAlpha = DeathScreen.alpha;
+        float elapsedTime = 0.0f;
+
+        while (elapsedTime < fadeDuration)
+        {
+            float newAlpha = Mathf.Lerp(startAlpha, targetAlpha, elapsedTime / fadeDuration);
+            DeathScreen.alpha = newAlpha;
+
+            elapsedTime += Time.deltaTime;
+
+            yield return null;
+        }
+
+        DeathScreen.alpha = targetAlpha;
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
+        //Cursor.lockState = CursorLockMode.Locked;
+        //Cursor.visible = false;
     }
 }
