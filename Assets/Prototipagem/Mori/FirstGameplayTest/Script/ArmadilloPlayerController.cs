@@ -20,9 +20,9 @@ public class ArmadilloPlayerController : MonoBehaviour
 {
     public static ArmadilloPlayerController Instance { get; private set; }
 
-    [SerializeField]private bool startWithChangeFormAbility;
-    [SerializeField]private bool startWithInvisibilityAbility;
-    [SerializeField]private bool startWithSonarAbility;
+    [SerializeField] private bool startWithChangeFormAbility;
+    [SerializeField] private bool startWithInvisibilityAbility;
+    [SerializeField] private bool startWithSonarAbility;
     public enum Form
     {
         Default = 0,
@@ -55,11 +55,18 @@ public class ArmadilloPlayerController : MonoBehaviour
     public LayerMask climbableLayer;
 
     [Header("Sonar Ability")]
+    [SerializeField] private bool isSonarActive;
+    [SerializeField] private float sonarStartLerpDuration;
+    [SerializeField] private float sonarRange;
     public CustomPassVolume sonarEffect;
+    [HideInInspector] public SeeThrough sonarEffectDefault;
+    [HideInInspector] public SeeThrough sonarEffectEnemy;
+    [SerializeField] private DecalProjector sonarDecal;
 
-    [SerializeField]private MeshRenderer ballMeshRender;
-
-    public bool isInvisible;
+    [Header("Invisibility Ability")]
+    [SerializeField] private MeshRenderer ballMeshRender;
+    [HideInInspector] public bool isInvisible;
+    [SerializeField] private float invisibleLerpDuration = 0.25f;
 
     private void Awake()
     {
@@ -76,13 +83,21 @@ public class ArmadilloPlayerController : MonoBehaviour
     }
     private void Start()
     {
-        if(startWithChangeFormAbility) UnlockChangeFormAbility();
-        if(startWithSonarAbility) UnlockSonarAbility();
+        if (startWithChangeFormAbility) UnlockChangeFormAbility();
+        if (startWithSonarAbility) UnlockSonarAbility();
         if (startWithInvisibilityAbility) UnlockInvisibilityAbility();
     }
     private void OnDrawGizmos()
     {
-        
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(transform.position, sonarRange);
+    }
+    private void OnValidate()
+    {
+        //sonarEffectDefault = sonarEffect.customPasses[0] as SeeThrough;
+        //sonarEffectEnemy = sonarEffect.customPasses[1] as SeeThrough;
+        //sonarEffectDefault.seeThroughMaterial.SetFloat("_MAXDISTANCE",sonarRange);
+        //sonarEffectEnemy.seeThroughMaterial.SetFloat("_MAXDISTANCE",sonarRange);
     }
     public void UnlockChangeFormAbility()
     {
@@ -104,41 +119,47 @@ public class ArmadilloPlayerController : MonoBehaviour
     }
 
     //------ Sonar Ability ------
+
     public void UnlockSonarAbility()
     {
         inputControl.inputAction.Armadillo.Ability2.Enable();
         inputControl.inputAction.Armadillo.Ability2.performed += SonarAbility;
+
+        sonarEffectDefault = sonarEffect.customPasses[0] as SeeThrough;
+        sonarEffectEnemy = sonarEffect.customPasses[1] as SeeThrough;
+
+        sonarEffectDefault.seeThroughMaterial.SetFloat("_MAXDISTANCE", 0);
+        sonarEffectEnemy.seeThroughMaterial.SetFloat("_MAXDISTANCE", 0);
+        sonarEffect.enabled = true;
     }
     public void SonarAbility(InputAction.CallbackContext value)
     {
-        sonarEffect.enabled = !sonarEffect.enabled;
-        //LayerMask visibleLayers = enemyLayer | interactiveLayer | pickableLayer | climbableLayer;
-        //Collider[] colliders = Physics.OverlapSphere(transform.position, sonarRange, visibleLayers, QueryTriggerInteraction.Ignore);
-        //colliders = colliders.OrderBy(x => Vector3.Distance(transform.position, x.transform.position)).ToArray();
-        //foreach (Collider collider in colliders)
-        //{
-        //    string entityType;
-        //    if (CheckIfObjectIsInLayerMask(collider.gameObject, enemyLayer))
-        //    {
-        //        entityType = "enemy";
-        //    }
-        //    else if (CheckIfObjectIsInLayerMask(collider.gameObject, interactiveLayer))
-        //    {
-        //        entityType = "interactive";
-        //    }
-        //    else if (CheckIfObjectIsInLayerMask(collider.gameObject, pickableLayer))
-        //    {
-        //        entityType = "pickable";
-        //    }
-        //    else
-        //    {
-        //        entityType = "climbable";
-        //    }
-
-        //    Debug.Log(collider.gameObject.name + "|Position=" + collider.transform.position +"| Type="+entityType+ "| Distance= " + Vector3.Distance(transform.position, collider.transform.position)); 
-        //}
+        if (SonarAbility_Ref == null)
+        {
+            isSonarActive = !isSonarActive;
+            SonarAbility_Ref = StartCoroutine(SonarAbility_Coroutine(isSonarActive ? 0 : sonarRange, isSonarActive ? sonarRange : 0));
+        }
     }
 
+    private Coroutine SonarAbility_Ref;
+    private IEnumerator SonarAbility_Coroutine(float startValue, float finalValue)
+    {
+        float timer = 0f;
+        while (timer <= sonarStartLerpDuration)
+        {
+            sonarEffectDefault.seeThroughMaterial.SetFloat("_MAXDISTANCE", Mathf.SmoothStep(startValue, finalValue, timer / sonarStartLerpDuration));
+            sonarEffectEnemy.seeThroughMaterial.SetFloat("_MAXDISTANCE", Mathf.SmoothStep(startValue, finalValue, timer / sonarStartLerpDuration));
+            sonarDecal.size = Vector3.one * Mathf.SmoothStep(startValue * 2.5f, finalValue * 2.5f, timer / sonarStartLerpDuration);
+            sonarDecal.fadeFactor = Mathf.SmoothStep(1, 0, timer / sonarStartLerpDuration);
+            timer += 0.05f;
+            yield return new WaitForSeconds(0.05f);
+        }
+        sonarEffectDefault.seeThroughMaterial.SetFloat("_MAXDISTANCE", finalValue);
+        sonarEffectEnemy.seeThroughMaterial.SetFloat("_MAXDISTANCE", finalValue);
+        sonarDecal.size = Vector3.one * finalValue * 2.5f;
+        sonarDecal.fadeFactor = 0;
+        SonarAbility_Ref = null;
+    }
 
     //------ Invisibility ------
     public void UnlockInvisibilityAbility()
@@ -148,11 +169,26 @@ public class ArmadilloPlayerController : MonoBehaviour
     }
     public void InvisibilityAbility(InputAction.CallbackContext value)
     {
-        isInvisible = !isInvisible;
-        ballMeshRender.sharedMaterial.SetFloat("_ALPHA",isInvisible ? 1 : 0.25f);
+        if (LerpInvisibility_Ref == null)
+        {
+            isInvisible = !isInvisible;
+            LerpInvisibility_Ref = StartCoroutine(LerpInvisibility_Coroutine(isInvisible ? 1 : 0.25f, isInvisible ? 0.25f : 1));
+        }
 
     }
-
+    private Coroutine LerpInvisibility_Ref;
+    private IEnumerator LerpInvisibility_Coroutine(float startValue, float finalValue)
+    {
+        float timer = 0f;
+        while (timer <= invisibleLerpDuration)
+        {
+            ballMeshRender.sharedMaterial.SetFloat("_ALPHA", Mathf.Lerp(startValue, finalValue, timer / invisibleLerpDuration));
+            timer += 0.05f;
+            yield return new WaitForSeconds(0.05f);
+        }
+        ballMeshRender.sharedMaterial.SetFloat("_ALPHA", finalValue);
+        LerpInvisibility_Ref = null;
+    }
     //------ Change Forms ------
 
     private Coroutine changeToBallFormRef;

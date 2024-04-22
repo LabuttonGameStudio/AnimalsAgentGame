@@ -4,7 +4,7 @@ using UnityEngine.Rendering;
 using UnityEngine.Experimental.Rendering;
 using System.Collections.Generic;
 
-class SeeThrough : CustomPass
+public class SeeThrough : CustomPass
 {
     public LayerMask seeThroughLayer = 1;
     public Material seeThroughMaterial = null;
