@@ -8,4 +8,5 @@ public interface InteractiveObject
     public void Interact(InputAction.CallbackContext value);
     public string GetObjectName();
     public string GetObjectDescription();
+
 }

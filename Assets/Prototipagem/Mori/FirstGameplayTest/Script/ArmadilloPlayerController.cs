@@ -4,6 +4,9 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem.XInput;
 using UnityEngine.InputSystem;
+using System.Linq;
+using UnityEngine.Rendering.HighDefinition;
+using UnityEngine.UI;
 public class ArmadilloForms
 {
     public enum ArmadilloForm
@@ -12,6 +15,7 @@ public class ArmadilloForms
         Ball = 1
     }
 }
+
 public class ArmadilloPlayerController : MonoBehaviour
 {
     public static ArmadilloPlayerController Instance { get; private set; }
@@ -44,6 +48,18 @@ public class ArmadilloPlayerController : MonoBehaviour
     [SerializeField] public Collider[] playerCollider_Ball;
 
     private int currentEquipedWeapon;
+    [Header("Layers")]
+    public LayerMask enemyLayer;
+    public LayerMask interactiveLayer;
+    public LayerMask pickableLayer;
+    public LayerMask climbableLayer;
+
+    [Header("Sonar Ability")]
+    public CustomPassVolume sonarEffect;
+
+    [SerializeField]private MeshRenderer ballMeshRender;
+
+    public bool isInvisible;
 
     private void Awake()
     {
@@ -61,8 +77,13 @@ public class ArmadilloPlayerController : MonoBehaviour
     private void Start()
     {
         if(startWithChangeFormAbility) UnlockChangeFormAbility();
+        if(startWithSonarAbility) UnlockSonarAbility();
+        if (startWithInvisibilityAbility) UnlockInvisibilityAbility();
     }
-
+    private void OnDrawGizmos()
+    {
+        
+    }
     public void UnlockChangeFormAbility()
     {
         inputControl.inputAction.Armadillo.Ability1.Enable();
@@ -80,6 +101,56 @@ public class ArmadilloPlayerController : MonoBehaviour
         if (Form.Default == currentForm) return;
         if (changeToDefaultFormRef == null) changeToDefaultFormRef = StartCoroutine(ChangeToDefaultForm_Coroutine());
         currentForm = Form.Default;
+    }
+
+    //------ Sonar Ability ------
+    public void UnlockSonarAbility()
+    {
+        inputControl.inputAction.Armadillo.Ability2.Enable();
+        inputControl.inputAction.Armadillo.Ability2.performed += SonarAbility;
+    }
+    public void SonarAbility(InputAction.CallbackContext value)
+    {
+        sonarEffect.enabled = !sonarEffect.enabled;
+        //LayerMask visibleLayers = enemyLayer | interactiveLayer | pickableLayer | climbableLayer;
+        //Collider[] colliders = Physics.OverlapSphere(transform.position, sonarRange, visibleLayers, QueryTriggerInteraction.Ignore);
+        //colliders = colliders.OrderBy(x => Vector3.Distance(transform.position, x.transform.position)).ToArray();
+        //foreach (Collider collider in colliders)
+        //{
+        //    string entityType;
+        //    if (CheckIfObjectIsInLayerMask(collider.gameObject, enemyLayer))
+        //    {
+        //        entityType = "enemy";
+        //    }
+        //    else if (CheckIfObjectIsInLayerMask(collider.gameObject, interactiveLayer))
+        //    {
+        //        entityType = "interactive";
+        //    }
+        //    else if (CheckIfObjectIsInLayerMask(collider.gameObject, pickableLayer))
+        //    {
+        //        entityType = "pickable";
+        //    }
+        //    else
+        //    {
+        //        entityType = "climbable";
+        //    }
+
+        //    Debug.Log(collider.gameObject.name + "|Position=" + collider.transform.position +"| Type="+entityType+ "| Distance= " + Vector3.Distance(transform.position, collider.transform.position)); 
+        //}
+    }
+
+
+    //------ Invisibility ------
+    public void UnlockInvisibilityAbility()
+    {
+        inputControl.inputAction.Armadillo.Ability3.Enable();
+        inputControl.inputAction.Armadillo.Ability3.performed += InvisibilityAbility;
+    }
+    public void InvisibilityAbility(InputAction.CallbackContext value)
+    {
+        isInvisible = !isInvisible;
+        ballMeshRender.sharedMaterial.SetFloat("_ALPHA",isInvisible ? 1 : 0.25f);
+
     }
 
     //------ Change Forms ------
