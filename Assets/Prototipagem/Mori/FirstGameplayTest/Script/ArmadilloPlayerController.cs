@@ -137,6 +137,7 @@ public class ArmadilloPlayerController : MonoBehaviour
         if (SonarAbility_Ref == null)
         {
             isSonarActive = !isSonarActive;
+            if(isSonarActive && SonarAbilityVFX_Ref == null) SonarAbilityVFX_Ref = StartCoroutine(SonarAbilityVFX_Coroutine());
             SonarAbility_Ref = StartCoroutine(SonarAbility_Coroutine(isSonarActive ? 0 : sonarRange, isSonarActive ? sonarRange : 0));
         }
     }
@@ -149,16 +150,27 @@ public class ArmadilloPlayerController : MonoBehaviour
         {
             sonarEffectDefault.seeThroughMaterial.SetFloat("_MAXDISTANCE", Mathf.SmoothStep(startValue, finalValue, timer / sonarStartLerpDuration));
             sonarEffectEnemy.seeThroughMaterial.SetFloat("_MAXDISTANCE", Mathf.SmoothStep(startValue, finalValue, timer / sonarStartLerpDuration));
-            sonarDecal.size = Vector3.one * Mathf.SmoothStep(startValue * 2.5f, finalValue * 2.5f, timer / sonarStartLerpDuration);
-            sonarDecal.fadeFactor = Mathf.SmoothStep(1, 0, timer / sonarStartLerpDuration);
             timer += 0.05f;
             yield return new WaitForSeconds(0.05f);
         }
         sonarEffectDefault.seeThroughMaterial.SetFloat("_MAXDISTANCE", finalValue);
         sonarEffectEnemy.seeThroughMaterial.SetFloat("_MAXDISTANCE", finalValue);
-        sonarDecal.size = Vector3.one * finalValue * 2.5f;
-        sonarDecal.fadeFactor = 0;
         SonarAbility_Ref = null;
+    }
+    private Coroutine SonarAbilityVFX_Ref;
+    private IEnumerator SonarAbilityVFX_Coroutine()
+    {
+        float timer = 0f;
+        while (timer <= sonarStartLerpDuration)
+        {
+            sonarDecal.size = Vector3.one * Mathf.SmoothStep(0, sonarRange * 2.5f, timer / sonarStartLerpDuration);
+            sonarDecal.fadeFactor = Mathf.SmoothStep(1, 0, timer / sonarStartLerpDuration);
+            timer += Time.deltaTime;
+            yield return null;
+        }
+        sonarDecal.size = Vector3.one * sonarRange * 2.5f;
+        sonarDecal.fadeFactor = 0;
+        SonarAbilityVFX_Ref = null;
     }
 
     //------ Invisibility ------

@@ -2245,6 +2245,7 @@ GameObject:
   m_Component:
   - component: {fileID: 913146237}
   - component: {fileID: 913146236}
+  - component: {fileID: 913146238}
   m_Layer: 0
   m_Name: SeeThrough
   m_TagString: Untagged
@@ -2321,6 +2322,46 @@ Transform:
   m_Children: []
   m_Father: {fileID: 892719689}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &913146238
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 913146235}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26d6499a6bd256e47b859377446493a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IsGlobal: 1
+  fadeRadius: 0
+  priority: 0
+  customPasses:
+  - rid: 1748545058283192320
+  injectionPoint: 6
+  m_TargetCamera: {fileID: 0}
+  useTargetCamera: 0
+  references:
+    version: 2
+    RefIds:
+    - rid: 1748545058283192320
+      type: {class: Outline, ns: , asm: Assembly-CSharp}
+      data:
+        m_Name: Custom Pass
+        enabled: 1
+        targetColorBuffer: 1
+        targetDepthBuffer: 0
+        clearFlags: 1
+        passFoldout: 0
+        m_Version: 0
+        outlineLayer:
+          serializedVersion: 2
+          m_Bits: 1856
+        outlineColor: {r: 1.8757917, g: 1.9904234, b: 0, a: 1}
+        threshold: 1
+        maxDistance: 40
+        outlineShader: {fileID: -6465566751694194690, guid: 80850997b896cdc4aa3b2697109d79e3, type: 3}
 --- !u!4 &941294685 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5476472386100842931, guid: 5e6fc123e444e7f45ab78b704561dbb1, type: 3}
