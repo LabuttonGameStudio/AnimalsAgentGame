@@ -58,9 +58,15 @@ public class ArmadilloPlayerController : MonoBehaviour
     [SerializeField] private bool isSonarActive;
     [SerializeField] private float sonarStartLerpDuration;
     [SerializeField] private float sonarRange;
+
     public CustomPassVolume sonarEffect;
     [HideInInspector] public SeeThrough sonarEffectDefault;
     [HideInInspector] public SeeThrough sonarEffectEnemy;
+
+    public CustomPassVolume outlineSonarEffect;
+    private Outline sonarOutlineDefault;
+    private Outline sonarOutlineEnemy;
+
     [SerializeField] private DecalProjector sonarDecal;
 
     [Header("Invisibility Ability")]
@@ -128,8 +134,15 @@ public class ArmadilloPlayerController : MonoBehaviour
         sonarEffectDefault = sonarEffect.customPasses[0] as SeeThrough;
         sonarEffectEnemy = sonarEffect.customPasses[1] as SeeThrough;
 
+        sonarOutlineDefault = outlineSonarEffect.customPasses[0] as Outline;
+        sonarOutlineEnemy = outlineSonarEffect.customPasses[1] as Outline;
+
         sonarEffectDefault.seeThroughMaterial.SetFloat("_MAXDISTANCE", 0);
         sonarEffectEnemy.seeThroughMaterial.SetFloat("_MAXDISTANCE", 0);
+
+        sonarOutlineDefault.maxDistance = 0;
+        sonarOutlineEnemy.maxDistance = 0;
+
         sonarEffect.enabled = true;
     }
     public void SonarAbility(InputAction.CallbackContext value)
@@ -150,11 +163,20 @@ public class ArmadilloPlayerController : MonoBehaviour
         {
             sonarEffectDefault.seeThroughMaterial.SetFloat("_MAXDISTANCE", Mathf.SmoothStep(startValue, finalValue, timer / sonarStartLerpDuration));
             sonarEffectEnemy.seeThroughMaterial.SetFloat("_MAXDISTANCE", Mathf.SmoothStep(startValue, finalValue, timer / sonarStartLerpDuration));
+
+            sonarOutlineDefault.maxDistance = Mathf.SmoothStep(startValue, finalValue, timer / sonarStartLerpDuration);
+            sonarOutlineEnemy.maxDistance = Mathf.SmoothStep(startValue, finalValue, timer / sonarStartLerpDuration);
+
             timer += 0.05f;
             yield return new WaitForSeconds(0.05f);
         }
+
         sonarEffectDefault.seeThroughMaterial.SetFloat("_MAXDISTANCE", finalValue);
         sonarEffectEnemy.seeThroughMaterial.SetFloat("_MAXDISTANCE", finalValue);
+
+        sonarOutlineDefault.maxDistance = finalValue;
+        sonarOutlineEnemy.maxDistance = finalValue;
+
         SonarAbility_Ref = null;
     }
     private Coroutine SonarAbilityVFX_Ref;
