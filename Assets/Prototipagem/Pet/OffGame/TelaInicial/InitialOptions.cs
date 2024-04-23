@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UIElements;
 
 public class InitialOptions : MonoBehaviour
 {
@@ -11,7 +12,13 @@ public class InitialOptions : MonoBehaviour
     public string loadingScreenScene;
     public string actuallevel;
 
+    public GameObject Cinemachine1;
+    public Vector3 PositionWall;
+
+
     private bool levelLoaded = false;
+    private float timer = 5f; 
+
     public float delayBeforeLoading = 10f;
 
     public void iniciar()
@@ -20,7 +27,9 @@ public class InitialOptions : MonoBehaviour
 
         if (!levelLoaded) //  level não carregado
         {
+            StartCoroutine(CinemachineRun());
             StartCoroutine(LoadLevelAsync());
+            Debug.Log("Iniciando");
             levelLoaded = true;
         }
 
@@ -30,9 +39,9 @@ public class InitialOptions : MonoBehaviour
     IEnumerator LoadLevelAsync()
     {
 
-
         //salvar game
 
+        yield return new WaitForSeconds(5f);
 
         // Obtém a referência para a cena atual
         Scene currentScene = SceneManager.GetActiveScene();
@@ -64,6 +73,18 @@ public class InitialOptions : MonoBehaviour
         // Descarrega a cena da tela de carregamento
         SceneManager.UnloadSceneAsync(loadingScreenScene);
         SceneManager.UnloadSceneAsync(actuallevel);
+    }
+
+    //IEnumerator WallDown()
+    //{
+        
+   // }
+
+    IEnumerator CinemachineRun()
+    {
+        Cinemachine1.SetActive(false);
+        yield return null;
+       
     }
 
     public void opcoes()
