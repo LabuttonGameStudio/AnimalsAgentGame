@@ -164,8 +164,8 @@ public class ArmadilloPlayerController : MonoBehaviour
             sonarEffectDefault.seeThroughMaterial.SetFloat("_MAXDISTANCE", Mathf.SmoothStep(startValue, finalValue, timer / sonarStartLerpDuration));
             sonarEffectEnemy.seeThroughMaterial.SetFloat("_MAXDISTANCE", Mathf.SmoothStep(startValue, finalValue, timer / sonarStartLerpDuration));
 
-            sonarOutlineDefault.maxDistance = Mathf.SmoothStep(startValue, finalValue, timer / sonarStartLerpDuration);
-            sonarOutlineEnemy.maxDistance = Mathf.SmoothStep(startValue, finalValue, timer / sonarStartLerpDuration);
+            sonarOutlineDefault.maxDistance = Mathf.SmoothStep(startValue, finalValue/1.428f, timer / sonarStartLerpDuration);
+            sonarOutlineEnemy.maxDistance = Mathf.SmoothStep(startValue, finalValue / 1.428f, timer / sonarStartLerpDuration);
 
             timer += 0.05f;
             yield return new WaitForSeconds(0.05f);
@@ -174,8 +174,8 @@ public class ArmadilloPlayerController : MonoBehaviour
         sonarEffectDefault.seeThroughMaterial.SetFloat("_MAXDISTANCE", finalValue);
         sonarEffectEnemy.seeThroughMaterial.SetFloat("_MAXDISTANCE", finalValue);
 
-        sonarOutlineDefault.maxDistance = finalValue;
-        sonarOutlineEnemy.maxDistance = finalValue;
+        sonarOutlineDefault.maxDistance = finalValue / 1.428f;
+        sonarOutlineEnemy.maxDistance = finalValue / 1.428f ;
 
         SonarAbility_Ref = null;
     }
