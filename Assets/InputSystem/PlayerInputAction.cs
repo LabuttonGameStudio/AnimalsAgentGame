@@ -109,15 +109,6 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Ability3"",
-                    ""type"": ""Button"",
-                    ""id"": ""08e76859-4185-450f-805f-8fda28e2296a"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
                     ""name"": ""Sprint"",
                     ""type"": ""Button"",
                     ""id"": ""c16972dc-5bf0-495e-a8de-e7889141ea0f"",
@@ -301,17 +292,6 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
                     ""action"": ""Ability2"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""cc9425d9-7ece-4cc8-8f44-8aa626b9f66d"",
-                    ""path"": ""<Keyboard>/v"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Ability3"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -329,7 +309,6 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
         m_Armadillo_Reload = m_Armadillo.FindAction("Reload", throwIfNotFound: true);
         m_Armadillo_Ability1 = m_Armadillo.FindAction("Ability1", throwIfNotFound: true);
         m_Armadillo_Ability2 = m_Armadillo.FindAction("Ability2", throwIfNotFound: true);
-        m_Armadillo_Ability3 = m_Armadillo.FindAction("Ability3", throwIfNotFound: true);
         m_Armadillo_Sprint = m_Armadillo.FindAction("Sprint", throwIfNotFound: true);
         m_Armadillo_Lurk = m_Armadillo.FindAction("Lurk", throwIfNotFound: true);
     }
@@ -402,7 +381,6 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
     private readonly InputAction m_Armadillo_Reload;
     private readonly InputAction m_Armadillo_Ability1;
     private readonly InputAction m_Armadillo_Ability2;
-    private readonly InputAction m_Armadillo_Ability3;
     private readonly InputAction m_Armadillo_Sprint;
     private readonly InputAction m_Armadillo_Lurk;
     public struct ArmadilloActions
@@ -418,7 +396,6 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
         public InputAction @Reload => m_Wrapper.m_Armadillo_Reload;
         public InputAction @Ability1 => m_Wrapper.m_Armadillo_Ability1;
         public InputAction @Ability2 => m_Wrapper.m_Armadillo_Ability2;
-        public InputAction @Ability3 => m_Wrapper.m_Armadillo_Ability3;
         public InputAction @Sprint => m_Wrapper.m_Armadillo_Sprint;
         public InputAction @Lurk => m_Wrapper.m_Armadillo_Lurk;
         public InputActionMap Get() { return m_Wrapper.m_Armadillo; }
@@ -457,9 +434,6 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
             @Ability2.started += instance.OnAbility2;
             @Ability2.performed += instance.OnAbility2;
             @Ability2.canceled += instance.OnAbility2;
-            @Ability3.started += instance.OnAbility3;
-            @Ability3.performed += instance.OnAbility3;
-            @Ability3.canceled += instance.OnAbility3;
             @Sprint.started += instance.OnSprint;
             @Sprint.performed += instance.OnSprint;
             @Sprint.canceled += instance.OnSprint;
@@ -497,9 +471,6 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
             @Ability2.started -= instance.OnAbility2;
             @Ability2.performed -= instance.OnAbility2;
             @Ability2.canceled -= instance.OnAbility2;
-            @Ability3.started -= instance.OnAbility3;
-            @Ability3.performed -= instance.OnAbility3;
-            @Ability3.canceled -= instance.OnAbility3;
             @Sprint.started -= instance.OnSprint;
             @Sprint.performed -= instance.OnSprint;
             @Sprint.canceled -= instance.OnSprint;
@@ -534,7 +505,6 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
         void OnReload(InputAction.CallbackContext context);
         void OnAbility1(InputAction.CallbackContext context);
         void OnAbility2(InputAction.CallbackContext context);
-        void OnAbility3(InputAction.CallbackContext context);
         void OnSprint(InputAction.CallbackContext context);
         void OnLurk(InputAction.CallbackContext context);
     }

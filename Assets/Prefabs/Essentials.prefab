@@ -1,5 +1,63 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &254498854851453400
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3444198948980032643}
+  - component: {fileID: 7726639985404691071}
+  m_Layer: 0
+  m_Name: Decal Projector
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3444198948980032643
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 254498854851453400}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.7071068, y: -0, z: -0, w: 0.7071068}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1639567592218980733}
+  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
+--- !u!114 &7726639985404691071
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 254498854851453400}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f19d9143a39eb3b46bc4563e9889cfbd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 2100000, guid: cb4ee41f8d36a1942984bd2c48fccd6a, type: 2}
+  m_DrawDistance: 1000
+  m_FadeScale: 0.9
+  m_StartAngleFade: 180
+  m_EndAngleFade: 180
+  m_UVScale: {x: 1, y: 1}
+  m_UVBias: {x: 0, y: 0}
+  m_AffectsTransparency: 0
+  m_DecalLayerMask: 1
+  m_ScaleMode: 1
+  m_Offset: {x: 0, y: 0, z: 0}
+  m_Size: {x: 0, y: 0, z: 45}
+  m_FadeFactor: 1
+  m_Version: 2
 --- !u!1 &683202681187000419
 GameObject:
   m_ObjectHideFlags: 0
@@ -114,6 +172,7 @@ Transform:
   - {fileID: 8249930215261983058}
   - {fileID: 2888905029226936989}
   - {fileID: 7668807680817513141}
+  - {fileID: 6434393090088850387}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1032415976076843433
@@ -213,6 +272,39 @@ MonoBehaviour:
   m_BiasX: 0
   m_BiasY: 0
   m_CenterOnActivate: 0
+--- !u!1 &1552870054271322910
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6434393090088850387}
+  m_Layer: 0
+  m_Name: SonarAbilityVFX
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6434393090088850387
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1552870054271322910}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 2284160556072982530}
+  - {fileID: 3997267946186284659}
+  m_Father: {fileID: 2478500455967649313}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1586880848335941774
 GameObject:
   m_ObjectHideFlags: 0
@@ -669,6 +761,96 @@ MonoBehaviour:
   AutoEnableInputs: 1
   XYAxis: {fileID: -5630151704836100654, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
   ZAxis: {fileID: 0}
+--- !u!1 &3565967472147620576
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3997267946186284659}
+  - component: {fileID: 1383285191488793065}
+  m_Layer: 0
+  m_Name: Outline
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3997267946186284659
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3565967472147620576}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6434393090088850387}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1383285191488793065
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3565967472147620576}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26d6499a6bd256e47b859377446493a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IsGlobal: 0
+  fadeRadius: 0
+  priority: 0
+  customPasses:
+  - rid: 1748545058283192320
+  - rid: 4443587700026507264
+  injectionPoint: 6
+  m_TargetCamera: {fileID: 1566958832985602325}
+  useTargetCamera: 1
+  references:
+    version: 2
+    RefIds:
+    - rid: 1748545058283192320
+      type: {class: Outline, ns: , asm: Assembly-CSharp}
+      data:
+        m_Name: Custom Pass
+        enabled: 1
+        targetColorBuffer: 1
+        targetDepthBuffer: 0
+        clearFlags: 1
+        passFoldout: 0
+        m_Version: 0
+        outlineLayer:
+          serializedVersion: 2
+          m_Bits: 1344
+        outlineColor: {r: 0.7058823, g: 0.7490196, b: 0, a: 1}
+        threshold: 1
+        maxDistance: 0
+        outlineShader: {fileID: -6465566751694194690, guid: 80850997b896cdc4aa3b2697109d79e3, type: 3}
+    - rid: 4443587700026507264
+      type: {class: Outline, ns: , asm: Assembly-CSharp}
+      data:
+        m_Name: Custom Pass
+        enabled: 1
+        targetColorBuffer: 1
+        targetDepthBuffer: 0
+        clearFlags: 1
+        passFoldout: 0
+        m_Version: 0
+        outlineLayer:
+          serializedVersion: 2
+          m_Bits: 512
+        outlineColor: {r: 1.319508, g: 0, b: 0, a: 1}
+        threshold: 1
+        maxDistance: 0
+        outlineShader: {fileID: -6465566751694194690, guid: 80850997b896cdc4aa3b2697109d79e3, type: 3}
 --- !u!1 &3664558906058350178
 GameObject:
   m_ObjectHideFlags: 0
@@ -1551,6 +1733,7 @@ Transform:
   - {fileID: 3792831689494553116}
   - {fileID: 4555859652590835368}
   - {fileID: 4398985997072136297}
+  - {fileID: 3444198948980032643}
   m_Father: {fileID: 2478500455967649313}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!136 &2346160075134265153
@@ -1637,7 +1820,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   startWithChangeFormAbility: 0
-  startWithInvisibilityAbility: 0
   startWithSonarAbility: 0
   currentForm: 0
   playerVisual_Default: {fileID: 2647468059563199376}
@@ -1648,19 +1830,22 @@ MonoBehaviour:
   - {fileID: 8761147212282896686}
   enemyLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 512
   interactiveLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 64
   pickableLayer:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 256
   climbableLayer:
     serializedVersion: 2
-    m_Bits: 0
-  sonarEffect: {fileID: 0}
-  ballMeshRender: {fileID: 0}
-  isInvisible: 0
+    m_Bits: 1024
+  sonarDuration: 10
+  sonarStartLerpDuration: 0.75
+  sonarRange: 40
+  sonarEffect: {fileID: 6522495342082609601}
+  outlineSonarEffect: {fileID: 1383285191488793065}
+  sonarDecal: {fileID: 7726639985404691071}
 --- !u!114 &3820379842338080642
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2276,6 +2461,92 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cameraFollowPoint: {fileID: 2012898067650594436}
   cameraDistanceFromPlayer: 0.75
+--- !u!1 &6719271059214774831
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2284160556072982530}
+  - component: {fileID: 6522495342082609601}
+  m_Layer: 0
+  m_Name: SeeThrough
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2284160556072982530
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6719271059214774831}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.044928513, y: -0, z: -0, w: 0.99899024}
+  m_LocalPosition: {x: -15.92, y: 8.17, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6434393090088850387}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6522495342082609601
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6719271059214774831}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26d6499a6bd256e47b859377446493a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_IsGlobal: 0
+  fadeRadius: 0
+  priority: 0
+  customPasses:
+  - rid: 4443587679048433664
+  - rid: 4443587682727100416
+  injectionPoint: 1
+  m_TargetCamera: {fileID: 1566958832985602325}
+  useTargetCamera: 1
+  references:
+    version: 2
+    RefIds:
+    - rid: 4443587679048433664
+      type: {class: SeeThrough, ns: , asm: Assembly-CSharp}
+      data:
+        m_Name: Sonar Ability General
+        enabled: 1
+        targetColorBuffer: 0
+        targetDepthBuffer: 0
+        clearFlags: 0
+        passFoldout: 0
+        m_Version: 0
+        seeThroughLayer:
+          serializedVersion: 2
+          m_Bits: 1344
+        seeThroughMaterial: {fileID: 2100000, guid: c7d39c4bde03e184ea8f84878d953bc9, type: 2}
+        stencilShader: {fileID: 4800000, guid: be88dc619e5cbcc45acd4252f5a35418, type: 3}
+    - rid: 4443587682727100416
+      type: {class: SeeThrough, ns: , asm: Assembly-CSharp}
+      data:
+        m_Name: Sonar Ability Enemy
+        enabled: 1
+        targetColorBuffer: 0
+        targetDepthBuffer: 0
+        clearFlags: 0
+        passFoldout: 0
+        m_Version: 0
+        seeThroughLayer:
+          serializedVersion: 2
+          m_Bits: 512
+        seeThroughMaterial: {fileID: 2100000, guid: cf64ccebb70caf040ade5ba03a6776a4, type: 2}
+        stencilShader: {fileID: 4800000, guid: be88dc619e5cbcc45acd4252f5a35418, type: 3}
 --- !u!1 &6799058332185641824
 GameObject:
   m_ObjectHideFlags: 0

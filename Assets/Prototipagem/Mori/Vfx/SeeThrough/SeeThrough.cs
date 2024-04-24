@@ -8,6 +8,7 @@ public class SeeThrough : CustomPass
 {
     public LayerMask seeThroughLayer = 1;
     public Material seeThroughMaterial = null;
+    public Material normalSeeMaterial = null;
 
     [SerializeField, HideInInspector]
     Shader stencilShader;
@@ -47,7 +48,14 @@ public class SeeThrough : CustomPass
             readMask: (byte)UserStencilUsage.UserBit0,
             compareFunction: CompareFunction.Equal
         );
+
+        StencilState normalSeeStencil = new StencilState(
+            enabled: true,
+            readMask: (byte)UserStencilUsage.UserBit0,
+            compareFunction: CompareFunction.Less
+        );
         RenderObjects(ctx.renderContext, ctx.cmd, seeThroughMaterial, seeThroughMaterial.FindPass("ForwardOnly"), CompareFunction.GreaterEqual, ctx.cullingResults, ctx.hdCamera, seeThroughStencil);
+        RenderObjects(ctx.renderContext, ctx.cmd, normalSeeMaterial, seeThroughMaterial.FindPass("ForwardOnly"), CompareFunction.GreaterEqual, ctx.cullingResults, ctx.hdCamera, normalSeeStencil);
     }
 
     public override IEnumerable<Material> RegisterMaterialForInspector() { yield return seeThroughMaterial; }

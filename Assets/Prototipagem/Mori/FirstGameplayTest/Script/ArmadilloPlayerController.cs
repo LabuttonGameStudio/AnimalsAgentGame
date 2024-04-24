@@ -21,7 +21,6 @@ public class ArmadilloPlayerController : MonoBehaviour
     public static ArmadilloPlayerController Instance { get; private set; }
 
     [SerializeField] private bool startWithChangeFormAbility;
-    [SerializeField] private bool startWithInvisibilityAbility;
     [SerializeField] private bool startWithSonarAbility;
     public enum Form
     {
@@ -55,13 +54,14 @@ public class ArmadilloPlayerController : MonoBehaviour
     public LayerMask climbableLayer;
 
     [Header("Sonar Ability")]
-    [SerializeField] private bool isSonarActive;
+    private bool isSonarActive;
+    [SerializeField] private float sonarDuration;
     [SerializeField] private float sonarStartLerpDuration;
     [SerializeField] private float sonarRange;
 
     public CustomPassVolume sonarEffect;
-    [HideInInspector] public SeeThrough sonarEffectDefault;
-    [HideInInspector] public SeeThrough sonarEffectEnemy;
+    private SeeThrough sonarEffectDefault;
+    private SeeThrough sonarEffectEnemy;
 
     public CustomPassVolume outlineSonarEffect;
     private Outline sonarOutlineDefault;
@@ -69,10 +69,6 @@ public class ArmadilloPlayerController : MonoBehaviour
 
     [SerializeField] private DecalProjector sonarDecal;
 
-    [Header("Invisibility Ability")]
-    [SerializeField] private MeshRenderer ballMeshRender;
-    [HideInInspector] public bool isInvisible;
-    [SerializeField] private float invisibleLerpDuration = 0.25f;
 
     private void Awake()
     {
@@ -91,7 +87,6 @@ public class ArmadilloPlayerController : MonoBehaviour
     {
         if (startWithChangeFormAbility) UnlockChangeFormAbility();
         if (startWithSonarAbility) UnlockSonarAbility();
-        if (startWithInvisibilityAbility) UnlockInvisibilityAbility();
     }
     private void OnDrawGizmos()
     {
@@ -134,14 +129,14 @@ public class ArmadilloPlayerController : MonoBehaviour
         sonarEffectDefault = sonarEffect.customPasses[0] as SeeThrough;
         sonarEffectEnemy = sonarEffect.customPasses[1] as SeeThrough;
 
-        sonarOutlineDefault = outlineSonarEffect.customPasses[0] as Outline;
-        sonarOutlineEnemy = outlineSonarEffect.customPasses[1] as Outline;
+        //sonarOutlineDefault = outlineSonarEffect.customPasses[0] as Outline;
+        //sonarOutlineEnemy = outlineSonarEffect.customPasses[1] as Outline;
 
         sonarEffectDefault.seeThroughMaterial.SetFloat("_MAXDISTANCE", 0);
         sonarEffectEnemy.seeThroughMaterial.SetFloat("_MAXDISTANCE", 0);
 
-        sonarOutlineDefault.maxDistance = 0;
-        sonarOutlineEnemy.maxDistance = 0;
+        //sonarOutlineDefault.maxDistance = 0;
+        //sonarOutlineEnemy.maxDistance = 0;
 
         sonarEffect.enabled = true;
     }
@@ -164,8 +159,8 @@ public class ArmadilloPlayerController : MonoBehaviour
             sonarEffectDefault.seeThroughMaterial.SetFloat("_MAXDISTANCE", Mathf.SmoothStep(startValue, finalValue, timer / sonarStartLerpDuration));
             sonarEffectEnemy.seeThroughMaterial.SetFloat("_MAXDISTANCE", Mathf.SmoothStep(startValue, finalValue, timer / sonarStartLerpDuration));
 
-            sonarOutlineDefault.maxDistance = Mathf.SmoothStep(startValue, finalValue/1.428f, timer / sonarStartLerpDuration);
-            sonarOutlineEnemy.maxDistance = Mathf.SmoothStep(startValue, finalValue / 1.428f, timer / sonarStartLerpDuration);
+            //sonarOutlineDefault.maxDistance = Mathf.SmoothStep(startValue / 1.176f, finalValue/ 1.176f, timer / sonarStartLerpDuration);
+            //sonarOutlineEnemy.maxDistance = Mathf.SmoothStep(startValue / 1.176f, finalValue / 1.176f, timer / sonarStartLerpDuration);
 
             timer += 0.05f;
             yield return new WaitForSeconds(0.05f);
@@ -174,8 +169,8 @@ public class ArmadilloPlayerController : MonoBehaviour
         sonarEffectDefault.seeThroughMaterial.SetFloat("_MAXDISTANCE", finalValue);
         sonarEffectEnemy.seeThroughMaterial.SetFloat("_MAXDISTANCE", finalValue);
 
-        sonarOutlineDefault.maxDistance = finalValue / 1.428f;
-        sonarOutlineEnemy.maxDistance = finalValue / 1.428f ;
+        //sonarOutlineDefault.maxDistance = finalValue / 1.176f;
+        //sonarOutlineEnemy.maxDistance = finalValue / 1.176f;
 
         SonarAbility_Ref = null;
     }
@@ -193,35 +188,6 @@ public class ArmadilloPlayerController : MonoBehaviour
         sonarDecal.size = Vector3.one * sonarRange * 2.5f;
         sonarDecal.fadeFactor = 0;
         SonarAbilityVFX_Ref = null;
-    }
-
-    //------ Invisibility ------
-    public void UnlockInvisibilityAbility()
-    {
-        inputControl.inputAction.Armadillo.Ability3.Enable();
-        inputControl.inputAction.Armadillo.Ability3.performed += InvisibilityAbility;
-    }
-    public void InvisibilityAbility(InputAction.CallbackContext value)
-    {
-        if (LerpInvisibility_Ref == null)
-        {
-            isInvisible = !isInvisible;
-            LerpInvisibility_Ref = StartCoroutine(LerpInvisibility_Coroutine(isInvisible ? 1 : 0.25f, isInvisible ? 0.25f : 1));
-        }
-
-    }
-    private Coroutine LerpInvisibility_Ref;
-    private IEnumerator LerpInvisibility_Coroutine(float startValue, float finalValue)
-    {
-        float timer = 0f;
-        while (timer <= invisibleLerpDuration)
-        {
-            ballMeshRender.sharedMaterial.SetFloat("_ALPHA", Mathf.Lerp(startValue, finalValue, timer / invisibleLerpDuration));
-            timer += 0.05f;
-            yield return new WaitForSeconds(0.05f);
-        }
-        ballMeshRender.sharedMaterial.SetFloat("_ALPHA", finalValue);
-        LerpInvisibility_Ref = null;
     }
     //------ Change Forms ------
 
