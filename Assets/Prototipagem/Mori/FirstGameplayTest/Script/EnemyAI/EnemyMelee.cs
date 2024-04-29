@@ -9,6 +9,7 @@ public class EnemyMelee : IEnemy, IDamageable
     #region Detection
     [Tooltip("Tempo necessario para ir ao estado mais alto de detecção")] readonly protected float timeToMaxDetect = 1.5f;
     #endregion
+
     #region StateMachine
 
     [HideInInspector] public MeleeEnemyState currentEnemyState;
@@ -99,7 +100,7 @@ public class EnemyMelee : IEnemy, IDamageable
     public void IncreaseDetection()
     {
         timeSincePlayerLastSeen = 0;
-        float increasePerTick = 100 / (timeToMaxDetect / EnemyControl.Instance.tickInterval);
+        float increasePerTick = 100 / (timeToMaxDetect / EnemyControl.Instance.visibilityTickInterval);
         if (detectionLevel + increasePerTick >= 100)
         {
             detectionLevel = 100;
@@ -119,7 +120,7 @@ public class EnemyMelee : IEnemy, IDamageable
     }
     public void DecreaseDetection()
     {
-        timeSincePlayerLastSeen += EnemyControl.Instance.tickInterval;
+        timeSincePlayerLastSeen += EnemyControl.Instance.visibilityTickInterval;
         bool doesTimeExceedDelay;
 
         //Delay based on current ai behaviour
@@ -141,7 +142,7 @@ public class EnemyMelee : IEnemy, IDamageable
         }
         if (doesTimeExceedDelay)
         {
-            float decreasePerTick = 100 / (timeToMaxDetect*1.5f / EnemyControl.Instance.tickInterval);
+            float decreasePerTick = 100 / (timeToMaxDetect*1.5f / EnemyControl.Instance.visibilityTickInterval);
             if (detectionLevel - decreasePerTick < 0)
             {
                 detectionLevel = 0;

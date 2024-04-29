@@ -4,17 +4,17 @@ using UnityEngine.Rendering;
 using UnityEngine.Experimental.Rendering;
 using System.Collections.Generic;
 
-public class SeeThrough : CustomPass
+public class Highlight : CustomPass
 {
-    public LayerMask seeThroughLayer = 1;
-    public Material seeThroughMaterial = null;
+    public LayerMask highlightLayer = 1;
+    public Material highlightMaterial = null;
 
     [SerializeField, HideInInspector]
     Shader stencilShader;
 
     Material stencilMaterial;
 
-    ShaderTagId[] shaderTags;
+    ShaderTagId[]   shaderTags;
 
     protected override void Setup(ScriptableRenderContext renderContext, CommandBuffer cmd)
     {
@@ -41,16 +41,15 @@ public class SeeThrough : CustomPass
         RenderObjects(ctx.renderContext, ctx.cmd, stencilMaterial, 0, CompareFunction.LessEqual, ctx.cullingResults, ctx.hdCamera);
         // CustomPassUtils.DrawRenderers(ctx, seeThroughLayer, RenderQueueType.All, overrideRenderState: stencilWriteRenderState);
 
-        // Then we render the objects that are behind walls using the stencil buffer with Greater Equal ZTest:
-        StencilState seeThroughStencil = new StencilState(
+        StencilState normalSeeStencil = new StencilState(
             enabled: true,
             readMask: (byte)UserStencilUsage.UserBit0,
-            compareFunction: CompareFunction.Equal
+            compareFunction: CompareFunction.Less
         );
-        RenderObjects(ctx.renderContext, ctx.cmd, seeThroughMaterial, seeThroughMaterial.FindPass("ForwardOnly"), CompareFunction.GreaterEqual, ctx.cullingResults, ctx.hdCamera, seeThroughStencil);
+        RenderObjects(ctx.renderContext, ctx.cmd, highlightMaterial, highlightMaterial.FindPass("ForwardOnly"), CompareFunction.GreaterEqual, ctx.cullingResults, ctx.hdCamera, normalSeeStencil);
     }
 
-    public override IEnumerable<Material> RegisterMaterialForInspector() { yield return seeThroughMaterial; }
+    public override IEnumerable<Material> RegisterMaterialForInspector() { yield return highlightMaterial; }
 
     void RenderObjects(ScriptableRenderContext renderContext, CommandBuffer cmd, Material overrideMaterial, int passIndex, CompareFunction depthCompare, CullingResults cullingResult, HDCamera hdCamera, StencilState? overrideStencil = null)
     {
@@ -63,8 +62,8 @@ public class SeeThrough : CustomPass
             excludeObjectMotionVectors = false,
             overrideMaterial = overrideMaterial,
             overrideMaterialPassIndex = passIndex,
-            layerMask = seeThroughLayer,
-            stateBlock = new RenderStateBlock(RenderStateMask.Depth) { depthState = new DepthState(true, depthCompare) },
+            layerMask = highlightLayer,
+            stateBlock = new RenderStateBlock(RenderStateMask.Depth){ depthState = new DepthState(true, depthCompare)},
         };
 
         if (overrideStencil != null)

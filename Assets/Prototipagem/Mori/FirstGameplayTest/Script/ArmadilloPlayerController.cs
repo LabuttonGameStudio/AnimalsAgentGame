@@ -63,11 +63,8 @@ public class ArmadilloPlayerController : MonoBehaviour
     private SeeThrough sonarEffectDefault;
     private SeeThrough sonarEffectEnemy;
 
-    public CustomPassVolume outlineSonarEffect;
-    private Outline sonarOutlineDefault;
-    private Outline sonarOutlineEnemy;
 
-    [SerializeField] private DecalProjector sonarDecal;
+    [SerializeField] private DecalProjector[] sonarDecal;
 
 
     private void Awake()
@@ -129,14 +126,11 @@ public class ArmadilloPlayerController : MonoBehaviour
         sonarEffectDefault = sonarEffect.customPasses[0] as SeeThrough;
         sonarEffectEnemy = sonarEffect.customPasses[1] as SeeThrough;
 
-        //sonarOutlineDefault = outlineSonarEffect.customPasses[0] as Outline;
-        //sonarOutlineEnemy = outlineSonarEffect.customPasses[1] as Outline;
+        sonarEffectDefault.seeThroughMaterial = new Material(sonarEffectDefault.seeThroughMaterial);
+        sonarEffectEnemy.seeThroughMaterial = new Material(sonarEffectEnemy.seeThroughMaterial);
 
         sonarEffectDefault.seeThroughMaterial.SetFloat("_MAXDISTANCE", 0);
         sonarEffectEnemy.seeThroughMaterial.SetFloat("_MAXDISTANCE", 0);
-
-        //sonarOutlineDefault.maxDistance = 0;
-        //sonarOutlineEnemy.maxDistance = 0;
 
         sonarEffect.enabled = true;
     }
@@ -145,22 +139,19 @@ public class ArmadilloPlayerController : MonoBehaviour
         if (SonarAbility_Ref == null)
         {
             isSonarActive = !isSonarActive;
-            if(isSonarActive && SonarAbilityVFX_Ref == null) SonarAbilityVFX_Ref = StartCoroutine(SonarAbilityVFX_Coroutine());
-            SonarAbility_Ref = StartCoroutine(SonarAbility_Coroutine(isSonarActive ? 0 : sonarRange, isSonarActive ? sonarRange : 0));
+            if(isSonarActive && SonarAbilityVFX_Ref == null) SonarAbilityVFX_Ref = StartCoroutine(SonarAbilityVFX_Coroutine(sonarStartLerpDuration));
+            SonarAbility_Ref = StartCoroutine(SonarAbility_Coroutine(isSonarActive ? 0 : sonarRange, isSonarActive ? sonarRange : 0,sonarStartLerpDuration));
         }
     }
 
     private Coroutine SonarAbility_Ref;
-    private IEnumerator SonarAbility_Coroutine(float startValue, float finalValue)
+    private IEnumerator SonarAbility_Coroutine(float startValue, float finalValue,float duration)
     {
         float timer = 0f;
-        while (timer <= sonarStartLerpDuration)
+        while (timer <= duration)
         {
-            sonarEffectDefault.seeThroughMaterial.SetFloat("_MAXDISTANCE", Mathf.SmoothStep(startValue, finalValue, timer / sonarStartLerpDuration));
-            sonarEffectEnemy.seeThroughMaterial.SetFloat("_MAXDISTANCE", Mathf.SmoothStep(startValue, finalValue, timer / sonarStartLerpDuration));
-
-            //sonarOutlineDefault.maxDistance = Mathf.SmoothStep(startValue / 1.176f, finalValue/ 1.176f, timer / sonarStartLerpDuration);
-            //sonarOutlineEnemy.maxDistance = Mathf.SmoothStep(startValue / 1.176f, finalValue / 1.176f, timer / sonarStartLerpDuration);
+            sonarEffectDefault.seeThroughMaterial.SetFloat("_MAXDISTANCE", Mathf.SmoothStep(startValue, finalValue, timer / duration));
+            sonarEffectEnemy.seeThroughMaterial.SetFloat("_MAXDISTANCE", Mathf.SmoothStep(startValue, finalValue, timer / duration));
 
             timer += 0.05f;
             yield return new WaitForSeconds(0.05f);
@@ -169,24 +160,38 @@ public class ArmadilloPlayerController : MonoBehaviour
         sonarEffectDefault.seeThroughMaterial.SetFloat("_MAXDISTANCE", finalValue);
         sonarEffectEnemy.seeThroughMaterial.SetFloat("_MAXDISTANCE", finalValue);
 
-        //sonarOutlineDefault.maxDistance = finalValue / 1.176f;
-        //sonarOutlineEnemy.maxDistance = finalValue / 1.176f;
-
         SonarAbility_Ref = null;
     }
     private Coroutine SonarAbilityVFX_Ref;
-    private IEnumerator SonarAbilityVFX_Coroutine()
+    private IEnumerator SonarAbilityVFX_Coroutine(float duration)
     {
         float timer = 0f;
-        while (timer <= sonarStartLerpDuration)
+        while (timer <= duration)
         {
-            sonarDecal.size = Vector3.one * Mathf.SmoothStep(0, sonarRange * 2.5f, timer / sonarStartLerpDuration);
-            sonarDecal.fadeFactor = Mathf.SmoothStep(1, 0, timer / sonarStartLerpDuration);
+            sonarDecal[0].size = Vector3.one * Mathf.SmoothStep(0,40+ sonarRange * 2.5f, timer / duration);
+            sonarDecal[1].size = Vector3.one * Mathf.SmoothStep(0, sonarRange * 2.5f, timer / duration);
+            sonarDecal[2].size = Vector3.one * Mathf.SmoothStep(0,-40+ sonarRange * 2.5f, timer / duration);
+            sonarDecal[3].size = Vector3.one * Mathf.SmoothStep(0,-90+ sonarRange * 2.5f, timer / duration);
+
+
+            sonarDecal[0].fadeFactor = Mathf.SmoothStep(2.75f, 0, timer / duration);
+            sonarDecal[1].fadeFactor = Mathf.SmoothStep(3, 0, timer / duration);
+            sonarDecal[2].fadeFactor = Mathf.SmoothStep(2.75f, 0, timer / duration);
+            sonarDecal[3].fadeFactor = Mathf.SmoothStep(1.5f, 0, timer / duration);
+
             timer += Time.deltaTime;
             yield return null;
         }
-        sonarDecal.size = Vector3.one * sonarRange * 2.5f;
-        sonarDecal.fadeFactor = 0;
+        sonarDecal[0].size = Vector3.one * sonarRange * 2.5f;
+        sonarDecal[1].size = Vector3.one * sonarRange * 2.5f;
+        sonarDecal[2].size = Vector3.one * sonarRange * 2.5f;
+        sonarDecal[3].size = Vector3.one * sonarRange * 2.5f;
+
+        sonarDecal[0].fadeFactor = 0;
+        sonarDecal[1].fadeFactor = 0;
+        sonarDecal[2].fadeFactor = 0;
+        sonarDecal[3].fadeFactor = 0;
+
         SonarAbilityVFX_Ref = null;
     }
     //------ Change Forms ------

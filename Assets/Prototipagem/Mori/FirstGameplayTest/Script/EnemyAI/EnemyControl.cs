@@ -8,15 +8,13 @@ public class EnemyControl : MonoBehaviour
 
 
     [HideInInspector]public List<IEnemy> allEnemiesList = new List<IEnemy>();
-    [HideInInspector]public List<IEnemy> allAttackingEnemiesList = new List<IEnemy>();
-    [HideInInspector]public List<IEnemy> allMeleeAttackingEnemiesList = new List<IEnemy>();
 
-    [HideInInspector]public float tickInterval;
+    public float visibilityTickInterval = 0.025f;
+    public float actionTickInterval = 0.025f;
 
     private void Awake()
     {
         Instance = this;
-        tickInterval = 0.025f;
 
     }
     private void Start()
@@ -27,16 +25,21 @@ public class EnemyControl : MonoBehaviour
     {
         if(state)
         {
-            if (enemyControlLoop_Ref == null) enemyControlLoop_Ref = StartCoroutine(EnemyControlLoop_Coroutine());
+            if (checkVisibilityLoop_Ref == null) checkVisibilityLoop_Ref = StartCoroutine(CheckVisibilityLoop_Coroutine());
+
+            if (checkActionLoop_Ref == null) checkActionLoop_Ref = StartCoroutine(CheckActionLoop_Coroutine());
         }
-        else if(enemyControlLoop_Ref != null)
+        else if(checkVisibilityLoop_Ref != null)
         {
-            StopCoroutine(enemyControlLoop_Ref);
-            enemyControlLoop_Ref = null;
+            StopCoroutine(checkVisibilityLoop_Ref);
+            checkVisibilityLoop_Ref = null;
+
+            StopCoroutine(checkActionLoop_Ref);
+            checkActionLoop_Ref = null;
         }
     }
-    private Coroutine enemyControlLoop_Ref;
-    private IEnumerator EnemyControlLoop_Coroutine()
+    private Coroutine checkVisibilityLoop_Ref;
+    private IEnumerator CheckVisibilityLoop_Coroutine()
     {
         while(true)
         {
@@ -44,19 +47,43 @@ public class EnemyControl : MonoBehaviour
             yield return new WaitForSeconds(0.1f);
         }
         int currentEnemyIndex = 0;
-        float interval = tickInterval / allEnemiesList.Count;
         while(true)
         {
             if (allEnemiesList[currentEnemyIndex].isDead) yield return null;
             else
             {
                 allEnemiesList[currentEnemyIndex].VisibilityUpdate();
-                yield return null;
-                allEnemiesList[currentEnemyIndex].ActionUpdate();
             }
 
             currentEnemyIndex++;
             if(currentEnemyIndex>=allEnemiesList.Count)currentEnemyIndex = 0;
+
+            float interval = visibilityTickInterval / allEnemiesList.Count;
+            yield return new WaitForSecondsRealtime(interval);
+        }
+    }
+
+    private Coroutine checkActionLoop_Ref;
+    private IEnumerator CheckActionLoop_Coroutine()
+    {
+        while (true)
+        {
+            if (allEnemiesList.Count > 0) break;
+            yield return new WaitForSeconds(0.1f);
+        }
+        int currentEnemyIndex = 0;
+        while (true)
+        {
+            if (allEnemiesList[currentEnemyIndex].isDead) yield return null;
+            else
+            {
+                allEnemiesList[currentEnemyIndex].ActionUpdate();
+            }
+
+            currentEnemyIndex++;
+            if (currentEnemyIndex >= allEnemiesList.Count) currentEnemyIndex = 0;
+
+            float interval = actionTickInterval / allEnemiesList.Count;
             yield return new WaitForSecondsRealtime(interval);
         }
     }
