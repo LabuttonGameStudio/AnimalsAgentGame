@@ -2,6 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public class NextNavmeshPointCallParameters
+{
+    public Vector3 position;
+    public IEnemy enemyRef;    
+}
 public class EnemyControl : MonoBehaviour
 {
     public static EnemyControl Instance { get; private set;}
@@ -11,6 +16,8 @@ public class EnemyControl : MonoBehaviour
 
     public float visibilityTickInterval = 0.025f;
     public float actionTickInterval = 0.025f;
+
+    private Queue<NextNavmeshPointCallParameters> SetNextNavmeshPointCall_Queue = new Queue<NextNavmeshPointCallParameters>();
 
     private void Awake()
     {
@@ -38,6 +45,7 @@ public class EnemyControl : MonoBehaviour
             checkActionLoop_Ref = null;
         }
     }
+    #region Visibility Check
     private Coroutine checkVisibilityLoop_Ref;
     private IEnumerator CheckVisibilityLoop_Coroutine()
     {
@@ -62,7 +70,9 @@ public class EnemyControl : MonoBehaviour
             yield return new WaitForSecondsRealtime(interval);
         }
     }
+    #endregion
 
+    #region Action Check
     private Coroutine checkActionLoop_Ref;
     private IEnumerator CheckActionLoop_Coroutine()
     {
@@ -77,6 +87,7 @@ public class EnemyControl : MonoBehaviour
             if (allEnemiesList[currentEnemyIndex].isDead) yield return null;
             else
             {
+                OnNavmeshQueueCall();
                 allEnemiesList[currentEnemyIndex].ActionUpdate();
             }
 
@@ -87,4 +98,28 @@ public class EnemyControl : MonoBehaviour
             yield return new WaitForSecondsRealtime(interval);
         }
     }
+    #endregion
+
+    #region NavMeshCallQueue
+
+    public void AddAIToNavmeshQueue(IEnemy enemy,Vector3 desiredPosition)
+    {
+        enemy.enqueued = true;
+        SetNextNavmeshPointCall_Queue.Enqueue(new NextNavmeshPointCallParameters()
+        {
+            position = desiredPosition,
+            enemyRef = enemy,
+        });
+    }
+    public void OnNavmeshQueueCall()
+    {
+        if(SetNextNavmeshPointCall_Queue.Count > 0)
+        {
+            NextNavmeshPointCallParameters parameters = SetNextNavmeshPointCall_Queue.Dequeue();
+            parameters.enemyRef.SetNextDestinationOfNavmesh(parameters.position);
+            parameters.enemyRef.enqueued = false;
+        }
+    }
+
+    #endregion
 }

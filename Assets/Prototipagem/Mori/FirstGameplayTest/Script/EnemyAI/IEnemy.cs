@@ -44,8 +44,9 @@ public abstract class IEnemy : MonoBehaviour
 
     private bool isBoomerangForward;
 
-    [HideInInspector] public int currentPathPoint = 0;
+    public int currentPathPoint = 0;
 
+    public bool enqueued;
 
     [SerializeField] public AIPathPoint[] aiPathList;
     #endregion
@@ -97,7 +98,7 @@ public abstract class IEnemy : MonoBehaviour
     //10-66 Observing
     //66-99 Searching
     //100+ Attacking
-    [Tooltip("De 0 a 100")]protected float detectionLevel;
+    [Tooltip("De 0 a 100")] protected float detectionLevel;
     #endregion
 
 
@@ -105,6 +106,7 @@ public abstract class IEnemy : MonoBehaviour
     {
         if (!Application.isPlaying)
         {
+            //Visibility Mesh
             if (!fovWedgeMesh) return;
             if (ArmadilloPlayerController.Instance != null)
             {
@@ -122,7 +124,17 @@ public abstract class IEnemy : MonoBehaviour
             Gizmos.color = Color.red;
             Gizmos.DrawCube(transform.position + transform.forward, Vector3.one / 3);
 
-            Gizmos.color = Color.blue;
+            //See navmesh point
+            if (aiPathList != null && aiPathList.Length > 0)
+            {
+                if (navMeshAgent == null) navMeshAgent = GetComponent<NavMeshAgent>();
+
+                foreach (AIPathPoint aiPathPoint in aiPathList)
+                {
+                    GizmosExtra.DrawCylinder(aiPathPoint.transformOfPathPoint.position-new Vector3(0,navMeshAgent.height/2,0), Quaternion.identity, navMeshAgent.height, navMeshAgent.radius, Color.red);
+                }
+
+            }
         }
     }
     private void Awake()
@@ -152,6 +164,7 @@ public abstract class IEnemy : MonoBehaviour
         navMeshAgent = GetComponent<NavMeshAgent>();
         rb = GetComponent<Rigidbody>();
 
+        navMeshAgent.updateRotation = false;
 
 
         OnAwake();
@@ -166,6 +179,7 @@ public abstract class IEnemy : MonoBehaviour
         OnFixedUpdate();
     }
 
+    #region VisibilityCone
     private Mesh CreateFovWedgeMesh()
     {
         Mesh mesh = new Mesh();
@@ -264,27 +278,34 @@ public abstract class IEnemy : MonoBehaviour
         visibilityConeMesh = null;
         return false;
     }
-
     private void OnValidate()
     {
         fovWedgeMesh = CreateFovWedgeMesh();
     }
+    #endregion
+    #region Visibility
     public void VisibilityUpdate()
     {
         OnVisibilityUpdate();
     }
     public abstract void OnVisibilityUpdate();
+    #endregion
+
+    #region Actions
     public void ActionUpdate()
     {
         OnActionUpdate();
     }
     public abstract void OnActionUpdate();
+    #endregion
+
+    #region NavMesh
     public void SetNextDestinationOfNavmesh(Vector3 position)
     {
         if (navMeshAgent.SetDestination(position)) { }
         else Debug.LogError("Error in " + name + " in setting destination of point " + aiPathList[currentPathPoint].transformOfPathPoint.name);
     }
-    private void NextPathPoint()
+    public Vector3 NextPathPoint()
     {
         //Checka se é o caso de loopar a rota ou somente ir para o proximo ponto 
         switch (pathLoopType)
@@ -293,7 +314,7 @@ public abstract class IEnemy : MonoBehaviour
                 if (currentPathPoint + 1 >= aiPathList.Length)
                 {
                     OnRoamingPathEnd();
-                    return;
+                    return Vector3.zero;
                 }
                 else
                 {
@@ -329,25 +350,15 @@ public abstract class IEnemy : MonoBehaviour
                 break;
 
         }
-        SetNextDestinationOfNavmesh(aiPathList[currentPathPoint].transformOfPathPoint.position);
+        return aiPathList[currentPathPoint].transformOfPathPoint.position;
     }
     protected abstract void OnRoamingPathEnd();
-    public void CheckForProximityOfPoint()
+    public bool CheckForProximityOfPoint()
     {
-        if (navMeshAgent.remainingDistance < 1f)
-        {
-            if (aiPathList[currentPathPoint].waitTimeOnPoint <= 0)
-            {
-                NextPathPoint();
-            }
-            else
-            {
-                if (waitOnPointTimer_Ref == null)
-                {
-                    waitOnPointTimer_Ref = StartCoroutine(WaitOnPointTimer_Coroutine(aiPathList[currentPathPoint].waitTimeOnPoint, aiPathList[currentPathPoint].lookAroundOnPoint));
-                }
-            }
-        }
+        Vector3 aiPos = transform.position;
+        Vector3 pathPointPos = aiPathList[currentPathPoint].transformOfPathPoint.position;
+        Vector3.Distance(aiPos, pathPointPos);
+        return Vector3.Distance(aiPos, pathPointPos) < 1f;
     }
     public void BreakOnWaitPointCoroutine()
     {
@@ -363,30 +374,40 @@ public abstract class IEnemy : MonoBehaviour
             navMeshAgent.updateRotation = true;
         }
     }
-    private Coroutine waitOnPointTimer_Ref;
-    private IEnumerator WaitOnPointTimer_Coroutine(float duration, bool lookAround)
+    #endregion
+
+    #region Wait on Point
+    public Coroutine waitOnPointTimer_Ref;
+    public IEnumerator WaitOnPointTimer_Coroutine(float duration, bool lookAround)
     {
         navMeshAgent.isStopped = true;
         if (lookAround)
         {
-            navMeshAgent.updateRotation = false;
-            yield return new WaitForSeconds(duration / 5);
-            lookAround_Ref = StartCoroutine(LookAround_Coroutine(-45, duration / 5));
-            yield return lookAround_Ref;
+            float durationPerAction = duration / 8;
+            yield return new WaitForSeconds(durationPerAction);
 
-            lookAround_Ref = StartCoroutine(LookAround_Coroutine(90, duration / 2.5f));
+            //Look Right
+            lookAround_Ref = StartCoroutine(LookAround_Coroutine(-45, durationPerAction));
             yield return lookAround_Ref;
+            yield return new WaitForSeconds(durationPerAction);
 
-            lookAround_Ref = StartCoroutine(LookAround_Coroutine(-45, duration / 5));
+            //Look Left
+            lookAround_Ref = StartCoroutine(LookAround_Coroutine(90, 2 * durationPerAction));
             yield return lookAround_Ref;
+            yield return new WaitForSeconds(durationPerAction);
 
-            navMeshAgent.updateRotation = true;
+            lookAround_Ref = StartCoroutine(LookAround_Coroutine(-45, durationPerAction));
+            yield return lookAround_Ref;
+            yield return new WaitForSeconds(durationPerAction);
+
         }
         else yield return new WaitForSeconds(duration);
-        NextPathPoint();
         navMeshAgent.isStopped = false;
         waitOnPointTimer_Ref = null;
     }
+    #endregion
+
+    #region Look Around
     private Coroutine lookAround_Ref;
     public IEnumerator LookAround_Coroutine(float rotation, float duration)
     {
@@ -401,6 +422,9 @@ public abstract class IEnemy : MonoBehaviour
         }
         transform.localRotation = finalLookAtRotation;
     }
+    #endregion
+
+    #region Line Of Sight
     public bool CheckForLOS(GameObject objectLooked)
     {
         Vector3 origin = eyeTransform.position;
@@ -420,9 +444,37 @@ public abstract class IEnemy : MonoBehaviour
         }
         return true;
     }
+    public float CheckForPlayerLOS()
+    {
+        ArmadilloPlayerController player = ArmadilloPlayerController.Instance;
+        Transform playerTransform = player.transform;
+
+        Vector3 origin = eyeTransform.position;
+        Vector3 destination = playerTransform.position;
+        Vector3 direction = destination - origin;
+
+        direction.y = 0;
+        //Check For Distance
+        if (Vector3.Distance(origin, destination) > viewDistance) return 0;
+
+        //Check for Angle
+        float deltaAngle = Vector3.Angle(direction, eyeTransform.forward);
+        if (deltaAngle > fieldOfView / 2) return 0;
+
+        //Check for direct Line of sight
+        if (Physics.Linecast(origin, destination, out RaycastHit hitInfo, visionBlockLayers, QueryTriggerInteraction.Ignore))
+        {
+            if (!hitInfo.collider.CompareTag("Player")) return 0;
+        }
+        return player.GetCurrentVisibilityOfPlayer();
+    }
+    #endregion
+
+    #region Abstract Functions
     protected abstract void OnAwake();
     protected abstract void OnStart();
 
     protected abstract void OnFixedUpdate();
+    #endregion
 }
 

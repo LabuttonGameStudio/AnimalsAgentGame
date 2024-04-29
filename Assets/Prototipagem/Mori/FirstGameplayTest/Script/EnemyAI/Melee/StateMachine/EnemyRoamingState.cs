@@ -11,19 +11,19 @@ public class EnemyRoamingState : MeleeEnemyState
     }
     public override void OnVisibilityUpdate()
     {
-        if (enemyControl.CheckForLOS(ArmadilloPlayerController.Instance.gameObject))
-        {
-            enemyControl.IncreaseDetection();
-        }
-        else
-        {
-            enemyControl.DecreaseDetection();
-        }
+        //if (enemyControl.CheckForLOS(ArmadilloPlayerController.Instance.gameObject))
+        //{
+        //    enemyControl.IncreaseDetection();
+        //}
+        //else
+        //{
+        //    enemyControl.DecreaseDetection();
+        //}
     }
 
     public override void OnActionUpdate()
     {
-        enemyControl.CheckForProximityOfPoint();
+        
     }
 
     public override void OnEnterState()
@@ -38,6 +38,18 @@ public class EnemyRoamingState : MeleeEnemyState
 
     public override void OnFixedUpdate()
     {
-        
+        if (enemyControl.CheckForProximityOfPoint() && !enemyControl.enqueued)
+        {
+            if (enemyControl.aiPathList[enemyControl.currentPathPoint].waitTimeOnPoint > 0)
+            {
+                if (enemyControl.waitOnPointTimer_Ref == null)
+                {
+                    enemyControl.waitOnPointTimer_Ref = enemyControl.StartCoroutine(
+                        enemyControl.WaitOnPointTimer_Coroutine(enemyControl.aiPathList[enemyControl.currentPathPoint].waitTimeOnPoint
+                        , enemyControl.aiPathList[enemyControl.currentPathPoint].lookAroundOnPoint));
+                }
+            }
+            EnemyControl.Instance.AddAIToNavmeshQueue(enemyControl, enemyControl.NextPathPoint());
+        }
     }
 }
