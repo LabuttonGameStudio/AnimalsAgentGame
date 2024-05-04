@@ -13,12 +13,8 @@ public class InitialOptions : MonoBehaviour
     public string actuallevel;
 
     public GameObject Cinemachine1;
-    public Vector3 PositionWall;
-
 
     private bool levelLoaded = false;
-    private float timer = 5f; 
-
     public float delayBeforeLoading = 10f;
 
     public void iniciar()
