@@ -10,7 +10,7 @@ Material:
   m_Name: MI_Grade_Esqueleto
   m_Shader: {fileID: -6465566751694194690, guid: 00e0d3fe0e55afd49a944e3c93767e1b, type: 3}
   m_Parent: {fileID: 2100000, guid: 723167e3478d40e40b857b3c1edfc526, type: 2}
-  m_ModifiedSerializedProperties: 0
+  m_ModifiedSerializedProperties: 8
   m_ValidKeywords:
   - _DISABLE_SSR_TRANSPARENT
   m_InvalidKeywords: []
@@ -34,6 +34,10 @@ Material:
         m_Texture: {fileID: 2800000, guid: 903ee7753330f464ab9a44d83c8c43c5, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _BaseMap:
+        m_Texture: {fileID: 2800000, guid: 903ee7753330f464ab9a44d83c8c43c5, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _Emission:
         m_Texture: {fileID: 2800000, guid: e5aa2984a89e3d44b90fffeccdbbb951, type: 3}
         m_Scale: {x: 1, y: 1}
@@ -48,7 +52,10 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _Light_on_off: 0
+    - _CullMode: 2
+    - _CullModeForward: 2
+    - _DoubleSidedEnable: 0
+    - _Light_on_off: 1
     m_Colors: []
   m_BuildTextureStacks: []
 --- !u!114 &4726682375241875010
