@@ -39,6 +39,18 @@ public class EnemyObservingState : MeleeEnemyState
 
     public override void OnExitState()
     {
+        iEnemy.BreakOnWaitPointCoroutine();
+        if (LookAtPlayer_Ref != null)
+        {
+            iEnemy.StopCoroutine(LookAtPlayer_Ref);
+            LookAtPlayer_Ref = null;
+        }
+
+        if (LostLOSOfPlayer_Ref != null)
+        {
+            iEnemy.StopCoroutine(LostLOSOfPlayer_Ref);
+            LostLOSOfPlayer_Ref = null;
+        }
 
     }
 
