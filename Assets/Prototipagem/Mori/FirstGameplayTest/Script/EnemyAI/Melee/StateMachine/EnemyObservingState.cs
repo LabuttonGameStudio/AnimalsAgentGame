@@ -1,27 +1,30 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.AI;
 using static IEnemy;
 
 public class EnemyObservingState : MeleeEnemyState
 {
+
     public EnemyObservingState(EnemyMelee enemyCtrl) : base(enemyCtrl)
     {
-        enemyControl = enemyCtrl;
+        iEnemy = enemyCtrl;
     }
 
     public override void OnVisibilityUpdate()
     {
-        GameObject playerGO = ArmadilloPlayerController.Instance.gameObject;
-        if (enemyControl.CheckForLOS(playerGO))
+        if (iEnemy.CheckForPlayerLOS() > 0)
         {
-            enemyControl.IncreaseDetection();
-            enemyControl.lastKnownPlayerPos = playerGO.transform.position;
+            iEnemy.lastKnownPlayerPos = ArmadilloPlayerController.Instance.transform.position;
+            OnPlayerInLOS();
+            iEnemy.IncreaseDetection();
         }
         else
         {
-            enemyControl.DecreaseDetection();
+            OnPlayerOutOfLOS();
         }
     }
 
@@ -31,22 +34,57 @@ public class EnemyObservingState : MeleeEnemyState
     }
     public override void OnEnterState()
     {
-        enemyControl.navMeshAgent.isStopped = true;
-        enemyControl.navMeshAgent.updateRotation = false;
+        iEnemy.navMeshAgent.ResetPath();
     }
 
     public override void OnExitState()
     {
-        enemyControl.navMeshAgent.isStopped = false;
-        enemyControl.navMeshAgent.updateRotation = true;
+
     }
 
     public override void OnFixedUpdate()
     {
-        Vector3 direction = enemyControl.lastKnownPlayerPos;
-        direction.y = 0;
-        direction -= enemyControl.transform.position;
-        Quaternion lookAtRotation = Quaternion.LookRotation(direction);
-        enemyControl.transform.rotation = Quaternion.Lerp(enemyControl.transform.rotation, lookAtRotation, 3 * Time.fixedDeltaTime);
+
+    }
+    private void OnPlayerInLOS()
+    {
+        if (LookAtPlayer_Ref == null)
+        {
+            Debug.Log("Start");
+            iEnemy.BreakOnWaitPointCoroutine();
+            LostLOSOfPlayer_Ref = null;
+            LookAtPlayer_Ref = iEnemy.StartCoroutine(LookAtPlayer_Coroutine());
+        }
+    }
+
+    private void OnPlayerOutOfLOS()
+    {
+        if (LostLOSOfPlayer_Ref == null)
+        {
+            if (LookAtPlayer_Ref != null)
+            {
+                iEnemy.StopCoroutine(LookAtPlayer_Ref);
+                LookAtPlayer_Ref = null;
+            }
+            LostLOSOfPlayer_Ref = iEnemy.StartCoroutine(LostLOSOfPlayer_Coroutine());
+        }
+    }
+    private Coroutine LostLOSOfPlayer_Ref;
+    private IEnumerator LostLOSOfPlayer_Coroutine()
+    {
+        iEnemy.waitOnPointTimer_Ref = iEnemy.StartCoroutine(iEnemy.WaitOnPointTimer_Coroutine(5, true));
+        yield return iEnemy.waitOnPointTimer_Ref;
+        LostLOSOfPlayer_Ref = null;
+        iEnemy.ChangeCurrentAIBehaviour(AIBehaviourEnums.AIBehaviour.Roaming);
+    }
+    private Coroutine LookAtPlayer_Ref;
+    private IEnumerator LookAtPlayer_Coroutine()
+    {
+        while (true)
+        {
+            Vector3 direction = iEnemy.lastKnownPlayerPos;
+            iEnemy.LerpLookAt(direction);
+            yield return new WaitForFixedUpdate();
+        }
     }
 }

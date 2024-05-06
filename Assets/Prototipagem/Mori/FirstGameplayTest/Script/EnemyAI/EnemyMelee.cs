@@ -18,10 +18,8 @@ public class EnemyMelee : IEnemy, IDamageable
     protected EnemyObservingState enemyObservingState;
     protected EnemySearchingState enemySearchingState;
     protected EnemyAttackingState enemyAttackingState;
-
-
-    [SerializeField,Tooltip("Nivel de detecção necessario para trocar para o estado de observing")]private float observingStateBreakPoint = 21; 
-    [SerializeField, Tooltip("Nivel de detecção necessario para trocar para o estado de searching")] private float searchingStateBreakPoint = 67; 
+    [SerializeField, Tooltip("Nivel de detecção necessario para trocar para o estado de observing")] private float observingStateBreakPoint = 33;
+    [SerializeField, Tooltip("Nivel de detecção necessario para trocar para o estado de searching")] private float searchingStateBreakPoint = 66; 
     #endregion
     protected override void OnAwake()
     {
@@ -30,12 +28,7 @@ public class EnemyMelee : IEnemy, IDamageable
         enemySearchingState = new EnemySearchingState(this);
         enemyAttackingState = new EnemyAttackingState(this);
 
-        if (isStatic)
-        {
-            ChangeCurrentAIBehaviour(AIBehaviour.Observing);
-            observingStateBreakPoint = -1;
-        }
-        else ChangeCurrentAIBehaviour(AIBehaviour.Roaming);
+        ChangeCurrentAIBehaviour(AIBehaviour.Roaming);
     }
     protected override void OnStart()
     {
@@ -108,12 +101,7 @@ public class EnemyMelee : IEnemy, IDamageable
             return;
         }
         else detectionLevel += increasePerTick;
-        if (detectionLevel < observingStateBreakPoint) return;
-        else if (detectionLevel >= observingStateBreakPoint && detectionLevel < searchingStateBreakPoint)
-        {
-            ChangeCurrentAIBehaviour(AIBehaviour.Observing);
-        }
-        else
+        if (detectionLevel > searchingStateBreakPoint)
         {
             ChangeCurrentAIBehaviour(AIBehaviour.Searching);
         }
@@ -127,10 +115,8 @@ public class EnemyMelee : IEnemy, IDamageable
         switch (currentAIBehaviour)
         {
             case AIBehaviour.Roaming:
-                doesTimeExceedDelay = timeSincePlayerLastSeen >= 1;
-                break;
             case AIBehaviour.Observing:
-                doesTimeExceedDelay = timeSincePlayerLastSeen >= 2;
+                doesTimeExceedDelay = true;
                 break;
             case AIBehaviour.Searching:
             default:

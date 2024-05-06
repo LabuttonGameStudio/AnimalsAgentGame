@@ -7,7 +7,7 @@ public class EnemyAttackingState : MeleeEnemyState
 {
     public EnemyAttackingState(EnemyMelee enemyCtrl) : base(enemyCtrl)
     {
-        enemyControl = enemyCtrl;
+        iEnemy = enemyCtrl;
     }
 
     public override void OnVisibilityUpdate()
@@ -20,7 +20,7 @@ public class EnemyAttackingState : MeleeEnemyState
         Vector3 playerPosRef = ArmadilloPlayerController.Instance.transform.position;
         if (!isAttackOnCooldown)
         {
-            if (Vector3.Distance(enemyControl.transform.position, playerPosRef) <= attackRange+0.1f)
+            if (Vector3.Distance(iEnemy.transform.position, playerPosRef) <= attackRange+0.1f)
             {
                 Attack();
             }
@@ -39,22 +39,22 @@ public class EnemyAttackingState : MeleeEnemyState
     private float minimalDistanceFromPlayer = 5;
     private void GoToPlayer()
     {
-        Vector3 target = enemyControl.transform.position - ArmadilloPlayerController.Instance.transform.position;
+        Vector3 target = iEnemy.transform.position - ArmadilloPlayerController.Instance.transform.position;
         target.y = 0;
         target = Vector3.Normalize(target);
         target = target * minimalDistanceFromPlayer;
         target += ArmadilloPlayerController.Instance.transform.position;
-        enemyControl.SetNextDestinationOfNavmesh(target);
+        iEnemy.SetNextDestinationOfNavmesh(target);
     }
     private void GoAwayFromPlayer()
     {
-        Vector3 target = enemyControl.transform.position - ArmadilloPlayerController.Instance.transform.position;
+        Vector3 target = iEnemy.transform.position - ArmadilloPlayerController.Instance.transform.position;
         target.y = 0;
-        target += enemyControl.transform.right * Mathf.Sin(Time.time/2);
+        target += iEnemy.transform.right * Mathf.Sin(Time.time/2);
         target = Vector3.Normalize(target);
         target = target * minimalDistanceFromPlayer*1.5f;
         target += ArmadilloPlayerController.Instance.transform.position;
-        enemyControl.SetNextDestinationOfNavmesh(target);
+        iEnemy.SetNextDestinationOfNavmesh(target);
     }
 
     private bool isAttackOnCooldown;
@@ -63,36 +63,36 @@ public class EnemyAttackingState : MeleeEnemyState
     private void Attack()
     {
         isAttackOnCooldown = true;
-        enemyControl.navMeshAgent.isStopped = true;
+        iEnemy.navMeshAgent.isStopped = true;
         isMoving = false;
         isLookingAtPlayer = true;
-        enemyControl.StartCoroutine(Attack_Coroutine());
+        iEnemy.StartCoroutine(Attack_Coroutine());
     }
     private IEnumerator Attack_Coroutine()
     {
         Vector3 attackDirection;
-        enemyControl.navMeshAgent.velocity = Vector3.zero;
+        iEnemy.navMeshAgent.velocity = Vector3.zero;
         yield return new WaitForSeconds(0.125f);
-        attackDirection = ArmadilloPlayerController.Instance.transform.position - enemyControl.transform.position;
+        attackDirection = ArmadilloPlayerController.Instance.transform.position - iEnemy.transform.position;
         attackDirection.y = 0;
         attackDirection.Normalize();
         isLookingAtPlayer = false;
         yield return new WaitForSeconds(0.125f);
-        enemyControl.rb.AddForce(attackDirection * 25f, ForceMode.Impulse);
+        iEnemy.rb.AddForce(attackDirection * 25f, ForceMode.Impulse);
         float timer = 0;
         Vector3 bottomCapsulePoint;
         Vector3 topCapsulePoint;
         while (timer < 1)
         {
-            bottomCapsulePoint = enemyControl.transform.position - new Vector3(0, enemyControl.navMeshAgent.height / 2, 0);
-            topCapsulePoint = enemyControl.transform.position + new Vector3(0, enemyControl.navMeshAgent.height / 2, 0);
-            RaycastHit[] raycastHits = Physics.CapsuleCastAll(bottomCapsulePoint, topCapsulePoint, enemyControl.navMeshAgent.radius + 0.5f, Vector3.down);
+            bottomCapsulePoint = iEnemy.transform.position - new Vector3(0, iEnemy.navMeshAgent.height / 2, 0);
+            topCapsulePoint = iEnemy.transform.position + new Vector3(0, iEnemy.navMeshAgent.height / 2, 0);
+            RaycastHit[] raycastHits = Physics.CapsuleCastAll(bottomCapsulePoint, topCapsulePoint, iEnemy.navMeshAgent.radius + 0.5f, Vector3.down);
             foreach (RaycastHit hit in raycastHits)
             {
                 if (hit.collider.CompareTag("Player"))
                 {
-                    ArmadilloPlayerController.Instance.hpControl.TakeDamage(enemyControl.hitDamage);
-                    enemyControl.rb.velocity = enemyControl.rb.velocity * -1;
+                    ArmadilloPlayerController.Instance.hpControl.TakeDamage(iEnemy.hitDamage);
+                    iEnemy.rb.velocity = iEnemy.rb.velocity * -1;
                     timer = 1;
                     break;
                 }
@@ -102,22 +102,22 @@ public class EnemyAttackingState : MeleeEnemyState
         }
         isLookingAtPlayer = true;
         isMoving = true;
-        enemyControl.navMeshAgent.isStopped = false;
+        iEnemy.navMeshAgent.isStopped = false;
         yield return new WaitForSeconds(4f);
         isAttackOnCooldown = false;
     }
     public override void OnEnterState()
     {
-        //enemyControl.navMeshAgent.speed = enemyControl.navMeshAgent.speed * 1.5f;
-        enemyControl.navMeshAgent.stoppingDistance = 0;
-        enemyControl.navMeshAgent.isStopped = false;
-        enemyControl.navMeshAgent.updateRotation = false;
+        //iEnemy.navMeshAgent.speed = iEnemy.navMeshAgent.speed * 1.5f;
+        iEnemy.navMeshAgent.stoppingDistance = 0;
+        iEnemy.navMeshAgent.isStopped = false;
+        iEnemy.navMeshAgent.updateRotation = false;
     }
 
     public override void OnExitState()
     {
-        enemyControl.navMeshAgent.isStopped = true;
-        enemyControl.navMeshAgent.updateRotation = true;
+        iEnemy.navMeshAgent.isStopped = true;
+        iEnemy.navMeshAgent.updateRotation = true;
     }
 
     public override void OnFixedUpdate()
@@ -126,9 +126,9 @@ public class EnemyAttackingState : MeleeEnemyState
         {
             Vector3 direction = ArmadilloPlayerController.Instance.transform.position;
             direction.y = 0;
-            direction -= enemyControl.transform.position;
+            direction -= iEnemy.transform.position;
             Quaternion lookAtRotation = Quaternion.LookRotation(direction);
-            enemyControl.transform.rotation = Quaternion.Lerp(enemyControl.transform.rotation, lookAtRotation, 6 * Time.fixedDeltaTime);
+            iEnemy.transform.rotation = Quaternion.Lerp(iEnemy.transform.rotation, lookAtRotation, 6 * Time.fixedDeltaTime);
         }
     }
 }

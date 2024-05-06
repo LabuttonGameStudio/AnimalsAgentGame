@@ -6,9 +6,9 @@ public abstract class MeleeEnemyState
 {
     public MeleeEnemyState(EnemyMelee enemyCtrl)
     {
-        enemyControl = enemyCtrl;
+        iEnemy = enemyCtrl;
     }
-    protected EnemyMelee enemyControl;
+    public EnemyMelee iEnemy;
     public abstract void OnVisibilityUpdate();
     public abstract void OnActionUpdate();
     public abstract void OnFixedUpdate();

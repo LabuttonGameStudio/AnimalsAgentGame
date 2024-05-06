@@ -69,6 +69,7 @@ public abstract class IEnemy : MonoBehaviour
     #endregion
 
     #region Visibility Variables
+    private bool hasLOSOfPlayer;
     [HideInInspector] public Vector3 lastKnownPlayerPos;
     private static List<VisibilityCone> visibilityCones;
 
@@ -94,8 +95,8 @@ public abstract class IEnemy : MonoBehaviour
     [SerializeField] public AIBehaviour currentAIBehaviour;
     [SerializeField] protected EnemyBehaviourVisual enemyBehaviourVisual;
     //0-100
-    //0-10 Roaming
-    //10-66 Observing
+    //0 Roaming
+    //1-33 Observing
     //66-99 Searching
     //100+ Attacking
     [Tooltip("De 0 a 100")] protected float detectionLevel;
@@ -283,6 +284,7 @@ public abstract class IEnemy : MonoBehaviour
         fovWedgeMesh = CreateFovWedgeMesh();
     }
     #endregion
+
     #region Visibility
     public void VisibilityUpdate()
     {
@@ -371,7 +373,6 @@ public abstract class IEnemy : MonoBehaviour
         if (lookAround_Ref != null)
         {
             StopCoroutine(lookAround_Ref);
-            navMeshAgent.updateRotation = true;
         }
     }
     #endregion
@@ -406,6 +407,14 @@ public abstract class IEnemy : MonoBehaviour
         waitOnPointTimer_Ref = null;
     }
     #endregion
+
+    public void LerpLookAt(Vector3 direction)
+    {
+        direction.y = 0;
+        direction -= transform.position;
+        Quaternion lookAtRotation = Quaternion.LookRotation(direction);
+        transform.rotation = Quaternion.Lerp(transform.rotation, lookAtRotation, 3 * Time.fixedDeltaTime);
+    }
 
     #region Look Around
     private Coroutine lookAround_Ref;
