@@ -61,7 +61,11 @@ public class Gerador_Interactive : MonoBehaviour, InteractiveObject
         }
         else
         {
-
+            if (!isEnabled)
+            {
+                isEnabled = true;
+                StartCoroutine(LeverSwitchAnimation_Coroutine());
+            }
         }
     }
     private IEnumerator LeverSwitchAnimation_Coroutine()

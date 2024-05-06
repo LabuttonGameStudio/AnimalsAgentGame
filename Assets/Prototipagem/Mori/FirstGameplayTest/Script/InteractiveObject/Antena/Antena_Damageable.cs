@@ -13,7 +13,7 @@ public class Antena_Damageable : MonoBehaviour, IDamageable
         {
             charged = true;
             meshRenderers[0].sharedMaterial.SetInt("_Light_on_off", 1);
-            connectedGenerator.OnRequirementChange();
+            if (connectedGenerator != null) connectedGenerator.OnRequirementChange();
         }
     }
 
