@@ -6,13 +6,13 @@ using UnityEngine.InputSystem;
 public class Gerador_Interactive : MonoBehaviour, InteractiveObject
 {
     [SerializeField] private Antena_Damageable[] requirements;
-    [HideInInspector]public bool isEnabled;
-    [HideInInspector]public bool charged;
-    [SerializeField] private MeshRenderer meshRenderer;
+    [HideInInspector] public bool isEnabled;
+    [HideInInspector] public bool charged;
+    [SerializeField] private MeshRenderer bodyMeshRenderer;
     [SerializeField] private Transform leverTransform;
     void Awake()
     {
-        meshRenderer.material = new Material(meshRenderer.material);
+        bodyMeshRenderer.material = new Material(bodyMeshRenderer.material);
     }
     private void Start()
     {
@@ -51,10 +51,17 @@ public class Gerador_Interactive : MonoBehaviour, InteractiveObject
     }
     public void Interact(InputAction.CallbackContext value)
     {
-        if (charged && !isEnabled)
+        if (requirements != null && requirements.Length > 0)
         {
-            isEnabled = true;
-            StartCoroutine(LeverSwitchAnimation_Coroutine());
+            if (charged && !isEnabled)
+            {
+                isEnabled = true;
+                StartCoroutine(LeverSwitchAnimation_Coroutine());
+            }
+        }
+        else
+        {
+
         }
     }
     private IEnumerator LeverSwitchAnimation_Coroutine()
@@ -64,13 +71,13 @@ public class Gerador_Interactive : MonoBehaviour, InteractiveObject
 
         float timer = 0;
         float duration = 0.25f;
-        while(timer< duration)
+        while (timer < duration)
         {
             leverTransform.localRotation = Quaternion.Slerp(startLeverRotation, finalLeverRotation, timer / duration);
             timer += Time.deltaTime;
             yield return null;
         }
-        meshRenderer.sharedMaterial.SetInt("_Light_on_off", 1);
+        bodyMeshRenderer.sharedMaterial.SetInt("_Light_on_off", 1);
         leverTransform.localRotation = finalLeverRotation;
     }
 }
