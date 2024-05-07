@@ -16,12 +16,16 @@ public class Grade_Interactive : MonoBehaviour, InteractiveObject
     }
     private void Start()
     {
-
+        foreach (Gerador_Interactive gerador in requirements)
+        {
+            gerador.DefineConnectedGate(this);
+        }
+        if (requirements == null || requirements.Length <= 0) charged = true;
     }
     public string GetObjectDescription()
     {
-        if (isOpen) return "";
-        else return charged ? "Abrir" : "";
+        if (charged) return isOpen ? "Fechar" : "Abrir";
+        else return "Desligado";
     }
 
     public string GetObjectName()
@@ -48,33 +52,34 @@ public class Grade_Interactive : MonoBehaviour, InteractiveObject
     }
     public void Interact(InputAction.CallbackContext value)
     {
-        if (requirements != null && requirements.Length > 0)
+
+        if (charged)
         {
-            if (charged)
+            if (toggleGate_Ref != null)
             {
-                //Colocar pra abrir e fechar portao
+                StopCoroutine(toggleGate_Ref);
             }
-        }
-        else
-        {
-            //Colocar pra abrir e fechar portao
+            isOpen = !isOpen;
+            toggleGate_Ref = StartCoroutine(ToggleGate_Coroutine(!isOpen));
         }
     }
-    private IEnumerator ToggleGate()
+    private Coroutine toggleGate_Ref;
+    private IEnumerator ToggleGate_Coroutine(bool state)
     {
-        Vector3 startGatePos = gateTransform.position;
-        Vector3 finalGatePos = gateTransform.position;
-
+        Vector3 startGatePos = gateTransform.localPosition;
+        Vector3 finalGatePos = state ? new Vector3(2.5f, 0.12f, 0.25f) : new Vector3(5.9f, 0.12f, 0.25f);
+        ArmadilloPlayerController.Instance.interactControl.UpdateInteractionHUD();  
+        bodyMeshRenderer.sharedMaterial.SetInt("_Light_on_off", state ? 1 : 0);
         float timer = 0;
-        float duration = 0.25f;
+        float duration = 1f;
         while (timer < duration)
         {
-            gateTransform.position = Vector3.Slerp(startGatePos, finalGatePos, timer / duration);
+            gateTransform.localPosition = Vector3.Lerp(startGatePos, finalGatePos, timer / duration);
             timer += Time.deltaTime;
             yield return null;
         }
-        bodyMeshRenderer.sharedMaterial.SetInt("_Light_on_off", 1);
-        gateTransform.position = finalGatePos;
+        gateTransform.localPosition = finalGatePos;
+        toggleGate_Ref = null;
     }
 }
 

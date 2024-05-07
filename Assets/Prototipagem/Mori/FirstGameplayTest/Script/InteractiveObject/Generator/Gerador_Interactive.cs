@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.InputSystem;
 
 public class Gerador_Interactive : MonoBehaviour, InteractiveObject
@@ -10,6 +11,8 @@ public class Gerador_Interactive : MonoBehaviour, InteractiveObject
     [HideInInspector] public bool charged;
     [SerializeField] private MeshRenderer bodyMeshRenderer;
     [SerializeField] private Transform leverTransform;
+    [SerializeField] private UnityEvent consequences;
+    private Grade_Interactive connetectedGate;
     void Awake()
     {
         bodyMeshRenderer.material = new Material(bodyMeshRenderer.material);
@@ -83,5 +86,14 @@ public class Gerador_Interactive : MonoBehaviour, InteractiveObject
         }
         bodyMeshRenderer.sharedMaterial.SetInt("_Light_on_off", 1);
         leverTransform.localRotation = finalLeverRotation;
+        consequences.Invoke();
+        if(connetectedGate != null)
+        {
+            connetectedGate.OnRequirementChange();
+        }
+    }
+    public void DefineConnectedGate(Grade_Interactive gate)
+    {
+        connetectedGate = gate;
     }
 }
