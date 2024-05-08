@@ -24,30 +24,30 @@ public class EnemySearchingState : MeleeEnemyState
 
     public override void OnActionUpdate()
     {
-        iEnemy.SetNextDestinationOfNavmesh(iEnemy.lastKnownPlayerPos);
-        iEnemy.transform.LookAt(new Vector3(iEnemy.lastKnownPlayerPos.x, iEnemy.transform.position.y, iEnemy.lastKnownPlayerPos.z));
+        //iEnemy.SetNextDestinationOfNavmesh(iEnemy.lastKnownPlayerPos);
+        //iEnemy.transform.LookAt(new Vector3(iEnemy.lastKnownPlayerPos.x, iEnemy.transform.position.y, iEnemy.lastKnownPlayerPos.z));
     }
     public override void OnEnterState()
     {
-        iEnemy.navMeshAgent.isStopped = false;
-        iEnemy.navMeshAgent.updateRotation = false;
-        iEnemy.SetNextDestinationOfNavmesh(iEnemy.lastKnownPlayerPos);
-        iEnemy.navMeshAgent.stoppingDistance = 10;
+        //iEnemy.navMeshAgent.isStopped = false;
+        //iEnemy.navMeshAgent.updateRotation = false;
+        //iEnemy.SetNextDestinationOfNavmesh(iEnemy.lastKnownPlayerPos);
+        //iEnemy.navMeshAgent.stoppingDistance = 10;
     }
 
     public override void OnExitState()
     {
-        iEnemy.navMeshAgent.isStopped = true;
-        iEnemy.navMeshAgent.updateRotation = true;
-        iEnemy.navMeshAgent.stoppingDistance = 0;
+        //iEnemy.navMeshAgent.isStopped = true;
+       // iEnemy.navMeshAgent.updateRotation = true;
+        //iEnemy.navMeshAgent.stoppingDistance = 0;
     }
 
-    public override void OnFixedUpdate()
+    public override void OnFixedUpdate() 
     {
-        Vector3 direction = iEnemy.lastKnownPlayerPos;
-        direction.y = 0;
-        direction -= iEnemy.transform.position;
-        Quaternion lookAtRotation = Quaternion.LookRotation(direction);
-        iEnemy.transform.rotation = Quaternion.Lerp(iEnemy.transform.rotation, lookAtRotation, 4 * Time.fixedDeltaTime);
+        //Vector3 direction = iEnemy.lastKnownPlayerPos;
+        //direction.y = 0;
+        //direction -= iEnemy.transform.position;
+        //Quaternion lookAtRotation = Quaternion.LookRotation(direction);
+        //iEnemy.transform.rotation = Quaternion.Lerp(iEnemy.transform.rotation, lookAtRotation, 4 * Time.fixedDeltaTime);
     }
 }

@@ -115,8 +115,10 @@ public class EnemyMelee : IEnemy, IDamageable
         switch (currentAIBehaviour)
         {
             case AIBehaviour.Roaming:
-            case AIBehaviour.Observing:
                 doesTimeExceedDelay = true;
+                break;
+            case AIBehaviour.Observing:
+                doesTimeExceedDelay = timeSincePlayerLastSeen >= 2;
                 break;
             case AIBehaviour.Searching:
             default:
@@ -136,15 +138,6 @@ public class EnemyMelee : IEnemy, IDamageable
                 return;
             }
             else detectionLevel -= decreasePerTick;
-            if (detectionLevel < observingStateBreakPoint) ChangeCurrentAIBehaviour(AIBehaviour.Roaming);
-            else if (detectionLevel >= observingStateBreakPoint && detectionLevel < searchingStateBreakPoint)
-            {
-                ChangeCurrentAIBehaviour(AIBehaviour.Observing);
-            }
-            else
-            {
-                ChangeCurrentAIBehaviour(AIBehaviour.Searching);
-            }
         }
     }
     private float timeSincePlayerLastSeen;
