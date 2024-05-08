@@ -9,9 +9,9 @@ public class EnemyBehaviourVisual : MonoBehaviour
     public static Camera mainCamera;
 
     [SerializeField] private SpriteRenderer spriteRenderer;
-    [SerializeField]private Sprite confusedIcon;
-    [SerializeField]private Sprite visibleIcon;
-    [SerializeField]private Sprite battleIcon;
+    [SerializeField]private Sprite observingIcon;
+    [SerializeField]private Sprite searchingIcon;
+    [SerializeField]private Sprite attackingIcon;
     public void Start()
     {
         if(mainCamera == null) mainCamera = Camera.main;
@@ -28,13 +28,13 @@ public class EnemyBehaviourVisual : MonoBehaviour
                 spriteRenderer.sprite = null;
                 break;
             case AIBehaviour.Observing:
-                spriteRenderer.sprite = confusedIcon;
+                spriteRenderer.sprite = observingIcon;
                 break;
             case AIBehaviour.Searching:
-                spriteRenderer.sprite = visibleIcon;
+                spriteRenderer.sprite = searchingIcon;
                 break;
             case AIBehaviour.Attacking:
-                spriteRenderer.sprite = battleIcon;
+                spriteRenderer.sprite = attackingIcon;
                 break;
         }
     }

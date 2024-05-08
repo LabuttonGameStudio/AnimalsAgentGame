@@ -8,7 +8,12 @@ using static IEnemy;
 
 public class EnemyObservingState : MeleeEnemyState
 {
-
+    private enum ObservingStates
+    {
+        Tracking,
+        LookingAround
+    }
+    private ObservingStates currentState;
     public EnemyObservingState(EnemyMelee enemyCtrl) : base(enemyCtrl)
     {
         iEnemy = enemyCtrl;
@@ -20,7 +25,7 @@ public class EnemyObservingState : MeleeEnemyState
         {
             iEnemy.lastKnownPlayerPos = ArmadilloPlayerController.Instance.transform.position;
             OnPlayerInLOS();
-            iEnemy.IncreaseDetection();
+            //iEnemy.IncreaseDetection();
         }
         else
         {
@@ -61,12 +66,11 @@ public class EnemyObservingState : MeleeEnemyState
     }
     private void OnPlayerInLOS()
     {
-        if (LookAtPlayer_Ref == null)
+        if(currentState != ObservingStates.Tracking)
         {
-            Debug.Log("Start");
-            iEnemy.BreakOnWaitPointCoroutine();
-            LostLOSOfPlayer_Ref = null;
-            LookAtPlayer_Ref = iEnemy.StartCoroutine(LookAtPlayer_Coroutine());
+            currentState = ObservingStates.Tracking;
+            StopLookAround();
+            tracking_Ref = iEnemy.StartCoroutine(Tracking_Coroutine());
         }
     }
 
@@ -82,16 +86,24 @@ public class EnemyObservingState : MeleeEnemyState
             LostLOSOfPlayer_Ref = iEnemy.StartCoroutine(LostLOSOfPlayer_Coroutine());
         }
     }
-    private Coroutine LostLOSOfPlayer_Ref;
-    private IEnumerator LostLOSOfPlayer_Coroutine()
+    #region Look Around
+    private Coroutine lookAround_Ref;
+    private IEnumerator LookAround_Coroutine()
     {
         iEnemy.waitOnPointTimer_Ref = iEnemy.StartCoroutine(iEnemy.WaitOnPointTimer_Coroutine(5, true));
         yield return iEnemy.waitOnPointTimer_Ref;
         LostLOSOfPlayer_Ref = null;
         iEnemy.ChangeCurrentAIBehaviour(AIBehaviourEnums.AIBehaviour.Roaming);
     }
-    private Coroutine LookAtPlayer_Ref;
-    private IEnumerator LookAtPlayer_Coroutine()
+    private void StopLookAround()
+    {
+
+    }
+    #endregion
+
+    #region Tracking
+    private Coroutine tracking_Ref;
+    private IEnumerator Tracking_Coroutine()
     {
         while (true)
         {
@@ -100,4 +112,13 @@ public class EnemyObservingState : MeleeEnemyState
             yield return new WaitForFixedUpdate();
         }
     }
+    private void StopTracking()
+    {
+        if(tracking_Ref != null)
+        {
+            iEnemy.StopCoroutine(tracking_Ref);
+            tracking_Ref = null;
+        }
+    }
+    #endregion
 }

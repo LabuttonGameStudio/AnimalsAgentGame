@@ -54,7 +54,13 @@ public class EnemyRoamingState : MeleeEnemyState
     public void StopMovement()
     {
         stoppedSubState.FixedUpdate_Event = new UnityEngine.Events.UnityEvent<EnemyRoamingState>();
-        stoppedSubState.FixedUpdate_Event.AddListener(stoppedSubState.CheckForEndOfCoroutine);
+        stoppedSubState.FixedUpdate_Event.AddListener(stoppedSubState.CheckForEndOfWaitOnPointCoroutine);
+        currentSubState = stoppedSubState;
+    }
+    public void StopMovementAndLookAround()
+    {
+        stoppedSubState.FixedUpdate_Event = new UnityEngine.Events.UnityEvent<EnemyRoamingState>();
+        stoppedSubState.FixedUpdate_Event.AddListener(stoppedSubState.CheckForEndOfLookAroundCoroutine);
         currentSubState = stoppedSubState;
     }
 }

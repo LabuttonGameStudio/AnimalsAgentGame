@@ -1,12 +1,11 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Events;
 using static AIBehaviourEnums;
-
+using Random = UnityEngine.Random;
 public class VisibilityCone
 {
     public float fieldOfView;
@@ -60,6 +59,7 @@ public abstract class IEnemy : MonoBehaviour
     [Header("Attack")]
     [SerializeField] public float primaryAttackRangeInMeters = 2;
     [SerializeField] public int hitDamage = 20;
+
 
     public bool isDead;
     #endregion
@@ -132,7 +132,7 @@ public abstract class IEnemy : MonoBehaviour
 
                 foreach (AIPathPoint aiPathPoint in aiPathList)
                 {
-                    GizmosExtra.DrawCylinder(aiPathPoint.transformOfPathPoint.position-new Vector3(0,navMeshAgent.height/2,0), Quaternion.identity, navMeshAgent.height, navMeshAgent.radius, Color.red);
+                    GizmosExtra.DrawCylinder(aiPathPoint.transformOfPathPoint.position - new Vector3(0, navMeshAgent.height / 2, 0), Quaternion.identity, navMeshAgent.height, navMeshAgent.radius, Color.red);
                 }
 
             }
@@ -376,38 +376,109 @@ public abstract class IEnemy : MonoBehaviour
         }
     }
     #endregion
-
-    #region Wait on Point
-    public Coroutine waitOnPointTimer_Ref;
-    public IEnumerator WaitOnPointTimer_Coroutine(float duration, bool lookAround)
+    #region WaitOnPoint 
+    public void StartWaitOnPoint(float duration)
+    {
+        if (waitOnPoint_Ref != null)
+        {
+            StopCoroutine(waitOnPoint_Ref);
+        }
+        waitOnPoint_Ref = StartCoroutine(WaitOnPoint_Coroutine(duration));
+    }
+    public Coroutine waitOnPoint_Ref;
+    public IEnumerator WaitOnPoint_Coroutine(float duration)
     {
         navMeshAgent.isStopped = true;
-        if (lookAround)
-        {
-            float durationPerAction = duration / 8;
-            yield return new WaitForSeconds(durationPerAction);
-
-            //Look Right
-            lookAround_Ref = StartCoroutine(LookAround_Coroutine(-45, durationPerAction));
-            yield return lookAround_Ref;
-            yield return new WaitForSeconds(durationPerAction);
-
-            //Look Left
-            lookAround_Ref = StartCoroutine(LookAround_Coroutine(90, 2 * durationPerAction));
-            yield return lookAround_Ref;
-            yield return new WaitForSeconds(durationPerAction);
-
-            lookAround_Ref = StartCoroutine(LookAround_Coroutine(-45, durationPerAction));
-            yield return lookAround_Ref;
-            yield return new WaitForSeconds(durationPerAction);
-
-        }
-        else yield return new WaitForSeconds(duration);
+        yield return new WaitForSeconds(duration);
         navMeshAgent.isStopped = false;
-        waitOnPointTimer_Ref = null;
+
     }
     #endregion
+    #region Look
+    public bool TryStartRandomLookAround(float duration, out Coroutine coroutine)
+    {
+        if (lookAround_Ref != null)
+        {
+            coroutine = null;
+            return false;
+        }
+        if(Random.value>0.5f)
+        {
+            lookAround_Ref = StartCoroutine(LookAround_A_Coroutine(duration));
+        }
+        else
+        {
+            lookAround_Ref = StartCoroutine(LookAround_B_Coroutine(duration));
+        }
+        coroutine = lookAround_Ref;
+        return true;
+    }
 
+    public void StopLookAround()
+    {
+        if(lookAround_Ref!= null)
+        {
+            StopCoroutine(lookAround_Ref);
+            lookAround_Ref = null;
+            StopCoroutine(lerpRotate_Ref);
+        }
+    }
+
+    public Coroutine lookAround_Ref;
+    public IEnumerator LookAround_A_Coroutine(float duration)
+    {
+        navMeshAgent.isStopped = true;
+        int randomDirection = Random.Range(0, 2);
+        randomDirection = (randomDirection * 2) - 1;
+
+        float durationPerAction = duration / 8;
+        yield return new WaitForSeconds(durationPerAction);
+
+        //Look Side 0
+        lerpRotate_Ref = StartCoroutine(LerpRotate_Coroutine(-45*randomDirection, durationPerAction));
+        yield return lerpRotate_Ref;
+        yield return new WaitForSeconds(durationPerAction);
+
+        //Look Side 1
+        lerpRotate_Ref = StartCoroutine(LerpRotate_Coroutine(90 * randomDirection, 2 * durationPerAction));
+        yield return lerpRotate_Ref;
+        yield return new WaitForSeconds(durationPerAction);
+
+        //Return to center
+        lerpRotate_Ref = StartCoroutine(LerpRotate_Coroutine(-45 * randomDirection, durationPerAction));
+        yield return lerpRotate_Ref;
+        yield return new WaitForSeconds(durationPerAction);
+
+        navMeshAgent.isStopped = false;
+        lookAround_Ref = null;
+    }
+    public IEnumerator LookAround_B_Coroutine(float duration)
+    {
+        navMeshAgent.isStopped = true;
+        int randomDirection = Random.Range(0, 2);
+        randomDirection = (randomDirection * 2) - 1;
+
+        float durationPerAction = duration / 8;
+        yield return new WaitForSeconds(durationPerAction);
+
+        //Look Side 0
+        lerpRotate_Ref = StartCoroutine(LerpRotate_Coroutine(-90*randomDirection, durationPerAction));
+        yield return lerpRotate_Ref;
+        yield return new WaitForSeconds(durationPerAction);
+
+        //Look Side 1
+        lerpRotate_Ref = StartCoroutine(LerpRotate_Coroutine(180 * randomDirection, 2 * durationPerAction));
+        yield return lerpRotate_Ref;
+        yield return new WaitForSeconds(durationPerAction);
+
+        //Return to center
+        lerpRotate_Ref = StartCoroutine(LerpRotate_Coroutine(-90 * randomDirection, durationPerAction));
+        yield return lerpRotate_Ref;
+        yield return new WaitForSeconds(durationPerAction);
+
+        navMeshAgent.isStopped = false;
+        lookAround_Ref = null;
+    }
     public void LerpLookAt(Vector3 direction)
     {
         direction.y = 0;
@@ -416,9 +487,8 @@ public abstract class IEnemy : MonoBehaviour
         transform.rotation = Quaternion.Lerp(transform.rotation, lookAtRotation, 3 * Time.fixedDeltaTime);
     }
 
-    #region Look Around
-    private Coroutine lookAround_Ref;
-    public IEnumerator LookAround_Coroutine(float rotation, float duration)
+    private Coroutine lerpRotate_Ref;
+    public IEnumerator LerpRotate_Coroutine(float rotation, float duration)
     {
         float timer = 0f;
         Quaternion startLookAtRotation = transform.localRotation;

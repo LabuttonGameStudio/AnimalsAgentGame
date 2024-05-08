@@ -7,9 +7,16 @@ public class MeleeRoaming_StoppedSubState : MeleeRoaming_SubState
 {
     public UnityEvent<EnemyRoamingState> FixedUpdate_Event;
 
-    public void CheckForEndOfCoroutine(EnemyRoamingState enemyRoamingState)
+    public void CheckForEndOfWaitOnPointCoroutine(EnemyRoamingState enemyRoamingState)
     {
-        if(enemyRoamingState.iEnemy.waitOnPointTimer_Ref == null)
+        if(enemyRoamingState.iEnemy.waitOnPoint_Ref  == null)
+        {
+            enemyRoamingState.ToggleMovement(true);
+        }
+    }
+    public void CheckForEndOfLookAroundCoroutine(EnemyRoamingState enemyRoamingState)
+    {
+        if (enemyRoamingState.iEnemy.lookAround_Ref == null)
         {
             enemyRoamingState.ToggleMovement(true);
         }

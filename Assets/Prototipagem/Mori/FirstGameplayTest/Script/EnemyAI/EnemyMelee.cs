@@ -134,7 +134,7 @@ public class EnemyMelee : IEnemy, IDamageable
             if (detectionLevel - decreasePerTick < 0)
             {
                 detectionLevel = 0;
-                if(!isStatic)ChangeCurrentAIBehaviour(AIBehaviour.Roaming);
+                ChangeCurrentAIBehaviour(AIBehaviour.Roaming);
                 return;
             }
             else detectionLevel -= decreasePerTick;
