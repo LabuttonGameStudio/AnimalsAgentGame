@@ -1,49 +1,5 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-5135883817465165354
-MonoBehaviour:
-  m_ObjectHideFlags: 3
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7ddcec8a8eb2d684d833ac8f5d26aebd, type: 3}
-  m_Name: HDShadowSettings
-  m_EditorClassIdentifier: 
-  active: 1
-  interCascadeBorders: 1
-  maxShadowDistance:
-    m_OverrideState: 0
-    m_Value: 500
-  directionalTransmissionMultiplier:
-    m_OverrideState: 0
-    m_Value: 1
-  cascadeShadowSplitCount:
-    m_OverrideState: 0
-    m_Value: 4
-  cascadeShadowSplit0:
-    m_OverrideState: 0
-    m_Value: 0.05
-  cascadeShadowSplit1:
-    m_OverrideState: 0
-    m_Value: 0.15
-  cascadeShadowSplit2:
-    m_OverrideState: 0
-    m_Value: 0.3
-  cascadeShadowBorder0:
-    m_OverrideState: 0
-    m_Value: 0
-  cascadeShadowBorder1:
-    m_OverrideState: 0
-    m_Value: 0
-  cascadeShadowBorder2:
-    m_OverrideState: 0
-    m_Value: 0
-  cascadeShadowBorder3:
-    m_OverrideState: 0
-    m_Value: 0
 --- !u!114 &-1696977735384931991
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -56,16 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b24b200358312b4fa1004e2431c2f1f, type: 3}
   m_Name: ShadowsMidtonesHighlights
   m_EditorClassIdentifier: 
-  active: 1
+  active: 0
   shadows:
     m_OverrideState: 1
-    m_Value: {x: 0.83318794, y: 1, z: 0.98890465, w: 0.17793596}
+    m_Value: {x: 0.93, y: 0.9906667, z: 1, w: 0.10154997}
   midtones:
     m_OverrideState: 1
-    m_Value: {x: 1, y: 0.9600482, z: 0.9399836, w: 0.3603163}
+    m_Value: {x: 1, y: 0.964, z: 0.96, w: 0.01664387}
   highlights:
-    m_OverrideState: 1
-    m_Value: {x: 1, y: 1, z: 1, w: 0.07117436}
+    m_OverrideState: 0
+    m_Value: {x: 1, y: 1, z: 1, w: 0.03802281}
   shadowsStart:
     m_OverrideState: 0
     m_Value: 0
@@ -90,7 +46,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d08ce26990eb1a4a9177b860541e702, type: 3}
   m_Name: Exposure
   m_EditorClassIdentifier: 
-  active: 1
+  active: 0
   mode:
     m_OverrideState: 1
     m_Value: 0
@@ -102,10 +58,10 @@ MonoBehaviour:
     m_Value: 1
   fixedExposure:
     m_OverrideState: 1
-    m_Value: 13
+    m_Value: 10
   compensation:
     m_OverrideState: 1
-    m_Value: 0.24
+    m_Value: -1.58
   limitMin:
     m_OverrideState: 0
     m_Value: -1
@@ -250,7 +206,7 @@ MonoBehaviour:
     m_Value: 0
   intensity:
     m_OverrideState: 1
-    m_Value: 0.107
+    m_Value: 0.188
   scatter:
     m_OverrideState: 0
     m_Value: 0.7
@@ -291,7 +247,6 @@ MonoBehaviour:
   - {fileID: -651479080715393771}
   - {fileID: 3773465860810260375}
   - {fileID: -319244568278983829}
-  - {fileID: -5135883817465165354}
   - {fileID: -1696977735384931991}
   - {fileID: 4349538139521356794}
   - {fileID: 772435195044776114}
@@ -321,8 +276,8 @@ MonoBehaviour:
     m_OverrideState: 0
     m_Value: 0
   saturation:
-    m_OverrideState: 0
-    m_Value: 2
+    m_OverrideState: 1
+    m_Value: 5
 --- !u!114 &3773465860810260375
 MonoBehaviour:
   m_ObjectHideFlags: 3
