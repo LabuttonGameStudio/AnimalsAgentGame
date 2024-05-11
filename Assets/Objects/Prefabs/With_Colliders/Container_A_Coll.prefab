@@ -11,7 +11,8 @@ GameObject:
   - component: {fileID: 8435992894425351437}
   - component: {fileID: 3272320402222305146}
   - component: {fileID: 5693349558382010520}
-  m_Layer: 0
+  - component: {fileID: 4932301594611253563}
+  m_Layer: 3
   m_Name: RBackDoor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -83,6 +84,28 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &4932301594611253563
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1715467626972840378}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -1747258321657340866, guid: 004801c6e5e4c654b93539d0fdebef36, type: 3}
 --- !u!1 &1786873072061564288
 GameObject:
   m_ObjectHideFlags: 0
@@ -139,7 +162,7 @@ MeshCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 5
-  m_Convex: 0
+  m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 0}
 --- !u!1 &4129968618956605803
@@ -153,7 +176,8 @@ GameObject:
   - component: {fileID: 126425393289661913}
   - component: {fileID: 4160850268192457324}
   - component: {fileID: 6476311971914169447}
-  m_Layer: 0
+  - component: {fileID: 5783908720983369588}
+  m_Layer: 3
   m_Name: LFrontDoor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -225,6 +249,28 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &5783908720983369588
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4129968618956605803}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 7056072431106583364, guid: 004801c6e5e4c654b93539d0fdebef36, type: 3}
 --- !u!1 &7513817204677217419
 GameObject:
   m_ObjectHideFlags: 0
@@ -236,7 +282,8 @@ GameObject:
   - component: {fileID: 3191989943203373285}
   - component: {fileID: 2441666381828563879}
   - component: {fileID: 3072189769533870138}
-  m_Layer: 0
+  - component: {fileID: 6151454311406082937}
+  m_Layer: 3
   m_Name: LBackDoor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -308,6 +355,28 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &6151454311406082937
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7513817204677217419}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 3752190848644600347, guid: 004801c6e5e4c654b93539d0fdebef36, type: 3}
 --- !u!1 &8035104442099949221
 GameObject:
   m_ObjectHideFlags: 0
@@ -319,7 +388,8 @@ GameObject:
   - component: {fileID: 5487862095077497160}
   - component: {fileID: 9126859135868303111}
   - component: {fileID: 8066832158211305624}
-  m_Layer: 0
+  - component: {fileID: 8152035764200557117}
+  m_Layer: 3
   m_Name: Body
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -391,6 +461,28 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &8152035764200557117
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8035104442099949221}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 2649567919626330668, guid: 004801c6e5e4c654b93539d0fdebef36, type: 3}
 --- !u!1 &8993404052830298780
 GameObject:
   m_ObjectHideFlags: 0
@@ -402,7 +494,8 @@ GameObject:
   - component: {fileID: 3461294586405356}
   - component: {fileID: 3360370188577586014}
   - component: {fileID: 8783038134072917770}
-  m_Layer: 0
+  - component: {fileID: 3176002961538958936}
+  m_Layer: 3
   m_Name: RFrontDoor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -474,3 +567,25 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &3176002961538958936
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8993404052830298780}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 4568878218306226819, guid: 004801c6e5e4c654b93539d0fdebef36, type: 3}
