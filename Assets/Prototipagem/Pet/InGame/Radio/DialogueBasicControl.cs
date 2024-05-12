@@ -3,47 +3,81 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.Events;
+
 
 
 public class DialogueBasicControl : MonoBehaviour
 {
 
-    [Header("Components")]
+    [Header("COMPONENTS")]
     public CanvasGroup Radio;
     public Image Icon;
+    public TMP_Text Skip;
     public TMP_Text Name;
     public TMP_Text DialogueText;
 
-    [Header("Settings")]
+    [Header("EVENTS")]
+    public UnityEvent onStartDialogue;
+    public UnityEvent onEndDialogue;
+
+    [Header("SETTINGS")]
     public float VelocityText;
     public float TimeBetweenSentences;
     public float FadeDuration = 0.5f;
 
     private string[] sentences;
     private bool typing = false;
- 
-    public void Dialogues(Sprite icon, string name, string[] dialogue)
+    public bool typingEnd = false;
+
+    public void StartDialogues(Sprite icon, string name, string[] dialogue, UnityEvent startevent)
     {
-        StartCoroutine(FadeRadio(Radio, 0f, 1f, FadeDuration));
+        StartCoroutine(Fade(Radio, 0f, 1f, FadeDuration));
         Icon.sprite = icon;
         Name.text = name;
         sentences = dialogue;
-        StartCoroutine(TypeSentences());
 
+        if (startevent != null)
+        {
+            startevent.Invoke();
+        }
+
+        StartCoroutine(TypeSentences());
         Debug.Log("ativei");
+    }
+
+    public void EndDialogues(UnityEvent endevent)
+    {
+        if (endevent != null)
+        {
+            endevent.Invoke();
+        }
+
+        Debug.Log("evento finalizado");
     }
 
     public void CloseDialogues()
     {
-        StartCoroutine(FadeRadio(Radio, 1f, 0f, FadeDuration));
-        Debug.Log("skipei");
+       
+        // verifica se o CanvasGroup esta visivel 
+        if (Radio.alpha > 0)
+        {
+            StartCoroutine(Fade(Radio, 1f, 0f, FadeDuration));
+            Debug.Log("skipei");
+        }
+        else
+        {
+            Debug.Log("Dialogo fechado");
+        }
     }
 
     IEnumerator TypeSentences()
     {
+       
         foreach (string sentence in sentences)
         {
             typing = true;
+            typingEnd = false;
             DialogueText.text = "";
             foreach (char letter in sentence.ToCharArray())
             {
@@ -52,18 +86,23 @@ public class DialogueBasicControl : MonoBehaviour
             }
             typing = false;
 
-            // Aguarda até que o texto seja completamente exibido antes de passar para a próxima frase
+            // Aguarda ate que o texto seja completamente exibido antes de passar para a proxima frase
             while (typing)
             {
                 yield return null;
             }
 
-            yield return new WaitForSeconds(TimeBetweenSentences); // Espera um tempo antes de iniciar a próxima sentença
+            yield return new WaitForSeconds(TimeBetweenSentences); // espera um tempo antes de iniciar a proxima sentença
+
         }
-        StartCoroutine(FadeRadio(Radio, 1f, 0f, FadeDuration));
+
+        typingEnd = true;
+        // fecha dialogo, se ja estiver fechado nao faz nada
+        CloseDialogues();
+        
     }
 
-    IEnumerator FadeRadio(CanvasGroup canvasGroup, float startAlpha, float endAlpha, float duration)
+    IEnumerator Fade(CanvasGroup canvasGroup, float startAlpha, float endAlpha, float duration)
     {
         float elapsedTime = 0f;
         while (elapsedTime < duration)
