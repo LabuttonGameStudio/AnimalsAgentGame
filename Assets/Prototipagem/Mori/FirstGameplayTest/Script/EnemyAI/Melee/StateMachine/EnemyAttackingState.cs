@@ -44,7 +44,7 @@ public class EnemyAttackingState : MeleeEnemyState
         target = Vector3.Normalize(target);
         target = target * minimalDistanceFromPlayer;
         target += ArmadilloPlayerController.Instance.transform.position;
-        iEnemy.SetNextDestinationOfNavmesh(target);
+        iEnemy.TrySetNextDestination(target);
     }
     private void GoAwayFromPlayer()
     {
@@ -54,7 +54,7 @@ public class EnemyAttackingState : MeleeEnemyState
         target = Vector3.Normalize(target);
         target = target * minimalDistanceFromPlayer*1.5f;
         target += ArmadilloPlayerController.Instance.transform.position;
-        iEnemy.SetNextDestinationOfNavmesh(target);
+        iEnemy.TrySetNextDestination(target);
     }
 
     private bool isAttackOnCooldown;
@@ -91,7 +91,7 @@ public class EnemyAttackingState : MeleeEnemyState
             {
                 if (hit.collider.CompareTag("Player"))
                 {
-                    ArmadilloPlayerController.Instance.hpControl.TakeDamage(iEnemy.hitDamage);
+                    ArmadilloPlayerController.Instance.hpControl.TakeDamage(Mathf.RoundToInt(iEnemy.primaryAttackDamage));
                     iEnemy.rb.velocity = iEnemy.rb.velocity * -1;
                     timer = 1;
                     break;

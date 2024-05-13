@@ -5,7 +5,12 @@ using static IEnemy;
 
 public class EnemyRoamingState : MeleeEnemyState
 {
-
+    public enum RoamingStates
+    {
+        Moving,
+        Stopped
+    }
+    public RoamingStates currentStateEnum;
     private MeleeRoaming_SubState currentSubState;
 
     private MeleeRoaming_MovingSubState movingSubState;
@@ -33,34 +38,37 @@ public class EnemyRoamingState : MeleeEnemyState
 
     public override void OnEnterState()
     {
-        currentSubState = movingSubState;
-        iEnemy.SetNextDestinationOfNavmesh(iEnemy.aiPathList[iEnemy.currentPathPoint].transformOfPathPoint.position);
+        ToggleMovement(true);
+        iEnemy.TrySetNextDestination(iEnemy.aiPathList[iEnemy.currentPathPoint].transformOfPathPoint.position);
     }
 
     public override void OnExitState()
     {
-        iEnemy.BreakOnWaitPointCoroutine();
+        iEnemy.StopWaitOnPoint();
     }
 
     public override void OnFixedUpdate()
     {
+        Debug.Log(currentStateEnum);
         currentSubState.OnFixedUpdate(this);
+        
     }
     public void ToggleMovement(bool state)
     {
         currentSubState = state ? movingSubState : stoppedSubState;
+        currentStateEnum = state ? RoamingStates.Moving : RoamingStates.Stopped;
     }
 
     public void StopMovement()
     {
         stoppedSubState.FixedUpdate_Event = new UnityEngine.Events.UnityEvent<EnemyRoamingState>();
         stoppedSubState.FixedUpdate_Event.AddListener(stoppedSubState.CheckForEndOfWaitOnPointCoroutine);
-        currentSubState = stoppedSubState;
+        ToggleMovement(false);
     }
     public void StopMovementAndLookAround()
     {
         stoppedSubState.FixedUpdate_Event = new UnityEngine.Events.UnityEvent<EnemyRoamingState>();
         stoppedSubState.FixedUpdate_Event.AddListener(stoppedSubState.CheckForEndOfLookAroundCoroutine);
-        currentSubState = stoppedSubState;
+        ToggleMovement(false);
     }
 }

@@ -18,9 +18,13 @@ public class EnemyMelee : IEnemy, IDamageable
     protected EnemyObservingState enemyObservingState;
     protected EnemySearchingState enemySearchingState;
     protected EnemyAttackingState enemyAttackingState;
-    [SerializeField, Tooltip("Nivel de detecção necessario para trocar para o estado de observing")] private float observingStateBreakPoint = 33;
-    [SerializeField, Tooltip("Nivel de detecção necessario para trocar para o estado de searching")] private float searchingStateBreakPoint = 66; 
+    [SerializeField, Tooltip("Nivel de detecção necessario para trocar para o estado de searching")] private readonly float searchingStateBreakPoint = 50;
     #endregion
+
+    [Header("Combat")]
+    [SerializeField]
+    public float primaryAttackDamage;
+    
     protected override void OnAwake()
     {
         enemyRoamingState = new EnemyRoamingState(this);
@@ -59,7 +63,9 @@ public class EnemyMelee : IEnemy, IDamageable
 
     protected override void OnRoamingPathEnd()
     {
-        ChangeCurrentAIBehaviour(AIBehaviour.Observing);
+        //A fazer se for um inimigo sem loop fazer ele parar
+
+        //ChangeCurrentAIBehaviour(AIBehaviour.Observing);
     }
 
     public void ChangeCurrentAIBehaviour(AIBehaviour nextAIBehaviour)
@@ -93,7 +99,9 @@ public class EnemyMelee : IEnemy, IDamageable
     public void IncreaseDetection()
     {
         timeSincePlayerLastSeen = 0;
-        float increasePerTick = 100 / (timeToMaxDetect / EnemyControl.Instance.visibilityTickInterval);
+        float increasePerTick = 100 / (timeToMaxDetect / EnemyMasterControl.Instance.visibilityTickInterval);
+
+        //Se ele atingir o limite acima de 100, ele nao sobe mais que isso e altera seu estado para Attacking
         if (detectionLevel + increasePerTick >= 100)
         {
             detectionLevel = 100;
@@ -101,6 +109,8 @@ public class EnemyMelee : IEnemy, IDamageable
             return;
         }
         else detectionLevel += increasePerTick;
+
+        //Se ele nao estiver acima de 100 mas estiver acima do nivel necessario para entrar em estado de procura
         if (detectionLevel > searchingStateBreakPoint)
         {
             ChangeCurrentAIBehaviour(AIBehaviour.Searching);
@@ -108,10 +118,10 @@ public class EnemyMelee : IEnemy, IDamageable
     }
     public void DecreaseDetection()
     {
-        timeSincePlayerLastSeen += EnemyControl.Instance.visibilityTickInterval;
+        timeSincePlayerLastSeen += EnemyMasterControl.Instance.visibilityTickInterval;
         bool doesTimeExceedDelay;
 
-        //Delay based on current ai behaviour
+        //Delay baseado no estado atual ate comecar a descer o nivel de deteccao
         switch (currentAIBehaviour)
         {
             case AIBehaviour.Roaming:
@@ -130,11 +140,12 @@ public class EnemyMelee : IEnemy, IDamageable
         }
         if (doesTimeExceedDelay)
         {
-            float decreasePerTick = 100 / (timeToMaxDetect*1.5f / EnemyControl.Instance.visibilityTickInterval);
+            //Desce o nivel de deteccao ate ele voltar ao estado roaming
+            float decreasePerTick = 100 / (timeToMaxDetect*1.5f / EnemyMasterControl.Instance.visibilityTickInterval);
             if (detectionLevel - decreasePerTick < 0)
             {
                 detectionLevel = 0;
-                ChangeCurrentAIBehaviour(AIBehaviour.Roaming);
+                if(currentAIBehaviour != AIBehaviour.Observing) ChangeCurrentAIBehaviour(AIBehaviour.Roaming);
                 return;
             }
             else detectionLevel -= decreasePerTick;

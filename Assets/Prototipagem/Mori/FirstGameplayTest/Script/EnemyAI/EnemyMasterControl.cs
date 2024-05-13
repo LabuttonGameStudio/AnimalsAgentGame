@@ -5,14 +5,14 @@ using UnityEngine;
 public class NextNavmeshPointCallParameters
 {
     public Vector3 position;
-    public IEnemy enemyRef;    
+    public IEnemy enemyRef;
 }
-public class EnemyControl : MonoBehaviour
+public class EnemyMasterControl : MonoBehaviour
 {
-    public static EnemyControl Instance { get; private set;}
+    public static EnemyMasterControl Instance { get; private set; }
 
 
-    [HideInInspector]public List<IEnemy> allEnemiesList = new List<IEnemy>();
+    [HideInInspector] public List<IEnemy> allEnemiesList = new List<IEnemy>();
 
     public float visibilityTickInterval = 0.025f;
     public float actionTickInterval = 0.025f;
@@ -30,13 +30,13 @@ public class EnemyControl : MonoBehaviour
     }
     private void ToggleCheckLoop(bool state)
     {
-        if(state)
+        if (state)
         {
             if (checkVisibilityLoop_Ref == null) checkVisibilityLoop_Ref = StartCoroutine(CheckVisibilityLoop_Coroutine());
 
             if (checkActionLoop_Ref == null) checkActionLoop_Ref = StartCoroutine(CheckActionLoop_Coroutine());
         }
-        else if(checkVisibilityLoop_Ref != null)
+        else if (checkVisibilityLoop_Ref != null)
         {
             StopCoroutine(checkVisibilityLoop_Ref);
             checkVisibilityLoop_Ref = null;
@@ -49,13 +49,13 @@ public class EnemyControl : MonoBehaviour
     private Coroutine checkVisibilityLoop_Ref;
     private IEnumerator CheckVisibilityLoop_Coroutine()
     {
-        while(true)
+        while (true)
         {
             if (allEnemiesList.Count > 0) break;
             yield return new WaitForSeconds(0.1f);
         }
         int currentEnemyIndex = 0;
-        while(true)
+        while (true)
         {
             if (allEnemiesList[currentEnemyIndex].isDead) yield return null;
             else
@@ -64,7 +64,7 @@ public class EnemyControl : MonoBehaviour
             }
 
             currentEnemyIndex++;
-            if(currentEnemyIndex>=allEnemiesList.Count)currentEnemyIndex = 0;
+            if (currentEnemyIndex >= allEnemiesList.Count) currentEnemyIndex = 0;
 
             float interval = visibilityTickInterval / allEnemiesList.Count;
             yield return new WaitForSecondsRealtime(interval);
@@ -102,7 +102,7 @@ public class EnemyControl : MonoBehaviour
 
     #region NavMeshCallQueue
 
-    public void AddAIToNavmeshQueue(IEnemy enemy,Vector3 desiredPosition)
+    public void AddAIToNavmeshQueue(IEnemy enemy, Vector3 desiredPosition)
     {
         enemy.enqueued = true;
         SetNextNavmeshPointCall_Queue.Enqueue(new NextNavmeshPointCallParameters()
@@ -113,11 +113,14 @@ public class EnemyControl : MonoBehaviour
     }
     public void OnNavmeshQueueCall()
     {
-        if(SetNextNavmeshPointCall_Queue.Count > 0)
+        if (SetNextNavmeshPointCall_Queue.Count > 0)
         {
-            NextNavmeshPointCallParameters parameters = SetNextNavmeshPointCall_Queue.Dequeue();
-            parameters.enemyRef.SetNextDestinationOfNavmesh(parameters.position);
-            parameters.enemyRef.enqueued = false;
+            NextNavmeshPointCallParameters parameters = SetNextNavmeshPointCall_Queue.Peek();
+            if (parameters.enemyRef.TrySetNextDestination(parameters.position))
+            {
+                parameters.enemyRef.enqueued = false;
+            }
+            SetNextNavmeshPointCall_Queue.Dequeue();
         }
     }
 

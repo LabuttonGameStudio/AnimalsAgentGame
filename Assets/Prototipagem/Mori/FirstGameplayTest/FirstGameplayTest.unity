@@ -6171,12 +6171,28 @@ PrefabInstance:
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 2520706849553578126, guid: 5e6fc123e444e7f45ab78b704561dbb1, type: 3}
+      propertyPath: colorOfFovMesh.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2520706849553578126, guid: 5e6fc123e444e7f45ab78b704561dbb1, type: 3}
+      propertyPath: colorOfFovMesh.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2520706849553578126, guid: 5e6fc123e444e7f45ab78b704561dbb1, type: 3}
+      propertyPath: colorOfFovMesh.r
+      value: 0.9764706
+      objectReference: {fileID: 0}
+    - target: {fileID: 2520706849553578126, guid: 5e6fc123e444e7f45ab78b704561dbb1, type: 3}
       propertyPath: thisEnemyIDDebug
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2520706849553578126, guid: 5e6fc123e444e7f45ab78b704561dbb1, type: 3}
       propertyPath: totalEnemiesDebug
       value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 2520706849553578126, guid: 5e6fc123e444e7f45ab78b704561dbb1, type: 3}
+      propertyPath: primaryAttackDamage
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 2520706849553578126, guid: 5e6fc123e444e7f45ab78b704561dbb1, type: 3}
       propertyPath: aiPathList.Array.size
@@ -6200,15 +6216,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2520706849553578126, guid: 5e6fc123e444e7f45ab78b704561dbb1, type: 3}
       propertyPath: aiPathList.Array.data[2].waitTimeOnPoint
-      value: 0
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 2520706849553578126, guid: 5e6fc123e444e7f45ab78b704561dbb1, type: 3}
       propertyPath: aiPathList.Array.data[0].lookAroundOnPoint
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2520706849553578126, guid: 5e6fc123e444e7f45ab78b704561dbb1, type: 3}
       propertyPath: aiPathList.Array.data[2].lookAroundOnPoint
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2520706849553578126, guid: 5e6fc123e444e7f45ab78b704561dbb1, type: 3}
       propertyPath: aiPathList.Array.data[0].transformOfPathPoint

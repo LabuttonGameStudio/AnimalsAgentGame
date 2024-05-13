@@ -10,6 +10,7 @@ public class EnemyObservingState : MeleeEnemyState
 {
     private enum ObservingStates
     {
+        Null,
         Tracking,
         LookingAround
     }
@@ -23,6 +24,7 @@ public class EnemyObservingState : MeleeEnemyState
     {
         if (iEnemy.CheckForPlayerLOS() > 0)
         {
+            Debug.Log("PlayerInLos");
             iEnemy.lastKnownPlayerPos = ArmadilloPlayerController.Instance.transform.position;
             OnPlayerInLOS();
             //iEnemy.IncreaseDetection();
@@ -45,19 +47,9 @@ public class EnemyObservingState : MeleeEnemyState
 
     public override void OnExitState()
     {
-        iEnemy.BreakOnWaitPointCoroutine();
-        if (LookAtPlayer_Ref != null)
-        {
-            iEnemy.StopCoroutine(LookAtPlayer_Ref);
-            LookAtPlayer_Ref = null;
-        }
-
-        if (LostLOSOfPlayer_Ref != null)
-        {
-            iEnemy.StopCoroutine(LostLOSOfPlayer_Ref);
-            LostLOSOfPlayer_Ref = null;
-        }
-
+        StopLookAround();
+        StopTracking();
+        
     }
 
     public override void OnFixedUpdate()
@@ -66,7 +58,7 @@ public class EnemyObservingState : MeleeEnemyState
     }
     private void OnPlayerInLOS()
     {
-        if(currentState != ObservingStates.Tracking)
+        if (currentState != ObservingStates.Tracking)
         {
             currentState = ObservingStates.Tracking;
             StopLookAround();
@@ -76,28 +68,32 @@ public class EnemyObservingState : MeleeEnemyState
 
     private void OnPlayerOutOfLOS()
     {
-        if (LostLOSOfPlayer_Ref == null)
+        if (currentState != ObservingStates.LookingAround)
         {
-            if (LookAtPlayer_Ref != null)
-            {
-                iEnemy.StopCoroutine(LookAtPlayer_Ref);
-                LookAtPlayer_Ref = null;
-            }
-            LostLOSOfPlayer_Ref = iEnemy.StartCoroutine(LostLOSOfPlayer_Coroutine());
+            currentState = ObservingStates.LookingAround;
+            StopTracking();
+            lookAround_Ref = iEnemy.StartCoroutine(LookAround_Coroutine());
         }
     }
     #region Look Around
     private Coroutine lookAround_Ref;
     private IEnumerator LookAround_Coroutine()
     {
-        iEnemy.waitOnPointTimer_Ref = iEnemy.StartCoroutine(iEnemy.WaitOnPointTimer_Coroutine(5, true));
-        yield return iEnemy.waitOnPointTimer_Ref;
-        LostLOSOfPlayer_Ref = null;
+        if (iEnemy.TryStartRandomLookAround(5, out Coroutine coroutine))
+        {
+            yield return coroutine;
+        }
         iEnemy.ChangeCurrentAIBehaviour(AIBehaviourEnums.AIBehaviour.Roaming);
+        lookAround_Ref = null;
     }
     private void StopLookAround()
     {
-
+        iEnemy.StopLookAround();
+        if(lookAround_Ref != null)
+        {
+            iEnemy.StopCoroutine(lookAround_Ref);
+            lookAround_Ref = null;
+        }
     }
     #endregion
 
@@ -107,14 +103,14 @@ public class EnemyObservingState : MeleeEnemyState
     {
         while (true)
         {
-            Vector3 direction = iEnemy.lastKnownPlayerPos;
-            iEnemy.LerpLookAt(direction);
+            Vector3 position = iEnemy.lastKnownPlayerPos;
+            iEnemy.LerpLookAt(position, 5);
             yield return new WaitForFixedUpdate();
         }
     }
     private void StopTracking()
     {
-        if(tracking_Ref != null)
+        if (tracking_Ref != null)
         {
             iEnemy.StopCoroutine(tracking_Ref);
             tracking_Ref = null;
