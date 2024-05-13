@@ -5,8 +5,7 @@ using UnityEngine;
 using UnityEngine.InputSystem.XInput;
 using UnityEngine.InputSystem;
 using System.Linq;
-using UnityEngine.Rendering.HighDefinition;
-using UnityEngine.UI;
+using UnityEngine.Rendering.Universal;
 public class ArmadilloForms
 {
     public enum ArmadilloForm
@@ -58,10 +57,6 @@ public class ArmadilloPlayerController : MonoBehaviour
     [SerializeField] private float sonarDuration;
     [SerializeField] private float sonarStartLerpDuration;
     [SerializeField] private float sonarRange;
-
-    public CustomPassVolume sonarEffect;
-    private SeeThrough sonarEffectDefault;
-    private SeeThrough sonarEffectEnemy;
 
 
     [SerializeField] private DecalProjector[] sonarDecal;
@@ -122,6 +117,7 @@ public class ArmadilloPlayerController : MonoBehaviour
     {
         inputControl.inputAction.Armadillo.Ability2.Enable();
         inputControl.inputAction.Armadillo.Ability2.performed += SonarAbility;
+        /*
 
         sonarEffectDefault = sonarEffect.customPasses[0] as SeeThrough;
         sonarEffectEnemy = sonarEffect.customPasses[1] as SeeThrough;
@@ -133,6 +129,7 @@ public class ArmadilloPlayerController : MonoBehaviour
         sonarEffectEnemy.seeThroughMaterial.SetFloat("_MAXDISTANCE", 0);
 
         sonarEffect.enabled = true;
+        */
     }
     public void SonarAbility(InputAction.CallbackContext value)
     {
@@ -147,6 +144,8 @@ public class ArmadilloPlayerController : MonoBehaviour
     private Coroutine SonarAbility_Ref;
     private IEnumerator SonarAbility_Coroutine(float startValue, float finalValue,float duration)
     {
+        yield return null;
+        /*
         float timer = 0f;
         while (timer <= duration)
         {
@@ -160,6 +159,7 @@ public class ArmadilloPlayerController : MonoBehaviour
         sonarEffectDefault.seeThroughMaterial.SetFloat("_MAXDISTANCE", finalValue);
         sonarEffectEnemy.seeThroughMaterial.SetFloat("_MAXDISTANCE", finalValue);
 
+        */
         SonarAbility_Ref = null;
     }
     private Coroutine SonarAbilityVFX_Ref;
