@@ -15,13 +15,13 @@ MonoBehaviour:
   active: 1
   shadows:
     m_OverrideState: 1
-    m_Value: {x: 0.94907707, y: 1, z: 0.97391254, w: -0.043552816}
+    m_Value: {x: 0.95, y: 1, z: 0.9741667, w: -0.043552816}
   midtones:
     m_OverrideState: 1
-    m_Value: {x: 1, y: 0.95702493, z: 0.972947, w: 0.08919525}
+    m_Value: {x: 1, y: 0.96, z: 0.97466666, w: 0.08919525}
   highlights:
     m_OverrideState: 1
-    m_Value: {x: 1, y: 1, z: 1, w: 0.038022812}
+    m_Value: {x: 1, y: 1, z: 1, w: 0.32861027}
   shadowsStart:
     m_OverrideState: 0
     m_Value: 0
@@ -202,11 +202,11 @@ MonoBehaviour:
     m_OverrideState: 0
     m_Value: 1
   threshold:
-    m_OverrideState: 0
-    m_Value: 0
+    m_OverrideState: 1
+    m_Value: 0.5
   intensity:
     m_OverrideState: 1
-    m_Value: 0.244
+    m_Value: 0.365
   scatter:
     m_OverrideState: 0
     m_Value: 0.7
@@ -290,7 +290,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9008a067f4d626c4d8bc4bc48f04bb89, type: 3}
   m_Name: ScreenSpaceAmbientOcclusion
   m_EditorClassIdentifier: 
-  active: 0
+  active: 1
   quality:
     m_OverrideState: 0
     m_Value: 1
@@ -299,10 +299,10 @@ MonoBehaviour:
     m_Value: 0
   intensity:
     m_OverrideState: 1
-    m_Value: 0.47
+    m_Value: 1
   directLightingStrength:
-    m_OverrideState: 0
-    m_Value: 0
+    m_OverrideState: 1
+    m_Value: 0.81
   radius:
     m_OverrideState: 0
     m_Value: 2
