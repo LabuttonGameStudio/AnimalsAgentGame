@@ -10,9 +10,12 @@ public class Dialogue : MonoBehaviour
     public string titlename;
 
     [Header("TEXT")]
+    public DialogueText[] dialogue_v2;
     public string[] dialogue;
 
     [Header("EVENTS")]
+    public DialogueEvent[] startDialogue_v2;
+    [Space]
     public UnityEvent startDialogue;
     public UnityEvent endDialogue;
 
