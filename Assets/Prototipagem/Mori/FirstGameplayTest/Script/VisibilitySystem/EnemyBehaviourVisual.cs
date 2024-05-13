@@ -12,6 +12,9 @@ public class EnemyBehaviourVisual : MonoBehaviour
     [SerializeField]private Sprite observingIcon;
     [SerializeField]private Sprite searchingIcon;
     [SerializeField]private Sprite attackingIcon;
+
+    [Space]
+    [SerializeField] private SpriteRenderer alertSpriteRender;
     public void Start()
     {
         if(mainCamera == null) mainCamera = Camera.main;
@@ -37,5 +40,9 @@ public class EnemyBehaviourVisual : MonoBehaviour
                 spriteRenderer.sprite = attackingIcon;
                 break;
         }
+    }
+    public void ToggleAlert(bool state)
+    {
+        alertSpriteRender.enabled = state;
     }
 }

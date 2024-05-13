@@ -27,7 +27,7 @@ public class EnemyObservingState : MeleeEnemyState
             Debug.Log("PlayerInLos");
             iEnemy.lastKnownPlayerPos = ArmadilloPlayerController.Instance.transform.position;
             OnPlayerInLOS();
-            //iEnemy.IncreaseDetection();
+            iEnemy.IncreaseDetection();
         }
         else
         {
@@ -79,6 +79,7 @@ public class EnemyObservingState : MeleeEnemyState
     private Coroutine lookAround_Ref;
     private IEnumerator LookAround_Coroutine()
     {
+        yield return new WaitForSeconds(1);
         if (iEnemy.TryStartRandomLookAround(5, out Coroutine coroutine))
         {
             yield return coroutine;

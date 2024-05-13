@@ -129,6 +129,7 @@ public abstract class IEnemy : MonoBehaviour
     //51-100 Searching
     //100+ Attacking
     [Tooltip("De 0 a 100"), Range(0, 100)] protected float detectionLevel;
+    protected float detectionLevelDecreased;
     #endregion
 
 
@@ -680,6 +681,14 @@ public abstract class IEnemy : MonoBehaviour
             if (!hitInfo.collider.CompareTag("Player")) return 0;
         }
         return player.GetCurrentVisibilityOfPlayer();
+    }
+    #endregion
+
+    #region Alert
+    public void ToggleAlert(bool state)
+    {
+        isOnAlert = state;
+        enemyBehaviourVisual.ToggleAlert(state);
     }
     #endregion
 }
