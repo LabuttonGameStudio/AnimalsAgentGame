@@ -5,6 +5,7 @@ using UnityEngine;
 public class TesteInput : MonoBehaviour
 {
     public GameObject Particle;
+    public GameObject local;
     // Start is called before the first frame update
     void Start()
     {
@@ -16,7 +17,7 @@ public class TesteInput : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
-            Particle.SetActive(true);
+            GameObject Bzz = Instantiate(Particle, local.transform.position, Quaternion.identity);
         }
     }
 }

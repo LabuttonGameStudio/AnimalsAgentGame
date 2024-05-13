@@ -94,6 +94,7 @@ public class Tween
         RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRectTransform, screenPosition, Camera.main, out canvasLocalPosition);
         return canvasLocalPosition; // Retorna a posição local do Canvas
     }
+
     #region Rotate Transform
     /// <summary>
     /// Move a posicao local do transform ate o ponto final no tempo determinado
@@ -163,5 +164,30 @@ public class Tween
         }
         rectTransform.anchoredPosition = finalPosition;
     }
+    #endregion
+
+    #region Fade CanvasGroup
+
+    // alterar a opacidade de um CanvasGroup
+    public static Coroutine FadeCanvasGroup(MonoBehaviour monoBehaviour, CanvasGroup canvasGroup, float targetOpacity, float duration)
+    {
+        return monoBehaviour.StartCoroutine(FadeCanvasGroup_Coroutine(canvasGroup, targetOpacity, duration));
+    }
+
+    private static IEnumerator FadeCanvasGroup_Coroutine(CanvasGroup canvasGroup, float targetOpacity, float duration)
+    {
+        float startOpacity = canvasGroup.alpha;
+        float timer = 0;
+
+        while (timer < duration)
+        {
+            canvasGroup.alpha = Mathf.Lerp(startOpacity, targetOpacity, timer / duration);
+            timer += Time.deltaTime;
+            yield return null;
+        }
+
+        canvasGroup.alpha = targetOpacity;
+    }
+
     #endregion
 }
