@@ -222,6 +222,7 @@ GameObject:
   - component: {fileID: 2845273429162083082}
   - component: {fileID: 8051962066538750175}
   - component: {fileID: 7261537023158009586}
+  - component: {fileID: 1905184941862477575}
   m_Layer: 5
   m_Name: Icon-Tatu
   m_TagString: Untagged
@@ -286,6 +287,22 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &1905184941862477575
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2036256170247817940}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fef1ce3c7148d1744b55eebbbc8d0ffa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  objectToMove: {fileID: 2845273429162083082}
+  moveDistance: 5
+  moveDuration: 0.9
+  lerpType: 1
 --- !u!1 &2385706898097111009
 GameObject:
   m_ObjectHideFlags: 0
@@ -333,6 +350,8 @@ GameObject:
   - component: {fileID: 1224119567877889265}
   - component: {fileID: 1421964088489328919}
   - component: {fileID: 1035074264859055969}
+  - component: {fileID: 399549943270466588}
+  - component: {fileID: 7289229031861700675}
   m_Layer: 5
   m_Name: Fill
   m_TagString: Untagged
@@ -397,6 +416,35 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &399549943270466588
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2903641074977270463}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 61ea367b52d0d0d4fb49c004bcfe1455, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  objectToAnimate: {fileID: 1224119567877889265}
+  maxOpacity: 1
+  minOpacity: 0.3
+  fadeDuration: 2.5
+  lerpType: 1
+--- !u!225 &7289229031861700675
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2903641074977270463}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
 --- !u!1 &5082226900071277750
 GameObject:
   m_ObjectHideFlags: 0

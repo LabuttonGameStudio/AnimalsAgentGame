@@ -9,10 +9,12 @@ public class EletricPistolVisual : MonoBehaviour
     [SerializeField]private ParticleSystem onFireParticle;
     [SerializeField]private ParticleSystem onFireTrail;
     [SerializeField]private ParticleSystem onOverheat;
+    [SerializeField]private ParticleSystem BzzOnomatopeiaParticle;
     public void OnUnchargedFire()
     {
         onFireParticle.Play();
         onFireTrail.Play();
+        BzzOnomatopeiaParticle.Play();
         TweenMunicao.Instance.ShakeAmmunition();
     }
     public void OnChargedFire()
@@ -20,6 +22,7 @@ public class EletricPistolVisual : MonoBehaviour
         OnUnCharge();
         onFireParticle.Play();
         onFireTrail.Play();
+        BzzOnomatopeiaParticle.Play();
         TweenMunicao.Instance.ShakeAmmunition();
     }
     public void OnCharge()
