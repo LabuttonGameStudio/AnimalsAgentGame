@@ -1273,6 +1273,11 @@ PrefabInstance:
       addedObject: {fileID: 1844450870}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5e6fc123e444e7f45ab78b704561dbb1, type: 3}
+--- !u!20 &631266764 stripped
+Camera:
+  m_CorrespondingSourceObject: {fileID: 4455966302502267435, guid: eb11bd31773d7a64aa560b99e8e3727a, type: 3}
+  m_PrefabInstance: {fileID: 3725515854391060306}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &647694526
 GameObject:
   m_ObjectHideFlags: 0
@@ -5476,6 +5481,14 @@ PrefabInstance:
       propertyPath: requireWInputToLedgeGrab
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 5387402961858234406, guid: eb11bd31773d7a64aa560b99e8e3727a, type: 3}
+      propertyPath: m_Cameras.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5387402961858234406, guid: eb11bd31773d7a64aa560b99e8e3727a, type: 3}
+      propertyPath: m_Cameras.Array.data[1]
+      value: 
+      objectReference: {fileID: 631266764}
     - target: {fileID: 5570221528459450666, guid: eb11bd31773d7a64aa560b99e8e3727a, type: 3}
       propertyPath: m_IsActive
       value: 1

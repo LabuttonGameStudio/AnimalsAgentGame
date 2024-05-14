@@ -53,6 +53,9 @@ public class ArmadilloPlayerController : MonoBehaviour
     public LayerMask climbableLayer;
 
     [Header("Sonar Ability")]
+
+    [SerializeField] private Camera sonarCamera;
+
     private bool isSonarActive;
     [SerializeField] private float sonarDuration;
     [SerializeField] private float sonarStartLerpDuration;
@@ -117,49 +120,33 @@ public class ArmadilloPlayerController : MonoBehaviour
     {
         inputControl.inputAction.Armadillo.Ability2.Enable();
         inputControl.inputAction.Armadillo.Ability2.performed += SonarAbility;
-        /*
-
-        sonarEffectDefault = sonarEffect.customPasses[0] as SeeThrough;
-        sonarEffectEnemy = sonarEffect.customPasses[1] as SeeThrough;
-
-        sonarEffectDefault.seeThroughMaterial = new Material(sonarEffectDefault.seeThroughMaterial);
-        sonarEffectEnemy.seeThroughMaterial = new Material(sonarEffectEnemy.seeThroughMaterial);
-
-        sonarEffectDefault.seeThroughMaterial.SetFloat("_MAXDISTANCE", 0);
-        sonarEffectEnemy.seeThroughMaterial.SetFloat("_MAXDISTANCE", 0);
-
-        sonarEffect.enabled = true;
-        */
     }
     public void SonarAbility(InputAction.CallbackContext value)
     {
         if (SonarAbility_Ref == null)
         {
             isSonarActive = !isSonarActive;
-            if(isSonarActive && SonarAbilityVFX_Ref == null) SonarAbilityVFX_Ref = StartCoroutine(SonarAbilityVFX_Coroutine(sonarStartLerpDuration));
-            SonarAbility_Ref = StartCoroutine(SonarAbility_Coroutine(isSonarActive ? 0 : sonarRange, isSonarActive ? sonarRange : 0,sonarStartLerpDuration));
+            if (isSonarActive && SonarAbilityVFX_Ref == null) SonarAbilityVFX_Ref = StartCoroutine(SonarAbilityVFX_Coroutine(sonarStartLerpDuration));
+            SonarAbility_Ref = StartCoroutine(SonarAbility_Coroutine(isSonarActive ? 0.31f : sonarRange, isSonarActive ? sonarRange : 0.31f, sonarStartLerpDuration));
         }
     }
 
     private Coroutine SonarAbility_Ref;
-    private IEnumerator SonarAbility_Coroutine(float startValue, float finalValue,float duration)
+    private IEnumerator SonarAbility_Coroutine(float startValue, float finalValue, float duration)
     {
         yield return null;
-        /*
+
         float timer = 0f;
         while (timer <= duration)
         {
-            sonarEffectDefault.seeThroughMaterial.SetFloat("_MAXDISTANCE", Mathf.SmoothStep(startValue, finalValue, timer / duration));
-            sonarEffectEnemy.seeThroughMaterial.SetFloat("_MAXDISTANCE", Mathf.SmoothStep(startValue, finalValue, timer / duration));
 
+            sonarCamera.farClipPlane = Mathf.SmoothStep(startValue, finalValue, timer / duration);
             timer += 0.05f;
             yield return new WaitForSeconds(0.05f);
         }
+        sonarCamera.farClipPlane = finalValue;
 
-        sonarEffectDefault.seeThroughMaterial.SetFloat("_MAXDISTANCE", finalValue);
-        sonarEffectEnemy.seeThroughMaterial.SetFloat("_MAXDISTANCE", finalValue);
 
-        */
         SonarAbility_Ref = null;
     }
     private Coroutine SonarAbilityVFX_Ref;
@@ -168,10 +155,10 @@ public class ArmadilloPlayerController : MonoBehaviour
         float timer = 0f;
         while (timer <= duration)
         {
-            sonarDecal[0].size = Vector3.one * Mathf.SmoothStep(0,40+ sonarRange * 2.5f, timer / duration);
+            sonarDecal[0].size = Vector3.one * Mathf.SmoothStep(0, 40 + sonarRange * 2.5f, timer / duration);
             sonarDecal[1].size = Vector3.one * Mathf.SmoothStep(0, sonarRange * 2.5f, timer / duration);
-            sonarDecal[2].size = Vector3.one * Mathf.SmoothStep(0,-40+ sonarRange * 2.5f, timer / duration);
-            sonarDecal[3].size = Vector3.one * Mathf.SmoothStep(0,-90+ sonarRange * 2.5f, timer / duration);
+            sonarDecal[2].size = Vector3.one * Mathf.SmoothStep(0, -40 + sonarRange * 2.5f, timer / duration);
+            sonarDecal[3].size = Vector3.one * Mathf.SmoothStep(0, -90 + sonarRange * 2.5f, timer / duration);
 
 
             sonarDecal[0].fadeFactor = Mathf.SmoothStep(2.75f, 0, timer / duration);
