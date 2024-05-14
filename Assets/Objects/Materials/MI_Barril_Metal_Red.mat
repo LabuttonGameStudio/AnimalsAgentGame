@@ -16,6 +16,19 @@ MonoBehaviour:
   hdPluginSubTargetMaterialVersions:
     m_Keys: []
     m_Values: 
+--- !u!114 &-4105910201726771531
+MonoBehaviour:
+  m_ObjectHideFlags: 11
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0353a89b1f911e48b9e16bdc9f2e058, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  version: 7
 --- !u!21 &2100000
 Material:
   serializedVersion: 8
@@ -24,15 +37,15 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: MI_Barril_Metal_Red
-  m_Shader: {fileID: -6465566751694194690, guid: a5a41e2835795914cab591db2043c5c2, type: 3}
+  m_Shader: {fileID: -6465566751694194690, guid: 7c121c918f5a1bc40bbf5cf1f070694e, type: 3}
   m_Parent: {fileID: 2100000, guid: bc904da360275ee4bb3665fbb74d6b53, type: 2}
-  m_ModifiedSerializedProperties: 0
+  m_ModifiedSerializedProperties: 4
   m_ValidKeywords:
   - _COLOR_PALETTE_RED
+  m_InvalidKeywords:
   - _DISABLE_SSR_TRANSPARENT
-  m_InvalidKeywords: []
   m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
+  m_EnableInstancingVariants: 1
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
   stringTagMap:
@@ -51,8 +64,17 @@ Material:
         m_Texture: {fileID: 2800000, guid: 2a19d9d3c3bc0b24db5093e52453f110, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _SampleTexture2D_774363fda4034337bfcdadd9bc5cf7d4_Texture_1_Texture2D:
+        m_Texture: {fileID: 2800000, guid: d83df246804eb8f4798d6479e375a179, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
     - _COLOR_PALETTE: 0
+    - _Ferrugem_Metalic: 0.1
+    - _Ferrugem_Smoothness: 0.2
+    - _Metalic_Controler: 1
+    - _Normal_Intensity: 1
+    - _Smoothness_Controler: 1
     m_Colors: []
   m_BuildTextureStacks: []
