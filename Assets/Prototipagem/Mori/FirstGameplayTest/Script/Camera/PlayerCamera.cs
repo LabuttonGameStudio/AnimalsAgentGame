@@ -12,8 +12,13 @@ public class PlayerCamera : MonoBehaviour
 
     private ArmadilloPlayerInputController inputController;
     public Camera mainCamera;
+    public Camera weaponCamera;
     public Transform cameraFollowPoint;
-
+    [Space]
+    [Header("Culling Mask")]
+    [SerializeField]private LayerMask firstPersonMask;
+    [SerializeField]private LayerMask thirdPersonMask;
+    [Space]
     [HideInInspector] public float xRotation, yRotation;
 
     //State Machine
@@ -61,5 +66,13 @@ public class PlayerCamera : MonoBehaviour
     public void Update()
     {
         currentCameraState.UpdateState();
+    }
+    public void ToggleFPCamera(bool state)
+    {
+        weaponCamera.enabled = state;
+    }
+    public void ToggleCullingMask(bool state)
+    {
+        mainCamera.cullingMask = state? firstPersonMask: thirdPersonMask;
     }
 }

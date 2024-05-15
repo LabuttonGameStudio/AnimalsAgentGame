@@ -36,6 +36,7 @@ public class ArmadilloPlayerController : MonoBehaviour
     [System.NonSerialized] public ArmadilloHPControl hpControl;
     [System.NonSerialized] public ArmadilloWeaponControl weaponControl;
     [System.NonSerialized] public ArmadilloPickUpControl pickUpControl;
+    [System.NonSerialized] public ArmadilloVisualControl visualControl;
 
     //Player Forms
     [Header("Default Form")]
@@ -76,6 +77,7 @@ public class ArmadilloPlayerController : MonoBehaviour
         hpControl = GetComponent<ArmadilloHPControl>();
         weaponControl = GetComponent<ArmadilloWeaponControl>();
         pickUpControl = GetComponent<ArmadilloPickUpControl>();
+        visualControl = GetComponent<ArmadilloVisualControl>();
 
     }
     private void Start()
@@ -190,6 +192,7 @@ public class ArmadilloPlayerController : MonoBehaviour
         currentEquipedWeapon = weaponControl.currentWeaponID;
         weaponControl.ChangeWeapon(-1);
         cameraControl.ChangeCameraState(cameraControl.thirdPersonCameraState);
+        visualControl.OnEnterBallMode();
 
         //Muda o visual do personagem, futuramente so colocar a opcao de mudar a animacao do model
         playerVisual_Default.SetActive(false);
@@ -209,9 +212,13 @@ public class ArmadilloPlayerController : MonoBehaviour
 
         //Muda a state machine do move contoler para funcionar como bola
         movementControl.ChangeState(movementControl.ballState);
-
-        //Espera 0.5 segundos pra dar tempo pro model do player em modo bola encostar o chao, tempo de travessia da camera e evitar spam de transformacao 
-        yield return new WaitForSeconds(0.5f);
+        //Tempo de animacao
+        yield return new WaitForSeconds(0.500f);
+        visualControl.PlayTransformationSmoke();
+        yield return new WaitForSeconds(0.063f);
+        visualControl.ChangeMeshToBall();
+        //Espera 0.225 segundos pra dar tempo pro model do player em modo bola encostar o chao, tempo de travessia da camera e evitar spam de transformacao 
+        yield return new WaitForSeconds(0.225f);
 
         inputControl.inputAction.Armadillo.Ability1.performed += ChangeToDefaultForm;
 
@@ -225,8 +232,7 @@ public class ArmadilloPlayerController : MonoBehaviour
         cameraControl.ChangeCameraState(cameraControl.firstPersonCameraState);
 
         //Muda o visual do personagem, futuramente so colocar a opcao de mudar a animacao do model
-        playerVisual_Ball.SetActive(false);
-        playerVisual_Default.SetActive(true);
+        visualControl.ChangeMeshToDefault();
 
         //Retira a funcao do input de transformar no modo normal e altera a state machine pra interpretar como modo normal
         inputControl.inputAction.Armadillo.Ability1.performed -= ChangeToDefaultForm;
@@ -251,6 +257,7 @@ public class ArmadilloPlayerController : MonoBehaviour
 
         //Espera 0.25 segundos para deixar o objeto cair ate encostar no chao e evitar spam de transformacao 
         yield return new WaitForSeconds(0.25f);
+        visualControl.OnEnterDefaultMode();
         weaponControl.ChangeWeapon(currentEquipedWeapon);
         inputControl.inputAction.Armadillo.Ability1.performed += ChangeToBallForm;
         changeToDefaultFormRef = null;
