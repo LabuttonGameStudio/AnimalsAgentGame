@@ -100,12 +100,12 @@ public class EletricPistol : Weapon
     {
         if (timer < chargeTime)
         {
-            FPCameraShake.StartShake(0.05f, 0.25f, 5f);
+            FPCameraShake.StartShake(0.15f, 0.4f, 5f);
             UnChargedFire();
         }
         else
         {
-            FPCameraShake.StartShake(0.1f, 0.5f, 5f);
+            FPCameraShake.StartShake(0.4f, 0.8f, 6f);
             ChargedFire();
         }
     }
