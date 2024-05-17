@@ -40,10 +40,8 @@ public class ArmadilloPlayerController : MonoBehaviour
 
     //Player Forms
     [Header("Default Form")]
-    [SerializeField] public GameObject playerVisual_Default;
     [SerializeField] public Collider[] playerCollider_Default;
     [Header("Ball Form")]
-    [SerializeField] public GameObject playerVisual_Ball;
     [SerializeField] public Collider[] playerCollider_Ball;
 
     private int currentEquipedWeapon;
@@ -128,15 +126,19 @@ public class ArmadilloPlayerController : MonoBehaviour
         if (SonarAbility_Ref == null)
         {
             isSonarActive = !isSonarActive;
-            if (isSonarActive && SonarAbilityVFX_Ref == null) SonarAbilityVFX_Ref = StartCoroutine(SonarAbilityVFX_Coroutine(sonarStartLerpDuration));
-            SonarAbility_Ref = StartCoroutine(SonarAbility_Coroutine(isSonarActive ? 0.31f : sonarRange, isSonarActive ? sonarRange : 0.31f, sonarStartLerpDuration));
+            if (isSonarActive && SonarAbilityVFX_Ref == null)
+            {
+                visualControl.OnSonar();
+                SonarAbilityVFX_Ref = StartCoroutine(SonarAbilityVFX_Coroutine(sonarStartLerpDuration));
+            }
+            SonarAbility_Ref = StartCoroutine(SonarAbility_Coroutine(isSonarActive ? 0.33f : sonarRange, isSonarActive ? sonarRange : 0.33f, sonarStartLerpDuration));
         }
     }
 
     private Coroutine SonarAbility_Ref;
     private IEnumerator SonarAbility_Coroutine(float startValue, float finalValue, float duration)
     {
-        yield return null;
+        yield return new WaitForSeconds(0.55f);
 
         float timer = 0f;
         while (timer <= duration)
@@ -154,6 +156,7 @@ public class ArmadilloPlayerController : MonoBehaviour
     private Coroutine SonarAbilityVFX_Ref;
     private IEnumerator SonarAbilityVFX_Coroutine(float duration)
     {
+        yield return new WaitForSeconds(0.55f);
         float timer = 0f;
         while (timer <= duration)
         {
@@ -195,8 +198,6 @@ public class ArmadilloPlayerController : MonoBehaviour
         visualControl.OnEnterBallMode();
 
         //Muda o visual do personagem, futuramente so colocar a opcao de mudar a animacao do model
-        playerVisual_Default.SetActive(false);
-        playerVisual_Ball.SetActive(true);
         //Retira a funcao do input de transformar em bola e altera a state machine pra interpretar como o modo bola
         inputControl.inputAction.Armadillo.Ability1.performed -= ChangeToBallForm;
 
@@ -268,4 +269,5 @@ public class ArmadilloPlayerController : MonoBehaviour
     {
         Debug.Log("Player Die");
     }
+
 }

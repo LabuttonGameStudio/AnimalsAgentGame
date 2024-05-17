@@ -211,6 +211,7 @@ public class ArmadilloMovementController : MonoBehaviour
     {
         if (value.performed)
         {
+            ArmadilloPlayerController.Instance.visualControl.OnSprintStart();
             currentMovementType = MovementType.Sprinting;
             movementTypeMultiplier = GetCurrentFormStats().sprintSpeedMultiplier;
         }
@@ -218,6 +219,7 @@ public class ArmadilloMovementController : MonoBehaviour
         {
             if (currentMovementType == MovementType.Sprinting)
             {
+                ArmadilloPlayerController.Instance.visualControl.OnSprintStop();
                 currentMovementType = MovementType.Default;
                 movementTypeMultiplier = 1;
             }
@@ -228,12 +230,14 @@ public class ArmadilloMovementController : MonoBehaviour
         if (value.performed)
         {
             currentMovementType = MovementType.Lurking;
+            ArmadilloPlayerController.Instance.visualControl.OnLurkStart();
             movementTypeMultiplier = GetCurrentFormStats().lurkSpeedMultiplier;
         }
         else
         {
             if (currentMovementType == MovementType.Lurking)
             {
+                ArmadilloPlayerController.Instance.visualControl.OnLurkStop();
                 currentMovementType = MovementType.Default;
                 movementTypeMultiplier = 1;
             }
@@ -296,16 +300,17 @@ public class ArmadilloMovementController : MonoBehaviour
     }
     public bool CheckMatchOfCurrentLadder(Transform ladderObject)
     {
-        if(ladderState.ladderObject == null || ladderObject == null) return false;
+        if (ladderState.ladderObject == null || ladderObject == null) return false;
         return ReferenceEquals(ladderObject.gameObject, ladderState.ladderObject.gameObject);
     }
-    public void EnterLadder(Transform objectTransform, Vector3 minPosition, Vector3 maxPosition,float pipeSize)
+    public void EnterLadder(Transform objectTransform, Vector3 minPosition, Vector3 maxPosition, float pipeSize)
     {
         ladderState.ladderObject = objectTransform;
         ladderState.minPosition = minPosition;
         ladderState.maxPosition = maxPosition;
         ladderState.pipeSize = pipeSize;
         ChangeState(ladderState);
+        ArmadilloPlayerController.Instance.visualControl.OnClimbingStart();
     }
     public void ExitLadder()
     {
@@ -314,6 +319,7 @@ public class ArmadilloMovementController : MonoBehaviour
         ladderState.maxPosition = Vector3.zero;
         ladderState.pipeSize = 0;
         ChangeState(defaultState);
+        ArmadilloPlayerController.Instance.visualControl.OnClimbingStop();
     }
     public void ExitLadderWithJump()
     {
@@ -323,6 +329,7 @@ public class ArmadilloMovementController : MonoBehaviour
         ladderState.pipeSize = 0;
         ChangeState(defaultState);
         defaultState.Jump();
+        ArmadilloPlayerController.Instance.visualControl.OnClimbingStop();
     }
     public Vector3 GetSlopeMoveDirection(Vector3 moveDirection)
     {

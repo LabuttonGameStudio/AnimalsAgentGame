@@ -12,6 +12,7 @@ public class ArmadilloWeaponControl : MonoBehaviour
     [System.NonSerialized] public Weapon[] weaponsInInventory;
 
     [System.NonSerialized] public int currentWeaponID = -1;
+    private int pocketedWeaponID = -1;
 
     [SerializeField] private Camera weaponCamera;
 
@@ -91,6 +92,7 @@ public class ArmadilloWeaponControl : MonoBehaviour
             ToggleStateInputs(playerInput, false);
             weaponsInInventory[currentWeaponID].ToggleVisual(false);
             currentWeaponID = -1;
+            Debug.Log("a");
             return;
         }
         if (currentWeaponID != -1)
@@ -103,8 +105,25 @@ public class ArmadilloWeaponControl : MonoBehaviour
             ToggleStateInputs(playerInput, true);
         }
         currentWeaponID = nextWeapon;
+        OnGunEquip(nextWeapon);
         DefineDelegates(playerInput, DelegateType.Add, nextWeapon);
         weaponsInInventory[nextWeapon].ToggleVisual(true);
     }
 
+    public void ToggleWeapon(bool state)
+    {
+        if (!state)
+        {
+            if(currentWeaponID != -1)pocketedWeaponID = currentWeaponID;
+            ChangeWeapon(-1);
+        }
+        else
+        {
+            ChangeWeapon(pocketedWeaponID);
+        }
+    }
+    public void OnGunEquip(int gunEquiped)
+    {
+        ArmadilloPlayerController.Instance.visualControl.OnGunEquiped();
+    }
 }

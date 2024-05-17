@@ -98,7 +98,7 @@ public class ArmadilloDefaultState : MovementState
             movementCtrl.hasUsedLedgeGrab = true;
             movementCtrl.timeSinceTouchedGround = 0;
             Jump();
-
+            ArmadilloPlayerController.Instance.visualControl.OnLedgeGrab();
             //}
         }
     }

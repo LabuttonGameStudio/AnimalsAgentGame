@@ -38,8 +38,9 @@ public class ArmadilloBallState : MovementState
     private void MovePlayer()
     {
         Camera mainCamera = ArmadilloPlayerController.Instance.cameraControl.mainCamera;
-        Vector3 moveDirection = mainCamera.transform.forward * movementCtrl.movementInputVector.y
+        Vector3 inputDirection = mainCamera.transform.forward * movementCtrl.movementInputVector.y
             + mainCamera.transform.right * movementCtrl.movementInputVector.x;
+        Vector3 moveDirection = inputDirection;
         moveDirection.y = 0;
 
         if (movementCtrl.grounded)
@@ -50,7 +51,8 @@ public class ArmadilloBallState : MovementState
             moveDirection = Vector3.SmoothDamp(previousVelocityInput, moveDirection, ref velocity, 1 / stats.moveSpeedAcceleration);
             movementCtrl.rb.AddForce(moveDirection, ForceMode.Acceleration);
             previousVelocityInput = moveDirection;
-            movementCtrl.rb.AddTorque(new Vector3(moveDirection.z, moveDirection.y, -moveDirection.x) / 5, ForceMode.VelocityChange);
+
+            if(moveDirection.magnitude>0.1f) movementCtrl.rb.MoveRotation(Quaternion.LookRotation(moveDirection));
         }
         else
         {
@@ -62,7 +64,10 @@ public class ArmadilloBallState : MovementState
             movementInAir = Vector3.SmoothDamp(previousVelocityInput, movementInAir, ref velocity, 1 / stats.moveSpeedAcceleration);
             movementCtrl.rb.AddForce(movementInAir, ForceMode.Acceleration);
             previousVelocityInput = movementInAir;
-            movementCtrl.rb.AddTorque(new Vector3(movementInAir.z, movementInAir.y, -movementInAir.x) / 5, ForceMode.VelocityChange);
+            if (movementInAir.magnitude > 0.1f)
+            {
+                movementCtrl.rb.MoveRotation(Quaternion.LookRotation(movementInAir));
+            }
         }
     }
     //-----Player Jump-----
