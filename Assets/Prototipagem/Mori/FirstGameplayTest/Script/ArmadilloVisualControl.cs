@@ -42,6 +42,7 @@ public class ArmadilloVisualControl : MonoBehaviour
 
     [Header("VFX")]
     [SerializeField] private ParticleSystem transformationSmoke;
+    [SerializeField] private ParticleSystem TreckOnomatopeia;
 
 
 
@@ -66,6 +67,7 @@ public class ArmadilloVisualControl : MonoBehaviour
     public void PlayTransformationSmoke()
     {
         transformationSmoke.Play();
+        TreckOnomatopeia.Play();
     }
     public void ChangeMeshToBall()
     {
