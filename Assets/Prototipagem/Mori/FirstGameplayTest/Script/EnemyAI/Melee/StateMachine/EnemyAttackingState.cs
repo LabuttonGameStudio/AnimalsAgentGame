@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.AI;
+using UnityEngine.UIElements;
 
 public class EnemyAttackingState : MeleeEnemyState
 {
@@ -17,118 +19,203 @@ public class EnemyAttackingState : MeleeEnemyState
 
     public override void OnActionUpdate()
     {
-        Vector3 playerPosRef = ArmadilloPlayerController.Instance.transform.position;
-        if (!isAttackOnCooldown)
+        iEnemy.lastKnownPlayerPos = ArmadilloPlayerController.Instance.transform.position;
+        //if (!isAttackOnCooldown)
+        //{
+        //    distanceFromPlayer = GetCurrentAttackRange();
+        //    Move();
+        //}
+        //else
+        //{
+        //    distanceFromPlayer = 7.5f;
+        //    Move();
+        //}
+    }
+    private float GetDistanceFromPlayer()
+    {
+        Vector3 distance = iEnemy.transform.position - iEnemy.lastKnownPlayerPos;
+        distance.y = 0;
+        return distance.magnitude;
+    }
+    private void StartMovingToPlayer()
+    {
+        movingToPlayer_Ref = iEnemy.StartCoroutine(MovingToPlayer_Coroutine(GetCurrentAttackRange()));
+    }
+    private Coroutine movingToPlayer_Ref;
+    private IEnumerator MovingToPlayer_Coroutine(float desiredDistanceFromPlayer)
+    {
+        while (true)
         {
-            if (Vector3.Distance(iEnemy.transform.position, playerPosRef) <= attackRange+0.1f)
+            Move(desiredDistanceFromPlayer);
+            if (GetDistanceFromPlayer() < desiredDistanceFromPlayer+0.25f)
             {
-                Attack();
+                StopMovingToPlayer();
+                StartAttack();
+                yield break;
             }
-            else if (isMoving) GoToPlayer();
+            yield return new WaitForFixedUpdate();
+        }
+    }
+    private void StopMovingToPlayer()
+    {
+        if (movingToPlayer_Ref != null)
+        {
+            iEnemy.StopCoroutine(movingToPlayer_Ref);
+            movingToPlayer_Ref = null;
+        }
+    }
+    private void Move(float distanceFromPlayer)
+    {
+        iEnemy.LerpLookAt(iEnemy.lastKnownPlayerPos, 2f);
+        Vector3 target = iEnemy.transform.position - iEnemy.lastKnownPlayerPos;
+        target.y = 0;
+        target = target.normalized;
+        target = target * distanceFromPlayer;
+        target += ArmadilloPlayerController.Instance.transform.position;
+        if (NavMesh.SamplePosition(target, out NavMeshHit navMeshHit, 2f, NavMesh.AllAreas))
+        {
+            iEnemy.TrySetNextDestination(navMeshHit.position);
         }
         else
         {
-
-            if (isMoving)
+            if (NavMesh.SamplePosition(target, out NavMeshHit navMeshHit2, 5f, NavMesh.AllAreas))
             {
-                GoAwayFromPlayer();
+                iEnemy.TrySetNextDestination(navMeshHit2.position);
             }
         }
     }
-    private float attackRange = 5;
-    private float minimalDistanceFromPlayer = 5;
-    private void GoToPlayer()
-    {
-        Vector3 target = iEnemy.transform.position - ArmadilloPlayerController.Instance.transform.position;
-        target.y = 0;
-        target = Vector3.Normalize(target);
-        target = target * minimalDistanceFromPlayer;
-        target += ArmadilloPlayerController.Instance.transform.position;
-        iEnemy.TrySetNextDestination(target);
-    }
-    private void GoAwayFromPlayer()
-    {
-        Vector3 target = iEnemy.transform.position - ArmadilloPlayerController.Instance.transform.position;
-        target.y = 0;
-        target += iEnemy.transform.right * Mathf.Sin(Time.time/2);
-        target = Vector3.Normalize(target);
-        target = target * minimalDistanceFromPlayer*1.5f;
-        target += ArmadilloPlayerController.Instance.transform.position;
-        iEnemy.TrySetNextDestination(target);
-    }
 
-    private bool isAttackOnCooldown;
-    private bool isMoving = true;
-    private bool isLookingAtPlayer = true;
-    private void Attack()
+    private void StartAttack()
     {
-        isAttackOnCooldown = true;
-        iEnemy.navMeshAgent.isStopped = true;
-        isMoving = false;
-        isLookingAtPlayer = true;
-        iEnemy.StartCoroutine(Attack_Coroutine());
-    }
-    private IEnumerator Attack_Coroutine()
-    {
-        Vector3 attackDirection;
-        iEnemy.navMeshAgent.velocity = Vector3.zero;
-        yield return new WaitForSeconds(0.125f);
-        attackDirection = ArmadilloPlayerController.Instance.transform.position - iEnemy.transform.position;
-        attackDirection.y = 0;
-        attackDirection.Normalize();
-        isLookingAtPlayer = false;
-        yield return new WaitForSeconds(0.125f);
-        iEnemy.rb.AddForce(attackDirection * 25f, ForceMode.Impulse);
-        float timer = 0;
-        Vector3 bottomCapsulePoint;
-        Vector3 topCapsulePoint;
-        while (timer < 1)
+        switch (attackCycle)
         {
-            bottomCapsulePoint = iEnemy.transform.position - new Vector3(0, iEnemy.navMeshAgent.height / 2, 0);
-            topCapsulePoint = iEnemy.transform.position + new Vector3(0, iEnemy.navMeshAgent.height / 2, 0);
-            RaycastHit[] raycastHits = Physics.CapsuleCastAll(bottomCapsulePoint, topCapsulePoint, iEnemy.navMeshAgent.radius + 0.5f, Vector3.down);
-            foreach (RaycastHit hit in raycastHits)
-            {
-                if (hit.collider.CompareTag("Player"))
-                {
-                    ArmadilloPlayerController.Instance.hpControl.TakeDamage(Mathf.RoundToInt(iEnemy.primaryAttackDamage));
-                    iEnemy.rb.velocity = iEnemy.rb.velocity * -1;
-                    timer = 1;
-                    break;
-                }
-            }
+            case 0:
+            case 1:
+                attack_Coroutine = iEnemy.StartCoroutine(PrimaryAttack_Coroutine());
+                break;
+            case 2:
+                attack_Coroutine = iEnemy.StartCoroutine(SecondaryAttack_Coroutine());
+                break;
+        }
+    }
+    private int attackCycle;
+    private void NextAttackCycle()
+    {
+        if (attackCycle + 1 > 2)
+        {
+            attackCycle = 0;
+        }
+        else attackCycle++;
+    }
+    private float GetCurrentAttackRange()
+    {
+        switch (attackCycle)
+        {
+            default:
+            case 0:
+            case 1:
+                return 2;
+            case 2:
+                return 5;
+        }
+    }
+    private Coroutine attack_Coroutine;
+    private IEnumerator PrimaryAttack_Coroutine()
+    {
+        iEnemy.primaryAttackHitbox.EnableHitBox();
+        Damage damage = new Damage(iEnemy.primaryAttackDamage, Damage.DamageType.Blunt, false, iEnemy.transform.position);
+        yield return new WaitForSeconds(0.1f);
+        iEnemy.primaryAttackHitbox.DealDamageToThingsInside(damage);
+        yield return new WaitForSeconds(0.1f);
+        iEnemy.primaryAttackHitbox.DisableHitBox();
+
+        attack_Coroutine = null;
+        StartMovingAwayFromPlayer();
+    }
+    private IEnumerator SecondaryAttack_Coroutine()
+    {
+        float timer = 0;
+        while (timer < 0.125f)
+        {
+            iEnemy.LerpLookAt(iEnemy.lastKnownPlayerPos, 2f);
             timer += Time.fixedDeltaTime;
             yield return new WaitForFixedUpdate();
         }
-        isLookingAtPlayer = true;
-        isMoving = true;
-        iEnemy.navMeshAgent.isStopped = false;
-        yield return new WaitForSeconds(4f);
-        isAttackOnCooldown = false;
+        iEnemy.navMeshAgent.velocity = Vector3.zero;
+        iEnemy.navMeshAgent.enabled = false;
+        Vector3 attackDirection;
+        attackDirection = iEnemy.lastKnownPlayerPos - iEnemy.transform.position;
+        attackDirection.y = 0;
+        attackDirection.Normalize();
+        iEnemy.secondaryAttackHitbox.EnableHitBox();
+        yield return new WaitForSeconds(0.125f);
+
+        iEnemy.rb.AddForce(attackDirection * 30f, ForceMode.VelocityChange);
+        Damage damage = new Damage(iEnemy.secondaryAttackDamage, Damage.DamageType.Blunt, false, iEnemy.transform.position);
+        timer = 0;
+        while (timer < 1f)
+        {
+            iEnemy.secondaryAttackHitbox.DealDamageToThingsInside(damage);
+            timer += Time.fixedDeltaTime;   
+            yield return new WaitForFixedUpdate();
+        }
+        iEnemy.secondaryAttackHitbox.DisableHitBox();
+        iEnemy.navMeshAgent.enabled = true;
+
+        attack_Coroutine = null;
+        StartMovingAwayFromPlayer();
+    }
+
+    private void StartMovingAwayFromPlayer()
+    {
+        movingAwayFromPlayer_Ref = iEnemy.StartCoroutine(MovingAwayFromPlayer_Coroutine());
+    }
+    private Coroutine movingAwayFromPlayer_Ref;
+    private IEnumerator MovingAwayFromPlayer_Coroutine()
+    {
+        float timer=0;
+        float duration=0;
+        switch (attackCycle)
+        {
+            case 0:
+            case 1:
+                duration = iEnemy.primaryAttackCooldown;
+                break;
+            case 2:
+                duration = iEnemy.secondaryAttackCooldown;
+                break;
+        }
+        while (timer<duration)
+        {
+            Move(7.5f);
+            timer += Time.fixedDeltaTime;
+            yield return new WaitForFixedUpdate();
+        }
+        NextAttackCycle();
+        StartMovingToPlayer();
+        StopMovingAwayFromPlayer();
+    }
+    private void StopMovingAwayFromPlayer()
+    {
+        if (movingAwayFromPlayer_Ref != null)
+        {
+            iEnemy.StopCoroutine(movingAwayFromPlayer_Ref);
+            movingAwayFromPlayer_Ref = null;
+        }
     }
     public override void OnEnterState()
     {
-        //iEnemy.navMeshAgent.speed = iEnemy.navMeshAgent.speed * 1.5f;
-        iEnemy.navMeshAgent.stoppingDistance = 0;
         iEnemy.navMeshAgent.isStopped = false;
-        iEnemy.navMeshAgent.updateRotation = false;
+        StartMovingToPlayer();
     }
 
     public override void OnExitState()
     {
-        iEnemy.navMeshAgent.isStopped = true;
-        iEnemy.navMeshAgent.updateRotation = true;
+
     }
 
     public override void OnFixedUpdate()
     {
-        if (isLookingAtPlayer)
-        {
-            Vector3 direction = ArmadilloPlayerController.Instance.transform.position;
-            direction.y = 0;
-            direction -= iEnemy.transform.position;
-            Quaternion lookAtRotation = Quaternion.LookRotation(direction);
-            iEnemy.transform.rotation = Quaternion.Lerp(iEnemy.transform.rotation, lookAtRotation, 6 * Time.fixedDeltaTime);
-        }
+
     }
 }

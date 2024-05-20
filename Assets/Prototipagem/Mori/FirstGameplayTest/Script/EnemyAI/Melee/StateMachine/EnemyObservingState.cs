@@ -24,7 +24,6 @@ public class EnemyObservingState : MeleeEnemyState
     {
         if (iEnemy.CheckForPlayerLOS() > 0)
         {
-            Debug.Log("PlayerInLos");
             iEnemy.lastKnownPlayerPos = ArmadilloPlayerController.Instance.transform.position;
             OnPlayerInLOS();
             iEnemy.IncreaseDetection();
@@ -32,7 +31,6 @@ public class EnemyObservingState : MeleeEnemyState
         else
         {
             OnPlayerOutOfLOS();
-            iEnemy.DecreaseDetection();
         }
     }
 
@@ -42,6 +40,7 @@ public class EnemyObservingState : MeleeEnemyState
     }
     public override void OnEnterState()
     {
+        iEnemy.navMeshAgent.isStopped = false;
         iEnemy.navMeshAgent.ResetPath();
     }
 
@@ -84,6 +83,7 @@ public class EnemyObservingState : MeleeEnemyState
         {
             yield return coroutine;
         }
+        iEnemy.SetDetectionLevel(0);
         iEnemy.ChangeCurrentAIBehaviour(AIBehaviourEnums.AIBehaviour.Roaming);
         lookAround_Ref = null;
     }

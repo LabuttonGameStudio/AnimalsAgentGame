@@ -21,6 +21,7 @@ public class EnemySearchingState : MeleeEnemyState
         if (iEnemy.CheckForPlayerLOS() > 0)
         {
             OnPlayerInLOS();
+            iEnemy.IncreaseDetection();
             iEnemy.lastKnownPlayerPos = ArmadilloPlayerController.Instance.transform.position;
         }
         else
@@ -47,9 +48,8 @@ public class EnemySearchingState : MeleeEnemyState
 
     public override void OnExitState()
     {
-        //iEnemy.navMeshAgent.isStopped = true;
-        // iEnemy.navMeshAgent.updateRotation = true;
-        //iEnemy.navMeshAgent.stoppingDistance = 0;
+        StopLookAround();
+        StopTracking();
     }
 
     public override void OnFixedUpdate()
@@ -64,6 +64,7 @@ public class EnemySearchingState : MeleeEnemyState
     {
         if (currentState != ObservingStates.Tracking)
         {
+            Debug.Log("Searching_InLos");
             currentState = ObservingStates.Tracking;
             StopLookAround();
             tracking_Ref = iEnemy.StartCoroutine(Tracking_Coroutine());
@@ -74,19 +75,30 @@ public class EnemySearchingState : MeleeEnemyState
     {
         if (currentState != ObservingStates.LookingAround)
         {
+            Debug.Log("Searching_OutLos");
             currentState = ObservingStates.LookingAround;
             StopTracking();
             walkAround_Ref = iEnemy.StartCoroutine(WalkAround_Coroutine());
         }
     }
     #region Walk Around
-
+    Vector2 lastRandomPos;
     private bool TryRandomPatrol(Vector3 startPos, Vector2 distance)
     {
-        float randomX = (Random.value * 2) - 1;
-        float randomZ = (Random.value * 2) - 1;
-        Vector2 direction = new Vector3(randomX * distance.x, 0, randomZ * distance.y);
-        if (NavMesh.SamplePosition(startPos + new Vector3(direction.x, 0, direction.y), out NavMeshHit navMeshHit, 1f, NavMesh.AllAreas))
+        float randomX;
+        float randomZ;
+        while (true)
+        {
+            randomX = (Random.value * 2) - 1;
+            randomZ = (Random.value * 2) - 1;
+            if (Vector2.Distance(new Vector2(randomX, randomZ), lastRandomPos) > 0.5f)
+            {
+                lastRandomPos = new Vector2(randomX, randomZ);
+                break;
+            }
+        }
+        Vector2 direction = new Vector2(randomX * distance.x, randomZ * distance.y);
+        if (NavMesh.SamplePosition(startPos + new Vector3(direction.x, 0, direction.y), out NavMeshHit navMeshHit, 5f, NavMesh.AllAreas))
         {
             return iEnemy.TrySetNextDestination(navMeshHit.position);
         }
@@ -96,10 +108,11 @@ public class EnemySearchingState : MeleeEnemyState
     private Coroutine walkAround_Ref;
     private IEnumerator WalkAround_Coroutine()
     {
-        yield return new WaitForSeconds(1);
+        iEnemy.navMeshAgent.ResetPath();
+        yield return new WaitForSeconds(1f);
         Vector3 startPos = iEnemy.lastKnownPlayerPos;
 
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i <= 3; i++)
         {
             while (true)
             {
@@ -120,16 +133,20 @@ public class EnemySearchingState : MeleeEnemyState
             while (true)
             {
                 Vector3 movingDirection = iEnemy.navMeshAgent.velocity + iEnemy.transform.position;
-                iEnemy.LerpLookAt(movingDirection, 2f);
+                iEnemy.LerpLookAt(movingDirection, 1f);
                 if (iEnemy.CheckForProximityOfPoint())
                 {
                     break;
                 }
                 yield return null;
             }
+            Debug.Log("Finish Search" + i);
             yield return new WaitForSeconds(1);
         }
+        yield return new WaitForSeconds(1);
         walkAround_Ref = null;
+        iEnemy.SetDetectionLevel(0);
+        iEnemy.ChangeCurrentAIBehaviour(AIBehaviourEnums.AIBehaviour.Roaming);
     }
     private void StopLookAround()
     {
@@ -150,6 +167,10 @@ public class EnemySearchingState : MeleeEnemyState
         {
             Vector3 position = iEnemy.lastKnownPlayerPos;
             iEnemy.LerpLookAt(position, 5);
+            Vector3 playerDirection = iEnemy.transform.position - position;
+            playerDirection.y = 0;
+            position = position + (playerDirection.normalized * 3f);
+            iEnemy.TrySetNextDestination(position);
             yield return new WaitForFixedUpdate();
         }
     }

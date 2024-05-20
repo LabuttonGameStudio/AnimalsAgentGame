@@ -22,9 +22,19 @@ public class EnemyMelee : IEnemy, IDamageable
     #endregion
 
     [Header("Combat")]
+    [Header("Primary Attack")]
     [SerializeField]
     public float primaryAttackDamage;
-    
+    public EnemyMeleeAttackHitBox primaryAttackHitbox;
+    public float primaryAttackCooldown;
+    [Header("Secondary Attack")]
+    [SerializeField]
+    public float secondaryAttackDamage;
+    public EnemyMeleeAttackHitBox secondaryAttackHitbox;
+    public float secondaryAttackCooldown;
+
+
+
     protected override void OnAwake()
     {
         enemyRoamingState = new EnemyRoamingState(this);
@@ -36,7 +46,8 @@ public class EnemyMelee : IEnemy, IDamageable
     }
     protected override void OnStart()
     {
-
+        primaryAttackHitbox.aiController = this;
+        secondaryAttackHitbox.aiController = this;
     }
     protected override void OnFixedUpdate()
     {
@@ -50,22 +61,42 @@ public class EnemyMelee : IEnemy, IDamageable
     {
         currentEnemyState.OnActionUpdate();
     }
-    public void TakeDamage(int damageAmount)
+    public void TakeDamage(Damage damage)
     {
-        currentHp -= damageAmount;
-        Debug.Log("HP=" + currentHp + "| Damage taken=" + damageAmount);
+        currentHp -= damage.damageAmount;
+        Debug.Log("HP=" + currentHp + "| Damage taken=" + damage.damageAmount);
         if (currentHp <= 0)
         {
             isDead = true;
             gameObject.SetActive(false);
+            return;
+        }
+        OnDamageTaken(damage);
+    }
+    private void OnDamageTaken(Damage damage)
+    {
+        if (currentAIBehaviour != AIBehaviour.Attacking)
+        {
+            if (onDamageTaken_Ref == null)
+            {
+                onDamageTaken_Ref = StartCoroutine(OnDamageTaken_Coroutine(damage));
+            }
         }
     }
-
+    private Coroutine onDamageTaken_Ref;
+    private IEnumerator OnDamageTaken_Coroutine(Damage damage)
+    {
+        yield return new WaitForSeconds(1f);
+        LookAt(damage.originPoint);
+        lastKnownPlayerPos = damage.originPoint;
+        ChangeCurrentAIBehaviour(AIBehaviour.Searching);
+        SetDetectionLevel(searchingStateBreakPoint);
+    }
     protected override void OnRoamingPathEnd()
     {
-        //A fazer se for um inimigo sem loop fazer ele parar
-
-        //ChangeCurrentAIBehaviour(AIBehaviour.Observing);
+        isStatic = true;
+        currentEnemyState.OnEnterState();
+        navMeshAgent.isStopped = true;
     }
 
     public void ChangeCurrentAIBehaviour(AIBehaviour nextAIBehaviour)
@@ -94,6 +125,11 @@ public class EnemyMelee : IEnemy, IDamageable
                 break;
         }
         currentAIBehaviour = nextAIBehaviour;
+    }
+
+    public void SetDetectionLevel(float detectionLevel)
+    {
+        this.detectionLevel = detectionLevel;
     }
 
     public void IncreaseDetection()

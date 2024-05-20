@@ -30,7 +30,7 @@ public abstract class IEnemy : MonoBehaviour
     [HideInInspector] public NavMeshAgent navMeshAgent;
 
     [Header("Path Finding | Navmesh")]
-    [SerializeField, Tooltip("Static = O inimigo não se move")] protected bool isStatic;
+    [SerializeField, Tooltip("Static = O inimigo não se move")] public bool isStatic;
     protected enum PathLoopTypes
     {
         DontLoop,
@@ -60,8 +60,8 @@ public abstract class IEnemy : MonoBehaviour
     #region EnemyStats Variables
     //HP Control
     [Header("HP")]
-    [SerializeField] protected int currentHp = 50;
-    [SerializeField] protected int maxHp = 50;
+    [SerializeField] protected float currentHp = 50;
+    [SerializeField] protected float maxHp = 50;
 
     //Damage Reduction(DR)
     protected float currentDamageReduction;
@@ -596,7 +596,13 @@ public abstract class IEnemy : MonoBehaviour
             }
         }
     }
-
+    public void LookAt(Vector3 position)
+    {
+        Vector3 direction = position - transform.position;
+        direction.y = 0;
+        Quaternion lookAtRotation = Quaternion.LookRotation(direction);
+        transform.rotation = lookAtRotation;
+    }
     /// <summary>
     /// Faz lerping em fixed update de olhar na direcao
     /// </summary>

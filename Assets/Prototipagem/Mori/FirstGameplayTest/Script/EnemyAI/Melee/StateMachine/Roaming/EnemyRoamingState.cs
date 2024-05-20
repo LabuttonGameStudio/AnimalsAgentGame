@@ -38,8 +38,15 @@ public class EnemyRoamingState : MeleeEnemyState
 
     public override void OnEnterState()
     {
-        ToggleMovement(true);
-        iEnemy.TrySetNextDestination(iEnemy.aiPathList[iEnemy.currentPathPoint].transformOfPathPoint.position);
+        if (!iEnemy.isStatic)
+        {
+            ToggleMovement(true);
+            iEnemy.TrySetNextDestination(iEnemy.aiPathList[iEnemy.currentPathPoint].transformOfPathPoint.position);
+        }
+        else
+        {
+            ToggleMovement(false);
+        }
     }
 
     public override void OnExitState()
@@ -51,7 +58,7 @@ public class EnemyRoamingState : MeleeEnemyState
     {
         Debug.Log(currentStateEnum);
         currentSubState.OnFixedUpdate(this);
-        
+
     }
     public void ToggleMovement(bool state)
     {
