@@ -33,17 +33,12 @@ public class EnemySearchingState : MeleeEnemyState
 
     public override void OnActionUpdate()
     {
-        //iEnemy.SetNextDestinationOfNavmesh(iEnemy.lastKnownPlayerPos);
-        //iEnemy.transform.LookAt(new Vector3(iEnemy.lastKnownPlayerPos.x, iEnemy.transform.position.y, iEnemy.lastKnownPlayerPos.z));
+
     }
     public override void OnEnterState()
     {
         iEnemy.ToggleAlert(true);
         iEnemy.navMeshAgent.isStopped = false;
-        //iEnemy.navMeshAgent.isStopped = false;
-        //iEnemy.navMeshAgent.updateRotation = false;
-        //iEnemy.SetNextDestinationOfNavmesh(iEnemy.lastKnownPlayerPos);
-        //iEnemy.navMeshAgent.stoppingDistance = 10;
     }
 
     public override void OnExitState()
@@ -54,17 +49,11 @@ public class EnemySearchingState : MeleeEnemyState
 
     public override void OnFixedUpdate()
     {
-        //Vector3 direction = iEnemy.lastKnownPlayerPos;
-        //direction.y = 0;
-        //direction -= iEnemy.transform.position;
-        //Quaternion lookAtRotation = Quaternion.LookRotation(direction);
-        //iEnemy.transform.rotation = Quaternion.Lerp(iEnemy.transform.rotation, lookAtRotation, 4 * Time.fixedDeltaTime);
     }
     private void OnPlayerInLOS()
     {
         if (currentState != ObservingStates.Tracking)
         {
-            Debug.Log("Searching_InLos");
             currentState = ObservingStates.Tracking;
             StopLookAround();
             tracking_Ref = iEnemy.StartCoroutine(Tracking_Coroutine());
@@ -75,7 +64,6 @@ public class EnemySearchingState : MeleeEnemyState
     {
         if (currentState != ObservingStates.LookingAround)
         {
-            Debug.Log("Searching_OutLos");
             currentState = ObservingStates.LookingAround;
             StopTracking();
             walkAround_Ref = iEnemy.StartCoroutine(WalkAround_Coroutine());
@@ -130,6 +118,7 @@ public class EnemySearchingState : MeleeEnemyState
                 }
                 yield return null;
             }
+            iEnemy.animator.SetBool("isWalking", true);
             while (true)
             {
                 Vector3 movingDirection = iEnemy.navMeshAgent.velocity + iEnemy.transform.position;
@@ -140,6 +129,7 @@ public class EnemySearchingState : MeleeEnemyState
                 }
                 yield return null;
             }
+            iEnemy.animator.SetBool("isWalking", false);
             Debug.Log("Finish Search" + i);
             yield return new WaitForSeconds(1);
         }
@@ -171,6 +161,7 @@ public class EnemySearchingState : MeleeEnemyState
             playerDirection.y = 0;
             position = position + (playerDirection.normalized * 3f);
             iEnemy.TrySetNextDestination(position);
+            iEnemy.animator.SetBool("isWalking", !iEnemy.CheckForProximityOfPoint());
             yield return new WaitForFixedUpdate();
         }
     }

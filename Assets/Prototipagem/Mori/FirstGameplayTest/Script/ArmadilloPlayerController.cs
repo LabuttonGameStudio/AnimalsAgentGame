@@ -202,7 +202,7 @@ public class ArmadilloPlayerController : MonoBehaviour
         weaponControl.ChangeWeapon(-1);
         cameraControl.ChangeCameraState(cameraControl.thirdPersonCameraState);
         visualControl.OnEnterBallMode();
-
+        sonarCamera.cullingMask = cameraControl.thirdPersonSeeThroughMask;
         //Muda o visual do personagem, futuramente so colocar a opcao de mudar a animacao do model
         //Retira a funcao do input de transformar em bola e altera a state machine pra interpretar como o modo bola
         inputControl.inputAction.Armadillo.Ability1.performed -= ChangeToBallForm;
@@ -264,6 +264,7 @@ public class ArmadilloPlayerController : MonoBehaviour
 
         //Espera 0.25 segundos para deixar o objeto cair ate encostar no chao e evitar spam de transformacao 
         yield return new WaitForSeconds(0.25f);
+        sonarCamera.cullingMask = cameraControl.firstPeronSeeThroughMask;
         visualControl.OnEnterDefaultMode();
         weaponControl.ChangeWeapon(currentEquipedWeapon);
         inputControl.inputAction.Armadillo.Ability1.performed += ChangeToBallForm;

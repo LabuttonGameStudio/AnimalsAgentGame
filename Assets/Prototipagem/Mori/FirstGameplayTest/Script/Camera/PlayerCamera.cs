@@ -16,8 +16,11 @@ public class PlayerCamera : MonoBehaviour
     public Transform cameraFollowPoint;
     [Space]
     [Header("Culling Mask")]
-    [SerializeField]private LayerMask firstPersonMask;
-    [SerializeField]private LayerMask thirdPersonMask;
+    [SerializeField] private LayerMask firstPersonMask;
+    [SerializeField] private LayerMask thirdPersonMask;
+    [Space]
+    [SerializeField] public LayerMask firstPeronSeeThroughMask;
+    [SerializeField] public LayerMask thirdPersonSeeThroughMask;
     [Space]
     [HideInInspector] public float xRotation, yRotation;
 
@@ -30,6 +33,7 @@ public class PlayerCamera : MonoBehaviour
     [Space, Header("Cinemachine")]
     public CinemachineVirtualCamera thirdPersonCinemachine;
     public CinemachineVirtualCamera firstPersonCinemachine;
+
 
     public void ChangeCameraState(CameraBaseState nextState)
     {

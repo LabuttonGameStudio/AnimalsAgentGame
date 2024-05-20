@@ -23,7 +23,7 @@ public class ArmadilloDefaultState : MovementState
 
     public override void UpdateState()
     {
-
+        movementCtrl.rb.useGravity = !movementCtrl.isOnSlope;
     }
     public override void ExitState()
     {

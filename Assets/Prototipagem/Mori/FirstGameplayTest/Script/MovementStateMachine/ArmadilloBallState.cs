@@ -26,6 +26,7 @@ public class ArmadilloBallState : MovementState
 
     public override void UpdateState()
     {
+        movementCtrl.rb.useGravity = !movementCtrl.isOnSlope;
         SpeedControl();
     }
     public override void ExitState()

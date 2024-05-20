@@ -62,6 +62,7 @@ public class EnemyRoamingState : MeleeEnemyState
     }
     public void ToggleMovement(bool state)
     {
+        iEnemy.animator.SetBool("isWalking", true);
         currentSubState = state ? movingSubState : stoppedSubState;
         currentStateEnum = state ? RoamingStates.Moving : RoamingStates.Stopped;
     }

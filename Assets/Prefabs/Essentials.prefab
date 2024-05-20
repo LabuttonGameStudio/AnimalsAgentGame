@@ -6009,7 +6009,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 257
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: -876546973899608171, guid: 9d2cf395bd4f6ff4c853e2956b737fe5, type: 3}
+  - {fileID: 2100000, guid: 9e655d8b64e68fa49ae8efe94b9a6aa1, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -6276,7 +6276,7 @@ Camera:
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 1856
+    m_Bits: 10048
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -12491,7 +12491,7 @@ MeshRenderer:
   m_RenderingLayerMask: 257
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: -6478536213147159724, guid: abde1752ff5391844aae7233caac5536, type: 3}
+  - {fileID: 2100000, guid: 742706930109e784e9513ba91673adb2, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -13832,7 +13832,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 257
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: -876546973899608171, guid: f64a02df2a11cdb45a31bf4109ea131e, type: 3}
+  - {fileID: 2100000, guid: 9e655d8b64e68fa49ae8efe94b9a6aa1, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -14773,6 +14773,12 @@ MonoBehaviour:
   thirdPersonMask:
     serializedVersion: 2
     m_Bits: 6015
+  firstPeronSeeThroughMask:
+    serializedVersion: 2
+    m_Bits: 10048
+  thirdPersonSeeThroughMask:
+    serializedVersion: 2
+    m_Bits: 14144
   xRotation: 0
   yRotation: 0
   thirdPersonCinemachine: {fileID: 4255132301383909723}

@@ -20,16 +20,6 @@ public class EnemyAttackingState : MeleeEnemyState
     public override void OnActionUpdate()
     {
         iEnemy.lastKnownPlayerPos = ArmadilloPlayerController.Instance.transform.position;
-        //if (!isAttackOnCooldown)
-        //{
-        //    distanceFromPlayer = GetCurrentAttackRange();
-        //    Move();
-        //}
-        //else
-        //{
-        //    distanceFromPlayer = 7.5f;
-        //    Move();
-        //}
     }
     private float GetDistanceFromPlayer()
     {
@@ -46,6 +36,7 @@ public class EnemyAttackingState : MeleeEnemyState
     {
         while (true)
         {
+            iEnemy.animator.SetBool("isWalking", true);
             Move(desiredDistanceFromPlayer);
             if (GetDistanceFromPlayer() < desiredDistanceFromPlayer+0.25f)
             {
@@ -60,6 +51,7 @@ public class EnemyAttackingState : MeleeEnemyState
     {
         if (movingToPlayer_Ref != null)
         {
+            iEnemy.animator.SetBool("isWalking", false);
             iEnemy.StopCoroutine(movingToPlayer_Ref);
             movingToPlayer_Ref = null;
         }
@@ -122,11 +114,12 @@ public class EnemyAttackingState : MeleeEnemyState
     private Coroutine attack_Coroutine;
     private IEnumerator PrimaryAttack_Coroutine()
     {
+        iEnemy.animator.SetTrigger("lightPunch");
         iEnemy.primaryAttackHitbox.EnableHitBox();
         Damage damage = new Damage(iEnemy.primaryAttackDamage, Damage.DamageType.Blunt, false, iEnemy.transform.position);
-        yield return new WaitForSeconds(0.1f);
+        yield return new WaitForSeconds(0.4f);
         iEnemy.primaryAttackHitbox.DealDamageToThingsInside(damage);
-        yield return new WaitForSeconds(0.1f);
+        yield return new WaitForSeconds(0.5f);
         iEnemy.primaryAttackHitbox.DisableHitBox();
 
         attack_Coroutine = null;
@@ -135,7 +128,8 @@ public class EnemyAttackingState : MeleeEnemyState
     private IEnumerator SecondaryAttack_Coroutine()
     {
         float timer = 0;
-        while (timer < 0.125f)
+        iEnemy.animator.SetTrigger("strongPunch");
+        while (timer < 0.875f)
         {
             iEnemy.LerpLookAt(iEnemy.lastKnownPlayerPos, 2f);
             timer += Time.fixedDeltaTime;
@@ -188,6 +182,7 @@ public class EnemyAttackingState : MeleeEnemyState
         while (timer<duration)
         {
             Move(7.5f);
+            iEnemy.animator.SetBool("isWalking", !iEnemy.CheckForProximityOfPoint());
             timer += Time.fixedDeltaTime;
             yield return new WaitForFixedUpdate();
         }
@@ -199,6 +194,7 @@ public class EnemyAttackingState : MeleeEnemyState
     {
         if (movingAwayFromPlayer_Ref != null)
         {
+            iEnemy.animator.SetBool("isWalking", false);
             iEnemy.StopCoroutine(movingAwayFromPlayer_Ref);
             movingAwayFromPlayer_Ref = null;
         }

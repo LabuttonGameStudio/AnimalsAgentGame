@@ -78,6 +78,7 @@ public class EnemyObservingState : MeleeEnemyState
     private Coroutine lookAround_Ref;
     private IEnumerator LookAround_Coroutine()
     {
+        iEnemy.animator.SetBool("isWalking", false);
         yield return new WaitForSeconds(1);
         if (iEnemy.TryStartRandomLookAround(5, out Coroutine coroutine))
         {
@@ -102,6 +103,7 @@ public class EnemyObservingState : MeleeEnemyState
     private Coroutine tracking_Ref;
     private IEnumerator Tracking_Coroutine()
     {
+        iEnemy.animator.SetBool("isWalking", false);
         while (true)
         {
             Vector3 position = iEnemy.lastKnownPlayerPos;

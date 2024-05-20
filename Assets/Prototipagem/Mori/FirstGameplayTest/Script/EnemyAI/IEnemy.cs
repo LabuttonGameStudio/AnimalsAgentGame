@@ -75,6 +75,8 @@ public abstract class IEnemy : MonoBehaviour
 
     #region EnemyComponents
     [HideInInspector] public Rigidbody rb;
+    [Header("Components")]
+    public Animator animator;
     #endregion
 
     #region Visibility Variables
@@ -84,6 +86,7 @@ public abstract class IEnemy : MonoBehaviour
     //Ultima posicao conhecida do jogador
     [HideInInspector] public Vector3 lastKnownPlayerPos;
 
+    [Header("Visibility Variables")]
     //Material do cone de visibilidade 
     [SerializeField] protected Material visibilityConeMaterial;
     [SerializeField] protected Material visibilityConeOnViewMaterial;
@@ -529,18 +532,24 @@ public abstract class IEnemy : MonoBehaviour
         yield return new WaitForSeconds(durationPerAction);
 
         //Look Side 0
+        animator.SetBool("isWalking", true);
         lerpRotate_Ref = StartCoroutine(LerpRotate_Coroutine(-45 * randomDirection, durationPerAction));
         yield return lerpRotate_Ref;
+        animator.SetBool("isWalking", false);
         yield return new WaitForSeconds(durationPerAction);
 
         //Look Side 1
+        animator.SetBool("isWalking", true);
         lerpRotate_Ref = StartCoroutine(LerpRotate_Coroutine(90 * randomDirection, 2 * durationPerAction));
         yield return lerpRotate_Ref;
+        animator.SetBool("isWalking", false);
         yield return new WaitForSeconds(durationPerAction);
 
         //Return to center
+        animator.SetBool("isWalking", true);
         lerpRotate_Ref = StartCoroutine(LerpRotate_Coroutine(-45 * randomDirection, durationPerAction));
         yield return lerpRotate_Ref;
+        animator.SetBool("isWalking", false);
         yield return new WaitForSeconds(durationPerAction);
 
         navMeshAgent.isStopped = false;
@@ -558,22 +567,27 @@ public abstract class IEnemy : MonoBehaviour
         yield return new WaitForSeconds(durationPerAction);
 
         //Look Side 0
+        animator.SetBool("isWalking", true);
         lerpRotate_Ref = StartCoroutine(LerpRotate_Coroutine(-90 * randomDirection, durationPerAction));
         yield return lerpRotate_Ref;
+        animator.SetBool("isWalking", false);
         yield return new WaitForSeconds(durationPerAction);
 
         //Look Side 1
+        animator.SetBool("isWalking", true);
         lerpRotate_Ref = StartCoroutine(LerpRotate_Coroutine(90 * randomDirection,durationPerAction));
         yield return lerpRotate_Ref;
 
         lerpRotate_Ref = StartCoroutine(LerpRotate_Coroutine(90 * randomDirection,durationPerAction));
         yield return lerpRotate_Ref;
-
+        animator.SetBool("isWalking", false);
         yield return new WaitForSeconds(durationPerAction);
 
         //Return to center
+        animator.SetBool("isWalking", true);
         lerpRotate_Ref = StartCoroutine(LerpRotate_Coroutine(-90 * randomDirection, durationPerAction));
         yield return lerpRotate_Ref;
+        animator.SetBool("isWalking", false);
         yield return new WaitForSeconds(durationPerAction);
 
         navMeshAgent.isStopped = false;

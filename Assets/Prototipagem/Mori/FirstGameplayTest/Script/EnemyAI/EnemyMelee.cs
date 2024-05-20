@@ -33,8 +33,6 @@ public class EnemyMelee : IEnemy, IDamageable
     public EnemyMeleeAttackHitBox secondaryAttackHitbox;
     public float secondaryAttackCooldown;
 
-
-
     protected override void OnAwake()
     {
         enemyRoamingState = new EnemyRoamingState(this);
