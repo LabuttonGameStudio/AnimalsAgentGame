@@ -106,7 +106,7 @@ public class ArmadilloVisualControl : MonoBehaviour
         {
             velocity = ArmadilloPlayerController.Instance.movementControl.rb.velocity;
             velocity.y = Mathf.Max(0, velocity.y * 1.5f);
-            ballTransform.Rotate(-1 * velocity.magnitude * ballRollVelocity / 100, 0, 0);
+            ballTransform.Rotate(Time.deltaTime*-1 * velocity.magnitude * ballRollVelocity, 0, 0);
             yield return null;
         }
     }
