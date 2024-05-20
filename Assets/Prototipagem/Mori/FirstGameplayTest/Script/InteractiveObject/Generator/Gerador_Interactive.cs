@@ -4,29 +4,49 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
 
-public class Gerador_Interactive : MonoBehaviour, InteractiveObject
+public class Gerador_Interactive : MonoBehaviour, IRequirements, InteractiveObject, INeedRequirements
 {
-    [SerializeField] private Antena_Damageable[] requirements;
-    [HideInInspector] public bool isEnabled;
+    public bool isTurnedOn { get; set; }
+
+    [SerializeField] private GameObject[] _requirements;
+    public IRequirements[] requirements { get; set; }
+    public INeedRequirements connectedObject { get; set; }
+
     [HideInInspector] public bool charged;
+    [SerializeField] private UnityEvent consequences;
+
+    [Header("Mesh")]
     [SerializeField] private MeshRenderer bodyMeshRenderer;
     [SerializeField] private Transform leverTransform;
-    [SerializeField] private UnityEvent consequences;
-    private Grade_Interactive connetectedGate;
+
+
     void Awake()
     {
         bodyMeshRenderer.material = new Material(bodyMeshRenderer.material);
     }
     private void Start()
     {
-        foreach (Antena_Damageable antena in requirements)
+        requirements = new IRequirements[_requirements.Length];
+        for (int i = 0; i < _requirements.Length; i++)
         {
-            antena.DefineConnectedGenerator(this);
+            GameObject go = _requirements[i];
+            if (go.TryGetComponent(out IRequirements requirement))
+            {
+                requirements[i] = requirement;
+            }
+            else
+            {
+                Debug.LogError("Erro ao conectar ao " + go.name + ", cheque se ele possui os scripts: Antena ou Gerador");
+            }
+        }
+        foreach (IRequirements requirement in requirements)
+        {
+            requirement.DefineConnectedObject(this);
         }
     }
     public string GetObjectDescription()
     {
-        if (isEnabled) return "";
+        if (isTurnedOn) return "";
         else return charged ? "ligar" : "";
     }
 
@@ -34,39 +54,26 @@ public class Gerador_Interactive : MonoBehaviour, InteractiveObject
     {
         return charged ? "Gerador" : "Gerador inativo";
     }
-
-    public void OnRequirementChange()
+    public void OnRequirementMet()
     {
-        bool charged = true;
-        foreach (Antena_Damageable antena in requirements)
-        {
-            if (!antena.charged)
-            {
-                charged = false;
-                break;
-            }
-        }
-        if (charged)
-        {
-            this.charged = charged;
-            ArmadilloPlayerController.Instance.interactControl.UpdateInteractionHUD();
-        }
+        charged = true;
+        ArmadilloPlayerController.Instance.interactControl.UpdateInteractionHUD();
     }
     public void Interact(InputAction.CallbackContext value)
     {
         if (requirements != null && requirements.Length > 0)
         {
-            if (charged && !isEnabled)
+            if (charged && !isTurnedOn)
             {
-                isEnabled = true;
+                isTurnedOn = true;
                 StartCoroutine(LeverSwitchAnimation_Coroutine());
             }
         }
         else
         {
-            if (!isEnabled)
+            if (!isTurnedOn)
             {
-                isEnabled = true;
+                isTurnedOn = true;
                 StartCoroutine(LeverSwitchAnimation_Coroutine());
             }
         }
@@ -77,7 +84,7 @@ public class Gerador_Interactive : MonoBehaviour, InteractiveObject
         Quaternion finalLeverRotation = Quaternion.Euler(175, leverTransform.localRotation.eulerAngles.y, leverTransform.localRotation.eulerAngles.z);
 
         float timer = 0;
-        float duration = 0.25f;
+        float duration = 0.35f;
         while (timer < duration)
         {
             leverTransform.localRotation = Quaternion.Slerp(startLeverRotation, finalLeverRotation, timer / duration);
@@ -87,13 +94,9 @@ public class Gerador_Interactive : MonoBehaviour, InteractiveObject
         bodyMeshRenderer.sharedMaterial.SetInt("_Light_on_off", 1);
         leverTransform.localRotation = finalLeverRotation;
         consequences.Invoke();
-        if(connetectedGate != null)
+        if (connectedObject != null)
         {
-            connetectedGate.OnRequirementChange();
+            connectedObject.OnRequirementChange();
         }
-    }
-    public void DefineConnectedGate(Grade_Interactive gate)
-    {
-        connetectedGate = gate;
     }
 }

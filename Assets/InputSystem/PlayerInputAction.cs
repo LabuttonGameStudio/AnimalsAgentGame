@@ -125,6 +125,15 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Debug_Reset"",
+                    ""type"": ""Button"",
+                    ""id"": ""9cec7742-1366-4e59-b85c-18b46c10fc0d"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -292,6 +301,17 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
                     ""action"": ""Ability2"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""415bbaec-a4c9-4e57-9eed-10d63c5501ef"",
+                    ""path"": ""<Keyboard>/p"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Debug_Reset"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -311,6 +331,7 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
         m_Armadillo_Ability2 = m_Armadillo.FindAction("Ability2", throwIfNotFound: true);
         m_Armadillo_Sprint = m_Armadillo.FindAction("Sprint", throwIfNotFound: true);
         m_Armadillo_Lurk = m_Armadillo.FindAction("Lurk", throwIfNotFound: true);
+        m_Armadillo_Debug_Reset = m_Armadillo.FindAction("Debug_Reset", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -383,6 +404,7 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
     private readonly InputAction m_Armadillo_Ability2;
     private readonly InputAction m_Armadillo_Sprint;
     private readonly InputAction m_Armadillo_Lurk;
+    private readonly InputAction m_Armadillo_Debug_Reset;
     public struct ArmadilloActions
     {
         private @PlayerInputAction m_Wrapper;
@@ -398,6 +420,7 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
         public InputAction @Ability2 => m_Wrapper.m_Armadillo_Ability2;
         public InputAction @Sprint => m_Wrapper.m_Armadillo_Sprint;
         public InputAction @Lurk => m_Wrapper.m_Armadillo_Lurk;
+        public InputAction @Debug_Reset => m_Wrapper.m_Armadillo_Debug_Reset;
         public InputActionMap Get() { return m_Wrapper.m_Armadillo; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -440,6 +463,9 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
             @Lurk.started += instance.OnLurk;
             @Lurk.performed += instance.OnLurk;
             @Lurk.canceled += instance.OnLurk;
+            @Debug_Reset.started += instance.OnDebug_Reset;
+            @Debug_Reset.performed += instance.OnDebug_Reset;
+            @Debug_Reset.canceled += instance.OnDebug_Reset;
         }
 
         private void UnregisterCallbacks(IArmadilloActions instance)
@@ -477,6 +503,9 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
             @Lurk.started -= instance.OnLurk;
             @Lurk.performed -= instance.OnLurk;
             @Lurk.canceled -= instance.OnLurk;
+            @Debug_Reset.started -= instance.OnDebug_Reset;
+            @Debug_Reset.performed -= instance.OnDebug_Reset;
+            @Debug_Reset.canceled -= instance.OnDebug_Reset;
         }
 
         public void RemoveCallbacks(IArmadilloActions instance)
@@ -507,5 +536,6 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
         void OnAbility2(InputAction.CallbackContext context);
         void OnSprint(InputAction.CallbackContext context);
         void OnLurk(InputAction.CallbackContext context);
+        void OnDebug_Reset(InputAction.CallbackContext context);
     }
 }

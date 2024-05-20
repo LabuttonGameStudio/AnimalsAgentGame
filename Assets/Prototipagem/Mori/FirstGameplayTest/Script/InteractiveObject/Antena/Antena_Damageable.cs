@@ -3,19 +3,23 @@ using System.Collections.Generic;
 using UnityEngine;
 using static Damage;
 
-public class Antena_Damageable : MonoBehaviour, IDamageable
+public class Antena_Damageable :MonoBehaviour,IRequirements, IDamageable
 {
-    [SerializeField] public bool charged;
+    public bool isTurnedOn { get;  set; }
+    public INeedRequirements connectedObject { get; set; }
+
     [SerializeField] public MeshRenderer[] meshRenderers;
-    private Gerador_Interactive connectedGenerator;
+
     public void TakeDamage(Damage damage)
     {
-        if (!charged)
+        if (!isTurnedOn)
         {
-            if(damage.damageType == DamageType.Eletric)
-            charged = true;
-            meshRenderers[0].sharedMaterial.SetInt("_Light_on_off", 1);
-            if (connectedGenerator != null) connectedGenerator.OnRequirementChange();
+            if (damage.damageType == DamageType.Eletric)
+            {
+                isTurnedOn = true;
+                meshRenderers[0].sharedMaterial.SetInt("_Light_on_off", 1);
+                if (connectedObject != null) connectedObject.OnRequirementChange();
+            }
         }
     }
 
@@ -24,9 +28,5 @@ public class Antena_Damageable : MonoBehaviour, IDamageable
         Material material = new Material(meshRenderers[0].material);
         meshRenderers[0].sharedMaterial = material;
         meshRenderers[1].sharedMaterial = material;
-    }
-    public void DefineConnectedGenerator(Gerador_Interactive generator)
-    {
-        connectedGenerator = generator;
     }
 }
