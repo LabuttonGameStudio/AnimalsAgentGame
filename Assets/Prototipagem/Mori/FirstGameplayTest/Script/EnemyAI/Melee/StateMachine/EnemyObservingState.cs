@@ -1,27 +1,36 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.AI;
 using static IEnemy;
 
 public class EnemyObservingState : MeleeEnemyState
 {
+    private enum ObservingStates
+    {
+        Null,
+        Tracking,
+        LookingAround
+    }
+    private ObservingStates currentState;
     public EnemyObservingState(EnemyMelee enemyCtrl) : base(enemyCtrl)
     {
-        enemyControl = enemyCtrl;
+        iEnemy = enemyCtrl;
     }
 
     public override void OnVisibilityUpdate()
     {
-        GameObject playerGO = ArmadilloPlayerController.Instance.gameObject;
-        if (enemyControl.CheckForLOS(playerGO))
+        if (iEnemy.CheckForPlayerLOS() > 0)
         {
-            enemyControl.IncreaseDetection();
-            enemyControl.lastKnownPlayerPos = playerGO.transform.position;
+            iEnemy.lastKnownPlayerPos = ArmadilloPlayerController.Instance.transform.position;
+            OnPlayerInLOS();
+            iEnemy.IncreaseDetection();
         }
         else
         {
-            enemyControl.DecreaseDetection();
+            OnPlayerOutOfLOS();
         }
     }
 
@@ -31,22 +40,82 @@ public class EnemyObservingState : MeleeEnemyState
     }
     public override void OnEnterState()
     {
-        enemyControl.navMeshAgent.isStopped = true;
-        enemyControl.navMeshAgent.updateRotation = false;
+        iEnemy.navMeshAgent.isStopped = false;
+        iEnemy.navMeshAgent.ResetPath();
     }
 
     public override void OnExitState()
     {
-        enemyControl.navMeshAgent.isStopped = false;
-        enemyControl.navMeshAgent.updateRotation = true;
+        StopLookAround();
+        StopTracking();
+        
     }
 
     public override void OnFixedUpdate()
     {
-        Vector3 direction = enemyControl.lastKnownPlayerPos;
-        direction.y = 0;
-        direction -= enemyControl.transform.position;
-        Quaternion lookAtRotation = Quaternion.LookRotation(direction);
-        enemyControl.transform.rotation = Quaternion.Lerp(enemyControl.transform.rotation, lookAtRotation, 3 * Time.fixedDeltaTime);
+
     }
+    private void OnPlayerInLOS()
+    {
+        if (currentState != ObservingStates.Tracking)
+        {
+            currentState = ObservingStates.Tracking;
+            StopLookAround();
+            tracking_Ref = iEnemy.StartCoroutine(Tracking_Coroutine());
+        }
+    }
+
+    private void OnPlayerOutOfLOS()
+    {
+        if (currentState != ObservingStates.LookingAround)
+        {
+            currentState = ObservingStates.LookingAround;
+            StopTracking();
+            lookAround_Ref = iEnemy.StartCoroutine(LookAround_Coroutine());
+        }
+    }
+    #region Look Around
+    private Coroutine lookAround_Ref;
+    private IEnumerator LookAround_Coroutine()
+    {
+        yield return new WaitForSeconds(1);
+        if (iEnemy.TryStartRandomLookAround(5, out Coroutine coroutine))
+        {
+            yield return coroutine;
+        }
+        iEnemy.SetDetectionLevel(0);
+        iEnemy.ChangeCurrentAIBehaviour(AIBehaviourEnums.AIBehaviour.Roaming);
+        lookAround_Ref = null;
+    }
+    private void StopLookAround()
+    {
+        iEnemy.StopLookAround();
+        if(lookAround_Ref != null)
+        {
+            iEnemy.StopCoroutine(lookAround_Ref);
+            lookAround_Ref = null;
+        }
+    }
+    #endregion
+
+    #region Tracking
+    private Coroutine tracking_Ref;
+    private IEnumerator Tracking_Coroutine()
+    {
+        while (true)
+        {
+            Vector3 position = iEnemy.lastKnownPlayerPos;
+            iEnemy.LerpLookAt(position, 5);
+            yield return new WaitForFixedUpdate();
+        }
+    }
+    private void StopTracking()
+    {
+        if (tracking_Ref != null)
+        {
+            iEnemy.StopCoroutine(tracking_Ref);
+            tracking_Ref = null;
+        }
+    }
+    #endregion
 }

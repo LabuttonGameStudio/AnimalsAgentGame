@@ -120,7 +120,8 @@ public class EletricPistol : Weapon
             Debug.Log(raycastHit.transform.name);
             if (raycastHit.transform.TryGetComponent(out IDamageable idamageable))
             {
-                idamageable.TakeDamage(unchargedHitDamage);
+                Damage damage = new Damage(unchargedHitDamage, Damage.DamageType.Eletric, true, weaponControl.transform.position);
+                idamageable.TakeDamage(damage);
                 break;
             }
         }
@@ -138,7 +139,8 @@ public class EletricPistol : Weapon
             Debug.Log(raycastHit.transform.name);
             if (raycastHit.transform.TryGetComponent(out IDamageable idamageable))
             {
-                idamageable.TakeDamage(chargedHitDamage);
+                Damage damage = new Damage(chargedHitDamage, Damage.DamageType.Eletric, true, weaponControl.transform.position);
+                idamageable.TakeDamage(damage);
             }
         }
         OnOverheatCharge(chargedOverheatCharge);

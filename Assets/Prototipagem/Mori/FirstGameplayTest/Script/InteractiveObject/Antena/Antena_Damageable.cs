@@ -1,16 +1,18 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static Damage;
 
 public class Antena_Damageable : MonoBehaviour, IDamageable
 {
     [SerializeField] public bool charged;
     [SerializeField] public MeshRenderer[] meshRenderers;
     private Gerador_Interactive connectedGenerator;
-    public void TakeDamage(int damageAmount)
+    public void TakeDamage(Damage damage)
     {
         if (!charged)
         {
+            if(damage.damageType == DamageType.Eletric)
             charged = true;
             meshRenderers[0].sharedMaterial.SetInt("_Light_on_off", 1);
             if (connectedGenerator != null) connectedGenerator.OnRequirementChange();

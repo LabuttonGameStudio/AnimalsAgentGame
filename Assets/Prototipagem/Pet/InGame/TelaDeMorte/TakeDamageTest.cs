@@ -18,10 +18,7 @@ public class TakeDamageTest : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player"))
-
-            ArmadilloPlayerController.Instance.hpControl.TakeDamage(10);
-        Debug.Log("toma dano");
+        
     }
 
 }

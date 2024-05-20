@@ -1,12 +1,11 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Events;
 using static AIBehaviourEnums;
-
+using Random = UnityEngine.Random;
 public class VisibilityCone
 {
     public float fieldOfView;
@@ -29,8 +28,9 @@ public abstract class IEnemy : MonoBehaviour
 {
     #region Path Finding|NavMesh Variables
     [HideInInspector] public NavMeshAgent navMeshAgent;
+
     [Header("Path Finding | Navmesh")]
-    [SerializeField, Tooltip("Static = O inimigo não se move")] protected bool isStatic;
+    [SerializeField, Tooltip("Static = O inimigo não se move")] public bool isStatic;
     protected enum PathLoopTypes
     {
         DontLoop,
@@ -38,29 +38,39 @@ public abstract class IEnemy : MonoBehaviour
         Boomerang
     }
     [SerializeField, Tooltip(
-        "Dont Loop = Para no ponto final | Loop = No ponto final retorna ao ponto incial | Boomerang = No ponto final retorna pelo caminho inverso"
+        "Dont Loop = Para no ponto final |" +
+        " Loop = No ponto final retorna ao ponto incial |" +
+        " Boomerang = No ponto final retorna pelo caminho inverso"
         )]
     protected PathLoopTypes pathLoopType;
 
+    //Apenas usado se o looping eh do tipo boomerang
     private bool isBoomerangForward;
 
-    [HideInInspector] public int currentPathPoint = 0;
+    //Etapa do caminho onde o inimigo esta atualmente
+    public int currentPathPoint = 0;
 
+    //Na proximo update do Enemy Master Control ele ira calcular a proxima rota desse inimigo
+    [HideInInspector] public bool enqueued;
 
+    //Rota que o inimigo ira percorrer
     [SerializeField] public AIPathPoint[] aiPathList;
     #endregion
 
     #region EnemyStats Variables
-    //----- Stats -----
+    //HP Control
     [Header("HP")]
-    [SerializeField] protected int currentHp = 50;
-    [SerializeField] protected int maxHp = 50;
+    [SerializeField] protected float currentHp = 50;
+    [SerializeField] protected float maxHp = 50;
 
-    [Header("Attack")]
-    [SerializeField] public float primaryAttackRangeInMeters = 2;
-    [SerializeField] public int hitDamage = 20;
+    //Damage Reduction(DR)
+    protected float currentDamageReduction;
 
+    //Is Dead
     public bool isDead;
+
+    //Is on Alert
+    public bool isOnAlert;
     #endregion
 
     #region EnemyComponents
@@ -68,43 +78,67 @@ public abstract class IEnemy : MonoBehaviour
     #endregion
 
     #region Visibility Variables
-    [HideInInspector] public Vector3 lastKnownPlayerPos;
+    //Lista statica de cones de visibilidade para apenas instanciar se caso existir 2 iguais
     private static List<VisibilityCone> visibilityCones;
 
+    //Ultima posicao conhecida do jogador
+    [HideInInspector] public Vector3 lastKnownPlayerPos;
+
+    //Material do cone de visibilidade 
     [SerializeField] protected Material visibilityConeMaterial;
     [SerializeField] protected Material visibilityConeOnViewMaterial;
 
+    //Render de mesh e material do cone de visibilidade
     [SerializeField] protected MeshFilter visibilityMeshFilter;
     [SerializeField] protected MeshRenderer visibilityMeshRenderer;
 
     [Header("Field Of View")]
+    //Ponto do olho do inimigo
     [SerializeField] protected Transform eyeTransform;
+
+    //Campo de visao do inimigo
     [SerializeField] protected float fieldOfView;
+
+    //Distancia do campo de visao do inimigo
     [SerializeField] protected float viewDistance;
+
+    //Altura da checagem de visibilidade do inimigo
     [SerializeField] protected float viewHeight;
-    [SerializeField] protected Color colorOfFovMesh;
-    protected Mesh fovWedgeMesh;
+
+    //Camadas que bloqueiam a visibilidade do inimigo 
     [SerializeField] protected LayerMask visionBlockLayers;
+
+    [Header("Testing")]
+    //Cor que o gizmos usa para renderizar o campo de visao do inimigo
+    [SerializeField] protected Color colorOfFovMesh;
+    //Mesh temporaria criada para mostrar nos gizmos
+    protected Mesh fovWedgeMesh;
 
     #endregion
 
     #region AI Enemy States  
     [Header("AI Behaviour")]
+    //Estado principal atual de behaviour
     [SerializeField] public AIBehaviour currentAIBehaviour;
+    //Visual Referente ao estado atual do inimigo
     [SerializeField] protected EnemyBehaviourVisual enemyBehaviourVisual;
-    //0-100
-    //0-10 Roaming
-    //10-66 Observing
-    //66-99 Searching
+
+    //Nivel de deteccao do inimigo(0-100), determina o tipo de behaviour dele 
+    //0 Roaming
+    //1-50 Observing
+    //51-100 Searching
     //100+ Attacking
-    [Tooltip("De 0 a 100")]protected float detectionLevel;
+    [Tooltip("De 0 a 100"), Range(0, 100)] protected float detectionLevel;
+    protected float detectionLevelDecreased;
     #endregion
 
 
     private void OnDrawGizmos()
     {
+        //Desenha o gizmos da area onde o inimigo ira ver
         if (!Application.isPlaying)
         {
+            //Visibility Mesh
             if (!fovWedgeMesh) return;
             if (ArmadilloPlayerController.Instance != null)
             {
@@ -122,21 +156,35 @@ public abstract class IEnemy : MonoBehaviour
             Gizmos.color = Color.red;
             Gizmos.DrawCube(transform.position + transform.forward, Vector3.one / 3);
 
-            Gizmos.color = Color.blue;
+            //See navmesh point
+            if (aiPathList != null && aiPathList.Length > 0)
+            {
+                if (navMeshAgent == null) navMeshAgent = GetComponent<NavMeshAgent>();
+
+                foreach (AIPathPoint aiPathPoint in aiPathList)
+                {
+                    GizmosExtra.DrawCylinder(aiPathPoint.transformOfPathPoint.position - new Vector3(0, navMeshAgent.height / 2, 0), Quaternion.identity, navMeshAgent.height, navMeshAgent.radius, Color.red);
+                }
+
+            }
         }
     }
     private void Awake()
     {
+        //Se for o primeiro inimigo a existir cria a lista de cones de visibilidade para armazenar eles e poder reusar depois
         if (visibilityCones == null) visibilityCones = new List<VisibilityCone>();
 
+        //Procura na lista se existe algum cone com os requerimentos do atual
         if (SearchForMatchingVisibilityCones(out Mesh coneMesh))
         {
+            //Se caso existir ele resgata a informacao da lista e aloca a mesh e o material
             visibilityMeshFilter.mesh = coneMesh;
             visibilityMeshRenderer.material = visibilityConeMaterial;
 
         }
         else
         {
+            //Se caso nao existir ele gera uma nova mesh baseado nos requerimentos do campo de visibilidade atual
             Mesh createdConeMesh = CreateFovWedgeMesh();
             visibilityCones.Add(new VisibilityCone()
             {
@@ -149,23 +197,40 @@ public abstract class IEnemy : MonoBehaviour
             visibilityMeshRenderer.material = visibilityConeMaterial;
         }
 
+        //Armazena a informacao do NavmeshAgent
         navMeshAgent = GetComponent<NavMeshAgent>();
+
+        //Desliga a rotacao automatica do NavmeshAgent, ja que nessa IA sera usada rotacao manual
+        navMeshAgent.updateRotation = false;
+
+        //Armazena a informacao do Rigidbody
         rb = GetComponent<Rigidbody>();
 
-
-
+        //Invoca a funcao de Awake baseado no tipo de inimigo
         OnAwake();
     }
+    protected abstract void OnAwake();
     private void Start()
     {
-        EnemyControl.Instance.allEnemiesList.Add(this);
+        //Para receber os updates do controlador geral de inimigos, se adiciona em uma lista de inimigos
+        EnemyMasterControl.Instance.allEnemiesList.Add(this);
+
+        //Baseado no tipo do inimigo roda o StartDele
         OnStart();
     }
+    protected abstract void OnStart();
     private void FixedUpdate()
     {
+        //Baseado no tipo de inimigo roda o FixedUpdate dele
         OnFixedUpdate();
     }
+    protected abstract void OnFixedUpdate();
 
+    #region VisibilityCone
+    /// <summary>
+    /// Cria a mesh de visibilidade do inimigo
+    /// </summary>
+    /// <returns></returns>
     private Mesh CreateFovWedgeMesh()
     {
         Mesh mesh = new Mesh();
@@ -248,7 +313,11 @@ public abstract class IEnemy : MonoBehaviour
 
         return mesh;
     }
-
+    /// <summary>
+    /// Procura por uma mesh de visibilidade compativel com a requerida
+    /// </summary>
+    /// <param name="visibilityConeMesh"></param>
+    /// <returns></returns>
     private bool SearchForMatchingVisibilityCones(out Mesh visibilityConeMesh)
     {
         foreach (VisibilityCone cone in visibilityCones)
@@ -264,27 +333,57 @@ public abstract class IEnemy : MonoBehaviour
         visibilityConeMesh = null;
         return false;
     }
-
     private void OnValidate()
     {
+        //Ao atualizar as variaveis do inimigo atualiza a mesh para ver se teve alguma mudanca
         fovWedgeMesh = CreateFovWedgeMesh();
     }
+    #endregion
+
+    #region Visibility
     public void VisibilityUpdate()
     {
+        //Intervalado pelo tick do Controlador geral dos inimigos, roda uma checagem para detectar oq o inimigo ve
+        //Baseado no tipo do inimigo
         OnVisibilityUpdate();
     }
     public abstract void OnVisibilityUpdate();
+    #endregion
+
+    #region Actions
     public void ActionUpdate()
     {
+        //Intervalado pelo tick do Controlador geral dos inimigos, roda uma checagem para determinar oq o inimigo fara nesse momento
+        //Baseado no tipo do inimigo
         OnActionUpdate();
     }
     public abstract void OnActionUpdate();
-    public void SetNextDestinationOfNavmesh(Vector3 position)
+    #endregion
+
+    #region NavMesh
+    /// <summary>
+    /// Tenta definir um novo destino para o inimigo seguir
+    /// </summary>
+    /// <param name="position">posicao requesitada</param>
+    /// <returns></returns>
+    public bool TrySetNextDestination(Vector3 position)
     {
-        if (navMeshAgent.SetDestination(position)) { }
-        else Debug.LogError("Error in " + name + " in setting destination of point " + aiPathList[currentPathPoint].transformOfPathPoint.name);
+        if (navMeshAgent.SetDestination(position))
+        {
+            return true;
+        }
+        else
+        {
+            Debug.LogError("Error in " + name + " in setting destination of point " + aiPathList[currentPathPoint].transformOfPathPoint.name);
+            return false;
+        }
     }
-    private void NextPathPoint()
+
+    /// <summary>
+    /// Baseado no tipo de looping e na progressao da rota, retorna o proximo ponto
+    /// </summary>
+    /// <returns></returns>
+    public Vector3 NextPathPoint()
     {
         //Checka se é o caso de loopar a rota ou somente ir para o proximo ponto 
         switch (pathLoopType)
@@ -293,7 +392,7 @@ public abstract class IEnemy : MonoBehaviour
                 if (currentPathPoint + 1 >= aiPathList.Length)
                 {
                     OnRoamingPathEnd();
-                    return;
+                    return Vector3.zero;
                 }
                 else
                 {
@@ -329,66 +428,196 @@ public abstract class IEnemy : MonoBehaviour
                 break;
 
         }
-        SetNextDestinationOfNavmesh(aiPathList[currentPathPoint].transformOfPathPoint.position);
+        return aiPathList[currentPathPoint].transformOfPathPoint.position;
     }
     protected abstract void OnRoamingPathEnd();
-    public void CheckForProximityOfPoint()
+
+    /// <summary>
+    /// Checa se o ponto de destino atual esta proximo
+    /// </summary>
+    /// <returns></returns>
+    public bool CheckForProximityOfPoint()
     {
-        if (navMeshAgent.remainingDistance < 1f)
+        Vector3 currentPos = transform.position;
+        Vector3 destinationPos = navMeshAgent.destination;
+        return Vector3.Distance(currentPos, destinationPos) < navMeshAgent.height / 2 + 0.25f;
+    }
+    #endregion
+
+    #region WaitOnPoint
+    /// <summary>
+    /// Comeca o processa de esperar parado em um ponto determinado
+    /// </summary>
+    /// <param name="duration"></param>
+    public void StartWaitOnPoint(float duration)
+    {
+        //Se caso ele ja estiver esperando, reseta o timer atual
+        if (waitOnPoint_Ref != null)
         {
-            if (aiPathList[currentPathPoint].waitTimeOnPoint <= 0)
-            {
-                NextPathPoint();
-            }
-            else
-            {
-                if (waitOnPointTimer_Ref == null)
-                {
-                    waitOnPointTimer_Ref = StartCoroutine(WaitOnPointTimer_Coroutine(aiPathList[currentPathPoint].waitTimeOnPoint, aiPathList[currentPathPoint].lookAroundOnPoint));
-                }
-            }
+            StopCoroutine(waitOnPoint_Ref);
+        }
+        //Inicia um novo timer de espera
+        waitOnPoint_Ref = StartCoroutine(WaitOnPoint_Coroutine(duration));
+    }
+
+    //Coroutina de esperar em um ponto
+    public Coroutine waitOnPoint_Ref;
+    public IEnumerator WaitOnPoint_Coroutine(float duration)
+    {
+        navMeshAgent.isStopped = true;
+        yield return new WaitForSeconds(duration);
+        navMeshAgent.isStopped = false;
+        waitOnPoint_Ref = null;
+    }
+
+
+    /// <summary>
+    /// Quebra o estado de parado do inimigo
+    /// </summary>
+    public void StopWaitOnPoint()
+    {
+        if (waitOnPoint_Ref != null)
+        {
+            StopCoroutine(waitOnPoint_Ref);
+            waitOnPoint_Ref = null;
+            navMeshAgent.isStopped = false;
         }
     }
-    public void BreakOnWaitPointCoroutine()
+    #endregion
+
+    #region Look
+    /// <summary>
+    /// Tenta iniciar o processo do inimigo de olhar em volta
+    /// </summary>
+    /// <param name="duration"></param>
+    /// <param name="coroutine"></param>
+    /// <returns></returns>
+    public bool TryStartRandomLookAround(float duration, out Coroutine coroutine)
     {
-        if (waitOnPointTimer_Ref != null)
+        //Se caso ja estiver olhando em volta no momento retorna falso
+        if (lookAround_Ref != null)
         {
-            StopCoroutine(waitOnPointTimer_Ref);
-            navMeshAgent.isStopped = false;
-            waitOnPointTimer_Ref = null;
+            coroutine = null;
+            return false;
         }
+
+        //Se caso eh possivel, escolhe aleatoriamente entre 2 tipos de olhar em volta
+        if (Random.value > 0.5f)
+        {
+            lookAround_Ref = StartCoroutine(LookAround_A_Coroutine(duration));
+        }
+        else
+        {
+            lookAround_Ref = StartCoroutine(LookAround_B_Coroutine(duration));
+        }
+        //Retorna verdadeiro e mostra a coroutina de olhar em volta
+        coroutine = lookAround_Ref;
+        return true;
+    }
+
+    //Coroutinas de olhar em volta 
+    public Coroutine lookAround_Ref;
+
+    //Olha em volta 45 graus para cada lado
+    public IEnumerator LookAround_A_Coroutine(float duration)
+    {
+        navMeshAgent.isStopped = true;
+        int randomDirection = Random.Range(0, 2);
+        randomDirection = (randomDirection * 2) - 1;
+
+        float durationPerAction = duration / 8;
+        yield return new WaitForSeconds(durationPerAction);
+
+        //Look Side 0
+        lerpRotate_Ref = StartCoroutine(LerpRotate_Coroutine(-45 * randomDirection, durationPerAction));
+        yield return lerpRotate_Ref;
+        yield return new WaitForSeconds(durationPerAction);
+
+        //Look Side 1
+        lerpRotate_Ref = StartCoroutine(LerpRotate_Coroutine(90 * randomDirection, 2 * durationPerAction));
+        yield return lerpRotate_Ref;
+        yield return new WaitForSeconds(durationPerAction);
+
+        //Return to center
+        lerpRotate_Ref = StartCoroutine(LerpRotate_Coroutine(-45 * randomDirection, durationPerAction));
+        yield return lerpRotate_Ref;
+        yield return new WaitForSeconds(durationPerAction);
+
+        navMeshAgent.isStopped = false;
+        lookAround_Ref = null;
+    }
+
+    //Olha em volta 90 graus para cada lado
+    public IEnumerator LookAround_B_Coroutine(float duration)
+    {
+        navMeshAgent.isStopped = true;
+        int randomDirection = Random.Range(0, 2);
+        randomDirection = (randomDirection * 2) - 1;
+
+        float durationPerAction = duration / 8;
+        yield return new WaitForSeconds(durationPerAction);
+
+        //Look Side 0
+        lerpRotate_Ref = StartCoroutine(LerpRotate_Coroutine(-90 * randomDirection, durationPerAction));
+        yield return lerpRotate_Ref;
+        yield return new WaitForSeconds(durationPerAction);
+
+        //Look Side 1
+        lerpRotate_Ref = StartCoroutine(LerpRotate_Coroutine(90 * randomDirection,durationPerAction));
+        yield return lerpRotate_Ref;
+
+        lerpRotate_Ref = StartCoroutine(LerpRotate_Coroutine(90 * randomDirection,durationPerAction));
+        yield return lerpRotate_Ref;
+
+        yield return new WaitForSeconds(durationPerAction);
+
+        //Return to center
+        lerpRotate_Ref = StartCoroutine(LerpRotate_Coroutine(-90 * randomDirection, durationPerAction));
+        yield return lerpRotate_Ref;
+        yield return new WaitForSeconds(durationPerAction);
+
+        navMeshAgent.isStopped = false;
+        lookAround_Ref = null;
+    }
+
+    /// <summary>
+    /// Quebra o estado de olhar em volta 
+    /// </summary>
+    public void StopLookAround()
+    {
         if (lookAround_Ref != null)
         {
             StopCoroutine(lookAround_Ref);
-            navMeshAgent.updateRotation = true;
+            lookAround_Ref = null;
+            if (lerpRotate_Ref != null)
+            {
+                StopCoroutine(lerpRotate_Ref);
+                lerpRotate_Ref = null;
+            }
         }
     }
-    private Coroutine waitOnPointTimer_Ref;
-    private IEnumerator WaitOnPointTimer_Coroutine(float duration, bool lookAround)
+    public void LookAt(Vector3 position)
     {
-        navMeshAgent.isStopped = true;
-        if (lookAround)
-        {
-            navMeshAgent.updateRotation = false;
-            yield return new WaitForSeconds(duration / 5);
-            lookAround_Ref = StartCoroutine(LookAround_Coroutine(-45, duration / 5));
-            yield return lookAround_Ref;
-
-            lookAround_Ref = StartCoroutine(LookAround_Coroutine(90, duration / 2.5f));
-            yield return lookAround_Ref;
-
-            lookAround_Ref = StartCoroutine(LookAround_Coroutine(-45, duration / 5));
-            yield return lookAround_Ref;
-
-            navMeshAgent.updateRotation = true;
-        }
-        else yield return new WaitForSeconds(duration);
-        NextPathPoint();
-        navMeshAgent.isStopped = false;
-        waitOnPointTimer_Ref = null;
+        Vector3 direction = position - transform.position;
+        direction.y = 0;
+        Quaternion lookAtRotation = Quaternion.LookRotation(direction);
+        transform.rotation = lookAtRotation;
     }
-    private Coroutine lookAround_Ref;
-    public IEnumerator LookAround_Coroutine(float rotation, float duration)
+    /// <summary>
+    /// Faz lerping em fixed update de olhar na direcao
+    /// </summary>
+    /// <param name="direction"></param>
+    public void LerpLookAt(Vector3 position,float velocity)
+    {
+        Vector3 direction = position - transform.position;
+        direction.y = 0;
+        Quaternion lookAtRotation = Quaternion.LookRotation(direction);
+        transform.rotation = Quaternion.Lerp(transform.rotation, lookAtRotation,velocity* 3 * Time.fixedDeltaTime);
+    }
+
+    //Corotina de rodar para um lado 
+    private Coroutine lerpRotate_Ref;
+    public IEnumerator LerpRotate_Coroutine(float rotation, float duration)
     {
         float timer = 0f;
         Quaternion startLookAtRotation = transform.localRotation;
@@ -401,6 +630,16 @@ public abstract class IEnemy : MonoBehaviour
         }
         transform.localRotation = finalLookAtRotation;
     }
+    #endregion
+
+    #region Line Of Sight
+    //A refazer
+
+    /// <summary>
+    /// Checa se o inimigo consegue ver o objeto
+    /// </summary>
+    /// <param name="objectLooked"></param>
+    /// <returns></returns>
     public bool CheckForLOS(GameObject objectLooked)
     {
         Vector3 origin = eyeTransform.position;
@@ -420,9 +659,43 @@ public abstract class IEnemy : MonoBehaviour
         }
         return true;
     }
-    protected abstract void OnAwake();
-    protected abstract void OnStart();
 
-    protected abstract void OnFixedUpdate();
+    /// <summary>
+    /// Checa se o inimigo consegue ver o player
+    /// </summary>
+    /// <returns></returns>
+    public float CheckForPlayerLOS()
+    {
+        ArmadilloPlayerController player = ArmadilloPlayerController.Instance;
+        Transform playerTransform = player.transform;
+
+        Vector3 origin = eyeTransform.position;
+        Vector3 destination = playerTransform.position;
+        Vector3 direction = destination - origin;
+
+        direction.y = 0;
+        //Check For Distance
+        if (Vector3.Distance(origin, destination) > viewDistance) return 0;
+
+        //Check for Angle
+        float deltaAngle = Vector3.Angle(direction, eyeTransform.forward);
+        if (deltaAngle > fieldOfView / 2) return 0;
+
+        //Check for direct Line of sight
+        if (Physics.Linecast(origin, destination, out RaycastHit hitInfo, visionBlockLayers, QueryTriggerInteraction.Ignore))
+        {
+            if (!hitInfo.collider.CompareTag("Player")) return 0;
+        }
+        return player.GetCurrentVisibilityOfPlayer();
+    }
+    #endregion
+
+    #region Alert
+    public void ToggleAlert(bool state)
+    {
+        isOnAlert = state;
+        enemyBehaviourVisual.ToggleAlert(state);
+    }
+    #endregion
 }
 

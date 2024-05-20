@@ -18,11 +18,23 @@ public class EnemyMelee : IEnemy, IDamageable
     protected EnemyObservingState enemyObservingState;
     protected EnemySearchingState enemySearchingState;
     protected EnemyAttackingState enemyAttackingState;
-
-
-    [SerializeField,Tooltip("Nivel de detecção necessario para trocar para o estado de observing")]private float observingStateBreakPoint = 21; 
-    [SerializeField, Tooltip("Nivel de detecção necessario para trocar para o estado de searching")] private float searchingStateBreakPoint = 67; 
+    [SerializeField, Tooltip("Nivel de detecção necessario para trocar para o estado de searching")] private readonly float searchingStateBreakPoint = 50;
     #endregion
+
+    [Header("Combat")]
+    [Header("Primary Attack")]
+    [SerializeField]
+    public float primaryAttackDamage;
+    public EnemyMeleeAttackHitBox primaryAttackHitbox;
+    public float primaryAttackCooldown;
+    [Header("Secondary Attack")]
+    [SerializeField]
+    public float secondaryAttackDamage;
+    public EnemyMeleeAttackHitBox secondaryAttackHitbox;
+    public float secondaryAttackCooldown;
+
+
+
     protected override void OnAwake()
     {
         enemyRoamingState = new EnemyRoamingState(this);
@@ -30,16 +42,12 @@ public class EnemyMelee : IEnemy, IDamageable
         enemySearchingState = new EnemySearchingState(this);
         enemyAttackingState = new EnemyAttackingState(this);
 
-        if (isStatic)
-        {
-            ChangeCurrentAIBehaviour(AIBehaviour.Observing);
-            observingStateBreakPoint = -1;
-        }
-        else ChangeCurrentAIBehaviour(AIBehaviour.Roaming);
+        ChangeCurrentAIBehaviour(AIBehaviour.Roaming);
     }
     protected override void OnStart()
     {
-
+        primaryAttackHitbox.aiController = this;
+        secondaryAttackHitbox.aiController = this;
     }
     protected override void OnFixedUpdate()
     {
@@ -53,20 +61,42 @@ public class EnemyMelee : IEnemy, IDamageable
     {
         currentEnemyState.OnActionUpdate();
     }
-    public void TakeDamage(int damageAmount)
+    public void TakeDamage(Damage damage)
     {
-        currentHp -= damageAmount;
-        Debug.Log("HP=" + currentHp + "| Damage taken=" + damageAmount);
+        currentHp -= damage.damageAmount;
+        Debug.Log("HP=" + currentHp + "| Damage taken=" + damage.damageAmount);
         if (currentHp <= 0)
         {
             isDead = true;
             gameObject.SetActive(false);
+            return;
+        }
+        OnDamageTaken(damage);
+    }
+    private void OnDamageTaken(Damage damage)
+    {
+        if (currentAIBehaviour != AIBehaviour.Attacking)
+        {
+            if (onDamageTaken_Ref == null)
+            {
+                onDamageTaken_Ref = StartCoroutine(OnDamageTaken_Coroutine(damage));
+            }
         }
     }
-
+    private Coroutine onDamageTaken_Ref;
+    private IEnumerator OnDamageTaken_Coroutine(Damage damage)
+    {
+        yield return new WaitForSeconds(1f);
+        LookAt(damage.originPoint);
+        lastKnownPlayerPos = damage.originPoint;
+        ChangeCurrentAIBehaviour(AIBehaviour.Searching);
+        SetDetectionLevel(searchingStateBreakPoint);
+    }
     protected override void OnRoamingPathEnd()
     {
-        ChangeCurrentAIBehaviour(AIBehaviour.Observing);
+        isStatic = true;
+        currentEnemyState.OnEnterState();
+        navMeshAgent.isStopped = true;
     }
 
     public void ChangeCurrentAIBehaviour(AIBehaviour nextAIBehaviour)
@@ -97,10 +127,17 @@ public class EnemyMelee : IEnemy, IDamageable
         currentAIBehaviour = nextAIBehaviour;
     }
 
+    public void SetDetectionLevel(float detectionLevel)
+    {
+        this.detectionLevel = detectionLevel;
+    }
+
     public void IncreaseDetection()
     {
         timeSincePlayerLastSeen = 0;
-        float increasePerTick = 100 / (timeToMaxDetect / EnemyControl.Instance.visibilityTickInterval);
+        float increasePerTick = 100 / (timeToMaxDetect / EnemyMasterControl.Instance.visibilityTickInterval);
+
+        //Se ele atingir o limite acima de 100, ele nao sobe mais que isso e altera seu estado para Attacking
         if (detectionLevel + increasePerTick >= 100)
         {
             detectionLevel = 100;
@@ -108,26 +145,23 @@ public class EnemyMelee : IEnemy, IDamageable
             return;
         }
         else detectionLevel += increasePerTick;
-        if (detectionLevel < observingStateBreakPoint) return;
-        else if (detectionLevel >= observingStateBreakPoint && detectionLevel < searchingStateBreakPoint)
-        {
-            ChangeCurrentAIBehaviour(AIBehaviour.Observing);
-        }
-        else
+
+        //Se ele nao estiver acima de 100 mas estiver acima do nivel necessario para entrar em estado de procura
+        if (detectionLevel > searchingStateBreakPoint)
         {
             ChangeCurrentAIBehaviour(AIBehaviour.Searching);
         }
     }
     public void DecreaseDetection()
     {
-        timeSincePlayerLastSeen += EnemyControl.Instance.visibilityTickInterval;
+        timeSincePlayerLastSeen += EnemyMasterControl.Instance.visibilityTickInterval;
         bool doesTimeExceedDelay;
 
-        //Delay based on current ai behaviour
+        //Delay baseado no estado atual ate comecar a descer o nivel de deteccao
         switch (currentAIBehaviour)
         {
             case AIBehaviour.Roaming:
-                doesTimeExceedDelay = timeSincePlayerLastSeen >= 1;
+                doesTimeExceedDelay = true;
                 break;
             case AIBehaviour.Observing:
                 doesTimeExceedDelay = timeSincePlayerLastSeen >= 2;
@@ -142,23 +176,15 @@ public class EnemyMelee : IEnemy, IDamageable
         }
         if (doesTimeExceedDelay)
         {
-            float decreasePerTick = 100 / (timeToMaxDetect*1.5f / EnemyControl.Instance.visibilityTickInterval);
+            //Desce o nivel de deteccao ate ele voltar ao estado roaming
+            float decreasePerTick = 100 / (timeToMaxDetect*1.5f / EnemyMasterControl.Instance.visibilityTickInterval);
             if (detectionLevel - decreasePerTick < 0)
             {
                 detectionLevel = 0;
-                if(!isStatic)ChangeCurrentAIBehaviour(AIBehaviour.Roaming);
+                if(currentAIBehaviour != AIBehaviour.Observing) ChangeCurrentAIBehaviour(AIBehaviour.Roaming);
                 return;
             }
             else detectionLevel -= decreasePerTick;
-            if (detectionLevel < observingStateBreakPoint) ChangeCurrentAIBehaviour(AIBehaviour.Roaming);
-            else if (detectionLevel >= observingStateBreakPoint && detectionLevel < searchingStateBreakPoint)
-            {
-                ChangeCurrentAIBehaviour(AIBehaviour.Observing);
-            }
-            else
-            {
-                ChangeCurrentAIBehaviour(AIBehaviour.Searching);
-            }
         }
     }
     private float timeSincePlayerLastSeen;

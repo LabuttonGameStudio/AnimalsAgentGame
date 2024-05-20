@@ -24,11 +24,11 @@ public class ArmadilloHPControl : MonoBehaviour,IDamageable
     private bool isFadingOut = false;
 
 
-    public void TakeDamage(int damageAmount)
+    public void TakeDamage(Damage damage)
     {
         if (!isInvulnerable)
         {
-            if (currentHp - damageAmount < 0)
+            if (currentHp - damage.damageAmount < 0)
             {
                 ArmadilloPlayerController.Instance.Die();
                 StartCoroutine(DeathScreenFade(1f, 1f));
@@ -36,13 +36,13 @@ public class ArmadilloHPControl : MonoBehaviour,IDamageable
                 UpdateHealthBar();
                 return;
             }
-
+            StartInvulnerabilityTimer();
             if (!isFadingIn && !isFadingOut)
             {
                 StartCoroutine(DamageScreenFade(1f, 0.5f));
             }
-            currentHp -= damageAmount;
-            currentGreyHp = damageAmount / 2;
+            currentHp -= damage.damageAmount;
+            currentGreyHp = damage.damageAmount / 2;
             UpdateHealthBar();
         }
     }
@@ -67,6 +67,19 @@ public class ArmadilloHPControl : MonoBehaviour,IDamageable
     private void Start()
     {
         UpdateHealthBar();
+    }
+
+    private void StartInvulnerabilityTimer()
+    {
+        if (invulnerabilityTimer_Ref == null) invulnerabilityTimer_Ref = StartCoroutine(InvulnerabilityTimer_Coroutine());
+    }
+    private Coroutine invulnerabilityTimer_Ref;
+    private IEnumerator InvulnerabilityTimer_Coroutine()
+    {
+        isInvulnerable = true;
+        yield return new WaitForSeconds(invulnerabilityDuration);
+        isInvulnerable = false;
+        invulnerabilityTimer_Ref = null;
     }
 
 

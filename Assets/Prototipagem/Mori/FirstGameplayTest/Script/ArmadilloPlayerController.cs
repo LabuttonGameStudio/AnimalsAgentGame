@@ -95,6 +95,12 @@ public class ArmadilloPlayerController : MonoBehaviour
         //sonarEffectDefault.seeThroughMaterial.SetFloat("_MAXDISTANCE",sonarRange);
         //sonarEffectEnemy.seeThroughMaterial.SetFloat("_MAXDISTANCE",sonarRange);
     }
+
+    public float GetCurrentVisibilityOfPlayer()
+    {
+        return 1;
+    }
+
     public void UnlockChangeFormAbility()
     {
         inputControl.inputAction.Armadillo.Ability1.Enable();
