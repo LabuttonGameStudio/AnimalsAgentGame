@@ -7,7 +7,7 @@ using static AIBehaviourEnums;
 public class EnemyMelee : IEnemy, IDamageable
 {
     #region Detection
-    [Tooltip("Tempo necessario para ir ao estado mais alto de detecção")] readonly protected float timeToMaxDetect = 1.5f;
+    [Tooltip("Tempo necessario para ir ao estado mais alto de detecção")] readonly protected float timeToMaxDetect = 0.5f;
     #endregion
 
     #region StateMachine

@@ -294,9 +294,11 @@ public class ArmadilloMovementController : MonoBehaviour
         }
         else
         {
+            isOnSlope = false;
             timeSinceTouchedGround += Time.deltaTime;
             rb.drag = stats.airDrag;
         }
+        rb.useGravity = !isOnSlope;
     }
     public bool CheckMatchOfCurrentLadder(Transform ladderObject)
     {
