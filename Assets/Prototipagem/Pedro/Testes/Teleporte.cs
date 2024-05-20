@@ -4,27 +4,17 @@ using UnityEngine;
 
 public class Teleporte : MonoBehaviour
 {
-    public Transform startPoint; // Ponto de partida
-    public Transform teleportPoint; // Ponto para teletransporte
-    public float teleportDelay = 1.0f; // Atraso antes do teletransporte
+    // Destino do teleporte
+    public Transform teleportDestination;
 
     private void OnTriggerEnter(Collider other)
     {
+        // Verifica se o objeto que colidiu é o jogador
         if (other.CompareTag("Player"))
         {
-            StartCoroutine(TeleportAfterDelay(other.transform));
+            Debug.Log("Player entrou no trigger. Teletransportando...");
+            // Teletransporta o jogador para o destino
+            other.transform.position = teleportDestination.position;
         }
-    }
-
-    private IEnumerator TeleportAfterDelay(Transform playerTransform)
-    {
-        Debug.Log("Jogador entrou no trigger em: " + startPoint.position);
-        Debug.Log("Teleportando para: " + teleportPoint.position);
-
-        // Aguarda o atraso antes de teletransportar o jogador
-        yield return new WaitForSeconds(teleportDelay);
-
-        // Teleporta o jogador para o ponto de teletransporte
-        playerTransform.position = teleportPoint.position;
     }
 }
