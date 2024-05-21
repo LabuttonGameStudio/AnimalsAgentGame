@@ -122,6 +122,7 @@ public class EletricPistol : Weapon
             {
                 Damage damage = new Damage(unchargedHitDamage, Damage.DamageType.Eletric, true, weaponControl.transform.position);
                 idamageable.TakeDamage(damage);
+                ArmadilloUIControl.Instance.StartHitMarker();
                 break;
             }
         }
@@ -141,6 +142,7 @@ public class EletricPistol : Weapon
             {
                 Damage damage = new Damage(chargedHitDamage, Damage.DamageType.Eletric, true, weaponControl.transform.position);
                 idamageable.TakeDamage(damage);
+                ArmadilloUIControl.Instance.StartHitMarker();
             }
         }
         OnOverheatCharge(chargedOverheatCharge);
