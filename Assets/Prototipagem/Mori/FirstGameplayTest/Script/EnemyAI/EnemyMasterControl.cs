@@ -15,7 +15,9 @@ public class EnemyMasterControl : MonoBehaviour
     [HideInInspector] public List<IEnemy> allEnemiesList = new List<IEnemy>();
 
     public float visibilityTickInterval = 0.025f;
+    private float m_visibilityTickInverval=0f;
     public float actionTickInterval = 0.025f;
+    public float m_actionTickInterval = 0f;
 
     private Queue<NextNavmeshPointCallParameters> SetNextNavmeshPointCall_Queue = new Queue<NextNavmeshPointCallParameters>();
 
@@ -27,6 +29,9 @@ public class EnemyMasterControl : MonoBehaviour
     private void Start()
     {
         ToggleCheckLoop(true);
+    }
+    private void Update()
+    {
     }
     private void ToggleCheckLoop(bool state)
     {
@@ -55,6 +60,7 @@ public class EnemyMasterControl : MonoBehaviour
             yield return new WaitForSeconds(0.1f);
         }
         int currentEnemyIndex = 0;
+        float lastTickTime=0;
         while (true)
         {
             if (allEnemiesList[currentEnemyIndex].isDead) yield return null;
@@ -67,7 +73,10 @@ public class EnemyMasterControl : MonoBehaviour
             if (currentEnemyIndex >= allEnemiesList.Count) currentEnemyIndex = 0;
 
             float interval = visibilityTickInterval / allEnemiesList.Count;
-            yield return new WaitForSecondsRealtime(interval);
+            m_visibilityTickInverval = Time.time - lastTickTime;
+            float tickInterval = Mathf.Max(interval - m_visibilityTickInverval, 0);
+            lastTickTime = Time.time;
+            yield return new WaitForSecondsRealtime(tickInterval);
         }
     }
     #endregion
@@ -82,6 +91,7 @@ public class EnemyMasterControl : MonoBehaviour
             yield return new WaitForSeconds(0.1f);
         }
         int currentEnemyIndex = 0;
+        float lastTickTime = 0;
         while (true)
         {
             if (allEnemiesList[currentEnemyIndex].isDead) yield return null;
@@ -95,7 +105,10 @@ public class EnemyMasterControl : MonoBehaviour
             if (currentEnemyIndex >= allEnemiesList.Count) currentEnemyIndex = 0;
 
             float interval = actionTickInterval / allEnemiesList.Count;
-            yield return new WaitForSecondsRealtime(interval);
+            m_actionTickInterval = Time.time - lastTickTime;
+            float tickInterval = Mathf.Max(interval - m_actionTickInterval, 0);
+            lastTickTime = Time.time;
+            yield return new WaitForSecondsRealtime(tickInterval);
         }
     }
     #endregion

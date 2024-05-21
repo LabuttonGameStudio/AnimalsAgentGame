@@ -134,7 +134,6 @@ public class EnemyMelee : IEnemy, IDamageable
     {
         timeSincePlayerLastSeen = 0;
         float increasePerTick = 100 / (timeToMaxDetect / EnemyMasterControl.Instance.visibilityTickInterval);
-
         //Se ele atingir o limite acima de 100, ele nao sobe mais que isso e altera seu estado para Attacking
         if (detectionLevel + increasePerTick >= 100)
         {
@@ -143,7 +142,7 @@ public class EnemyMelee : IEnemy, IDamageable
             return;
         }
         else detectionLevel += increasePerTick;
-
+        Debug.Log(increasePerTick);
         //Se ele nao estiver acima de 100 mas estiver acima do nivel necessario para entrar em estado de procura
         if (detectionLevel > searchingStateBreakPoint)
         {
