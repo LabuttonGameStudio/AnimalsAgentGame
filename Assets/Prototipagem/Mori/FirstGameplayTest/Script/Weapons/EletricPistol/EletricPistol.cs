@@ -244,7 +244,6 @@ public class EletricPistol : Weapon
         int startingAmmoAmount = currentAmmoAmount;
         while (timer < overheatDuration)
         {
-            Debug.Log(startingAmmoAmount);
             currentAmmoAmount = Mathf.RoundToInt(Mathf.Lerp(startingAmmoAmount, 0, timer / (overheatDuration-0.25f)));
             UpdateOverheatHUD();
             timer += 0.05f;

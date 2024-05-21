@@ -56,7 +56,6 @@ public class EnemyRoamingState : MeleeEnemyState
 
     public override void OnFixedUpdate()
     {
-        Debug.Log(currentStateEnum);
         currentSubState.OnFixedUpdate(this);
 
     }

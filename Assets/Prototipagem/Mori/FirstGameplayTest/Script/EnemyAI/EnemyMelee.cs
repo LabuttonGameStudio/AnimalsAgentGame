@@ -129,11 +129,19 @@ public class EnemyMelee : IEnemy, IDamageable
     {
         this.detectionLevel = detectionLevel;
     }
-
+    float detectionTickIntervalTime = 0f;
     public void IncreaseDetection()
     {
+        float increasePerTick;
+
         timeSincePlayerLastSeen = 0;
-        float increasePerTick = 100 / (timeToMaxDetect / EnemyMasterControl.Instance.visibilityTickInterval);
+        if(detectionTickIntervalTime>0)
+        {
+            increasePerTick = 100 * (Time.time - detectionTickIntervalTime) / timeToMaxDetect;
+            Debug.Log((Time.time - detectionTickIntervalTime)/ timeToMaxDetect);
+        }
+        else increasePerTick = 100 / (timeToMaxDetect / EnemyMasterControl.Instance.visibilityTickInterval);
+        detectionTickIntervalTime = Time.time;
         //Se ele atingir o limite acima de 100, ele nao sobe mais que isso e altera seu estado para Attacking
         if (detectionLevel + increasePerTick >= 100)
         {
@@ -142,12 +150,15 @@ public class EnemyMelee : IEnemy, IDamageable
             return;
         }
         else detectionLevel += increasePerTick;
-        Debug.Log(increasePerTick);
         //Se ele nao estiver acima de 100 mas estiver acima do nivel necessario para entrar em estado de procura
         if (detectionLevel > searchingStateBreakPoint)
         {
             ChangeCurrentAIBehaviour(AIBehaviour.Searching);
         }
+    }
+    public void ResetTickInterval()
+    {
+        detectionTickIntervalTime = 0;
     }
     public void DecreaseDetection()
     {

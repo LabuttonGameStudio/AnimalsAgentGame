@@ -27,6 +27,7 @@ public class EnemySearchingState : MeleeEnemyState
         else
         {
             OnPlayerOutOfLOS();
+            iEnemy.ResetTickInterval();
         }
 
     }

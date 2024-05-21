@@ -31,6 +31,7 @@ public class EnemyObservingState : MeleeEnemyState
         else
         {
             OnPlayerOutOfLOS();
+            iEnemy.ResetTickInterval();
         }
     }
 
