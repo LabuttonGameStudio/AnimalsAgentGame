@@ -36,7 +36,6 @@ public class ArmadilloDefaultState : MovementState
     //-----Player Movement-----
     private void MovePlayer()
     {
-        Debug.Log(moveDirection);
         Vector3 movementApplied;
         if (movementCtrl.grounded)
         {
