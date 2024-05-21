@@ -76,6 +76,7 @@ public class ArmadilloPlayerController : MonoBehaviour
         weaponControl = GetComponent<ArmadilloWeaponControl>();
         pickUpControl = GetComponent<ArmadilloPickUpControl>();
         visualControl = GetComponent<ArmadilloVisualControl>();
+        Application.targetFrameRate = 60;
 
     }
     private void Start()

@@ -7,6 +7,7 @@ public class ArmadilloDefaultState : MovementState
 {
     ArmadilloMovementController movementCtrl;
     MovementFormStats stats;
+    Vector3 moveDirection;
     public override void EnterState(ArmadilloMovementController movementControl)
     {
         stats = movementControl.defaultFormStats;
@@ -23,6 +24,8 @@ public class ArmadilloDefaultState : MovementState
 
     public override void UpdateState()
     {
+        moveDirection = movementCtrl.transform.forward * movementCtrl.movementInputVector.y
+            + movementCtrl.transform.right * movementCtrl.movementInputVector.x;
         movementCtrl.rb.useGravity = !movementCtrl.isOnSlope;
     }
     public override void ExitState()
@@ -33,8 +36,7 @@ public class ArmadilloDefaultState : MovementState
     //-----Player Movement-----
     private void MovePlayer()
     {
-        Vector3 moveDirection = movementCtrl.transform.forward * movementCtrl.movementInputVector.y
-            + movementCtrl.transform.right * movementCtrl.movementInputVector.x;
+        Debug.Log(moveDirection);
         Vector3 movementApplied;
         if (movementCtrl.grounded)
         {
