@@ -13,6 +13,7 @@ public class InitialOptions : MonoBehaviour
     public string actuallevel;
 
     public GameObject Cinemachine1;
+    public GameObject mao;
 
     private bool levelLoaded = false;
     public float delayBeforeLoading = 10f;
@@ -79,6 +80,7 @@ public class InitialOptions : MonoBehaviour
     IEnumerator CinemachineRun()
     {
         Cinemachine1.SetActive(false);
+        mao.SetActive(false);
         yield return null;
        
     }
