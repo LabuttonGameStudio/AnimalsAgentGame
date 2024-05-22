@@ -7,6 +7,9 @@ using UnityEngine.Events;
 
 public class DialogueBasicControl : MonoBehaviour
 {
+    //Singleton
+    public static DialogueBasicControl Instance { get; private set; }
+
 
     [Header("COMPONENTS")]
     public CanvasGroup Radio;
@@ -15,40 +18,53 @@ public class DialogueBasicControl : MonoBehaviour
     public TMP_Text Name;
     public TMP_Text DialogueText;
 
-    [Header("EVENTS")]
-    public UnityEvent onStartDialogue;
-    public UnityEvent onEndDialogue;
-
     [Header("SETTINGS")]
     public float VelocityText;
     public float TimeBetweenSentences;
     public float FadeDuration = 0.5f;
 
-    private string[] sentences;
-    private bool typing = false;
-    public bool typingEnd = false;
-
-    public void StartDialogues(Sprite icon, string name, string[] dialogue, UnityEvent startevent)
+    private void Awake()
     {
-        StartCoroutine(Fade(Radio, 0f, 1f, FadeDuration));
-        Icon.sprite = icon;
-        Name.text = name;
-        sentences = dialogue;
+        Instance = this;
+    }
 
-        if (startevent != null)
+    private IEnumerator SequenceDialogueEvents(DialogueEvent[] events)
+    {
+        for (int i = 0; i < events.Length; i++)
         {
-            startevent.Invoke();
+            events[i].actionEvents.Invoke();
+            if(events[i].delay>0) yield return new WaitForSeconds(events[i].delay);
         }
+    }
+
+    public void StartDialogue(Dialogue dialogue)
+    {
+        if (dialogue != null)
+        {
+            StopCoroutine(startDialogue_Ref);
+        }
+        startDialogue_Ref = StartCoroutine(StartDialogue_Coroutine(dialogue));
+    }
+
+
+    private Coroutine startDialogue_Ref;
+    private IEnumerator StartDialogue_Coroutine(Dialogue dialogue)
+    {
+        Icon.sprite = dialogue.dialogue[0].portrait;
+        Name.text = dialogue.dialogue[0].name;
+
+        StartCoroutine(Fade(Radio, 0f, 1f, FadeDuration));
+
+        yield return StartCoroutine(SequenceDialogueEvents(dialogue.startDialogue));
 
         StartCoroutine(TypeSentences());
         Debug.Log("ativei");
     }
-
-    public void EndDialogues(UnityEvent endevent)
+    public void EndDialogues(DialogueEvent[] endevent)
     {
         if (endevent != null)
         {
-            endevent.Invoke();
+            //endevent.Invoke();
         }
 
         Debug.Log("evento finalizado");
@@ -56,7 +72,7 @@ public class DialogueBasicControl : MonoBehaviour
 
     public void CloseDialogues()
     {
-       
+
         // verifica se o CanvasGroup esta visivel 
         if (Radio.alpha > 0)
         {
@@ -69,9 +85,15 @@ public class DialogueBasicControl : MonoBehaviour
         }
     }
 
+    private Coroutine onDialogue_Ref;
+    private IEnumerator OnDialogue_Coroutine()
+    {
+
+    }
+
     IEnumerator TypeSentences()
     {
-       
+
         foreach (string sentence in sentences)
         {
             typing = true;
@@ -97,9 +119,14 @@ public class DialogueBasicControl : MonoBehaviour
         typingEnd = true;
         // fecha dialogo, se ja estiver fechado nao faz nada
         CloseDialogues();
-        
+
     }
 
+
+    public Coroutine StartFade(CanvasGroup canvasGroup, float startAlpha, float endAlpha, float duration)
+    {
+        return StartCoroutine(Fade(canvasGroup, startAlpha, endAlpha, duration));
+    }
     IEnumerator Fade(CanvasGroup canvasGroup, float startAlpha, float endAlpha, float duration)
     {
         float elapsedTime = 0f;

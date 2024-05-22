@@ -4990,18 +4990,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ed03f7f3dde066478b6c38b82f3efff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Icon: {fileID: 0}
-  titlename: 
-  dialogue_v2: []
-  dialogue: []
-  startDialogue_v2: []
-  endDialogue_v2: []
-  startDialogue:
-    m_PersistentCalls:
-      m_Calls: []
-  endDialogue:
-    m_PersistentCalls:
-      m_Calls: []
+  dialogue:
+  - portrait: {fileID: 0}
+    name: 
+    quote: 
+  - portrait: {fileID: 0}
+    name: 
+    quote: 
+  startDialogue: []
+  endDialogue: []
 --- !u!23 &2132379281
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -5826,7 +5823,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7920298203583280158, guid: eb11bd31773d7a64aa560b99e8e3727a, type: 3}
       propertyPath: m_Name
-      value: Dialog
+      value: Dialogue
       objectReference: {fileID: 0}
     - target: {fileID: 8003146500110019042, guid: eb11bd31773d7a64aa560b99e8e3727a, type: 3}
       propertyPath: m_LocalPosition.y

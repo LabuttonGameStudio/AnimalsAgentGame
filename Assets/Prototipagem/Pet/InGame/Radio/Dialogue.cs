@@ -5,48 +5,42 @@ using UnityEngine.Events;
 
 public class Dialogue : MonoBehaviour
 {
-    [Header("COMPONENTES")]
-    public Sprite Icon;
-    public string titlename;
-
+    [SerializeField]private bool pauseOnPlay;
     [Header("TEXT")]
-    public DialogueText[] dialogue_v2;
-    public string[] dialogue;
+    public DialogueText[] dialogue;
 
     [Header("EVENTS")]
-    public DialogueEvent[] startDialogue_v2;
-    public DialogueEvent[] endDialogue_v2;
-    [Space]
-    public UnityEvent startDialogue;
-    public UnityEvent endDialogue;
+    public DialogueEvent[] startDialogue;
+    public DialogueEvent[] endDialogue;
 
     private DialogueBasicControl db;
     private bool CheckedtypingEnd = false;
 
-    private void Awake()
+    private void Start()
     {
-        db = FindObjectOfType<DialogueBasicControl>();
-
+        db = DialogueBasicControl.Instance;
     }
-
     public void Update()
     {
-        if (db.typingEnd && !CheckedtypingEnd)
-        {
-            db.EndDialogues(endDialogue);
-            CheckedtypingEnd = true;
-        }
+        //if (db.typingEnd && !CheckedtypingEnd)
+        //{
+        //    db.EndDialogues(endDialogue);
+        //    CheckedtypingEnd = true;
+        //}
     }
+    public void ShowDialogue()
+    {
 
+    }
     public void ShowDialogueNotPause()
     {
-        db.StartDialogues(Icon, titlename, dialogue, startDialogue);
+        db.StartDialogues(dialogue, startDialogue);
         db.Skip.enabled = false;
     }
 
     public void ShowDialoguePause()
     {
-        db.StartDialogues(Icon, titlename, dialogue, startDialogue);
+        db.StartDialogues(dialogue, startDialogue);
         StartCoroutine(ShowDialogueWithPause());
 
     }
