@@ -15,6 +15,7 @@ public class Dialogue : MonoBehaviour
 
     [Header("EVENTS")]
     public DialogueEvent[] startDialogue_v2;
+    public DialogueEvent[] endDialogue_v2;
     [Space]
     public UnityEvent startDialogue;
     public UnityEvent endDialogue;
