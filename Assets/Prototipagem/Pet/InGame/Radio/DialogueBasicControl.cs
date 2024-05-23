@@ -6,11 +6,19 @@ using TMPro;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
 
+
+public class DialogueCoroutines
+{
+    public List<Coroutine> coroutines = new List<Coroutine>();
+}
+
 public class DialogueBasicControl : MonoBehaviour
 {
     //Singleton
     public static DialogueBasicControl Instance { get; private set; }
 
+    private DialogueCoroutines currentDialogueCoroutine;
+    private Dialogue currentDialogue;
 
     [Header("COMPONENTS")]
     public CanvasGroup Radio;
@@ -31,6 +39,7 @@ public class DialogueBasicControl : MonoBehaviour
     public void Start()
     {
         ArmadilloPlayerController.Instance.inputControl.inputAction.Armadillo.Interact.Enable();
+        currentDialogueCoroutine = new DialogueCoroutines();
     }
     private IEnumerator SequenceDialogueEvents(DialogueEvent[] events)
     {
@@ -41,17 +50,34 @@ public class DialogueBasicControl : MonoBehaviour
         }
     }
 
+    public void StopCurrentDialogue()
+    {
+        if (currentDialogueCoroutine != null)
+        {
+            for (int i = 0;i < currentDialogueCoroutine.coroutines.Count; i++)
+            {
+                if (currentDialogueCoroutine.coroutines[i] != null) StopCoroutine(currentDialogueCoroutine.coroutines[i]);
+            }
+            currentDialogueCoroutine = null;
+        }
+    }
+
     public void StartDialogue(Dialogue dialogue)
     {
+        StopCurrentDialogue();
+        currentDialogueCoroutine = new DialogueCoroutines();
+        currentDialogue = dialogue;
+
         Icon.sprite = dialogue.dialogue[0].portrait;
         Name.text = dialogue.dialogue[0].name;
 
-        StartCoroutine(Fade(Radio, 0f, 1f, FadeDuration));
+        currentDialogueCoroutine.coroutines.Add(StartCoroutine(Fade(Radio, 0f, 1f, FadeDuration)));
 
-        StartCoroutine(SequenceDialogueEvents(dialogue.startDialogue));
+        currentDialogueCoroutine.coroutines.Add(StartCoroutine(SequenceDialogueEvents(dialogue.startDialogue)));
 
         if (dialogue.pauseBetweenSentences)
         {
+            Skip.enabled = true;
             onDialogue_Ref = StartCoroutine(OnDialoguePauseOnEndSentence_Coroutine(dialogue));
 
         }
@@ -60,11 +86,12 @@ public class DialogueBasicControl : MonoBehaviour
             onDialogue_Ref = StartCoroutine(OnDialogue_Coroutine(dialogue));
 
         }
+        currentDialogueCoroutine.coroutines.Add(onDialogue_Ref);
     }
     public void EndDialogues(DialogueEvent[] endevent)
     {
-        StartCoroutine(Fade(Radio, 1f, 0f, FadeDuration));
-        StartCoroutine(SequenceDialogueEvents(endevent));
+        currentDialogueCoroutine.coroutines.Add(StartCoroutine(Fade(Radio, 1f, 0f, FadeDuration)));
+        currentDialogueCoroutine.coroutines.Add(StartCoroutine(SequenceDialogueEvents(endevent)));
     }
 
 
@@ -75,8 +102,10 @@ public class DialogueBasicControl : MonoBehaviour
         {
             Icon.sprite = dialogue.dialogue[i].portrait;
             Name.text = dialogue.dialogue[i].name;
-            StartCoroutine(SequenceDialogueEvents(dialogue.dialogue[i].eventOnDialogueBoxEnter));
-            yield return StartCoroutine(TypeSentence_Coroutine(dialogue.dialogue[i].quote, false));
+            currentDialogueCoroutine.coroutines.Add(StartCoroutine(SequenceDialogueEvents(dialogue.dialogue[i].eventOnDialogueBoxEnter)));
+            Coroutine typeCoroutine = StartCoroutine(TypeSentence_Coroutine(dialogue.dialogue[i].quote, false));
+            currentDialogueCoroutine.coroutines.Add(typeCoroutine);
+            yield return typeCoroutine;
             yield return new WaitForSeconds(TimeBetweenSentences); // espera um tempo antes de iniciar a proxima sentença
         }
         EndDialogues(dialogue.endDialogue);
@@ -88,9 +117,13 @@ public class DialogueBasicControl : MonoBehaviour
         {
             Icon.sprite = dialogue.dialogue[i].portrait;
             Name.text = dialogue.dialogue[i].name;
-            StartCoroutine(SequenceDialogueEvents(dialogue.dialogue[i].eventOnDialogueBoxEnter));
+
+            currentDialogueCoroutine.coroutines.Add(StartCoroutine(SequenceDialogueEvents(dialogue.dialogue[i].eventOnDialogueBoxEnter)));
             InputAction interactButton = ArmadilloPlayerController.Instance.inputControl.inputAction.Armadillo.Interact;
-            yield return StartCoroutine(TypeSentence_Coroutine(dialogue.dialogue[i].quote, true));
+
+            Coroutine typeSequenceCoroutine = StartCoroutine(TypeSentence_Coroutine(dialogue.dialogue[i].quote, true));
+            currentDialogueCoroutine.coroutines.Add(typeSequenceCoroutine);
+            yield return typeSequenceCoroutine;
             while (true)
             {
                 if (interactButton.WasReleasedThisFrame()) break;
@@ -98,7 +131,7 @@ public class DialogueBasicControl : MonoBehaviour
             }
             yield return new WaitForSeconds(0.1f);
             float timer = 0;
-            bool breakBasedOnTime=false;
+            bool breakBasedOnTime = false;
             while (true)
             {
                 if (interactButton.WasPerformedThisFrame()) break;
@@ -121,6 +154,7 @@ public class DialogueBasicControl : MonoBehaviour
         }
         EndDialogues(dialogue.endDialogue);
         onDialogue_Ref = null;
+        Skip.enabled = false;
     }
     IEnumerator TypeSentence_Coroutine(string sentence, bool canInputBreak)
     {
