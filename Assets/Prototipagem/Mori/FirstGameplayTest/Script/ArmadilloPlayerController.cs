@@ -305,4 +305,9 @@ public class ArmadilloPlayerController : MonoBehaviour
             movementControl.enabled = false;
         }
     }
+
+    public void TeleportPlayer(Transform transform)
+    {
+        gameObject.transform.position = transform.position;
+    }
 }
