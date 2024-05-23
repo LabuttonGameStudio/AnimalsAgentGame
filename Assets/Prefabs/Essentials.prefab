@@ -14914,6 +14914,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   startWithPistol: 0
+  currentWeaponID: -1
+  pocketedWeaponID: -1
   weaponCamera: {fileID: 8297561690872437431}
   currentWeaponUI: {fileID: 5621026381331195960}
   Weaponammoslider: {fileID: 3316988848512296943}
@@ -17471,6 +17473,18 @@ PrefabInstance:
     - target: {fileID: 3106215374347170094, guid: 6df7ecf03b35b6a4e9684b83583895e7, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4315812907273239361, guid: 6df7ecf03b35b6a4e9684b83583895e7, type: 3}
+      propertyPath: m_Interactable
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4315812907273239361, guid: 6df7ecf03b35b6a4e9684b83583895e7, type: 3}
+      propertyPath: m_BlocksRaycasts
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7460722754400098959, guid: 6df7ecf03b35b6a4e9684b83583895e7, type: 3}
+      propertyPath: VelocityText
+      value: 40
       objectReference: {fileID: 0}
     - target: {fileID: 7460722754400098959, guid: 6df7ecf03b35b6a4e9684b83583895e7, type: 3}
       propertyPath: TimeBetweenSentences

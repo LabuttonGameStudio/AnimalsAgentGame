@@ -29,6 +29,7 @@ public class CameraFirstPersonState : CameraBaseState
 
         //playerCamera.xRotation = Mathf.Clamp(playerCamera.xRotation, -90, 90);
         //playerCamera.firstPersonCamera.transform.rotation = Quaternion.Euler(playerCamera.xRotation, playerCamera.yRotation, 0);
+        ArmadilloPlayerController.Instance.movementControl.transform.rotation = Quaternion.Euler(0, playerCamera.mainCamera.transform.rotation.eulerAngles.y, 0);
         ArmadilloPlayerController.Instance.movementControl.rb.rotation = Quaternion.Euler(0, playerCamera.mainCamera.transform.rotation.eulerAngles.y, 0);
     }
 }

@@ -7,12 +7,14 @@ using UnityEngine.UI;
 
 public class ArmadilloWeaponControl : MonoBehaviour
 {
+    private bool isGunPocketed;
+
     [SerializeField] private bool startWithPistol;
 
     [System.NonSerialized] public Weapon[] weaponsInInventory;
 
-    [System.NonSerialized] public int currentWeaponID = -1;
-    private int pocketedWeaponID = -1;
+    [SerializeField] public int currentWeaponID = -1;
+    [SerializeField] private int pocketedWeaponID = -1;
 
     [SerializeField] private Camera weaponCamera;
 
@@ -27,7 +29,12 @@ public class ArmadilloWeaponControl : MonoBehaviour
     public void GivePlayerEletricPistol()
     {
         weaponsInInventory[0] = new EletricPistol(this);
-        ChangeWeapon(0);
+        if (isGunPocketed)
+        {
+            Debug.Log("a");
+            pocketedWeaponID = 0;
+        }
+        else ChangeWeapon(0);
     }
     public GameObject LoadModel(GameObject model, Vector3 position, Quaternion rotation)
     {
@@ -92,7 +99,6 @@ public class ArmadilloWeaponControl : MonoBehaviour
             ToggleStateInputs(playerInput, false);
             weaponsInInventory[currentWeaponID].ToggleVisual(false);
             currentWeaponID = -1;
-            Debug.Log("a");
             return;
         }
         if (currentWeaponID != -1)
@@ -105,6 +111,7 @@ public class ArmadilloWeaponControl : MonoBehaviour
             ToggleStateInputs(playerInput, true);
         }
         currentWeaponID = nextWeapon;
+        Debug.Log(nextWeapon);
         OnGunEquip(nextWeapon);
         DefineDelegates(playerInput, DelegateType.Add, nextWeapon);
         weaponsInInventory[nextWeapon].ToggleVisual(true);
@@ -112,9 +119,10 @@ public class ArmadilloWeaponControl : MonoBehaviour
 
     public void ToggleWeapon(bool state)
     {
+        isGunPocketed =!state;
         if (!state)
         {
-            if(currentWeaponID != -1)pocketedWeaponID = currentWeaponID;
+            if (currentWeaponID != -1) pocketedWeaponID = currentWeaponID;
             ChangeWeapon(-1);
         }
         else

@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.Events;
+using UnityEngine.InputSystem;
 
 public class DialogueBasicControl : MonoBehaviour
 {
@@ -27,99 +28,131 @@ public class DialogueBasicControl : MonoBehaviour
     {
         Instance = this;
     }
-
+    public void Start()
+    {
+        ArmadilloPlayerController.Instance.inputControl.inputAction.Armadillo.Interact.Enable();
+    }
     private IEnumerator SequenceDialogueEvents(DialogueEvent[] events)
     {
         for (int i = 0; i < events.Length; i++)
         {
             events[i].actionEvents.Invoke();
-            if(events[i].delay>0) yield return new WaitForSeconds(events[i].delay);
+            if (events[i].delay > 0) yield return new WaitForSeconds(events[i].delay);
         }
     }
 
     public void StartDialogue(Dialogue dialogue)
-    {
-        if (dialogue != null)
-        {
-            StopCoroutine(startDialogue_Ref);
-        }
-        startDialogue_Ref = StartCoroutine(StartDialogue_Coroutine(dialogue));
-    }
-
-
-    private Coroutine startDialogue_Ref;
-    private IEnumerator StartDialogue_Coroutine(Dialogue dialogue)
     {
         Icon.sprite = dialogue.dialogue[0].portrait;
         Name.text = dialogue.dialogue[0].name;
 
         StartCoroutine(Fade(Radio, 0f, 1f, FadeDuration));
 
-        yield return StartCoroutine(SequenceDialogueEvents(dialogue.startDialogue));
+        StartCoroutine(SequenceDialogueEvents(dialogue.startDialogue));
 
-        StartCoroutine(TypeSentences());
-        Debug.Log("ativei");
-    }
-    public void EndDialogues(DialogueEvent[] endevent)
-    {
-        if (endevent != null)
+        if (dialogue.pauseBetweenSentences)
         {
-            //endevent.Invoke();
-        }
+            onDialogue_Ref = StartCoroutine(OnDialoguePauseOnEndSentence_Coroutine(dialogue));
 
-        Debug.Log("evento finalizado");
-    }
-
-    public void CloseDialogues()
-    {
-
-        // verifica se o CanvasGroup esta visivel 
-        if (Radio.alpha > 0)
-        {
-            StartCoroutine(Fade(Radio, 1f, 0f, FadeDuration));
-            Debug.Log("skipei");
         }
         else
         {
-            Debug.Log("Dialogo fechado");
+            onDialogue_Ref = StartCoroutine(OnDialogue_Coroutine(dialogue));
+
         }
     }
+    public void EndDialogues(DialogueEvent[] endevent)
+    {
+        StartCoroutine(Fade(Radio, 1f, 0f, FadeDuration));
+        StartCoroutine(SequenceDialogueEvents(endevent));
+    }
+
 
     private Coroutine onDialogue_Ref;
-    private IEnumerator OnDialogue_Coroutine()
+    private IEnumerator OnDialogue_Coroutine(Dialogue dialogue)
     {
-
-    }
-
-    IEnumerator TypeSentences()
-    {
-
-        foreach (string sentence in sentences)
+        for (int i = 0; i < dialogue.dialogue.Length; i++)
         {
-            typing = true;
-            typingEnd = false;
-            DialogueText.text = "";
-            foreach (char letter in sentence.ToCharArray())
+            Icon.sprite = dialogue.dialogue[i].portrait;
+            Name.text = dialogue.dialogue[i].name;
+            StartCoroutine(SequenceDialogueEvents(dialogue.dialogue[i].eventOnDialogueBoxEnter));
+            yield return StartCoroutine(TypeSentence_Coroutine(dialogue.dialogue[i].quote, false));
+            yield return new WaitForSeconds(TimeBetweenSentences); // espera um tempo antes de iniciar a proxima sentença
+        }
+        EndDialogues(dialogue.endDialogue);
+        onDialogue_Ref = null;
+    }
+    private IEnumerator OnDialoguePauseOnEndSentence_Coroutine(Dialogue dialogue)
+    {
+        for (int i = 0; i < dialogue.dialogue.Length; i++)
+        {
+            Icon.sprite = dialogue.dialogue[i].portrait;
+            Name.text = dialogue.dialogue[i].name;
+            StartCoroutine(SequenceDialogueEvents(dialogue.dialogue[i].eventOnDialogueBoxEnter));
+            InputAction interactButton = ArmadilloPlayerController.Instance.inputControl.inputAction.Armadillo.Interact;
+            yield return StartCoroutine(TypeSentence_Coroutine(dialogue.dialogue[i].quote, true));
+            while (true)
             {
-                DialogueText.text += letter;
-                yield return new WaitForSeconds(VelocityText);
-            }
-            typing = false;
-
-            // Aguarda ate que o texto seja completamente exibido antes de passar para a proxima frase
-            while (typing)
-            {
+                if (interactButton.WasReleasedThisFrame()) break;
                 yield return null;
             }
-
-            yield return new WaitForSeconds(TimeBetweenSentences); // espera um tempo antes de iniciar a proxima sentença
-
+            yield return new WaitForSeconds(0.1f);
+            float timer = 0;
+            bool breakBasedOnTime=false;
+            while (true)
+            {
+                if (interactButton.WasPerformedThisFrame()) break;
+                timer += Time.deltaTime;
+                if (timer > TimeBetweenSentences)
+                {
+                    breakBasedOnTime = true;
+                    break;
+                }
+                yield return null;
+            }
+            if (!breakBasedOnTime)
+            {
+                while (true)
+                {
+                    if (interactButton.WasReleasedThisFrame()) break;
+                    yield return null;
+                }
+            }
         }
+        EndDialogues(dialogue.endDialogue);
+        onDialogue_Ref = null;
+    }
+    IEnumerator TypeSentence_Coroutine(string sentence, bool canInputBreak)
+    {
+        DialogueText.text = "";
 
-        typingEnd = true;
-        // fecha dialogo, se ja estiver fechado nao faz nada
-        CloseDialogues();
+        InputAction interactButton = ArmadilloPlayerController.Instance.inputControl.inputAction.Armadillo.Interact;
 
+        foreach (char letter in sentence.ToCharArray())
+        {
+            DialogueText.text += letter;
+            bool breakInWhile = false;
+            float timer = 0f;
+            if (canInputBreak)
+            {
+                while (timer < 3f / VelocityText)
+                {
+                    if (interactButton.WasPerformedThisFrame())
+                    {
+                        breakInWhile = true;
+                        break;
+                    }
+                    timer += Time.deltaTime;
+                    yield return null;
+                }
+                if (breakInWhile) break;
+            }
+            else
+            {
+                yield return new WaitForSeconds(3f / VelocityText);
+            }
+        }
+        DialogueText.text = sentence;
     }
 
 

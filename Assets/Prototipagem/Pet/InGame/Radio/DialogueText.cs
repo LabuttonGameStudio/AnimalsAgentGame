@@ -13,5 +13,5 @@ public class DialogueText
     public string quote;
 
     [Header("Events")]
-    public DialogueEvent[] events;
+    public DialogueEvent[] eventOnDialogueBoxEnter;
 }

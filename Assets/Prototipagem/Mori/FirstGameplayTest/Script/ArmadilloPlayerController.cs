@@ -67,7 +67,7 @@ public class ArmadilloPlayerController : MonoBehaviour
     private void Awake()
     {
         Instance = this;
-
+        #region Assign Components
         inputControl = GetComponent<ArmadilloPlayerInputController>();
         movementControl = GetComponent<ArmadilloMovementController>();
         cameraControl = GetComponent<PlayerCamera>();
@@ -76,7 +76,8 @@ public class ArmadilloPlayerController : MonoBehaviour
         weaponControl = GetComponent<ArmadilloWeaponControl>();
         pickUpControl = GetComponent<ArmadilloPickUpControl>();
         visualControl = GetComponent<ArmadilloVisualControl>();
-        Application.targetFrameRate = 60;
+        #endregion
+        Application.targetFrameRate = 300;
 
     }
     private void Start()
@@ -91,10 +92,6 @@ public class ArmadilloPlayerController : MonoBehaviour
     }
     private void OnValidate()
     {
-        //sonarEffectDefault = sonarEffect.customPasses[0] as SeeThrough;
-        //sonarEffectEnemy = sonarEffect.customPasses[1] as SeeThrough;
-        //sonarEffectDefault.seeThroughMaterial.SetFloat("_MAXDISTANCE",sonarRange);
-        //sonarEffectEnemy.seeThroughMaterial.SetFloat("_MAXDISTANCE",sonarRange);
     }
 
     public float GetCurrentVisibilityOfPlayer()
@@ -107,6 +104,12 @@ public class ArmadilloPlayerController : MonoBehaviour
         inputControl.inputAction.Armadillo.Ability1.Enable();
         inputControl.inputAction.Armadillo.Ability1.performed += ChangeToBallForm;
     }
+    public void ChangeToBallForm()
+    {
+        if (Form.Ball == currentForm) return;
+        if (changeToBallFormRef == null) changeToBallFormRef = StartCoroutine(ChangeToBallForm_Coroutine());
+        currentForm = Form.Ball;
+    }
     public void ChangeToBallForm(InputAction.CallbackContext value)
     {
         if (Form.Ball == currentForm) return;
@@ -114,13 +117,19 @@ public class ArmadilloPlayerController : MonoBehaviour
         currentForm = Form.Ball;
     }
 
+    public void ChangeToDefaultForm()
+    {
+        if (Form.Default == currentForm) return;
+        if (changeToDefaultFormRef == null) changeToDefaultFormRef = StartCoroutine(ChangeToDefaultForm_Coroutine());
+        currentForm = Form.Default;
+    }
     public void ChangeToDefaultForm(InputAction.CallbackContext value)
     {
         if (Form.Default == currentForm) return;
         if (changeToDefaultFormRef == null) changeToDefaultFormRef = StartCoroutine(ChangeToDefaultForm_Coroutine());
         currentForm = Form.Default;
     }
-
+    #region Sonar Ability
     //------ Sonar Ability ------
 
     public void UnlockSonarAbility()
@@ -193,6 +202,9 @@ public class ArmadilloPlayerController : MonoBehaviour
 
         SonarAbilityVFX_Ref = null;
     }
+    #endregion
+
+    #region Change forms
     //------ Change Forms ------
 
     private Coroutine changeToBallFormRef;
@@ -200,7 +212,7 @@ public class ArmadilloPlayerController : MonoBehaviour
     {
         //Move a camera para terceira pessoa em 0.5 segundos 
         currentEquipedWeapon = weaponControl.currentWeaponID;
-        weaponControl.ChangeWeapon(-1);
+        weaponControl.ToggleWeapon(false);
         cameraControl.ChangeCameraState(cameraControl.thirdPersonCameraState);
         visualControl.OnEnterBallMode();
         sonarCamera.cullingMask = cameraControl.thirdPersonSeeThroughMask;
@@ -267,15 +279,30 @@ public class ArmadilloPlayerController : MonoBehaviour
         yield return new WaitForSeconds(0.25f);
         sonarCamera.cullingMask = cameraControl.firstPeronSeeThroughMask;
         visualControl.OnEnterDefaultMode();
-        weaponControl.ChangeWeapon(currentEquipedWeapon);
+        weaponControl.ToggleWeapon(true);
         inputControl.inputAction.Armadillo.Ability1.performed += ChangeToBallForm;
         changeToDefaultFormRef = null;
     }
 
+    #endregion
+
+    #region Die
     //----- Die -----
     public void Die()
     {
         Debug.Log("Player Die");
     }
+    #endregion
 
+    public void TogglePlayerControl(bool state)
+    {
+        if (state)
+        {
+            movementControl.enabled = true;
+        }
+        else
+        {
+            movementControl.enabled = false;
+        }
+    }
 }
