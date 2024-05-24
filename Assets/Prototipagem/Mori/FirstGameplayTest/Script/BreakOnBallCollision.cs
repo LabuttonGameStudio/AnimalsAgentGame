@@ -10,7 +10,7 @@ public class BreakOnBallCollision : MonoBehaviour
         {
             if (ArmadilloPlayerController.Instance.currentForm == ArmadilloPlayerController.Form.Ball)
             {
-                if(collision.impulse.magnitude>400) gameObject.SetActive(false);
+                if(collision.impulse.magnitude>200) gameObject.SetActive(false);
             }
         }
     }
