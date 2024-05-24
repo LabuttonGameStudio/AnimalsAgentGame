@@ -309,5 +309,6 @@ public class ArmadilloPlayerController : MonoBehaviour
     public void TeleportPlayer(Transform transform)
     {
         gameObject.transform.position = transform.position;
+        movementControl.rb.MovePosition(transform.position);
     }
 }
