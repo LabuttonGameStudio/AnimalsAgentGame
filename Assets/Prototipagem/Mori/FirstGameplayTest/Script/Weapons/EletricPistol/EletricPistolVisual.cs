@@ -5,18 +5,22 @@ using UnityEngine;
 public class EletricPistolVisual : MonoBehaviour
 {
     [SerializeField]private GameObject model;
+    [Header("VFX")]
     [SerializeField]private ParticleSystem chargedParticle;
     [SerializeField]private ParticleSystem onFireParticle;
     [SerializeField]private ParticleSystem onFireTrail;
     [SerializeField]private ParticleSystem onOverheat;
     [SerializeField]private ParticleSystem BzzOnomatopeiaParticle;
     [SerializeField]private ParticleSystem ZiumOnomatopeiaParticle;
+    [Header("Audio")]
+    [SerializeField] private SoundEmitter onFireSoundEmitter;
     public void OnUnchargedFire()
     {
         ZiumOnomatopeiaParticle.Play();
         onFireParticle.Play();
         onFireTrail.Play();
         TweenMunicao.Instance.ShakeAmmunition();
+        onFireSoundEmitter.PlayAudio();
     }
     public void OnChargedFire()
     {
@@ -25,6 +29,7 @@ public class EletricPistolVisual : MonoBehaviour
         onFireParticle.Play();
         onFireTrail.Play();
         TweenMunicao.Instance.ShakeAmmunition();
+        onFireSoundEmitter.PlayAudio();
     }
     public void OnCharge()
     {

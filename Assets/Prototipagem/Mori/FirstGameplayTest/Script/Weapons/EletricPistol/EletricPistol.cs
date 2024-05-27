@@ -117,7 +117,7 @@ public class EletricPistol : Weapon
         foreach (RaycastHit raycastHit in targetsHit)
         {
             if (raycastHit.collider.isTrigger) continue;
-            Debug.Log(raycastHit.transform.name);
+            //Debug.Log(raycastHit.transform.name);
             if (raycastHit.transform.TryGetComponent(out IDamageable idamageable))
             {
                 Damage damage = new Damage(unchargedHitDamage, Damage.DamageType.Eletric, true, weaponControl.transform.position);
@@ -137,7 +137,7 @@ public class EletricPistol : Weapon
         foreach (RaycastHit raycastHit in targetsHit)
         {
             if (raycastHit.collider.isTrigger) continue;
-            Debug.Log(raycastHit.transform.name);
+            //Debug.Log(raycastHit.transform.name);
             if (raycastHit.transform.TryGetComponent(out IDamageable idamageable))
             {
                 Damage damage = new Damage(chargedHitDamage, Damage.DamageType.Eletric, true, weaponControl.transform.position);
