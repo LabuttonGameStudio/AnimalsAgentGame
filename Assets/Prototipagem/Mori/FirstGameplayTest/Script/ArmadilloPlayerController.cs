@@ -37,6 +37,7 @@ public class ArmadilloPlayerController : MonoBehaviour
     [System.NonSerialized] public ArmadilloWeaponControl weaponControl;
     [System.NonSerialized] public ArmadilloPickUpControl pickUpControl;
     [System.NonSerialized] public ArmadilloVisualControl visualControl;
+    [System.NonSerialized] public ArmadilloAudioControl audioControl;
 
     //Player Forms
     [Header("Default Form")]
@@ -76,6 +77,7 @@ public class ArmadilloPlayerController : MonoBehaviour
         weaponControl = GetComponent<ArmadilloWeaponControl>();
         pickUpControl = GetComponent<ArmadilloPickUpControl>();
         visualControl = GetComponent<ArmadilloVisualControl>();
+        audioControl = GetComponent<ArmadilloAudioControl>();
         #endregion
         Application.targetFrameRate = 300;
 

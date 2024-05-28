@@ -71,6 +71,7 @@ public class EnemyObservingState : MeleeEnemyState
         if (currentState != ObservingStates.LookingAround)
         {
             currentState = ObservingStates.LookingAround;
+            StopTracking();
             lookAround_Ref = iEnemy.StartCoroutine(LookAround_Coroutine());
         }
     }
@@ -79,7 +80,8 @@ public class EnemyObservingState : MeleeEnemyState
     private IEnumerator LookAround_Coroutine()
     {
         iEnemy.animator.SetBool("isWalking", false);
-        yield return new WaitForSeconds(1);
+        tracking_Ref = iEnemy.StartCoroutine(Tracking_Coroutine());
+        yield return new WaitForSeconds(2);
         StopTracking();
         if (iEnemy.TryStartRandomLookAround(5, out Coroutine coroutine))
         {
@@ -108,7 +110,7 @@ public class EnemyObservingState : MeleeEnemyState
         while (true)
         {
             Vector3 position = iEnemy.lastKnownPlayerPos;
-            iEnemy.LerpLookAt(position, 5);
+            iEnemy.LerpLookAt(position, 2);
             yield return new WaitForFixedUpdate();
         }
     }

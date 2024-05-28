@@ -86,8 +86,7 @@ public class EnemyMelee : IEnemy, IDamageable,ISoundReceiver
     private Coroutine onDamageTaken_Ref;
     private IEnumerator OnDamageTaken_Coroutine(Damage damage)
     {
-        yield return new WaitForSeconds(1f);
-        LookAt(damage.originPoint);
+        yield return new WaitForSeconds(0.25f);
         lastKnownPlayerPos = damage.originPoint;
         ChangeCurrentAIBehaviour(AIBehaviour.Searching);
         SetDetectionLevel(searchingStateBreakPoint);
@@ -173,8 +172,11 @@ public class EnemyMelee : IEnemy, IDamageable,ISoundReceiver
                     case AIBehaviour.Roaming:
                         lastKnownPlayerPos = soundData.originPoint;
                         ChangeCurrentAIBehaviour(AIBehaviour.Observing);
+                        ToggleAlert(true);
                         break;
                     case AIBehaviour.Observing:
+                        lastKnownPlayerPos = soundData.originPoint;
+                        ChangeCurrentAIBehaviour(AIBehaviour.Searching);
                         break;
                     case AIBehaviour.Searching:
                         break;

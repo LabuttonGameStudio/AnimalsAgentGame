@@ -22,7 +22,7 @@ public class EletricPistol : Weapon
 
     //----- Stats -----
     //Tiro normal
-    readonly private int unchargedHitDamage = 20;
+    readonly private int unchargedHitDamage = 15;
     readonly private int unchargedOverheatCharge = 15;
     //Tiro carregado
     readonly private int chargedHitDamage = 50;

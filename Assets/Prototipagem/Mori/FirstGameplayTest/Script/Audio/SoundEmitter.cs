@@ -7,7 +7,9 @@ using AudioType = SoundGeneralControl.AudioType;
 public class SoundEmitter : MonoBehaviour
 {
     [Tooltip("Apenas para organizacao")][SerializeField] public string audioName;
-    [SerializeField] public AudioSource connectedAudioSource;
+    [SerializeField] public AudioSource[] connectedAudioSource;
+
+    [Header("AudioSource")] private int lastAudioSourceIndexPlayed;
 
     [Header("Configs")]
     [Tooltip("If is OneShot can play more than one at a time")][SerializeField] private bool isOneShot;
@@ -32,10 +34,47 @@ public class SoundEmitter : MonoBehaviour
 
     public void PlayAudio()
     {
-        if (audioType == AudioType.Suspicious)StartCoroutine(CheckForNearbySoundReceivers());
-        
-    }
+        if (audioType == AudioType.Suspicious) StartCoroutine(CheckForNearbySoundReceivers());
+        PlayAudioSource();
 
+    }
+    private void PlayAudioSource()
+    {
+        if (connectedAudioSource.Length < 2)
+        {
+            if (!isOneShot)
+            {
+                connectedAudioSource[0].Play();
+
+            }
+            else
+            {
+                connectedAudioSource[0].PlayOneShot(connectedAudioSource[0].clip);
+            }
+        }
+        else
+        {
+            if (!isOneShot)
+            {
+                connectedAudioSource[RandomizeAudioSource()].Play();
+
+            }
+            else
+            {
+                int randomNumber = RandomizeAudioSource();
+                connectedAudioSource[randomNumber].PlayOneShot(connectedAudioSource[randomNumber].clip);
+            }
+        }
+    }
+    private int RandomizeAudioSource()
+    {
+
+        while (true)
+        {
+            int randomIndex = Random.Range(0, connectedAudioSource.Length);
+            if (randomIndex != lastAudioSourceIndexPlayed) return randomIndex;
+        }
+    }
     public IEnumerator CheckForNearbySoundReceivers()
     {
         Collider[] collidersInZone = Physics.OverlapSphere(transform.position, audioRange, SoundGeneralControl.Instance.soundReceivers_LayerMask);
@@ -49,7 +88,7 @@ public class SoundEmitter : MonoBehaviour
             {
                 RaycastHit[] objectsInTheMiddle;
                 objectsInTheMiddle = Physics.RaycastAll(transform.position, collider.transform.position, float.PositiveInfinity, SoundGeneralControl.Instance.soundOcclusion_LayerMask, QueryTriggerInteraction.Ignore);
-                foreach(RaycastHit obj in objectsInTheMiddle)
+                foreach (RaycastHit obj in objectsInTheMiddle)
                 {
                     Debug.Log(obj.collider.gameObject.name);
                     distancePercentage -= 0.2f;
@@ -67,6 +106,11 @@ public class SoundEmitter : MonoBehaviour
     }
     private void OnValidate()
     {
-        connectedAudioSource.maxDistance = audioRange;
+        if(connectedAudioSource.Length<1)return;
+        foreach (AudioSource audioSource in connectedAudioSource)
+        {
+            if (audioSource == null) return;
+            audioSource.maxDistance = audioRange;
+        }
     }
 }
