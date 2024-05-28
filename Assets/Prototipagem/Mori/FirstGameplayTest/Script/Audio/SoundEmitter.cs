@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static SoundGeneralControl;
+using AudioType = SoundGeneralControl.AudioType;
 
 public class SoundEmitter : MonoBehaviour
 {
@@ -8,15 +10,9 @@ public class SoundEmitter : MonoBehaviour
     [SerializeField] public AudioSource connectedAudioSource;
 
     [Header("Configs")]
-    [Tooltip("If is OneShot can play more than one at a time")][SerializeField]private bool isOneShot;
+    [Tooltip("If is OneShot can play more than one at a time")][SerializeField] private bool isOneShot;
     [SerializeField] public float audioRange;
 
-    public enum AudioType
-    {
-        Ambient,
-        Suspicious
-
-    }
 
     [SerializeField] public AudioType audioType;
 
@@ -27,7 +23,7 @@ public class SoundEmitter : MonoBehaviour
         Random.InitState(GetInstanceID());
         Color gizmosColor = Random.ColorHSV();
         gizmosColor.a = 1;
-        GizmosExtra.DrawString(audioName, transform.position + Vector3.up * audioRange,gizmosColor);
+        GizmosExtra.DrawString(audioName, transform.position + Vector3.up * audioRange, gizmosColor);
         Gizmos.color = gizmosColor;
         Gizmos.DrawWireSphere(transform.position, audioRange);
     }
@@ -41,13 +37,30 @@ public class SoundEmitter : MonoBehaviour
 
     public IEnumerator CheckForNearbySoundReceivers()
     {
-        Collider[] collidersInZone =Physics.OverlapSphere(transform.position, audioRange,SoundGeneralControl.Instance.soundReceiversLayerMask);
-        foreach(Collider collider in collidersInZone)
+        Collider[] collidersInZone = Physics.OverlapSphere(transform.position, audioRange, SoundGeneralControl.Instance.soundReceivers_LayerMask);
+        foreach (Collider collider in collidersInZone)
         {
-            float distancePercentage = Vector3.Distance(collider.transform.position, transform.position) / audioRange;
-            distancePercentage = Mathf.Max(0, distancePercentage);
+            float distancePercentage = 1 - Vector3.Distance(collider.transform.position, transform.position) / audioRange;
             distancePercentage = Mathf.Min(1, distancePercentage);
-            Debug.Log(collider.gameObject.name +"| Distance ="+ distancePercentage);
+
+
+            if (collider.TryGetComponent(out SoundReceiver soundReceiver))
+            {
+                RaycastHit[] objectsInTheMiddle;
+                objectsInTheMiddle = Physics.RaycastAll(transform.position, collider.transform.position, float.PositiveInfinity, SoundGeneralControl.Instance.soundOcclusion_LayerMask, QueryTriggerInteraction.Ignore);
+                Debug.Log(objectsInTheMiddle.Length);
+                foreach(RaycastHit obj in objectsInTheMiddle)
+                {
+                    Debug.Log(obj.collider.gameObject.name);
+                    distancePercentage -= 0.2f;
+                }
+                distancePercentage = Mathf.Max(0, distancePercentage);
+                soundReceiver.OnSoundHear(new SoundData
+                {
+                    audioPercentage = distancePercentage,
+                    audioType = this.audioType
+                });
+            }
             yield return null;
         }
     }

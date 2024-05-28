@@ -4,5 +4,5 @@ using UnityEngine;
 
 public interface SoundReceiver 
 {
-    
+    public abstract void OnSoundHear(SoundData soundData);
 }
