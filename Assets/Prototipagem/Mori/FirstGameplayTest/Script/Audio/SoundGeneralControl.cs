@@ -6,6 +6,7 @@ using static SoundGeneralControl;
 using AudioType = SoundGeneralControl.AudioType;
 public class SoundData
 {
+    public Vector3 originPoint;
     public float audioPercentage;
     public AudioType audioType;
 }

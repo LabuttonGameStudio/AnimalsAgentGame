@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using static AIBehaviourEnums;
-
-public class EnemyMelee : IEnemy, IDamageable
+using static SoundGeneralControl;
+using AudioType = SoundGeneralControl.AudioType;
+public class EnemyMelee : IEnemy, IDamageable,ISoundReceiver
 {
     #region Detection
+    [SerializeField] private float minimalHearValue;
     [Tooltip("Tempo necessario para ir ao estado mais alto de detecção")] readonly protected float timeToMaxDetect = 0.5f;
     #endregion
 
@@ -134,7 +136,6 @@ public class EnemyMelee : IEnemy, IDamageable
     {
         float increasePerTick;
 
-        timeSincePlayerLastSeen = 0;
         if(detectionTickIntervalTime>0)
         {
             increasePerTick = 100 * (Time.time - detectionTickIntervalTime) / timeToMaxDetect;
@@ -160,40 +161,25 @@ public class EnemyMelee : IEnemy, IDamageable
     {
         detectionTickIntervalTime = 0;
     }
-    public void DecreaseDetection()
-    {
-        timeSincePlayerLastSeen += EnemyMasterControl.Instance.visibilityTickInterval;
-        bool doesTimeExceedDelay;
 
-        //Delay baseado no estado atual ate comecar a descer o nivel de deteccao
-        switch (currentAIBehaviour)
+    public void OnSoundHear(SoundData soundData)
+    {
+        if(soundData.audioType == AudioType.Suspicious)
         {
-            case AIBehaviour.Roaming:
-                doesTimeExceedDelay = true;
-                break;
-            case AIBehaviour.Observing:
-                doesTimeExceedDelay = timeSincePlayerLastSeen >= 2;
-                break;
-            case AIBehaviour.Searching:
-            default:
-                doesTimeExceedDelay = timeSincePlayerLastSeen >= 5;
-                break;
-            case AIBehaviour.Attacking:
-                doesTimeExceedDelay = false;
-                break;
-        }
-        if (doesTimeExceedDelay)
-        {
-            //Desce o nivel de deteccao ate ele voltar ao estado roaming
-            float decreasePerTick = 100 / (timeToMaxDetect*1.5f / EnemyMasterControl.Instance.visibilityTickInterval);
-            if (detectionLevel - decreasePerTick < 0)
+            if (soundData.audioPercentage>=minimalHearValue)
             {
-                detectionLevel = 0;
-                if(currentAIBehaviour != AIBehaviour.Observing) ChangeCurrentAIBehaviour(AIBehaviour.Roaming);
-                return;
+                switch(currentAIBehaviour)
+                {
+                    case AIBehaviour.Roaming:
+                        lastKnownPlayerPos = soundData.originPoint;
+                        ChangeCurrentAIBehaviour(AIBehaviour.Observing);
+                        break;
+                    case AIBehaviour.Observing:
+                        break;
+                    case AIBehaviour.Searching:
+                        break;
+                }
             }
-            else detectionLevel -= decreasePerTick;
         }
     }
-    private float timeSincePlayerLastSeen;
 }

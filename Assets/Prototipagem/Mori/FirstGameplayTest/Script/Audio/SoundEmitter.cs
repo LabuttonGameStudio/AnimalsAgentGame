@@ -32,7 +32,8 @@ public class SoundEmitter : MonoBehaviour
 
     public void PlayAudio()
     {
-        StartCoroutine(CheckForNearbySoundReceivers());
+        if (audioType == AudioType.Suspicious)StartCoroutine(CheckForNearbySoundReceivers());
+        
     }
 
     public IEnumerator CheckForNearbySoundReceivers()
@@ -44,11 +45,10 @@ public class SoundEmitter : MonoBehaviour
             distancePercentage = Mathf.Min(1, distancePercentage);
 
 
-            if (collider.TryGetComponent(out SoundReceiver soundReceiver))
+            if (collider.TryGetComponent(out ISoundReceiver soundReceiver))
             {
                 RaycastHit[] objectsInTheMiddle;
                 objectsInTheMiddle = Physics.RaycastAll(transform.position, collider.transform.position, float.PositiveInfinity, SoundGeneralControl.Instance.soundOcclusion_LayerMask, QueryTriggerInteraction.Ignore);
-                Debug.Log(objectsInTheMiddle.Length);
                 foreach(RaycastHit obj in objectsInTheMiddle)
                 {
                     Debug.Log(obj.collider.gameObject.name);
@@ -58,7 +58,8 @@ public class SoundEmitter : MonoBehaviour
                 soundReceiver.OnSoundHear(new SoundData
                 {
                     audioPercentage = distancePercentage,
-                    audioType = this.audioType
+                    audioType = this.audioType,
+                    originPoint = transform.position
                 });
             }
             yield return null;

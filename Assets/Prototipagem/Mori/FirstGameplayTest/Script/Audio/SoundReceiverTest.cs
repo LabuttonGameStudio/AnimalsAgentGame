@@ -4,7 +4,7 @@ using UnityEngine;
 using static SoundGeneralControl;
 using AudioType = SoundGeneralControl.AudioType;
 
-public class SoundReceiverTest : MonoBehaviour,SoundReceiver
+public class SoundReceiverTest : MonoBehaviour, ISoundReceiver
 {
     public float minimalSoundNeeded;
 

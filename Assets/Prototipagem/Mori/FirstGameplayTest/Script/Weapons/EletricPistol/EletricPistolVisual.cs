@@ -13,7 +13,9 @@ public class EletricPistolVisual : MonoBehaviour
     [SerializeField]private ParticleSystem BzzOnomatopeiaParticle;
     [SerializeField]private ParticleSystem ZiumOnomatopeiaParticle;
     [Header("Audio")]
+    [SerializeField] public Transform audioEmitterTransform;
     [SerializeField] private SoundEmitter onFireSoundEmitter;
+
     public void OnUnchargedFire()
     {
         ZiumOnomatopeiaParticle.Play();

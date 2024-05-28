@@ -38,7 +38,7 @@ public class ArmadilloWeaponControl : MonoBehaviour
     }
     public GameObject LoadModel(GameObject model, Vector3 position, Quaternion rotation)
     {
-        GameObject objectInstantiated = Instantiate(model, weaponCamera.transform);
+        GameObject objectInstantiated = Instantiate(model, weaponCamera.transform); 
         objectInstantiated.transform.localPosition = position;
         objectInstantiated.transform.localRotation = rotation;
         return objectInstantiated;
