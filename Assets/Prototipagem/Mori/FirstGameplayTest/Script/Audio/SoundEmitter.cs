@@ -12,6 +12,8 @@ public class SoundEmitter : MonoBehaviour
     [Header("AudioSource")] private int lastAudioSourceIndexPlayed;
 
     [Header("Configs")]
+    [SerializeField] private bool doesLoop;
+    [SerializeField] private float loopInterval;
     [Tooltip("If is OneShot can play more than one at a time")][SerializeField] private bool isOneShot;
     [SerializeField] public float audioRange;
 
@@ -34,10 +36,61 @@ public class SoundEmitter : MonoBehaviour
 
     public void PlayAudio()
     {
-        if (audioType == AudioType.Suspicious) StartCoroutine(CheckForNearbySoundReceivers());
-        PlayAudioSource();
+        if (doesLoop)
+        {
+            if (audioSourceLoop_Ref == null)
+            {
+                audioSourceLoop_Ref = StartCoroutine(AudioSourceLoop_Coroutine());
 
+            }
+            if (audioSphereCastLoop_Ref == null)
+            {
+                audioSphereCastLoop_Ref = StartCoroutine(AudioSphereCastLoop_Coroutine());
+            }
+        }
+        else
+        {
+            if (audioType == AudioType.Suspicious) StartCoroutine(CheckForNearbySoundReceivers());
+            PlayAudioSource();
+        }
     }
+    public void StopAudio()
+    {
+        if (doesLoop)
+        {
+            if (audioSourceLoop_Ref != null)
+            {
+                StopCoroutine(audioSourceLoop_Ref);
+                audioSourceLoop_Ref = null;
+            }
+            if (audioSphereCastLoop_Ref != null)
+            {
+                StopCoroutine(audioSphereCastLoop_Ref);
+                audioSphereCastLoop_Ref = null;
+            }
+        }
+    }
+
+    private Coroutine audioSourceLoop_Ref;
+    public IEnumerator AudioSourceLoop_Coroutine()
+    {
+        while (true)
+        {
+            PlayAudioSource();
+            yield return new WaitForSeconds(loopInterval);
+        }
+    }
+
+    private Coroutine audioSphereCastLoop_Ref;
+    public IEnumerator AudioSphereCastLoop_Coroutine()
+    {
+        while (true)
+        {
+            yield return StartCoroutine(CheckForNearbySoundReceivers());
+            yield return new WaitForSeconds(0.1f);
+        }
+    }
+
     private void PlayAudioSource()
     {
         if (connectedAudioSource.Length < 2)
@@ -106,7 +159,7 @@ public class SoundEmitter : MonoBehaviour
     }
     private void OnValidate()
     {
-        if(connectedAudioSource.Length<1)return;
+        if (connectedAudioSource.Length < 1) return;
         foreach (AudioSource audioSource in connectedAudioSource)
         {
             if (audioSource == null) return;
