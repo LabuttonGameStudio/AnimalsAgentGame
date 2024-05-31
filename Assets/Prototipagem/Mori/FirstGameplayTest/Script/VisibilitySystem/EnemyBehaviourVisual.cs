@@ -9,9 +9,15 @@ public class EnemyBehaviourVisual : MonoBehaviour
     public static Camera mainCamera;
 
     [SerializeField] private SpriteRenderer spriteRenderer;
-    [SerializeField]private Sprite observingIcon;
-    [SerializeField]private Sprite searchingIcon;
-    [SerializeField]private Sprite attackingIcon;
+
+    [SerializeField] private Sprite observingIcon;
+    [SerializeField] private Sprite searchingIcon;
+    [SerializeField] private Sprite attackingIcon;
+
+    [SerializeField]private Material observingIconMaterial;
+    [SerializeField]private Material searchingIconMaterial;
+    [SerializeField]private Material attackingIconMaterial;
+
 
     [Space]
     [SerializeField] private SpriteRenderer alertSpriteRender;
@@ -31,12 +37,15 @@ public class EnemyBehaviourVisual : MonoBehaviour
                 spriteRenderer.sprite = null;
                 break;
             case AIBehaviour.Observing:
+                spriteRenderer.material = observingIconMaterial;
                 spriteRenderer.sprite = observingIcon;
                 break;
             case AIBehaviour.Searching:
+                spriteRenderer.material = searchingIconMaterial;
                 spriteRenderer.sprite = searchingIcon;
                 break;
             case AIBehaviour.Attacking:
+                spriteRenderer.material = attackingIconMaterial;
                 spriteRenderer.sprite = attackingIcon;
                 break;
         }
