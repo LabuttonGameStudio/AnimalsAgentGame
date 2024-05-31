@@ -27,6 +27,14 @@ Material:
         m_Texture: {fileID: 2800000, guid: b6b88e5b6d47bb84ea302e3a2e6f14c3, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _ExtraNormal:
+        m_Texture: {fileID: 2800000, guid: 1da3f4e5419c4cc4f95faf600e25d044, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Extra_Normal_Mask:
+        m_Texture: {fileID: 2800000, guid: 75711230e1c010f4c8f02fd206bdbdfc, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _MaskMap:
         m_Texture: {fileID: 2800000, guid: 8a45f869f69ab3949a211ab954825ac4, type: 3}
         m_Scale: {x: 1, y: 1}
@@ -53,9 +61,14 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _Extra_Normal: 1
+    - _Extra_Normal_Itensity: 1
     - _Mask_HUE: 1
     - _Mask_UV: 1
-    m_Colors: []
+    - _Smoothness_Controler: 0.82
+    - _UV_Tiles_Extra: 1.5
+    m_Colors:
+    - _Color_Tint: {r: 1, g: 1, b: 1, a: 0}
   m_BuildTextureStacks: []
 --- !u!114 &4279188210165890424
 MonoBehaviour:
