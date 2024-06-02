@@ -4,15 +4,23 @@ using UnityEngine;
 using static ArmadilloMovementController;
 public class ArmadilloAudioControl : MonoBehaviour
 {
+    [SerializeField] private SoundEmitter walkingSound;
+    [SerializeField] private SoundEmitter sprintSound;
+    [SerializeField] private SoundEmitter lurkingSound;
+    public SoundEmitter onFallSound;
+    public SoundEmitter onTransformSound;
     public SoundEmitter currentMovingSound { get; private set; }
-
+    private void Awake()
+    {
+        currentMovingSound = walkingSound;
+    }
     public void ChangeCurrentMovingForm(MovementType newMovementType)
     {
-        if(currentMovingSound != null)
+        if (currentMovingSound != null)
         {
             currentMovingSound.StopAudio();
         }
-        switch(newMovementType)
+        switch (newMovementType)
         {
             case MovementType.Default:
                 currentMovingSound = walkingSound;
@@ -22,12 +30,15 @@ public class ArmadilloAudioControl : MonoBehaviour
                 break;
             case MovementType.Lurking:
                 currentMovingSound = lurkingSound;
-                break;  
+                break;
         }
     }
-    private SoundEmitter walkingSound;
-    private SoundEmitter sprintSound;
-    private SoundEmitter lurkingSound;
-    public SoundEmitter onFallSound;
-    public SoundEmitter onTransformSound;
+    public void PlayMovingAudio()
+    {
+        currentMovingSound.PlayAudio();
+    }
+    public void StopMovingAudio()
+    {
+        currentMovingSound.StopAudio();
+    }
 }

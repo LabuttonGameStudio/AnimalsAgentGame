@@ -16,6 +16,7 @@ public class ArmadilloBallState : MovementState
         stats = movementControl.ballFormStats;
         movementCtrl = movementControl;
         movementCtrl.rb.constraints = RigidbodyConstraints.None;
+        ArmadilloPlayerController.Instance.audioControl.StopMovingAudio();
     }
 
 

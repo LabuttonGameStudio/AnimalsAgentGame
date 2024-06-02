@@ -46,6 +46,7 @@ public class EnemySearchingState : MeleeEnemyState
     {
         StopLookAround();
         StopTracking();
+        iEnemy.heardPlayer = false;
     }
 
     public override void OnFixedUpdate()

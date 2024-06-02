@@ -212,6 +212,7 @@ public class ArmadilloMovementController : MonoBehaviour
         if (value.performed)
         {
             ArmadilloPlayerController.Instance.visualControl.OnSprintStart();
+            ArmadilloPlayerController.Instance.audioControl.ChangeCurrentMovingForm(MovementType.Sprinting);
             currentMovementType = MovementType.Sprinting;
             movementTypeMultiplier = GetCurrentFormStats().sprintSpeedMultiplier;
         }
@@ -220,6 +221,7 @@ public class ArmadilloMovementController : MonoBehaviour
             if (currentMovementType == MovementType.Sprinting)
             {
                 ArmadilloPlayerController.Instance.visualControl.OnSprintStop();
+                ArmadilloPlayerController.Instance.audioControl.ChangeCurrentMovingForm(MovementType.Default);
                 currentMovementType = MovementType.Default;
                 movementTypeMultiplier = 1;
             }
@@ -231,6 +233,7 @@ public class ArmadilloMovementController : MonoBehaviour
         {
             currentMovementType = MovementType.Lurking;
             ArmadilloPlayerController.Instance.visualControl.OnLurkStart();
+            ArmadilloPlayerController.Instance.audioControl.ChangeCurrentMovingForm(MovementType.Lurking);
             movementTypeMultiplier = GetCurrentFormStats().lurkSpeedMultiplier;
         }
         else
@@ -238,11 +241,13 @@ public class ArmadilloMovementController : MonoBehaviour
             if (currentMovementType == MovementType.Lurking)
             {
                 ArmadilloPlayerController.Instance.visualControl.OnLurkStop();
+                ArmadilloPlayerController.Instance.audioControl.ChangeCurrentMovingForm(MovementType.Default);
                 currentMovementType = MovementType.Default;
                 movementTypeMultiplier = 1;
             }
         }
     }
+
 
 
     private void Update()
@@ -277,6 +282,10 @@ public class ArmadilloMovementController : MonoBehaviour
         MovementFormStats stats = GetCurrentFormStats();
         Vector3 groundCheckPos = transform.position - new Vector3(0, stats.playerHeight / 2f, 0);
         Collider[] colliders = Physics.OverlapSphere(groundCheckPos, 0.25f, whatIsGround, QueryTriggerInteraction.Ignore);
+        if(!grounded && colliders.Length > 0)
+        {
+            ArmadilloPlayerController.Instance.audioControl.onFallSound.PlayAudio();
+        }
         grounded = colliders.Length > 0;
         if (grounded)
         {
@@ -289,8 +298,8 @@ public class ArmadilloMovementController : MonoBehaviour
                 float angle = Vector3.Angle(Vector3.up, slopeHit.normal);
                 isOnSlope = (angle < stats.maxSlopeAngle && angle != 0);
             }
-
             if (!readyToJump) StartJumpCooldown();
+
         }
         else
         {

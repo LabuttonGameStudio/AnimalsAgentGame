@@ -217,6 +217,7 @@ public class ArmadilloPlayerController : MonoBehaviour
         weaponControl.ToggleWeapon(false);
         cameraControl.ChangeCameraState(cameraControl.thirdPersonCameraState);
         visualControl.OnEnterBallMode();
+        audioControl.onTransformSound.PlayAudio();
         sonarCamera.cullingMask = cameraControl.thirdPersonSeeThroughMask;
         //Muda o visual do personagem, futuramente so colocar a opcao de mudar a animacao do model
         //Retira a funcao do input de transformar em bola e altera a state machine pra interpretar como o modo bola
@@ -250,6 +251,7 @@ public class ArmadilloPlayerController : MonoBehaviour
     private Coroutine changeToDefaultFormRef;
     private IEnumerator ChangeToDefaultForm_Coroutine()
     {
+        audioControl.onTransformSound.PlayAudio();
         //Move a camera para terceira pessoa em 0.5 segundos 
         cameraControl.ChangeCameraState(cameraControl.firstPersonCameraState);
 

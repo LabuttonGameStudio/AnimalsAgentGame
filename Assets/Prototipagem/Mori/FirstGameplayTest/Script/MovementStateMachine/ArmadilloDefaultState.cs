@@ -27,6 +27,16 @@ public class ArmadilloDefaultState : MovementState
         moveDirection = movementCtrl.transform.forward * movementCtrl.movementInputVector.y
             + movementCtrl.transform.right * movementCtrl.movementInputVector.x;
         movementCtrl.rb.useGravity = !movementCtrl.isOnSlope;
+        if (movementCtrl.grounded)
+        {
+            if (new Vector2(movementCtrl.rb.velocity.x, movementCtrl.rb.velocity.z).magnitude > 0.5f) ArmadilloPlayerController.Instance.audioControl.PlayMovingAudio();
+            else ArmadilloPlayerController.Instance.audioControl.StopMovingAudio();
+        }
+        else
+        {
+            ArmadilloPlayerController.Instance.audioControl.StopMovingAudio();
+
+        }
     }
     public override void ExitState()
     {
@@ -39,7 +49,7 @@ public class ArmadilloDefaultState : MovementState
         Vector3 movementApplied;
         if (movementCtrl.grounded)
         {
-            if(movementCtrl.isOnSlope) movementApplied = movementCtrl.GetSlopeMoveDirection(moveDirection.normalized) * stats.moveSpeedMax * movementCtrl.movementTypeMultiplier * Time.fixedDeltaTime * 500;
+            if (movementCtrl.isOnSlope) movementApplied = movementCtrl.GetSlopeMoveDirection(moveDirection.normalized) * stats.moveSpeedMax * movementCtrl.movementTypeMultiplier * Time.fixedDeltaTime * 500;
             else movementApplied = moveDirection.normalized * stats.moveSpeedMax * movementCtrl.movementTypeMultiplier * Time.fixedDeltaTime * 500;
             movementCtrl.rb.AddForce(movementApplied, ForceMode.Acceleration);
         }
@@ -76,7 +86,7 @@ public class ArmadilloDefaultState : MovementState
             if (movementCtrl.hasUsedLedgeGrab) return;
         }
         RaycastHit downHit;
-        Vector3 lineDownStart = (movementCtrl.transform.position + Vector3.up * (movementCtrl.maxHeightToLedgeGrab-stats.playerHeight)) + movementCtrl.transform.forward;
+        Vector3 lineDownStart = (movementCtrl.transform.position + Vector3.up * (movementCtrl.maxHeightToLedgeGrab - stats.playerHeight)) + movementCtrl.transform.forward;
         Vector3 lineDownEnd = (movementCtrl.transform.position + Vector3.up * (movementCtrl.minHeightToLedgeGrab - stats.playerHeight)) + movementCtrl.transform.forward;
         Physics.Linecast(lineDownStart, lineDownEnd, out downHit, movementCtrl.whatIsClimbable, QueryTriggerInteraction.Ignore);
         Debug.DrawLine(lineDownStart, lineDownEnd, Color.magenta);

@@ -5,7 +5,7 @@ using UnityEngine.AI;
 using static AIBehaviourEnums;
 using static SoundGeneralControl;
 using AudioType = SoundGeneralControl.AudioType;
-public class EnemyMelee : IEnemy, IDamageable,ISoundReceiver
+public class EnemyMelee : IEnemy, IDamageable, ISoundReceiver
 {
     #region Detection
     [SerializeField] private float minimalHearValue;
@@ -135,10 +135,10 @@ public class EnemyMelee : IEnemy, IDamageable,ISoundReceiver
     {
         float increasePerTick;
 
-        if(detectionTickIntervalTime>0)
+        if (detectionTickIntervalTime > 0)
         {
             increasePerTick = 100 * (Time.time - detectionTickIntervalTime) / timeToMaxDetect;
-            Debug.Log((Time.time - detectionTickIntervalTime)/ timeToMaxDetect);
+            Debug.Log((Time.time - detectionTickIntervalTime) / timeToMaxDetect);
         }
         else increasePerTick = 100 / (timeToMaxDetect / EnemyMasterControl.Instance.visibilityTickInterval);
         detectionTickIntervalTime = Time.time;
@@ -161,25 +161,26 @@ public class EnemyMelee : IEnemy, IDamageable,ISoundReceiver
         detectionTickIntervalTime = 0;
     }
 
+    public bool heardPlayer;
     public void OnSoundHear(SoundData soundData)
     {
-        if(soundData.audioType == AudioType.Suspicious)
+        if (soundData.audioType == AudioType.Suspicious)
         {
-            if (soundData.audioPercentage>=minimalHearValue)
+            if (soundData.audioPercentage >= minimalHearValue)
             {
-                switch(currentAIBehaviour)
+                lastKnownPlayerPos = soundData.originPoint;
+                if (!heardPlayer)
                 {
-                    case AIBehaviour.Roaming:
-                        lastKnownPlayerPos = soundData.originPoint;
-                        ChangeCurrentAIBehaviour(AIBehaviour.Observing);
-                        ToggleAlert(true);
-                        break;
-                    case AIBehaviour.Observing:
-                        lastKnownPlayerPos = soundData.originPoint;
-                        ChangeCurrentAIBehaviour(AIBehaviour.Searching);
-                        break;
-                    case AIBehaviour.Searching:
-                        break;
+                    heardPlayer = true;
+                    switch (currentAIBehaviour)
+                    {
+                        case AIBehaviour.Roaming:
+                            ChangeCurrentAIBehaviour(AIBehaviour.Observing);
+                            break;
+                        case AIBehaviour.Observing:
+                            ChangeCurrentAIBehaviour(AIBehaviour.Searching);
+                            break;
+                    }
                 }
             }
         }

@@ -43,13 +43,16 @@ public class EnemyObservingState : MeleeEnemyState
     {
         iEnemy.navMeshAgent.isStopped = false;
         iEnemy.navMeshAgent.ResetPath();
+        currentState = ObservingStates.Null;
     }
 
     public override void OnExitState()
     {
         StopLookAround();
         StopTracking();
-        
+        iEnemy.heardPlayer = false;
+
+
     }
 
     public override void OnFixedUpdate()
@@ -81,7 +84,9 @@ public class EnemyObservingState : MeleeEnemyState
     {
         iEnemy.animator.SetBool("isWalking", false);
         tracking_Ref = iEnemy.StartCoroutine(Tracking_Coroutine());
-        yield return new WaitForSeconds(2);
+        yield return new WaitForSeconds(0.5f);
+        iEnemy.heardPlayer = false;
+        yield return new WaitForSeconds(1.5f);
         StopTracking();
         if (iEnemy.TryStartRandomLookAround(5, out Coroutine coroutine))
         {

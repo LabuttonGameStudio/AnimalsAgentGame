@@ -33,6 +33,10 @@ public class SoundEmitter : MonoBehaviour
     }
     #endregion
 
+    private void Start()
+    {
+        if(doesLoop) isOneShot = true;
+    }
 
     public void PlayAudio()
     {
@@ -143,7 +147,6 @@ public class SoundEmitter : MonoBehaviour
                 objectsInTheMiddle = Physics.RaycastAll(transform.position, collider.transform.position, float.PositiveInfinity, SoundGeneralControl.Instance.soundOcclusion_LayerMask, QueryTriggerInteraction.Ignore);
                 foreach (RaycastHit obj in objectsInTheMiddle)
                 {
-                    Debug.Log(obj.collider.gameObject.name);
                     distancePercentage -= 0.2f;
                 }
                 distancePercentage = Mathf.Max(0, distancePercentage);
