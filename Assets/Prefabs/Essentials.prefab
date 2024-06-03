@@ -46,8 +46,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   audioName: Player Espreitar
-  connectedAudioSource:
-  - {fileID: 6773014148618929071}
+  connectedAudioSource: {fileID: 6773014148618929071}
+  audioClips: []
   doesLoop: 0
   loopInterval: 0.2
   isOneShot: 0
@@ -63,7 +63,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 1309b75ba805cf3418d5bd1399eb1811, type: 3}
+  m_audioClip: {fileID: 8300000, guid: dd5620ec8f0daba4f9a0864e27d4fcf7, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
@@ -5910,8 +5910,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   audioName: Player Espreitar
-  connectedAudioSource:
-  - {fileID: 9153354934958283590}
+  connectedAudioSource: {fileID: 9153354934958283590}
+  audioClips:
+  - {fileID: 8300000, guid: dd5620ec8f0daba4f9a0864e27d4fcf7, type: 3}
+  - {fileID: 8300000, guid: 64f1064efcd2afe438c3f4b84f4fbf97, type: 3}
+  - {fileID: 8300000, guid: 510243133bd20a746bfe1cb787bb9bd7, type: 3}
+  - {fileID: 8300000, guid: 69823c57b25816a4f8fbe67cd6281123, type: 3}
+  - {fileID: 8300000, guid: 3b32dac37da07b549b92fd565a3039f1, type: 3}
+  - {fileID: 8300000, guid: 731994761776d9d4cb624ed77918fa70, type: 3}
   doesLoop: 1
   loopInterval: 0.5
   isOneShot: 1
@@ -5929,7 +5935,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: c9756718a184b5241a4123a72539904a, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 1
+  m_Volume: 0.5
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -6091,8 +6097,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   audioName: Player Andar
-  connectedAudioSource:
-  - {fileID: 5750364790639622470}
+  connectedAudioSource: {fileID: 5750364790639622470}
+  audioClips:
+  - {fileID: 8300000, guid: dd5620ec8f0daba4f9a0864e27d4fcf7, type: 3}
+  - {fileID: 8300000, guid: 64f1064efcd2afe438c3f4b84f4fbf97, type: 3}
+  - {fileID: 8300000, guid: 510243133bd20a746bfe1cb787bb9bd7, type: 3}
+  - {fileID: 8300000, guid: 69823c57b25816a4f8fbe67cd6281123, type: 3}
+  - {fileID: 8300000, guid: 3b32dac37da07b549b92fd565a3039f1, type: 3}
+  - {fileID: 8300000, guid: 731994761776d9d4cb624ed77918fa70, type: 3}
   doesLoop: 1
   loopInterval: 0.5
   isOneShot: 0
@@ -6111,7 +6123,7 @@ AudioSource:
   m_audioClip: {fileID: 8300000, guid: c9756718a184b5241a4123a72539904a, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 1
-  m_Pitch: 1
+  m_Pitch: 1.25
   Loop: 0
   Mute: 0
   Spatialize: 0
@@ -15056,6 +15068,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   crossHair: {fileID: 5923376953246511914}
   hitMarker: {fileID: 3120528897088753053}
+  interactHUD: {fileID: 5308732191352849926}
+  interactItemName: {fileID: 3844163200215246690}
+  interactKeybind: {fileID: 8805621709319799614}
+  interactDescription: {fileID: 2410548206883089601}
 --- !u!1 &6232715684853116171
 GameObject:
   m_ObjectHideFlags: 0
@@ -15279,7 +15295,7 @@ MonoBehaviour:
     playerCollider:
     - {fileID: 2346160075134265153}
     mass: 50
-    jumpForce: 12
+    jumpForce: 9.5
     onAirSpeedMultiplier: 0.35
     groundDrag: 10
     airDrag: 3
@@ -15294,7 +15310,7 @@ MonoBehaviour:
     playerCollider:
     - {fileID: 8761147212282896686}
     mass: 50
-    jumpForce: 12
+    jumpForce: 9.5
     onAirSpeedMultiplier: 0.35
     groundDrag: 5
     airDrag: 3
@@ -15332,39 +15348,12 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6293525922061499492}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a12cb65a698796d4fb3db2dc412fba4f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  distanceOfChecking: 15
-  whatIsEnemies:
-    serializedVersion: 2
-    m_Bits: 512
-  whatIsPickable:
-    serializedVersion: 2
-    m_Bits: 256
-  whatIsInteractive:
-    serializedVersion: 2
-    m_Bits: 64
-  OnEnemyObjectFound:
-    m_PersistentCalls:
-      m_Calls: []
-  OnEnemyObjectLostLOS:
-    m_PersistentCalls:
-      m_Calls: []
-  OnPickableObjectFound:
-    m_PersistentCalls:
-      m_Calls: []
-  OnPickableObjectLostLOS:
-    m_PersistentCalls:
-      m_Calls: []
-  OnInteractiveObjectFound:
-    m_PersistentCalls:
-      m_Calls: []
-  OnInteractiveObjectLostLOS:
-    m_PersistentCalls:
-      m_Calls: []
+  distanceOfChecking: 5
 --- !u!114 &9214478717316500539
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15434,10 +15423,6 @@ MonoBehaviour:
   whatIsInteractive:
     serializedVersion: 2
     m_Bits: 64
-  interactHUD: {fileID: 5308732191352849926}
-  interactItemName: {fileID: 3844163200215246690}
-  interactKeybind: {fileID: 8805621709319799614}
-  interactDescription: {fileID: 2410548206883089601}
 --- !u!114 &6414875374407883218
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15468,9 +15453,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 182f3ea085e45924da93eb7a7f8249fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  whatIsPickable:
-    serializedVersion: 2
-    m_Bits: 256
 --- !u!114 &3242636103172020492
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16950,8 +16932,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   audioName: Player Transformou
-  connectedAudioSource:
-  - {fileID: 3911595247914510453}
+  connectedAudioSource: {fileID: 3911595247914510453}
+  audioClips: []
   doesLoop: 0
   loopInterval: 0
   isOneShot: 0
@@ -17564,8 +17546,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   audioName: Player Correr
-  connectedAudioSource:
-  - {fileID: 3776844685992011493}
+  connectedAudioSource: {fileID: 3776844685992011493}
+  audioClips:
+  - {fileID: 8300000, guid: dd5620ec8f0daba4f9a0864e27d4fcf7, type: 3}
+  - {fileID: 8300000, guid: 64f1064efcd2afe438c3f4b84f4fbf97, type: 3}
+  - {fileID: 8300000, guid: 510243133bd20a746bfe1cb787bb9bd7, type: 3}
+  - {fileID: 8300000, guid: 69823c57b25816a4f8fbe67cd6281123, type: 3}
+  - {fileID: 8300000, guid: 3b32dac37da07b549b92fd565a3039f1, type: 3}
+  - {fileID: 8300000, guid: 731994761776d9d4cb624ed77918fa70, type: 3}
   doesLoop: 1
   loopInterval: 0.3
   isOneShot: 1

@@ -7,7 +7,8 @@ using AudioType = SoundGeneralControl.AudioType;
 public class SoundEmitter : MonoBehaviour
 {
     [Tooltip("Apenas para organizacao")][SerializeField] public string audioName;
-    [SerializeField] public AudioSource[] connectedAudioSource;
+    [SerializeField] public AudioSource connectedAudioSource;
+    [SerializeField] public AudioClip[] audioClips;
 
     [Header("AudioSource")] private int lastAudioSourceIndexPlayed;
 
@@ -27,6 +28,9 @@ public class SoundEmitter : MonoBehaviour
         Random.InitState(GetInstanceID());
         Color gizmosColor = Random.ColorHSV();
         gizmosColor.a = 1;
+        gizmosColor.r = Mathf.Max(0.25f, gizmosColor.r);
+        gizmosColor.g = Mathf.Max(0.25f, gizmosColor.g);
+        gizmosColor.b = Mathf.Max(0.25f, gizmosColor.b);
         GizmosExtra.DrawString(audioName, transform.position + Vector3.up * audioRange, gizmosColor);
         Gizmos.color = gizmosColor;
         Gizmos.DrawWireSphere(transform.position, audioRange);
@@ -35,7 +39,7 @@ public class SoundEmitter : MonoBehaviour
 
     private void Start()
     {
-        if(doesLoop) isOneShot = true;
+        if (doesLoop) isOneShot = true;
     }
 
     public void PlayAudio()
@@ -72,6 +76,7 @@ public class SoundEmitter : MonoBehaviour
                 StopCoroutine(audioSphereCastLoop_Ref);
                 audioSphereCastLoop_Ref = null;
             }
+            connectedAudioSource.Stop();
         }
     }
 
@@ -97,29 +102,30 @@ public class SoundEmitter : MonoBehaviour
 
     private void PlayAudioSource()
     {
-        if (connectedAudioSource.Length < 2)
+        if (audioClips.Length < 2)
         {
             if (!isOneShot)
             {
-                connectedAudioSource[0].Play();
+                connectedAudioSource.Play();
 
             }
             else
             {
-                connectedAudioSource[0].PlayOneShot(connectedAudioSource[0].clip);
+                connectedAudioSource.PlayOneShot(connectedAudioSource.clip);
             }
         }
         else
         {
             if (!isOneShot)
             {
-                connectedAudioSource[RandomizeAudioSource()].Play();
+                connectedAudioSource.clip = audioClips[RandomizeAudioSource()];
+                connectedAudioSource.Play();
 
             }
             else
             {
                 int randomNumber = RandomizeAudioSource();
-                connectedAudioSource[randomNumber].PlayOneShot(connectedAudioSource[randomNumber].clip);
+                connectedAudioSource.PlayOneShot(audioClips[randomNumber]);
             }
         }
     }
@@ -128,8 +134,12 @@ public class SoundEmitter : MonoBehaviour
 
         while (true)
         {
-            int randomIndex = Random.Range(0, connectedAudioSource.Length);
-            if (randomIndex != lastAudioSourceIndexPlayed) return randomIndex;
+            int randomIndex = Random.Range(0, audioClips.Length);
+            if (randomIndex != lastAudioSourceIndexPlayed)
+            {
+                lastAudioSourceIndexPlayed = randomIndex;
+                return randomIndex;
+            }
         }
     }
     public IEnumerator CheckForNearbySoundReceivers()
@@ -162,11 +172,7 @@ public class SoundEmitter : MonoBehaviour
     }
     private void OnValidate()
     {
-        if (connectedAudioSource.Length < 1) return;
-        foreach (AudioSource audioSource in connectedAudioSource)
-        {
-            if (audioSource == null) return;
-            audioSource.maxDistance = audioRange;
-        }
+        if (connectedAudioSource == null) return;
+        connectedAudioSource.maxDistance = audioRange;
     }
 }

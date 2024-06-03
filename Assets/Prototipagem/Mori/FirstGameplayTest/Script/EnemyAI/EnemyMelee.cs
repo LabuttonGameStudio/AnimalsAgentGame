@@ -35,6 +35,9 @@ public class EnemyMelee : IEnemy, IDamageable, ISoundReceiver
     public EnemyMeleeAttackHitBox secondaryAttackHitbox;
     public float secondaryAttackCooldown;
 
+    [Header("SFX")]
+    public SoundEmitter walkingSoundEmitter;
+
     protected override void OnAwake()
     {
         enemyRoamingState = new EnemyRoamingState(this);
@@ -51,6 +54,14 @@ public class EnemyMelee : IEnemy, IDamageable, ISoundReceiver
     }
     protected override void OnFixedUpdate()
     {
+        if(navMeshAgent.velocity.magnitude > 0.75f)
+        {
+            walkingSoundEmitter.PlayAudio();
+        }
+        else
+        {
+            walkingSoundEmitter.StopAudio();
+        }
         currentEnemyState.OnFixedUpdate();
     }
     public override void OnVisibilityUpdate()

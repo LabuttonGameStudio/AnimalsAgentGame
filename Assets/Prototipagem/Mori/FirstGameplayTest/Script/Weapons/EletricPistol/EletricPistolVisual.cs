@@ -14,7 +14,9 @@ public class EletricPistolVisual : MonoBehaviour
     [SerializeField]private ParticleSystem ZiumOnomatopeiaParticle;
     [Header("Audio")]
     [SerializeField] public Transform audioEmitterTransform;
-    [SerializeField] private SoundEmitter onFireSoundEmitter;
+    [SerializeField] private SoundEmitter onUnchargedFireSoundEmitter;
+    [SerializeField] private SoundEmitter onChargedFireSoundEmitter;
+    [SerializeField] private SoundEmitter onChargingFireSoundEmitter;
 
     public void OnUnchargedFire()
     {
@@ -22,7 +24,7 @@ public class EletricPistolVisual : MonoBehaviour
         onFireParticle.Play();
         onFireTrail.Play();
         TweenMunicao.Instance.ShakeAmmunition();
-        onFireSoundEmitter.PlayAudio();
+        onUnchargedFireSoundEmitter.PlayAudio();
     }
     public void OnChargedFire()
     {
@@ -31,15 +33,17 @@ public class EletricPistolVisual : MonoBehaviour
         onFireParticle.Play();
         onFireTrail.Play();
         TweenMunicao.Instance.ShakeAmmunition();
-        onFireSoundEmitter.PlayAudio();
+        onChargedFireSoundEmitter.PlayAudio();
     }
     public void OnCharge()
     {
+        onChargingFireSoundEmitter.PlayAudio();
         chargedParticle.Play();
         BzzOnomatopeiaParticle.Play();
     }
     public void OnUnCharge()
     {
+        onChargingFireSoundEmitter.StopAudio();
         chargedParticle.Stop();
         BzzOnomatopeiaParticle.Stop();
     }

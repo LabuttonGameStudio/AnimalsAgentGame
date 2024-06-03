@@ -149,14 +149,15 @@ public class ArmadilloPlayerController : MonoBehaviour
                 visualControl.OnSonar();
                 SonarAbilityVFX_Ref = StartCoroutine(SonarAbilityVFX_Coroutine(sonarStartLerpDuration));
             }
-            SonarAbility_Ref = StartCoroutine(SonarAbility_Coroutine(isSonarActive ? 0.33f : sonarRange, isSonarActive ? sonarRange : 0.33f, sonarStartLerpDuration));
+            SonarAbility_Ref = StartCoroutine(SonarAbility_Coroutine(isSonarActive ? 0.33f : sonarRange, isSonarActive ? sonarRange : 0.33f, sonarStartLerpDuration,isSonarActive));
         }
     }
 
     private Coroutine SonarAbility_Ref;
-    private IEnumerator SonarAbility_Coroutine(float startValue, float finalValue, float duration)
+    private IEnumerator SonarAbility_Coroutine(float startValue, float finalValue, float duration,bool toggle)
     {
         yield return new WaitForSeconds(0.55f);
+        if (isSonarActive) sonarCamera.enabled = true;
 
         float timer = 0f;
         while (timer <= duration)
@@ -167,6 +168,7 @@ public class ArmadilloPlayerController : MonoBehaviour
             yield return new WaitForSeconds(0.05f);
         }
         sonarCamera.farClipPlane = finalValue;
+        if (!isSonarActive) sonarCamera.enabled = false;
 
 
         SonarAbility_Ref = null;
