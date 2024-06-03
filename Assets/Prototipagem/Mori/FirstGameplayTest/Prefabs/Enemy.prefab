@@ -403,6 +403,7 @@ MonoBehaviour:
   secondaryAttackDamage: 44
   secondaryAttackHitbox: {fileID: 3610291169604335906}
   secondaryAttackCooldown: 2
+  heardPlayer: 0
 --- !u!195 &4480567394583016987
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -527,6 +528,9 @@ MonoBehaviour:
   observingIcon: {fileID: 21300000, guid: 5a7a028bb4d4b724a8f3013eec5ad856, type: 3}
   searchingIcon: {fileID: 21300000, guid: 767f2207bdd808645adef392d46a9b2c, type: 3}
   attackingIcon: {fileID: 21300000, guid: 40a346501c07f834ca0a97722d57116e, type: 3}
+  observingIconMaterial: {fileID: 0}
+  searchingIconMaterial: {fileID: 0}
+  attackingIconMaterial: {fileID: 0}
   alertSpriteRender: {fileID: 3318343570272502816}
 --- !u!1 &6877822724466581603
 GameObject:
@@ -695,6 +699,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: a469111881164e14b8fd993cda8200f4, type: 3}
       propertyPath: m_Name
       value: meshkitLagosta
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: a469111881164e14b8fd993cda8200f4, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: a469111881164e14b8fd993cda8200f4, type: 3}
       propertyPath: m_IsActive
