@@ -9,7 +9,7 @@ public class InteractiveObjectRange : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            ArmadilloInteractController.Instance.OnInteractiveObjectEnterRange();
+            
         }
 
     }
@@ -17,7 +17,7 @@ public class InteractiveObjectRange : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            ArmadilloInteractController.Instance.OnInteractiveObjectLeaveRange();
+            
         }
     }
 }

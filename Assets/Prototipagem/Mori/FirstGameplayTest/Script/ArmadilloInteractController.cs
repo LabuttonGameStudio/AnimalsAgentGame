@@ -11,17 +11,12 @@ public class ArmadilloInteractController : MonoBehaviour
 
     [SerializeField] private float interactionRange = 3f;
     //Input System
-    ArmadilloPlayerInputController inputController;
 
     //Interaction Layer
     [SerializeField] private LayerMask whatIsInteractive;
 
-    //HUD
-    [Space]
-    [SerializeField] private CanvasGroup interactHUD;
-    [SerializeField] private TextMeshProUGUI interactItemName;
-    [SerializeField] private TextMeshProUGUI interactKeybind;
-    [SerializeField] private TextMeshProUGUI interactDescription;
+    private InteractiveObject connectedInteractiveObject;
+
     private void Awake()
     {
         Instance = this;
@@ -32,103 +27,37 @@ public class ArmadilloInteractController : MonoBehaviour
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, interactionRange);
     }
-    private void Start()
-    {
-        inputController = GetComponent<ArmadilloPlayerInputController>();
 
-        inputController.inputAction.Armadillo.Interact.Enable();
-    }
-
-    InteractiveObject activeInteractiveObject;
     public void AddToInteractButtonAction(InteractiveObject interactiveObject)
     {
-        activeInteractiveObject = interactiveObject;
-        inputController.inputAction.Armadillo.Interact.performed += interactiveObject.Interact;
+        connectedInteractiveObject = interactiveObject;
+        ArmadilloPlayerController.Instance.inputControl.inputAction.Armadillo.Interact.performed += interactiveObject.Interact;
 
         UpdateInteractionHUD();
-        interactHUD.alpha = 1;
+        ArmadilloUIControl.Instance.interactHUD.alpha = 1;
 
     }
 
     public void UpdateInteractionHUD()
     {
-        if (activeInteractiveObject != null)
+        if (connectedInteractiveObject != null)
         {
-            interactItemName.text = activeInteractiveObject.GetObjectName();
-            interactDescription.text = activeInteractiveObject.GetObjectDescription();
+            ArmadilloUIControl.Instance.interactItemName.text = connectedInteractiveObject.GetObjectName();
+            ArmadilloUIControl.Instance.interactDescription.text = connectedInteractiveObject.GetObjectDescription();
         }
     }
 
     public void ClearInteractButtonAction()
     {
-        if (activeInteractiveObject != null)
+        if (connectedInteractiveObject != null)
         {
-            inputController.inputAction.Armadillo.Interact.performed -= activeInteractiveObject.Interact;
-            activeInteractiveObject = null;
+            ArmadilloPlayerController.Instance.inputControl.inputAction.Armadillo.Interact.performed -= connectedInteractiveObject.Interact;
+            connectedInteractiveObject = null;
         }
 
-        interactItemName.text = "";
-        interactDescription.text = "";
-        interactHUD.alpha = 0;
-    }
-
-    private int interactiveObjectsInRange;
-    public void OnInteractiveObjectEnterRange()
-    {
-        interactiveObjectsInRange++;
-        if (interactiveObjectsInRange.Equals(1))
-        {
-            ToggleCheckingForInteractiveItems(true);
-        }
-    }
-    public void OnInteractiveObjectLeaveRange()
-    {
-        interactiveObjectsInRange--;
-        if (interactiveObjectsInRange <= 0)
-        {
-            ToggleCheckingForInteractiveItems(false);
-        }
-    }
-
-    public void ToggleCheckingForInteractiveItems(bool state)
-    {
-        if (checkForInteractiveItemInAimRef == null && state)
-        {
-            checkForInteractiveItemInAimRef = StartCoroutine(CheckForInteractiveItemInAim_Coroutine());
-        }
-        else if (checkForInteractiveItemInAimRef != null && !state)
-        {
-            StopCoroutine(checkForInteractiveItemInAimRef);
-            checkForInteractiveItemInAimRef = null;
-            ClearInteractButtonAction();
-        }
-    }
-
-    private Coroutine checkForInteractiveItemInAimRef;
-    public IEnumerator CheckForInteractiveItemInAim_Coroutine()
-    {
-        Transform activeInteractive = null;
-        Transform cameraTransform = PlayerCamera.Instance.mainCamera.transform;
-        while (true)
-        {
-            if (Physics.Raycast(cameraTransform.position, cameraTransform.forward, out RaycastHit hitInfo, interactionRange, whatIsInteractive, QueryTriggerInteraction.Ignore))
-            {
-                if (activeInteractive != hitInfo.transform)
-                {
-                    activeInteractive = hitInfo.transform;
-                    if (hitInfo.transform != null && hitInfo.transform.TryGetComponent(out InteractiveObject interactiveObject))
-                    {
-                        AddToInteractButtonAction(interactiveObject);
-                    }
-                }
-            }
-            else
-            {
-                activeInteractive = null;
-                ClearInteractButtonAction();
-            }
-            yield return new WaitForSeconds(0.05f);
-        }
+        ArmadilloUIControl.Instance.interactItemName.text = "";
+        ArmadilloUIControl.Instance.interactDescription.text = "";
+        ArmadilloUIControl.Instance.interactHUD.alpha = 0;
     }
 
 }

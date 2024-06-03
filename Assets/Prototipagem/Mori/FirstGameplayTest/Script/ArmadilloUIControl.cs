@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -16,6 +17,7 @@ public class ArmadilloUIControl : MonoBehaviour
     {
         hitMarker.color = new Color(hitMarker.color.r, hitMarker.color.g, hitMarker.color.b, 0);
     }
+    #region
     public void StartHitMarker()
     {
         if (toggleHitMarker_Ref != null)
@@ -34,10 +36,19 @@ public class ArmadilloUIControl : MonoBehaviour
         float duration = 0.15f;
         while (timer < duration)
         {
-            hitMarker.color = new Color(hitMarker.color.r, hitMarker.color.g, hitMarker.color.b,1-timer / duration);
+            hitMarker.color = new Color(hitMarker.color.r, hitMarker.color.g, hitMarker.color.b, 1 - timer / duration);
             timer += Time.deltaTime;
             yield return null;
         }
         hitMarker.color = new Color(hitMarker.color.r, hitMarker.color.g, hitMarker.color.b, 0);
     }
+    #endregion
+
+    #region Interaction
+    [Space, Header("HUD")]
+    public CanvasGroup interactHUD;
+    public TextMeshProUGUI interactItemName;
+    public TextMeshProUGUI interactKeybind;
+    public TextMeshProUGUI interactDescription;
+    #endregion
 }

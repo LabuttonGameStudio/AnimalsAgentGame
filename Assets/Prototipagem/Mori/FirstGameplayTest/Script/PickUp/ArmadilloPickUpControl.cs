@@ -1,18 +1,56 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class ArmadilloPickUpControl : MonoBehaviour
 {
-    [SerializeField] private LayerMask whatIsPickable;
-
     private Rigidbody objectRb;
-
+    private IPickUpObject connectedObject;
     float objectDefaultDrag;
-
-    public void Grab(Transform grabbedObjectTransform)
+    public void AddToInteractButtonAction(IPickUpObject pickUpObject)
     {
-        objectRb = grabbedObjectTransform.GetComponent<Rigidbody>();
+        ArmadilloPlayerController.Instance.inputControl.inputAction.Armadillo.Interact.performed += context => InteractWithPickUpObject(context, pickUpObject);
+
+        UpdateInteractionHUD();
+        ArmadilloUIControl.Instance.interactHUD.alpha = 1;
+
+    }
+
+    public void UpdateInteractionHUD()
+    {
+        if (connectedObject != null)
+        {
+            ArmadilloUIControl.Instance.interactItemName.text = connectedObject.GetObjectName();
+            ArmadilloUIControl.Instance.interactDescription.text = connectedObject.GetObjectDescription();
+        }
+    }
+
+    public void ClearInteractButtonAction()
+    {
+
+        if (connectedObject != null)
+        {
+            ArmadilloPlayerController.Instance.inputControl.inputAction.Armadillo.Interact.performed -= context => InteractWithPickUpObject(context, connectedObject);
+            connectedObject = null;
+        }
+
+        ArmadilloUIControl.Instance.interactItemName.text = "";
+        ArmadilloUIControl.Instance.interactDescription.text = "";
+        ArmadilloUIControl.Instance.interactHUD.alpha = 0;
+    }
+
+    public void InteractWithPickUpObject(InputAction.CallbackContext value,IPickUpObject pickUpObject)
+    {
+        if(connectedObject != null)
+        {
+            Drop();
+        }else Grab(pickUpObject);
+    }
+    public void Grab(IPickUpObject grabbedObject)
+    {
+        connectedObject = grabbedObject;
+        objectRb = ((MonoBehaviour)grabbedObject).transform.GetComponent<Rigidbody>();
         objectRb.freezeRotation = true;
         objectDefaultDrag = objectRb.drag;
         objectRb.drag = 10;
@@ -26,6 +64,8 @@ public class ArmadilloPickUpControl : MonoBehaviour
         objectRb.drag = objectDefaultDrag;
         objectRb = null;
         ToggleHoldObjectCoroutine(false);
+        connectedObject = null;
+        ClearInteractButtonAction();
     }
     private void ToggleHoldObjectCoroutine(bool state)
     {

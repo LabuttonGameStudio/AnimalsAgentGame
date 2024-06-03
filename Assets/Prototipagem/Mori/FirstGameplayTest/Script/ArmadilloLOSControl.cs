@@ -1,94 +1,69 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.InputSystem.XInput;
 
 //Armadillo Line of Sight Control
 public class ArmadilloLOSControl : MonoBehaviour
 {
     [SerializeField] private float distanceOfChecking;
-    [SerializeField] private LayerMask whatIsEnemies;
-    [SerializeField] private LayerMask whatIsPickable;
-    [SerializeField] private LayerMask whatIsInteractive;
-    [HideInInspector] public RaycastHit currentRaycastHit;
+    private int enemyLayer;
+    private int pickableLayer;
+    private int interactiveLayer;
+    private IRaycastableInLOS currentConnectedObject;
 
-    private enum RaycastTypes
-    {
-        Enemy,
-        Pickable,
-        Interactive
-    }
-    private RaycastTypes currentRaycastHitType;
+
 
     private void Awake()
     {
-        OnEnemyObjectFound = new OnRaycastHitEvent();
-        OnPickableObjectFound = new OnRaycastHitEvent();
-        OnInteractiveObjectFound = new OnRaycastHitEvent();
+        enemyLayer = LayerMask.NameToLayer("Enemies");
+        pickableLayer = LayerMask.NameToLayer("Pickable");
+        interactiveLayer = LayerMask.NameToLayer("Interactive");
     }
     private void Start()
     {
         checkLOS_Ref = StartCoroutine(CheckLOS_Coroutine());
+        ArmadilloPlayerController.Instance.inputControl.inputAction.Armadillo.Interact.Enable();
     }
+    #region Check LOS
     private Coroutine checkLOS_Ref;
     private IEnumerator CheckLOS_Coroutine()
     {
         Camera camera = ArmadilloPlayerController.Instance.cameraControl.mainCamera;
+        LayerMask detectLayerMask = new LayerMask();
+        detectLayerMask |= 1 << enemyLayer;
+        detectLayerMask |= 1 << pickableLayer;
+        detectLayerMask |= 1 << interactiveLayer;
         while (true)
         {
-            LayerMask layer = new LayerMask();
-            layer |= 1 << whatIsEnemies;
-            layer |= 1 << whatIsPickable;
-            layer |= 1 << whatIsInteractive;
             RaycastHit newRaycastHit;
-            if (Physics.Raycast(camera.transform.position, camera.transform.forward, out newRaycastHit, distanceOfChecking, layer, QueryTriggerInteraction.Ignore))
+            if (Physics.Raycast(camera.transform.position, camera.transform.forward, out newRaycastHit, distanceOfChecking, detectLayerMask, QueryTriggerInteraction.Ignore))
             {
-                if (currentRaycastHit.rigidbody != newRaycastHit.rigidbody)
+                if (newRaycastHit.collider.TryGetComponent(out IRaycastableInLOS raycastable))
                 {
-                    switch (currentRaycastHitType)
+                    if (currentConnectedObject != raycastable)
                     {
-                        case RaycastTypes.Enemy:
-                            OnEnemyObjectLostLOS.Invoke();
-                            break;
-                        case RaycastTypes.Pickable:
-                            OnPickableObjectLostLOS.Invoke();
-                            break;
-                        case RaycastTypes.Interactive: 
-                            OnInteractiveObjectLostLOS.Invoke();
-                            break;
+                        raycastable.OnLeaveLOS();
+                        raycastable.OnEnterLOS();
+                        currentConnectedObject = raycastable;
                     }
                 }
-                int hitLayerInt = currentRaycastHit.transform.gameObject.layer;
-
-                if (hitLayerInt == whatIsEnemies.value)
+                else if (currentConnectedObject != null)
                 {
-                    OnEnemyObjectFound.Invoke(currentRaycastHit);
-                    currentRaycastHitType = RaycastTypes.Enemy;
-                }
-                else if (hitLayerInt == whatIsPickable.value)
-                {
-                    OnPickableObjectFound.Invoke(currentRaycastHit);
-                    currentRaycastHitType = RaycastTypes.Pickable;
-                }
-                else if (hitLayerInt == whatIsInteractive.value)
-                {
-                    OnInteractiveObjectFound.Invoke(currentRaycastHit);
-                    currentRaycastHitType = RaycastTypes.Interactive;
+                    currentConnectedObject.OnLeaveLOS();
+                    currentConnectedObject = null;
                 }
             }
-            yield return null;
+            else if (currentConnectedObject != null)
+            {
+                currentConnectedObject.OnLeaveLOS();
+                currentConnectedObject = null;
+            }
+            yield return new WaitForFixedUpdate();
         }
     }
-    [HideInInspector] public OnRaycastHitEvent OnEnemyObjectFound;
-    [HideInInspector] public UnityEvent OnEnemyObjectLostLOS;
-
-    [HideInInspector] public OnRaycastHitEvent OnPickableObjectFound;
-    [HideInInspector] public UnityEvent OnPickableObjectLostLOS;
-
-    [HideInInspector] public OnRaycastHitEvent OnInteractiveObjectFound;
-    [HideInInspector] public UnityEvent OnInteractiveObjectLostLOS;
-}
-[System.Serializable]
-public class OnRaycastHitEvent : UnityEvent<RaycastHit>
-{
+    #endregion
 }

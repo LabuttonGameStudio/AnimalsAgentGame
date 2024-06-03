@@ -138,7 +138,6 @@ public class EnemyMelee : IEnemy, IDamageable, ISoundReceiver
         if (detectionTickIntervalTime > 0)
         {
             increasePerTick = 100 * (Time.time - detectionTickIntervalTime) / timeToMaxDetect;
-            Debug.Log((Time.time - detectionTickIntervalTime) / timeToMaxDetect);
         }
         else increasePerTick = 100 / (timeToMaxDetect / EnemyMasterControl.Instance.visibilityTickInterval);
         detectionTickIntervalTime = Time.time;

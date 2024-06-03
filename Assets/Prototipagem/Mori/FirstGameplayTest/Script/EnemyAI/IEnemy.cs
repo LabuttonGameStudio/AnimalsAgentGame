@@ -24,7 +24,7 @@ public class AIPathPoint
 
 }
 
-public abstract class IEnemy : MonoBehaviour
+public abstract class IEnemy : MonoBehaviour , IRaycastableInLOS
 {
     #region Path Finding|NavMesh Variables
     [HideInInspector] public NavMeshAgent navMeshAgent;
@@ -711,5 +711,15 @@ public abstract class IEnemy : MonoBehaviour
         enemyBehaviourVisual.ToggleAlert(state);
     }
     #endregion
+
+    void IRaycastableInLOS.OnEnterLOS()
+    {
+
+    }
+
+    void IRaycastableInLOS.OnLeaveLOS()
+    {
+
+    }
 }
 
