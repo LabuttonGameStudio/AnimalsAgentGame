@@ -3,15 +3,33 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using static IPickUpObject;
 
 public class ArmadilloPickUpControl : MonoBehaviour
 {
     private Rigidbody objectRb;
     private IPickUpObject objectInLOS;
-    [HideInInspector]public IPickUpObject connectedObject;
+    [HideInInspector] public IPickUpObject connectedObject;
     float objectDefaultDrag;
 
     private Action<InputAction.CallbackContext> actionInput;
+
+    public bool CanJumpOnConnectedObject()
+    {
+        if (connectedObject != null)
+        {
+            switch(connectedObject.m_pickUpObjectType)
+            {
+                default:
+                case PickUpObjectType.Small:
+                case PickUpObjectType.Medium:
+                    return false;
+                case PickUpObjectType.Big:
+                    return true;
+            }
+        }
+        else return true;
+    }
     public void AddToInteractButtonAction(IPickUpObject pickUpObject)
     {
         if (connectedObject == null && actionInput == null)
@@ -64,7 +82,7 @@ public class ArmadilloPickUpControl : MonoBehaviour
         }
     }
 
-    #region
+    #region Vision
     public void OnObjectEnterVision(IPickUpObject pickUpObject)
     {
         objectInLOS = pickUpObject;
@@ -77,24 +95,35 @@ public class ArmadilloPickUpControl : MonoBehaviour
         ClearInteractButtonAction();
     }
     #endregion
-    public void InteractWithPickUpObject(InputAction.CallbackContext value,IPickUpObject pickUpObject)
+    public void InteractWithPickUpObject(InputAction.CallbackContext value, IPickUpObject pickUpObject)
     {
-        if(connectedObject != null)
+        if (connectedObject != null)
         {
             Drop();
-        }else Grab(pickUpObject);
+        }
+        else Grab(pickUpObject);
     }
     public void Grab(IPickUpObject grabbedObject)
     {
-        grabbedObject.isBeeingHeld = true;
-        UpdateInteractionHUD(grabbedObject);
-        connectedObject = grabbedObject;
-        objectRb = ((MonoBehaviour)grabbedObject).transform.GetComponent<Rigidbody>();
-        objectRb.freezeRotation = true;
-        objectDefaultDrag = objectRb.drag;
-        objectRb.drag = 10;
-        objectRb.useGravity = false;
-        ToggleHoldObjectCoroutine(true);
+        Debug.Log(grabbedObject.m_pickUpObjectType);
+        switch (grabbedObject.m_pickUpObjectType)
+        {
+            case PickUpObjectType.Small:
+
+                break;
+            case PickUpObjectType.Medium:
+            case PickUpObjectType.Big:
+                grabbedObject.isBeeingHeld = true;
+                UpdateInteractionHUD(grabbedObject);
+                connectedObject = grabbedObject;
+                objectRb = ((MonoBehaviour)grabbedObject).transform.GetComponent<Rigidbody>();
+                objectRb.freezeRotation = true;
+                objectDefaultDrag = objectRb.drag;
+                objectRb.drag = 10;
+                objectRb.useGravity = false;
+                ToggleHoldObjectCoroutine(true, grabbedObject.m_pickUpObjectType);
+                break;
+        }
     }
     public void Drop()
     {
@@ -103,21 +132,34 @@ public class ArmadilloPickUpControl : MonoBehaviour
         objectRb.useGravity = true;
         objectRb.drag = objectDefaultDrag;
         objectRb = null;
-        ToggleHoldObjectCoroutine(false);
+        ToggleHoldObjectCoroutine(false, connectedObject.m_pickUpObjectType);
         ClearInteractButtonAction();
         connectedObject = null;
-        if(objectInLOS != null)
+        if (objectInLOS != null)
         {
             AddToInteractButtonAction(objectInLOS);
             UpdateInteractionHUD(objectInLOS);
         }
         else UpdateInteractionHUD(null);
     }
-    private void ToggleHoldObjectCoroutine(bool state)
+    private void ToggleHoldObjectCoroutine(bool state, PickUpObjectType pickUpObjectType)
     {
         if (state)
         {
-            if (holdObject_Ref == null) holdObject_Ref = StartCoroutine(HoldObject_Coroutine());
+            if (holdObject_Ref == null)
+            {
+                switch (pickUpObjectType)
+                {
+                    case PickUpObjectType.Small:
+                        break;
+                    case PickUpObjectType.Medium:
+                        holdObject_Ref = StartCoroutine(HoldMediumObject_Coroutine());
+                        break;
+                    case PickUpObjectType.Big:
+                        holdObject_Ref = StartCoroutine(HoldBigObject_Coroutine());
+                        break;
+                }
+            }
         }
         else
         {
@@ -129,7 +171,7 @@ public class ArmadilloPickUpControl : MonoBehaviour
         }
     }
     private Coroutine holdObject_Ref;
-    public IEnumerator HoldObject_Coroutine()
+    public IEnumerator HoldMediumObject_Coroutine()
     {
         Transform cameraTransform = ArmadilloPlayerController.Instance.cameraControl.mainCamera.transform;
         while (true)
@@ -138,7 +180,26 @@ public class ArmadilloPickUpControl : MonoBehaviour
             if (Vector3.Distance(holdArea, objectRb.position) > 0.1f)
             {
                 Vector3 moveDirection = holdArea - objectRb.position;
-                objectRb.AddForce(moveDirection*3f,ForceMode.VelocityChange);
+                objectRb.AddForce(moveDirection * 3f, ForceMode.VelocityChange);
+            }
+            yield return new WaitForFixedUpdate();
+        }
+    }
+    public IEnumerator HoldBigObject_Coroutine()
+    {
+        Transform cameraTransform = ArmadilloPlayerController.Instance.cameraControl.mainCamera.transform;
+        while (true)
+        {
+            Vector3 holdArea = cameraTransform.position + cameraTransform.forward * 3f;
+
+
+            if (Vector2.Distance(new Vector2(holdArea.x, holdArea.z), new Vector2(objectRb.position.x, objectRb.position.z)) > 0.1f)
+            {
+                Vector3 moveDirection = holdArea - objectRb.position;
+                moveDirection.y = 0;
+                moveDirection.Normalize();
+                moveDirection = moveDirection * 0.25f;
+                objectRb.AddForce(moveDirection *3f, ForceMode.VelocityChange);
             }
             yield return new WaitForFixedUpdate();
         }

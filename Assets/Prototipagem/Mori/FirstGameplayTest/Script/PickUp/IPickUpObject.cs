@@ -5,6 +5,13 @@ using UnityEngine;
 
 public interface IPickUpObject : IRaycastableInLOS
 {
+    public enum PickUpObjectType
+    {
+        Small,
+        Medium,
+        Big
+    }
+    public PickUpObjectType m_pickUpObjectType { get; set; }
     void IRaycastableInLOS.OnEnterLOS()
     {
         ArmadilloPickUpControl pickUpControl = ArmadilloPlayerController.Instance.pickUpControl;

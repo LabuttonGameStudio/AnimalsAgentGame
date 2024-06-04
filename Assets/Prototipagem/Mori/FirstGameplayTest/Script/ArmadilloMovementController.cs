@@ -292,11 +292,15 @@ public class ArmadilloMovementController : MonoBehaviour
         }
         else if (colliders.Length == 1)
         {
-            if(ArmadilloPlayerController.Instance.pickUpControl.connectedObject == null)
+            if (ArmadilloPlayerController.Instance.pickUpControl.connectedObject == null)
             {
                 grounded = true;
             }
-            else grounded = !(((MonoBehaviour)ArmadilloPlayerController.Instance.pickUpControl.connectedObject).gameObject == colliders[0].gameObject);
+            else if (((MonoBehaviour)ArmadilloPlayerController.Instance.pickUpControl.connectedObject).gameObject == colliders[0].gameObject)
+            {
+                grounded = ArmadilloPlayerController.Instance.pickUpControl.CanJumpOnConnectedObject();
+            }
+            else grounded = true;
         }
         else
         {
