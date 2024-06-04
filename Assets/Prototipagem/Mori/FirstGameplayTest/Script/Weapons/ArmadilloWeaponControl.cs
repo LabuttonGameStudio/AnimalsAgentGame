@@ -111,7 +111,6 @@ public class ArmadilloWeaponControl : MonoBehaviour
             ToggleStateInputs(playerInput, true);
         }
         currentWeaponID = nextWeapon;
-        Debug.Log(nextWeapon);
         OnGunEquip(nextWeapon);
         DefineDelegates(playerInput, DelegateType.Add, nextWeapon);
         weaponsInInventory[nextWeapon].ToggleVisual(true);

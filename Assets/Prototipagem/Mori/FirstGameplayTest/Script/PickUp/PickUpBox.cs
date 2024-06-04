@@ -8,9 +8,12 @@ public class PickUpBox : MonoBehaviour, IPickUpObject
     [SerializeField] private string objectName;
     [SerializeField] private string onGroundDescription;
     [SerializeField] private string pickedUpDescription;
+    public bool isBeeingHeld { get; set; }
 
-    private bool isBeeingHeld;
-
+    private void Awake()
+    {
+        isBeeingHeld = false;
+    }
 
     public string GetObjectName() { return objectName; }
 

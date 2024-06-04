@@ -282,11 +282,26 @@ public class ArmadilloMovementController : MonoBehaviour
         MovementFormStats stats = GetCurrentFormStats();
         Vector3 groundCheckPos = transform.position - new Vector3(0, stats.playerHeight / 2f, 0);
         Collider[] colliders = Physics.OverlapSphere(groundCheckPos, 0.25f, whatIsGround, QueryTriggerInteraction.Ignore);
-        if(!grounded && colliders.Length > 0)
+        if (!grounded && colliders.Length > 0)
         {
             ArmadilloPlayerController.Instance.audioControl.onFallSound.PlayAudio();
         }
-        grounded = colliders.Length > 0;
+        if (colliders.Length > 1)
+        {
+            grounded = true;
+        }
+        else if (colliders.Length == 1)
+        {
+            if(ArmadilloPlayerController.Instance.pickUpControl.connectedObject == null)
+            {
+                grounded = true;
+            }
+            else grounded = !(((MonoBehaviour)ArmadilloPlayerController.Instance.pickUpControl.connectedObject).gameObject == colliders[0].gameObject);
+        }
+        else
+        {
+            grounded = false;
+        }
         if (grounded)
         {
             hasUsedLedgeGrab = false;

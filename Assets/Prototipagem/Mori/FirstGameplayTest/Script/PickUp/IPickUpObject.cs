@@ -7,14 +7,16 @@ public interface IPickUpObject : IRaycastableInLOS
 {
     void IRaycastableInLOS.OnEnterLOS()
     {
-        //ArmadilloPlayerController.Instance.pickUpControl.AddToInteractButtonAction(this);
+        ArmadilloPickUpControl pickUpControl = ArmadilloPlayerController.Instance.pickUpControl;
+        pickUpControl.OnObjectEnterVision(this);
     }
 
     void IRaycastableInLOS.OnLeaveLOS()
     {
-
-       // ArmadilloPlayerController.Instance.pickUpControl.ClearInteractButtonAction();
+        ArmadilloPickUpControl pickUpControl = ArmadilloPlayerController.Instance.pickUpControl;
+        pickUpControl.OnObjectLeaveVision(this);
     }
+    bool isBeeingHeld { get; set; }
     public abstract string GetObjectName();
 
     public abstract string GetObjectDescription();

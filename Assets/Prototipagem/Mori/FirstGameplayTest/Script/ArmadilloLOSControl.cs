@@ -40,8 +40,18 @@ public class ArmadilloLOSControl : MonoBehaviour
         while (true)
         {
             RaycastHit newRaycastHit;
-            if (Physics.Raycast(camera.transform.position, camera.transform.forward, out newRaycastHit, distanceOfChecking, detectLayerMask, QueryTriggerInteraction.Ignore))
+            if (Physics.Raycast(camera.transform.position, camera.transform.forward, out newRaycastHit, distanceOfChecking, Physics.AllLayers, QueryTriggerInteraction.Ignore))
             {
+                if (!(newRaycastHit.collider.gameObject.layer == enemyLayer || newRaycastHit.collider.gameObject.layer == pickableLayer || newRaycastHit.collider.gameObject.layer == interactiveLayer))
+                {
+                    if (currentConnectedObject != null)
+                    {
+                        currentConnectedObject.OnLeaveLOS();
+                        currentConnectedObject = null;
+                    }
+                    yield return new WaitForFixedUpdate();
+                    continue;
+                }
                 if (newRaycastHit.collider.TryGetComponent(out IRaycastableInLOS raycastable))
                 {
                     if (currentConnectedObject != raycastable)
