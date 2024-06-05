@@ -127,6 +127,15 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
+                    ""name"": ""Pause"",
+                    ""type"": ""Button"",
+                    ""id"": ""fc398917-2a93-4cfa-80f3-bbd529fa0d16"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
                     ""name"": ""Debug_Reset"",
                     ""type"": ""Button"",
                     ""id"": ""9cec7742-1366-4e59-b85c-18b46c10fc0d"",
@@ -312,6 +321,17 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
                     ""action"": ""Debug_Reset"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""761d1c2c-c05b-4679-835d-41249b44df4c"",
+                    ""path"": ""<Keyboard>/m"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Pause"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -331,6 +351,7 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
         m_Armadillo_Ability2 = m_Armadillo.FindAction("Ability2", throwIfNotFound: true);
         m_Armadillo_Sprint = m_Armadillo.FindAction("Sprint", throwIfNotFound: true);
         m_Armadillo_Lurk = m_Armadillo.FindAction("Lurk", throwIfNotFound: true);
+        m_Armadillo_Pause = m_Armadillo.FindAction("Pause", throwIfNotFound: true);
         m_Armadillo_Debug_Reset = m_Armadillo.FindAction("Debug_Reset", throwIfNotFound: true);
     }
 
@@ -404,6 +425,7 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
     private readonly InputAction m_Armadillo_Ability2;
     private readonly InputAction m_Armadillo_Sprint;
     private readonly InputAction m_Armadillo_Lurk;
+    private readonly InputAction m_Armadillo_Pause;
     private readonly InputAction m_Armadillo_Debug_Reset;
     public struct ArmadilloActions
     {
@@ -420,6 +442,7 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
         public InputAction @Ability2 => m_Wrapper.m_Armadillo_Ability2;
         public InputAction @Sprint => m_Wrapper.m_Armadillo_Sprint;
         public InputAction @Lurk => m_Wrapper.m_Armadillo_Lurk;
+        public InputAction @Pause => m_Wrapper.m_Armadillo_Pause;
         public InputAction @Debug_Reset => m_Wrapper.m_Armadillo_Debug_Reset;
         public InputActionMap Get() { return m_Wrapper.m_Armadillo; }
         public void Enable() { Get().Enable(); }
@@ -463,6 +486,9 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
             @Lurk.started += instance.OnLurk;
             @Lurk.performed += instance.OnLurk;
             @Lurk.canceled += instance.OnLurk;
+            @Pause.started += instance.OnPause;
+            @Pause.performed += instance.OnPause;
+            @Pause.canceled += instance.OnPause;
             @Debug_Reset.started += instance.OnDebug_Reset;
             @Debug_Reset.performed += instance.OnDebug_Reset;
             @Debug_Reset.canceled += instance.OnDebug_Reset;
@@ -503,6 +529,9 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
             @Lurk.started -= instance.OnLurk;
             @Lurk.performed -= instance.OnLurk;
             @Lurk.canceled -= instance.OnLurk;
+            @Pause.started -= instance.OnPause;
+            @Pause.performed -= instance.OnPause;
+            @Pause.canceled -= instance.OnPause;
             @Debug_Reset.started -= instance.OnDebug_Reset;
             @Debug_Reset.performed -= instance.OnDebug_Reset;
             @Debug_Reset.canceled -= instance.OnDebug_Reset;
@@ -536,6 +565,7 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
         void OnAbility2(InputAction.CallbackContext context);
         void OnSprint(InputAction.CallbackContext context);
         void OnLurk(InputAction.CallbackContext context);
+        void OnPause(InputAction.CallbackContext context);
         void OnDebug_Reset(InputAction.CallbackContext context);
     }
 }

@@ -105,6 +105,15 @@
                     "initialStateCheck": false
                 },
                 {
+                    "name": "Pause",
+                    "type": "Button",
+                    "id": "fc398917-2a93-4cfa-80f3-bbd529fa0d16",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "Debug_Reset",
                     "type": "Button",
                     "id": "9cec7742-1366-4e59-b85c-18b46c10fc0d",
@@ -288,6 +297,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "Debug_Reset",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "761d1c2c-c05b-4679-835d-41249b44df4c",
+                    "path": "<Keyboard>/m",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Pause",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
