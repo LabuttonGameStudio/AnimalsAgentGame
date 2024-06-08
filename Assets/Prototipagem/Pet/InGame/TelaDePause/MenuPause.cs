@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using TMPro;
+using UnityEngine.InputSystem;
 
 public class MenuPause : MonoBehaviour
 {
@@ -17,7 +18,12 @@ public class MenuPause : MonoBehaviour
     public TMP_Dropdown resolution;
     public Toggle fullscreen;
     public Toggle window;
-    
+    public Toggle lowQualityToggle;
+    public Toggle mediumQualityToggle;
+    public Toggle highQualityToggle;
+    public Toggle UltraQualityToggle;
+    public Slider sensitivitySlider;
+
     private Resolution[] resolutions = new Resolution[]
      {
         new Resolution { width = 2560, height = 1440 },
@@ -32,6 +38,10 @@ public class MenuPause : MonoBehaviour
     private const string VolumePrefKey = "MasterVolume";
     private const string ResolutionPrefKey = "ScreenResolution";
     private const string ScreenModePrefKey = "ScreenMode";
+    private const string QualityPrefKey = "GraphicsQuality";
+    private const string SensitivityPrefKey = "MouseSensitivity";
+
+    public ArmadilloVisualControl visualControl;
 
     void Start()
     {
@@ -76,21 +86,49 @@ public class MenuPause : MonoBehaviour
 
         #endregion
 
+        #region Quality
+        int savedQualityIndex = PlayerPrefs.GetInt(QualityPrefKey, 1);
+
+        ApplyQualitySettings(savedQualityIndex);
+
+        lowQualityToggle.isOn = savedQualityIndex == 0;
+        mediumQualityToggle.isOn = savedQualityIndex == 1;
+        highQualityToggle.isOn = savedQualityIndex == 2;
+        UltraQualityToggle.isOn = savedQualityIndex == 3;
+
+        lowQualityToggle.onValueChanged.AddListener(delegate { OnToggleChange(0, lowQualityToggle.isOn); });
+        mediumQualityToggle.onValueChanged.AddListener(delegate { OnToggleChange(1, mediumQualityToggle.isOn); });
+        highQualityToggle.onValueChanged.AddListener(delegate { OnToggleChange(2, highQualityToggle.isOn); });
+        UltraQualityToggle.onValueChanged.AddListener(delegate { OnToggleChange(3, UltraQualityToggle.isOn); });
+        #endregion
+
+        #region Sensibility
+        float savedSensitivity = PlayerPrefs.GetFloat(SensitivityPrefKey, 10f);
+
+        sensitivitySlider.value = savedSensitivity;
+
+        sensitivitySlider.onValueChanged.AddListener(OnSensitivityChange);
+        #endregion
+
+
+        ArmadilloPlayerController.Instance.inputControl.inputAction.Armadillo.Pause.Enable();
+        ArmadilloPlayerController.Instance.inputControl.inputAction.Armadillo.Pause.performed += MenuOpen;
     }
 
 
     void Update()
     {
-        //trocdar para playerinput, test
-        if (Input.GetKeyDown(KeyCode.M))
-        {
-            Cursor.visible = !Cursor.visible;
-            Cursor.lockState = Cursor.visible ? CursorLockMode.None : CursorLockMode.Locked;
 
-            Menu.SetActive(Cursor.visible);
-        }
     }
+    public void MenuOpen(InputAction.CallbackContext value)
+    {
+        Cursor.visible = !Cursor.visible;
+        Cursor.lockState = Cursor.visible ? CursorLockMode.None : CursorLockMode.Locked;
 
+        Menu.SetActive(Cursor.visible);
+
+       visualControl.OnPause(Cursor.visible);
+    }
     public void ClickConfigs()
     {
         Configs.SetActive(true);
@@ -184,6 +222,91 @@ public class MenuPause : MonoBehaviour
     }
 
     #endregion
+
+    #region Quality
+    private void OnToggleChange(int qualityIndex, bool isOn)
+    {
+        if (isOn)
+        {
+            ApplyQualitySettings(qualityIndex);
+            SaveQualitySettings(qualityIndex);
+            UpdateToggles(qualityIndex);
+        }
+    }
+
+    private void ApplyQualitySettings(int qualityIndex)
+    {
+        QualitySettings.SetQualityLevel(qualityIndex, true);
+        switch (qualityIndex)
+        {
+            case 0: //baixo
+                QualitySettings.shadowResolution = ShadowResolution.Low; //Sombra
+                QualitySettings.globalTextureMipmapLimit = 2; // Textura 
+                QualitySettings.pixelLightCount = 0;// Iluminacao 
+                break;
+            case 1: //medio
+                QualitySettings.shadowResolution = ShadowResolution.Medium;
+                QualitySettings.globalTextureMipmapLimit = 1;
+                QualitySettings.pixelLightCount = 2; 
+                break;
+            case 2: //alto
+                QualitySettings.shadowResolution = ShadowResolution.High;
+                QualitySettings.globalTextureMipmapLimit = 0; 
+                QualitySettings.pixelLightCount = 4; 
+                break;
+            case 3: //Ultra
+                QualitySettings.shadowResolution = ShadowResolution.VeryHigh;
+                QualitySettings.globalTextureMipmapLimit = 0; 
+                QualitySettings.pixelLightCount = 8; 
+
+                break;
+        }
+    }
+
+    private void SaveQualitySettings(int qualityIndex)
+    {
+        PlayerPrefs.SetInt(QualityPrefKey, qualityIndex);
+        PlayerPrefs.Save();
+    }
+
+    private void UpdateToggles(int activeIndex)
+    {
+        lowQualityToggle.isOn = activeIndex == 0;
+        mediumQualityToggle.isOn = activeIndex == 1;
+        highQualityToggle.isOn = activeIndex == 2;
+        UltraQualityToggle.isOn = activeIndex == 3;
+
+    }
+
+    #endregion
+
+    #region Sensibility
+    private void OnSensitivityChange(float newSensitivity)
+    {
+        
+        ApplyMouseSensitivity(newSensitivity);
+
+        
+        SaveSensitivitySettings(newSensitivity);
+    }
+
+    private void ApplyMouseSensitivity(float sensitivity)
+    {
+        PlayerCamera.Instance.firstPersonSensibilityX = sensitivity;
+        PlayerCamera.Instance.firstPersonSensibilityY = sensitivity;
+        PlayerCamera.Instance.yRotation = sensitivity;
+        PlayerCamera.Instance.xRotation = sensitivity;
+    }
+
+    private void SaveSensitivitySettings(float sensitivity)
+    {
+        PlayerPrefs.SetFloat(SensitivityPrefKey, sensitivity);
+        PlayerPrefs.Save();
+    }
+
+
+    #endregion
+
 
     public void Exit()
     {

@@ -24,6 +24,7 @@ public class ArmadilloVisualControl : MonoBehaviour
         LedgeGrab,
         Sonar,
         Gun_Default,
+        Pause,
     }
     [SerializeField] private FPModeLayer1 fp_Layer1;
     private bool hasGunEquiped;
@@ -106,7 +107,7 @@ public class ArmadilloVisualControl : MonoBehaviour
         {
             velocity = ArmadilloPlayerController.Instance.movementControl.rb.velocity;
             velocity.y = Mathf.Max(0, velocity.y * 1.5f);
-            ballTransform.Rotate(Time.deltaTime*-1 * velocity.magnitude * ballRollVelocity, 0, 0);
+            ballTransform.Rotate(Time.deltaTime * -1 * velocity.magnitude * ballRollVelocity, 0, 0);
             yield return null;
         }
     }
@@ -175,6 +176,20 @@ public class ArmadilloVisualControl : MonoBehaviour
         fpAnimator.SetTrigger("scannerOn");
         fp_Layer1 = FPModeLayer1.Sonar;
         StartToggleWeaponDelay(1.25f, true);
+    }
+
+    public void OnPause(bool pause)
+    {
+        ArmadilloPlayerController.Instance.weaponControl.ToggleWeapon(!pause);
+        fpAnimator.SetBool("isPaused",pause);
+        fp_Layer1 = FPModeLayer1.Pause;
+    }
+
+    public void ReturnPause()
+    {
+        
+        fpAnimator.SetBool("isPaused",false);
+        fp_Layer1 = FPModeLayer1.Pause;
     }
 
     private void StartToggleWeaponDelay(float delay, bool state)
