@@ -36,7 +36,7 @@ public class LoadingBar : MonoBehaviour
         {
             FadeInCanvasGroup();
         }
-        // Se o fading in já estiver completo e o carregamento não estiver completo
+        // Se o fading in ja estiver completo e o carregamento nao estiver completo
         else if (!isComplete)
         {
             // Atualiza o progresso do slider
@@ -48,10 +48,10 @@ public class LoadingBar : MonoBehaviour
             }
             else
             {
-                // O carregamento está completo
+                // O carregamento esta completo
                 isComplete = true;
 
-                // Inicia a animação de fading out do CanvasGroup
+                // Inicia a animacao de fading out do CanvasGroup
                 isFadingIn = false;
                 currentFadeTime = 0f;
             }
@@ -67,7 +67,7 @@ public class LoadingBar : MonoBehaviour
     {
         if (canvasGroup != null)
         {
-            // Interpolação do alpha do CanvasGroup
+            // Interpolacao do alpha do CanvasGroup
             if (currentFadeTime < fadeDuration)
             {
                 currentFadeTime += Time.deltaTime;
@@ -86,7 +86,7 @@ public class LoadingBar : MonoBehaviour
     {
         if (canvasGroup != null)
         {
-            // Interpolação do alpha do CanvasGroup
+            // Interpolacao do alpha do CanvasGroup
             if (currentFadeTime < fadeDuration)
             {
                 currentFadeTime += Time.deltaTime;
