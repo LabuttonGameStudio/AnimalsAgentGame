@@ -38,6 +38,16 @@ public class EnemyMelee : IEnemy, IDamageable, ISoundReceiver
     [Header("SFX")]
     public SoundEmitter walkingSoundEmitter;
 
+    public enum Actions
+    {
+        Moving,
+        Observing,
+        Attacking
+    }
+    [HideInInspector]public Actions currentAction;
+
+    [SerializeField] private ParticleSystem onDeathByEletricParticle;
+    [SerializeField] private ParticleSystem deadLoopParticle;
     protected override void OnAwake()
     {
         enemyRoamingState = new EnemyRoamingState(this);
@@ -79,9 +89,14 @@ public class EnemyMelee : IEnemy, IDamageable, ISoundReceiver
         if (currentHp <= 0)
         {
             isDead = true;
+            animator.transform.parent = animator.transform.parent.parent;
+            animator.SetTrigger("isDead");
+            onDeathByEletricParticle.Play();
+            deadLoopParticle.Play();
             gameObject.SetActive(false);
             return;
         }
+        if (currentAction == Actions.Moving || currentAction == Actions.Observing) animator.SetTrigger("isHit");
         OnDamageTaken(damage);
     }
     private void OnDamageTaken(Damage damage)
@@ -97,6 +112,7 @@ public class EnemyMelee : IEnemy, IDamageable, ISoundReceiver
     private Coroutine onDamageTaken_Ref;
     private IEnumerator OnDamageTaken_Coroutine(Damage damage)
     {
+
         yield return new WaitForSeconds(0.25f);
         if (currentAIBehaviour == AIBehaviour.Attacking) yield break;
         lastKnownPlayerPos = damage.originPoint;

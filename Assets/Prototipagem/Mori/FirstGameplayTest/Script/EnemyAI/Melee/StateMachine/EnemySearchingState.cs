@@ -98,6 +98,7 @@ public class EnemySearchingState : MeleeEnemyState
     private Coroutine walkAround_Ref;
     private IEnumerator WalkAround_Coroutine()
     {
+        iEnemy.currentAction = EnemyMelee.Actions.Observing;
         iEnemy.navMeshAgent.ResetPath();
         yield return new WaitForSeconds(1f);
         Vector3 startPos = iEnemy.lastKnownPlayerPos;
@@ -120,6 +121,7 @@ public class EnemySearchingState : MeleeEnemyState
                 }
                 yield return null;
             }
+            iEnemy.currentAction = EnemyMelee.Actions.Moving;
             iEnemy.animator.SetBool("isWalking", true);
             while (true)
             {
@@ -131,6 +133,7 @@ public class EnemySearchingState : MeleeEnemyState
                 }
                 yield return null;
             }
+            iEnemy.currentAction = EnemyMelee.Actions.Observing;
             iEnemy.animator.SetBool("isWalking", false);
             Debug.Log("Finish Search" + i);
             yield return new WaitForSeconds(1);
@@ -155,6 +158,7 @@ public class EnemySearchingState : MeleeEnemyState
     private Coroutine tracking_Ref;
     private IEnumerator Tracking_Coroutine()
     {
+        iEnemy.currentAction = EnemyMelee.Actions.Moving;
         while (true)
         {
             Vector3 position = iEnemy.lastKnownPlayerPos;

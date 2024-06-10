@@ -44,6 +44,7 @@ public class EnemyObservingState : MeleeEnemyState
         iEnemy.navMeshAgent.isStopped = false;
         iEnemy.navMeshAgent.ResetPath();
         currentState = ObservingStates.Null;
+        iEnemy.currentAction = EnemyMelee.Actions.Observing;
     }
 
     public override void OnExitState()
@@ -82,6 +83,7 @@ public class EnemyObservingState : MeleeEnemyState
     private Coroutine lookAround_Ref;
     private IEnumerator LookAround_Coroutine()
     {
+        iEnemy.currentAction = EnemyMelee.Actions.Observing;
         iEnemy.animator.SetBool("isWalking", false);
         tracking_Ref = iEnemy.StartCoroutine(Tracking_Coroutine());
         yield return new WaitForSeconds(0.5f);
@@ -111,6 +113,7 @@ public class EnemyObservingState : MeleeEnemyState
     private Coroutine tracking_Ref;
     private IEnumerator Tracking_Coroutine()
     {
+        iEnemy.currentAction = EnemyMelee.Actions.Observing;
         iEnemy.animator.SetBool("isWalking", false);
         while (true)
         {

@@ -36,6 +36,7 @@ public class EnemyAttackingState : MeleeEnemyState
     {
         while (true)
         {
+            iEnemy.currentAction = EnemyMelee.Actions.Moving;
             iEnemy.animator.SetBool("isWalking", true);
             Move(desiredDistanceFromPlayer);
             if (GetDistanceFromPlayer() < desiredDistanceFromPlayer+0.25f)
@@ -114,6 +115,7 @@ public class EnemyAttackingState : MeleeEnemyState
     private Coroutine attack_Coroutine;
     private IEnumerator PrimaryAttack_Coroutine()
     {
+        iEnemy.currentAction = EnemyMelee.Actions.Attacking;
         iEnemy.animator.SetTrigger("lightPunch");
         iEnemy.primaryAttackHitbox.EnableHitBox();
         Damage damage = new Damage(iEnemy.primaryAttackDamage, Damage.DamageType.Blunt, false, iEnemy.transform.position);
@@ -128,6 +130,7 @@ public class EnemyAttackingState : MeleeEnemyState
     private IEnumerator SecondaryAttack_Coroutine()
     {
         float timer = 0;
+        iEnemy.currentAction = EnemyMelee.Actions.Attacking;
         iEnemy.animator.SetTrigger("strongPunch");
         while (timer < 0.875f)
         {
@@ -182,6 +185,7 @@ public class EnemyAttackingState : MeleeEnemyState
         while (timer<duration)
         {
             Move(7.5f);
+            iEnemy.currentAction = EnemyMelee.Actions.Moving;
             iEnemy.animator.SetBool("isWalking", !iEnemy.CheckForProximityOfPoint());
             timer += Time.fixedDeltaTime;
             yield return new WaitForFixedUpdate();
@@ -194,6 +198,7 @@ public class EnemyAttackingState : MeleeEnemyState
     {
         if (movingAwayFromPlayer_Ref != null)
         {
+            iEnemy.currentAction = EnemyMelee.Actions.Moving;
             iEnemy.animator.SetBool("isWalking", false);
             iEnemy.StopCoroutine(movingAwayFromPlayer_Ref);
             movingAwayFromPlayer_Ref = null;
