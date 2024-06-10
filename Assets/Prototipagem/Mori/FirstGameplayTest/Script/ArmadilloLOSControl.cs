@@ -9,7 +9,7 @@ using UnityEngine.InputSystem.XInput;
 //Armadillo Line of Sight Control
 public class ArmadilloLOSControl : MonoBehaviour
 {
-    [SerializeField] private float distanceOfChecking;
+    [SerializeField] public float distanceOfChecking;
     private int enemyLayer;
     private int pickableLayer;
     private int interactiveLayer;
@@ -25,18 +25,37 @@ public class ArmadilloLOSControl : MonoBehaviour
     }
     private void Start()
     {
-        checkLOS_Ref = StartCoroutine(CheckLOS_Coroutine());
+        StartLOSCheck();
         ArmadilloPlayerController.Instance.inputControl.inputAction.Armadillo.Interact.Enable();
     }
     #region Check LOS
+
+    public void StartLOSCheck()
+    {
+        if(checkLOS_Ref == null)
+        {
+            checkLOS_Ref = StartCoroutine(CheckLOS_Coroutine());
+        }
+    }
+
+    public void StopLOSCheck()
+    {
+        if (checkLOS_Ref != null)
+        {
+            StopCoroutine(checkLOS_Ref);
+            checkLOS_Ref= null;
+            if(currentConnectedObject != null)
+            {
+                currentConnectedObject.OnLeaveLOS();
+                currentConnectedObject = null;
+            }
+        }
+    }
+
     private Coroutine checkLOS_Ref;
     private IEnumerator CheckLOS_Coroutine()
     {
         Camera camera = ArmadilloPlayerController.Instance.cameraControl.mainCamera;
-        LayerMask detectLayerMask = new LayerMask();
-        detectLayerMask |= 1 << enemyLayer;
-        detectLayerMask |= 1 << pickableLayer;
-        detectLayerMask |= 1 << interactiveLayer;
         while (true)
         {
             RaycastHit newRaycastHit;
@@ -54,9 +73,9 @@ public class ArmadilloLOSControl : MonoBehaviour
                 }
                 if (newRaycastHit.collider.TryGetComponent(out IRaycastableInLOS raycastable))
                 {
-                    if (currentConnectedObject != raycastable)
+                    if ((MonoBehaviour)currentConnectedObject != (MonoBehaviour)raycastable)
                     {
-                        raycastable.OnLeaveLOS();
+                        if(currentConnectedObject != null)currentConnectedObject.OnLeaveLOS();
                         raycastable.OnEnterLOS();
                         currentConnectedObject = raycastable;
                     }

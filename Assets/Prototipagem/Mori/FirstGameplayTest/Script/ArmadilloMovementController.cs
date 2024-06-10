@@ -100,6 +100,8 @@ public class ArmadilloMovementController : MonoBehaviour
     [Header("Ladder")]
     public float ladderSpeed;
 
+    [Header("Speed Modifiers")]
+    [HideInInspector] public float speedMultiplier = 1;
     public void OnDrawGizmos()
     {
         //Check for grounded
@@ -112,6 +114,7 @@ public class ArmadilloMovementController : MonoBehaviour
 
     private void Awake()
     {
+        speedMultiplier = 1;    
         readyToJump = true;
         rb = GetComponent<Rigidbody>();
 
@@ -282,10 +285,7 @@ public class ArmadilloMovementController : MonoBehaviour
         MovementFormStats stats = GetCurrentFormStats();
         Vector3 groundCheckPos = transform.position - new Vector3(0, stats.playerHeight / 2f, 0);
         Collider[] colliders = Physics.OverlapSphere(groundCheckPos, 0.25f, whatIsGround, QueryTriggerInteraction.Ignore);
-        if (!grounded && colliders.Length > 0)
-        {
-            ArmadilloPlayerController.Instance.audioControl.onFallSound.PlayAudio();
-        }
+        bool wasGrounded = grounded;
         if (colliders.Length > 1)
         {
             grounded = true;
@@ -298,7 +298,8 @@ public class ArmadilloMovementController : MonoBehaviour
             }
             else if (((MonoBehaviour)ArmadilloPlayerController.Instance.pickUpControl.connectedObject).gameObject == colliders[0].gameObject)
             {
-                grounded = ArmadilloPlayerController.Instance.pickUpControl.CanJumpOnConnectedObject();
+                ArmadilloPlayerController.Instance.pickUpControl.Drop();
+                grounded = true;
             }
             else grounded = true;
         }
@@ -308,6 +309,7 @@ public class ArmadilloMovementController : MonoBehaviour
         }
         if (grounded)
         {
+            if (!wasGrounded) ArmadilloPlayerController.Instance.audioControl.onFallSound.PlayAudio();
             hasUsedLedgeGrab = false;
             timeSinceTouchedGround = 0;
             rb.drag = stats.groundDrag;
@@ -334,6 +336,7 @@ public class ArmadilloMovementController : MonoBehaviour
     }
     public void EnterLadder(Transform objectTransform, Vector3 minPosition, Vector3 maxPosition, float pipeSize)
     {
+        ArmadilloPlayerController.Instance.pickUpControl.Drop();
         ladderState.ladderObject = objectTransform;
         ladderState.minPosition = minPosition;
         ladderState.maxPosition = maxPosition;
@@ -363,5 +366,13 @@ public class ArmadilloMovementController : MonoBehaviour
     public Vector3 GetSlopeMoveDirection(Vector3 moveDirection)
     {
         return Vector3.ProjectOnPlane(moveDirection, slopeHit.normal);
+    }
+
+    public void OnBreakObject()
+    {
+        if(ArmadilloPlayerController.Instance.currentForm== ArmadilloPlayerController.Form.Ball)
+        {
+            ballState.OnBreakObject();
+        }
     }
 }

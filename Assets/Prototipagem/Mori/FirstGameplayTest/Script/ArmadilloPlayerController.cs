@@ -38,6 +38,7 @@ public class ArmadilloPlayerController : MonoBehaviour
     [System.NonSerialized] public ArmadilloPickUpControl pickUpControl;
     [System.NonSerialized] public ArmadilloVisualControl visualControl;
     [System.NonSerialized] public ArmadilloAudioControl audioControl;
+    [System.NonSerialized] public ArmadilloLOSControl losControl;
 
     //Player Forms
     [Header("Default Form")]
@@ -78,6 +79,7 @@ public class ArmadilloPlayerController : MonoBehaviour
         pickUpControl = GetComponent<ArmadilloPickUpControl>();
         visualControl = GetComponent<ArmadilloVisualControl>();
         audioControl = GetComponent<ArmadilloAudioControl>();
+        losControl = GetComponent<ArmadilloLOSControl>();
         #endregion
         Application.targetFrameRate = 300;
 
@@ -214,6 +216,10 @@ public class ArmadilloPlayerController : MonoBehaviour
     private Coroutine changeToBallFormRef;
     private IEnumerator ChangeToBallForm_Coroutine()
     {
+        //Stop CheckLOS e solta objeto
+        losControl.StopLOSCheck();
+        pickUpControl.Drop();
+
         //Move a camera para terceira pessoa em 0.5 segundos 
         currentEquipedWeapon = weaponControl.currentWeaponID;
         weaponControl.ToggleWeapon(false);
@@ -253,6 +259,9 @@ public class ArmadilloPlayerController : MonoBehaviour
     private Coroutine changeToDefaultFormRef;
     private IEnumerator ChangeToDefaultForm_Coroutine()
     {
+        //Stop CheckLOS
+        losControl.StartLOSCheck();
+
         audioControl.onTransformSound.PlayAudio();
         //Move a camera para terceira pessoa em 0.5 segundos 
         cameraControl.ChangeCameraState(cameraControl.firstPersonCameraState);

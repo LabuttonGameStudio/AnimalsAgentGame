@@ -10,6 +10,8 @@ public class ArmadilloBallState : MovementState
     Vector3 previousVelocityInput = Vector3.zero;
     private Vector3 velocity = Vector3.zero;
 
+    private Vector3 currentVelocity = Vector3.zero;
+
     private Transform playerVisual;
     public override void EnterState(ArmadilloMovementController movementControl)
     {
@@ -22,6 +24,7 @@ public class ArmadilloBallState : MovementState
 
     public override void FixedUpdateState()
     {
+        currentVelocity = movementCtrl.rb.velocity;
         MovePlayer();
     }
 
@@ -35,7 +38,10 @@ public class ArmadilloBallState : MovementState
         previousVelocityInput = Vector3.zero;
         velocity = Vector3.zero;
     }
-
+    public void OnBreakObject()
+    {
+        movementCtrl.rb.velocity = currentVelocity;
+    }
     //-----Player Movement-----
     private void MovePlayer()
     {

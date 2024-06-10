@@ -51,11 +51,13 @@ public class ArmadilloDefaultState : MovementState
         {
             if (movementCtrl.isOnSlope) movementApplied = movementCtrl.GetSlopeMoveDirection(moveDirection.normalized) * stats.moveSpeedMax * movementCtrl.movementTypeMultiplier * Time.fixedDeltaTime * 500;
             else movementApplied = moveDirection.normalized * stats.moveSpeedMax * movementCtrl.movementTypeMultiplier * Time.fixedDeltaTime * 500;
+            movementApplied = movementApplied * movementCtrl.speedMultiplier;
             movementCtrl.rb.AddForce(movementApplied, ForceMode.Acceleration);
         }
         else
         {
             movementApplied = moveDirection.normalized * stats.moveSpeedMax * stats.onAirSpeedMultiplier * Time.fixedDeltaTime * 500;
+            movementApplied = movementApplied * movementCtrl.speedMultiplier;
             LedgeGrab();
             if (movementCtrl.rb.velocity.y < 0)
             {
