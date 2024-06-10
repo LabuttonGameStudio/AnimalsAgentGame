@@ -15341,6 +15341,7 @@ MonoBehaviour:
   maxHeightToLedgeGrab: 2.7
   isOnSlope: 0
   ladderSpeed: 3
+  speedMultiplier: 1
 --- !u!114 &5827398360590622979
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15453,6 +15454,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 182f3ea085e45924da93eb7a7f8249fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  holdObjectPhysicMaterial: {fileID: 13400000, guid: 326b4fdde1b9213449204c2a41f44c99, type: 2}
+  mediumObjectPickUpForce: 3000
 --- !u!114 &3242636103172020492
 MonoBehaviour:
   m_ObjectHideFlags: 0
