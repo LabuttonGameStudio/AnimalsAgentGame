@@ -146,7 +146,7 @@ public class EnemyAttackingState : MeleeEnemyState
         attackDirection.Normalize();
         iEnemy.secondaryAttackHitbox.EnableHitBox();
         yield return new WaitForSeconds(0.125f);
-
+        iEnemy.rb.isKinematic = false;
         iEnemy.rb.AddForce(attackDirection * 30f, ForceMode.VelocityChange);
         Damage damage = new Damage(iEnemy.secondaryAttackDamage, Damage.DamageType.Blunt, false, iEnemy.transform.position);
         timer = 0;
@@ -158,6 +158,7 @@ public class EnemyAttackingState : MeleeEnemyState
         }
         iEnemy.secondaryAttackHitbox.DisableHitBox();
         iEnemy.navMeshAgent.enabled = true;
+        iEnemy.rb.isKinematic = true;
 
         attack_Coroutine = null;
         StartMovingAwayFromPlayer();

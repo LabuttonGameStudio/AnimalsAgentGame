@@ -5,6 +5,8 @@ using UnityEngine.AI;
 using static AIBehaviourEnums;
 using static SoundGeneralControl;
 using AudioType = SoundGeneralControl.AudioType;
+using UnityEngine.VFX;
+using static Damage;
 public class EnemyMelee : IEnemy, IDamageable, ISoundReceiver
 {
     #region Detection
@@ -44,10 +46,10 @@ public class EnemyMelee : IEnemy, IDamageable, ISoundReceiver
         Observing,
         Attacking
     }
-    [HideInInspector]public Actions currentAction;
+    [HideInInspector] public Actions currentAction;
 
     [SerializeField] private ParticleSystem onDeathByEletricParticle;
-    [SerializeField] private ParticleSystem deadLoopParticle;
+    [SerializeField] private VisualEffect deadLoopParticle;
     protected override void OnAwake()
     {
         enemyRoamingState = new EnemyRoamingState(this);
@@ -91,13 +93,24 @@ public class EnemyMelee : IEnemy, IDamageable, ISoundReceiver
             isDead = true;
             animator.transform.parent = animator.transform.parent.parent;
             animator.SetTrigger("isDead");
-            onDeathByEletricParticle.Play();
+            switch (damage.damageType)
+            {
+                case DamageType.Eletric:
+                    onDeathByEletricParticle.Play();
+                    break;
+            }
             deadLoopParticle.Play();
+            EnemyMasterControl.Instance.StartCoroutine(DeSpawnCoroutine(animator.gameObject));
             gameObject.SetActive(false);
             return;
         }
         if (currentAction == Actions.Moving || currentAction == Actions.Observing) animator.SetTrigger("isHit");
         OnDamageTaken(damage);
+    }
+    private IEnumerator DeSpawnCoroutine(GameObject gameObject)
+    {
+        yield return new WaitForSeconds(20);
+        gameObject.SetActive(false);
     }
     private void OnDamageTaken(Damage damage)
     {
