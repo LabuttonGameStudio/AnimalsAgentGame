@@ -292,10 +292,7 @@ public class MenuPause : MonoBehaviour
 
     private void ApplyMouseSensitivity(float sensitivity)
     {
-        PlayerCamera.Instance.firstPersonSensibilityX = sensitivity;
-        PlayerCamera.Instance.firstPersonSensibilityY = sensitivity;
-        PlayerCamera.Instance.yRotation = sensitivity;
-        PlayerCamera.Instance.xRotation = sensitivity;
+        PlayerCamera.Instance.firstPersonSensibility = new Vector2(sensitivity,sensitivity);
     }
 
     private void SaveSensitivitySettings(float sensitivity)

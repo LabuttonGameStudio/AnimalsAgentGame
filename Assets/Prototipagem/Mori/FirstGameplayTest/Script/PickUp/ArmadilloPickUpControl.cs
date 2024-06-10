@@ -19,11 +19,17 @@ public class ArmadilloPickUpControl : MonoBehaviour
     [Header("Player Force")]
     [SerializeField] private float mediumObjectPickUpForce;
 
+    [Header("Throw")]
+    [SerializeField] private float smallObjectThrowForce;
+    [SerializeField] private float mediumObjectThrowForce;
+    [SerializeField] private float bigObjectThrowForce;
+
     [Header("Connected Object Default Configs")]
     private PhysicMaterial objectDefaultPhysicMaterial;
     private Collider objectDefaultCollider;
     private float objectDefaultDrag;
     private RigidbodyConstraints objectDefaultConstraints;
+    private bool objectDefaultFreezeRotation;
     private RigidbodyInterpolation objectDefaultInterpolation;
     private CollisionDetectionMode objectDefaultCollisionDetectionMode;
 
@@ -118,7 +124,13 @@ public class ArmadilloPickUpControl : MonoBehaviour
     }
     public void Grab(IPickUpObject grabbedObject)
     {
-        Debug.Log(grabbedObject.m_pickUpObjectType);
+        ArmadilloPlayerController playerController = ArmadilloPlayerController.Instance;
+        playerController.weaponControl.ToggleWeapon(false);
+
+        //Ebale throw objects
+        playerController.inputControl.inputAction.Armadillo.Fire.Enable();
+        playerController.inputControl.inputAction.Armadillo.Fire.performed += ThrowObject;
+
         switch (grabbedObject.m_pickUpObjectType)
         {
             case PickUpObjectType.Small:
@@ -131,10 +143,10 @@ public class ArmadilloPickUpControl : MonoBehaviour
                 connectedObject = grabbedObject;
 
                 objectRb = ((MonoBehaviour)grabbedObject).transform.GetComponent<Rigidbody>();
-                if(objectRb.transform.TryGetComponent(out Collider collider))
+                if (objectRb.transform.TryGetComponent(out Collider collider))
                 {
                     objectDefaultCollider = collider;
-                    if(collider.material != null)
+                    if (collider.material != null)
                     {
                         objectDefaultPhysicMaterial = collider.material;
                     }
@@ -146,6 +158,7 @@ public class ArmadilloPickUpControl : MonoBehaviour
                 objectDefaultConstraints = objectRb.constraints;
                 objectDefaultInterpolation = objectRb.interpolation;
                 objectDefaultCollisionDetectionMode = objectRb.collisionDetectionMode;
+                objectDefaultFreezeRotation = objectRb.freezeRotation;
 
                 objectRb.drag = 10;
                 objectRb.useGravity = false;
@@ -157,7 +170,13 @@ public class ArmadilloPickUpControl : MonoBehaviour
     }
     public void Drop()
     {
-        if(connectedObject == null) return;
+        if (connectedObject == null) return;
+        ArmadilloPlayerController playerController = ArmadilloPlayerController.Instance;
+
+        playerController.weaponControl.ToggleWeapon(true);
+
+        playerController.inputControl.inputAction.Armadillo.Fire.performed -= ThrowObject;
+
         switch (connectedObject.m_pickUpObjectType)
         {
             case PickUpObjectType.Small:
@@ -170,7 +189,7 @@ public class ArmadilloPickUpControl : MonoBehaviour
                 connectedObject.isBeeingHeld = false;
                 objectRb.useGravity = true;
 
-                if(objectDefaultPhysicMaterial != null)
+                if (objectDefaultPhysicMaterial != null)
                 {
                     objectDefaultCollider.material = objectDefaultPhysicMaterial;
                     objectDefaultPhysicMaterial = null;
@@ -181,14 +200,14 @@ public class ArmadilloPickUpControl : MonoBehaviour
 
                 objectRb.constraints = objectDefaultConstraints;
                 objectDefaultConstraints = 0;
-                
+
                 objectRb.interpolation = objectDefaultInterpolation;
                 objectDefaultInterpolation = 0;
 
                 objectRb.collisionDetectionMode = objectDefaultCollisionDetectionMode;
                 objectDefaultCollisionDetectionMode = 0;
 
-                objectRb.freezeRotation = false;
+                objectRb.freezeRotation = objectDefaultFreezeRotation;
 
                 objectRb = null;
                 ToggleHoldObjectCoroutine(false, connectedObject.m_pickUpObjectType);
@@ -243,7 +262,7 @@ public class ArmadilloPickUpControl : MonoBehaviour
             Vector3 holdArea = cameraTransform.position + cameraTransform.forward * 3f;
 
             Vector3 moveDirection = holdArea - objectRb.position;
-            Vector3 moveForce = moveDirection * mediumObjectPickUpForce + rigidbodyOfPlayer.velocity*600;
+            Vector3 moveForce = moveDirection * mediumObjectPickUpForce + rigidbodyOfPlayer.velocity * 600;
             //HorizontalForce
 
             objectRb.AddForce(moveForce * Time.deltaTime, ForceMode.Acceleration);
@@ -275,4 +294,31 @@ public class ArmadilloPickUpControl : MonoBehaviour
             yield return new WaitForFixedUpdate();
         }
     }
+
+    #region Throw
+    public void ThrowObject(InputAction.CallbackContext value)
+    {
+        Rigidbody connectedRigidbody = objectRb;
+        Camera camera = ArmadilloPlayerController.Instance.cameraControl.mainCamera;
+
+        Vector3 throwForce=Vector3.zero;
+        switch (connectedObject.m_pickUpObjectType)
+        {
+            case PickUpObjectType.Small:
+                Drop();
+                throwForce = camera.transform.forward * smallObjectThrowForce;
+                break;
+            case PickUpObjectType.Medium:
+                Drop();
+                throwForce = camera.transform.forward * mediumObjectThrowForce;
+                break;
+            case PickUpObjectType.Big:
+                Drop();
+                throwForce = camera.transform.forward * bigObjectThrowForce;
+                throwForce.y = 0;
+                break;
+        }
+        connectedRigidbody.AddForce(throwForce, ForceMode.Impulse);
+    }
+    #endregion
 }

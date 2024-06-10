@@ -11,13 +11,6 @@ public class CameraThirdPersonState : CameraBaseState
         playerCamera.thirdPersonCinemachine.Follow.rotation = playerCamera.mainCamera.transform.rotation;
         playerCamera.firstPersonCinemachine.Priority = 10;
         playerCamera.thirdPersonCinemachine.Priority = 11;
-        //playerCamera.activeCamera.gameObject.SetActive(false);
-        //playerCamera.activeCamera = playerCamera.thirdPersonCamera;
-        //playerCamera.StartCoroutine(OnEnterLerpCamera_Coroutine());
-        //playerCamera.activeCamera.gameObject.SetActive(true);
-
-        //Tween.MoveTransformLocalPosition(playerCamera, playerCamera.cameraFollowPoint, new Vector3(0, 1, -5f), 0.2f);
-        //playerCamera.StartCoroutine(OnEnterLerpCamera_Coroutine());
     }
 
     public override void ExitState()
@@ -28,8 +21,8 @@ public class CameraThirdPersonState : CameraBaseState
     public override void UpdateState()
     {
         Transform followTransform = playerCamera.thirdPersonCinemachine.Follow;
-        followTransform.rotation *= Quaternion.AngleAxis(playerCamera.GetMouseDelta().x/8, Vector3.up);
-        followTransform.rotation *= Quaternion.AngleAxis(-playerCamera.GetMouseDelta().y/8, Vector3.right);
+        followTransform.rotation *= Quaternion.AngleAxis(playerCamera.GetMouseDelta().x/8 * playerCamera.thirdPersonSensibility.x, Vector3.up);
+        followTransform.rotation *= Quaternion.AngleAxis(-playerCamera.GetMouseDelta().y/8 * playerCamera.thirdPersonSensibility.y, Vector3.right);
         Vector3 angles = followTransform.localEulerAngles;
         angles.z = 0;
         float angle = followTransform.localEulerAngles.x;

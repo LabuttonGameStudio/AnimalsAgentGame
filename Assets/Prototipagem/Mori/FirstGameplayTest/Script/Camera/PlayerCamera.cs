@@ -7,8 +7,14 @@ public class PlayerCamera : MonoBehaviour
 {
     //Singleton
     static public PlayerCamera Instance;
+    [Header("Sensibility")]
+    [Header("First Person")]
+    public Vector2 firstPersonSensibility;
+    [Header("Third Person")]
+    public Vector2 thirdPersonSensibility;
 
-    public float firstPersonSensibilityX = 10, firstPersonSensibilityY = 10;
+    [Header("Sensibility Modifiers")]
+    private float currentSpeedModifier = 1f;
 
     private ArmadilloPlayerInputController inputController;
     public Camera mainCamera;
@@ -44,6 +50,9 @@ public class PlayerCamera : MonoBehaviour
 
     private void Awake()
     {
+        firstPersonSensibility = Vector2.one;
+        thirdPersonSensibility = Vector2.one;
+        currentSpeedModifier = 1f;
         Instance = this;
     }
     private void Start()

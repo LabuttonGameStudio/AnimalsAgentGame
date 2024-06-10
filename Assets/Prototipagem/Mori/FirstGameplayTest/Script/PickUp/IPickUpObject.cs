@@ -5,6 +5,7 @@ using UnityEngine;
 
 public interface IPickUpObject : IRaycastableInLOS
 {
+    public float m_objectSize { get; set; }
     public enum PickUpObjectType
     {
         Small,

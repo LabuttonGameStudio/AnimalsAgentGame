@@ -6,6 +6,8 @@ using static IPickUpObject;
 
 public class PickUpBox : MonoBehaviour, IPickUpObject
 {
+    private Rigidbody rb;
+    [SerializeField]private float objectSize;
     [SerializeField]private PickUpObjectType pickUpObjectType;
     [SerializeField] private string objectName;
     [SerializeField] private string onGroundDescription;
@@ -16,9 +18,19 @@ public class PickUpBox : MonoBehaviour, IPickUpObject
         get => pickUpObjectType;
         set => pickUpObjectType = value;
     }
+    public float m_objectSize 
+    {
+        get => objectSize;
+        set => objectSize = value;
+    }
 
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.DrawWireSphere(transform.position, objectSize);
+    }
     private void Awake()
     {
+        rb = GetComponent<Rigidbody>();
         isBeeingHeld = false;
     }
 
@@ -28,5 +40,8 @@ public class PickUpBox : MonoBehaviour, IPickUpObject
     {
         return isBeeingHeld ? pickedUpDescription : onGroundDescription;
     }
-
+    private void FixedUpdate()
+    {
+        rb.AddForce(Vector3.up*(-1)*10f,ForceMode.Acceleration);
+    }
 }

@@ -54,7 +54,7 @@ public class EnemyMelee : IEnemy, IDamageable, ISoundReceiver
     }
     protected override void OnFixedUpdate()
     {
-        if(navMeshAgent.velocity.magnitude > 0.75f)
+        if (navMeshAgent.velocity.magnitude > 0.75f)
         {
             walkingSoundEmitter.PlayAudio();
         }
@@ -98,6 +98,7 @@ public class EnemyMelee : IEnemy, IDamageable, ISoundReceiver
     private IEnumerator OnDamageTaken_Coroutine(Damage damage)
     {
         yield return new WaitForSeconds(0.25f);
+        if (currentAIBehaviour == AIBehaviour.Attacking) yield break;
         lastKnownPlayerPos = damage.originPoint;
         ChangeCurrentAIBehaviour(AIBehaviour.Searching);
         SetDetectionLevel(searchingStateBreakPoint);

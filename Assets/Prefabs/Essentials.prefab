@@ -6740,7 +6740,7 @@ Camera:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2058420263801030305}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 2
   m_ClearFlags: 1
   m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
@@ -15367,8 +15367,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b0cbcbf4b9ded54b9b607bac60f84b6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  firstPersonSensibilityX: 15
-  firstPersonSensibilityY: 15
+  firstPersonSensibility: {x: 1, y: 1}
+  thirdPersonSensibility: {x: 1, y: 1}
   mainCamera: {fileID: 1566958832985602325}
   weaponCamera: {fileID: 8297561690872437431}
   cameraFollowPoint: {fileID: 4398985997072136297}
@@ -15456,6 +15456,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   holdObjectPhysicMaterial: {fileID: 13400000, guid: 326b4fdde1b9213449204c2a41f44c99, type: 2}
   mediumObjectPickUpForce: 3000
+  smallObjectThrowForce: 2500
+  mediumObjectThrowForce: 2500
+  bigObjectThrowForce: 2500
 --- !u!114 &3242636103172020492
 MonoBehaviour:
   m_ObjectHideFlags: 0
