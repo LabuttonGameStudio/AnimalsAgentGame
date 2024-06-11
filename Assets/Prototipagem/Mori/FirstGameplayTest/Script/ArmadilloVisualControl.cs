@@ -44,8 +44,16 @@ public class ArmadilloVisualControl : MonoBehaviour
     [Header("VFX")]
     [SerializeField] private ParticleSystem transformationSmoke;
     [SerializeField] private ParticleSystem TreckOnomatopeia;
+    [SerializeField] private ParticleSystem onBallHitParticle;
 
-
+    #region VFX
+    public void OnBallHit(Vector3 position, Vector3 lookAtPos)
+    {
+        onBallHitParticle.transform.position = position;
+        onBallHitParticle.transform.LookAt(lookAtPos);
+        onBallHitParticle.Play();
+    }
+    #endregion
 
     #region ThirdPerson
     public void OnEnterBallMode()

@@ -225,4 +225,24 @@ public class EnemyMelee : IEnemy, IDamageable, ISoundReceiver
             }
         }
     }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.collider.CompareTag("Player"))
+        {
+            ArmadilloPlayerController playerControler = ArmadilloPlayerController.Instance;
+            if (playerControler.currentForm == ArmadilloPlayerController.Form.Ball)
+            {
+                if (collision.impulse.magnitude > 200)
+                {
+                    TakeDamage(new Damage(10,DamageType.Blunt,true,playerControler.transform.position));
+                    Vector3 direction = playerControler.transform.position -collision.GetContact(0).point;
+                    direction.Normalize();
+                    playerControler.movementControl.rb.AddForce(direction * 15, ForceMode.VelocityChange);
+
+                    ArmadilloPlayerController.Instance.visualControl.OnBallHit(collision.GetContact(0).point, playerControler.transform.position);
+                }
+            }
+        }
+    }
 }
