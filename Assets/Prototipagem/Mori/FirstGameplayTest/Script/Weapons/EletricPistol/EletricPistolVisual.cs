@@ -18,19 +18,25 @@ public class EletricPistolVisual : MonoBehaviour
     [SerializeField] private SoundEmitter onChargedFireSoundEmitter;
     [SerializeField] private SoundEmitter onChargingFireSoundEmitter;
 
-    public void OnUnchargedFire()
+
+    public void OnUnchargedFire(Vector3 destination)
     {
         ZiumOnomatopeiaParticle.Play();
+
         onFireParticle.Play();
+
         onFireTrail.Play();
         //TweenMunicao.Instance.ShakeAmmunition();
         onUnchargedFireSoundEmitter.PlayAudio();
     }
-    public void OnChargedFire()
+    public void OnChargedFire(Vector3 destination)
     {
         OnUnCharge();
+
         ZiumOnomatopeiaParticle.Play();
+
         onFireParticle.Play();
+
         onFireTrail.Play();
         //TweenMunicao.Instance.ShakeAmmunition();
         onChargedFireSoundEmitter.PlayAudio();

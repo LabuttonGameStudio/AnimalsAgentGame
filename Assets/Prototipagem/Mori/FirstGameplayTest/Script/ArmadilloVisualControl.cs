@@ -39,7 +39,7 @@ public class ArmadilloVisualControl : MonoBehaviour
     [Space]
     [Header("Fisrt Person")]
     [SerializeField] private SkinnedMeshRenderer fpRenderer;
-    [SerializeField] private Animator fpAnimator;
+    [SerializeField] public Animator fpAnimator;
 
     [Header("VFX")]
     [SerializeField] private ParticleSystem transformationSmoke;
@@ -129,7 +129,7 @@ public class ArmadilloVisualControl : MonoBehaviour
         ArmadilloPlayerController.Instance.weaponControl.ToggleWeapon(false);
         fp_Layer1 = FPModeLayer1.LedgeGrab;
         fpAnimator.SetTrigger("ledgeGrab");
-        StartToggleWeaponDelay(0.6f, true);
+        StartToggleWeaponDelay(0.28f, true);
     }
     public void OnClimbingStart()
     {

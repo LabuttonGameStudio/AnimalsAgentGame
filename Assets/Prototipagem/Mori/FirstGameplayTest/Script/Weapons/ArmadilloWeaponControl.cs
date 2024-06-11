@@ -59,6 +59,12 @@ public class ArmadilloWeaponControl : MonoBehaviour
         Add,
         Remove,
     }
+    private Coroutine DelegateDelay_Ref;
+    private IEnumerator DelegateDelay_Coroutine(float delay, PlayerInputAction.ArmadilloActions playerInput, DelegateType delegateType, int weaponID)
+    {
+        yield return new WaitForSeconds(delay);
+        DefineDelegates(playerInput, delegateType, weaponID);
+    }
     private void DefineDelegates(PlayerInputAction.ArmadilloActions playerInput, DelegateType delegateType, int weaponID)
     {
         switch (delegateType)
@@ -123,8 +129,9 @@ public class ArmadilloWeaponControl : MonoBehaviour
         }
         currentWeaponID = nextWeapon;
         OnGunEquip(nextWeapon);
-        DefineDelegates(playerInput, DelegateType.Add, nextWeapon);
         weaponsInInventory[nextWeapon].ToggleVisual(true);
+        if(DelegateDelay_Ref != null) StopCoroutine(DelegateDelay_Ref);
+        DelegateDelay_Ref = StartCoroutine(DelegateDelay_Coroutine(1.125f, playerInput, DelegateType.Add, nextWeapon));
     }
 
     public void ToggleWeapon(bool state)

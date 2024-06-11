@@ -153,7 +153,7 @@ public class EletricPistol : Weapon
             }
         }
         OnOverheatCharge(unchargedOverheatCharge);
-        visualHandler.OnUnchargedFire();
+        visualHandler.OnUnchargedFire(camera.position + camera.forward * 20f);
     }
     public void ChargedFire()
     {
@@ -174,7 +174,7 @@ public class EletricPistol : Weapon
         OnOverheatCharge(chargedOverheatCharge);
         FPCameraShake.StopShake(holdShakeStats);
         holdShakeStats = null;
-        visualHandler.OnChargedFire();
+        visualHandler.OnChargedFire(camera.position + camera.forward * 30f);
     }
 
     public Coroutine holdOrPressTimerRef;
