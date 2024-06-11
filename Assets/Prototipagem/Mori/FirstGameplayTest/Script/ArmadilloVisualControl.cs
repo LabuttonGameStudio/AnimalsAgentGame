@@ -46,6 +46,7 @@ public class ArmadilloVisualControl : MonoBehaviour
     [SerializeField] private ParticleSystem TreckOnomatopeia;
     [SerializeField] private ParticleSystem onBallHitParticle;
 
+
     #region VFX
     public void OnBallHit(Vector3 position, Vector3 lookAtPos)
     {
@@ -189,14 +190,14 @@ public class ArmadilloVisualControl : MonoBehaviour
     public void OnPause(bool pause)
     {
         ArmadilloPlayerController.Instance.weaponControl.ToggleWeapon(!pause);
-        fpAnimator.SetBool("isPaused",pause);
+        fpAnimator.SetBool("isPaused", pause);
         fp_Layer1 = FPModeLayer1.Pause;
     }
 
     public void ReturnPause()
     {
-        
-        fpAnimator.SetBool("isPaused",false);
+
+        fpAnimator.SetBool("isPaused", false);
         fp_Layer1 = FPModeLayer1.Pause;
     }
 
@@ -224,19 +225,29 @@ public class ArmadilloVisualControl : MonoBehaviour
 
     private void ToggleRun(bool state)
     {
-        if (hasGunEquiped || isClimbing) return;
+        if (isClimbing) return;
         fpAnimator.SetBool("isRunning", state);
     }
     private void ToggleLurking(bool state)
     {
-        if (hasGunEquiped || isClimbing) return;
+        if (isClimbing) return;
         fpAnimator.SetBool("isSneaking", state);
     }
     public void OnGunEquiped()
     {
         hasGunEquiped = true;
-        fpAnimator.SetBool("isSneaking", false);
-        fpAnimator.SetBool("isRunning", false);
+    }
+    public void OnEletricGunFire()
+    {
+        fpAnimator.SetTrigger("zapGunShoot");
+    }
+    public void ToggleEletricPistolCharge(bool state)
+    {
+        fpAnimator.SetBool("zapGunIsCharging",state);
+    }
+    public void ToggleEletricPistolOverheat(bool state)
+    {
+        fpAnimator.SetBool("zapGunOverheat", state);
     }
     public void OnStartClimbing()
     {
@@ -251,6 +262,15 @@ public class ArmadilloVisualControl : MonoBehaviour
             fp_Layer1 = FPModeLayer1.Gun_Default;
         }
         else fp_Layer1 = FPModeLayer1.Null;
+    }
+
+    public void EquipEletricPistol(Transform eletricPistolTransform)
+    {
+        fpAnimator.SetBool("zapGunEquip", true);
+    }
+    public void UnequipEletricPistol(Transform eletricPistolTransform)
+    {
+        fpAnimator.SetBool("zapGunEquip", false);
     }
     #endregion
 }

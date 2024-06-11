@@ -129,10 +129,12 @@ public class EnemyMelee : IEnemy, IDamageable, ISoundReceiver
     {
 
         yield return new WaitForSeconds(0.25f);
-        if (currentAIBehaviour == AIBehaviour.Attacking) yield break;
+        if (currentAIBehaviour == AIBehaviour.Attacking || currentAIBehaviour == AIBehaviour.Searching) yield break;
         lastKnownPlayerPos = damage.originPoint;
         ChangeCurrentAIBehaviour(AIBehaviour.Searching);
         SetDetectionLevel(searchingStateBreakPoint);
+        StopLookAround();
+        onDamageTaken_Ref = null;
     }
     protected override void OnRoamingPathEnd()
     {

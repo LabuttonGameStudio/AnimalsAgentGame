@@ -1756,7 +1756,7 @@ VisualEffect:
   m_PropertySheet:
     m_Float:
       m_Array:
-      - m_Value: 100
+      - m_Value: 50
         m_Name: SpawnAmount
         m_Overridden: 1
     m_Vector2f:
@@ -1775,6 +1775,9 @@ VisualEffect:
       - m_Value: {x: 3, y: 3, z: 3}
         m_Name: Transform_scale
         m_Overridden: 1
+      - m_Value: {x: 0.75, y: 0.75, z: 0.75}
+        m_Name: Scale
+        m_Overridden: 1
     m_Vector4f:
       m_Array: []
     m_Uint:
@@ -1789,8 +1792,8 @@ VisualEffect:
       m_Array:
       - m_Value:
           serializedVersion: 2
-          key0: {r: 1, g: 1, b: 1, a: 1}
-          key1: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+          key0: {r: 0.09433961, g: 0.091224626, b: 0.091224626, a: 1}
+          key1: {r: 0, g: 0, b: 0, a: 1}
           key2: {r: 0, g: 0, b: 0, a: 0}
           key3: {r: 0, g: 0, b: 0, a: 0}
           key4: {r: 0, g: 0, b: 0, a: 0}
@@ -1814,7 +1817,7 @@ VisualEffect:
           atime6: 0
           atime7: 0
           m_Mode: 0
-          m_ColorSpace: -1
+          m_ColorSpace: 1
           m_NumColorKeys: 2
           m_NumAlphaKeys: 2
         m_Name: ColorGradient
@@ -7308,6 +7311,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 1
         m_CallState: 2
+      - m_Target: {fileID: 1249574026}
+        m_TargetAssemblyTypeName: ArmadilloWeaponControl, Assembly-CSharp
+        m_MethodName: GivePlayerEletricPistol
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
 --- !u!65 &1940751841
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -9027,7 +9042,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2520706849553578126, guid: 5e6fc123e444e7f45ab78b704561dbb1, type: 3}
       propertyPath: aiPathList.Array.data[0].waitTimeOnPoint
-      value: 3
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 2520706849553578126, guid: 5e6fc123e444e7f45ab78b704561dbb1, type: 3}
       propertyPath: aiPathList.Array.data[1].waitTimeOnPoint

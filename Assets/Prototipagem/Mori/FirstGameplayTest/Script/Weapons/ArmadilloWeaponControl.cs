@@ -21,6 +21,9 @@ public class ArmadilloWeaponControl : MonoBehaviour
     public TextMeshProUGUI currentWeaponUI;
     public Slider Weaponammoslider;
 
+    [Header("Weapons")]
+    [SerializeField] public Transform eletricPistolSpawnPoint;
+
     public void Start()
     {
         weaponsInInventory = new Weapon[2];
@@ -41,6 +44,14 @@ public class ArmadilloWeaponControl : MonoBehaviour
         GameObject objectInstantiated = Instantiate(model, weaponCamera.transform); 
         objectInstantiated.transform.localPosition = position;
         objectInstantiated.transform.localRotation = rotation;
+        return objectInstantiated;
+    }
+    public GameObject LoadModel(GameObject model,Transform transform)
+    {
+        GameObject objectInstantiated = Instantiate(model, weaponCamera.transform);
+        objectInstantiated.transform.position = transform.position;
+        objectInstantiated.transform.rotation = transform.rotation;
+        objectInstantiated.transform.parent = transform.parent;
         return objectInstantiated;
     }
     private enum DelegateType

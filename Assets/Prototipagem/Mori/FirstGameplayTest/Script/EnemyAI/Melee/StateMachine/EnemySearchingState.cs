@@ -100,7 +100,13 @@ public class EnemySearchingState : MeleeEnemyState
     {
         iEnemy.currentAction = EnemyMelee.Actions.Observing;
         iEnemy.navMeshAgent.ResetPath();
-        yield return new WaitForSeconds(1f);
+        float timer = 0;
+        while(timer<1)
+        {
+            iEnemy.LerpLookAt(iEnemy.lastKnownPlayerPos, 3);
+            timer += Time.deltaTime;
+            yield return null;
+        }
         Vector3 startPos = iEnemy.lastKnownPlayerPos;
 
         for (int i = 0; i <= 3; i++)

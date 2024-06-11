@@ -23,7 +23,7 @@ public class EletricPistolVisual : MonoBehaviour
         ZiumOnomatopeiaParticle.Play();
         onFireParticle.Play();
         onFireTrail.Play();
-        TweenMunicao.Instance.ShakeAmmunition();
+        //TweenMunicao.Instance.ShakeAmmunition();
         onUnchargedFireSoundEmitter.PlayAudio();
     }
     public void OnChargedFire()
@@ -32,7 +32,7 @@ public class EletricPistolVisual : MonoBehaviour
         ZiumOnomatopeiaParticle.Play();
         onFireParticle.Play();
         onFireTrail.Play();
-        TweenMunicao.Instance.ShakeAmmunition();
+        //TweenMunicao.Instance.ShakeAmmunition();
         onChargedFireSoundEmitter.PlayAudio();
     }
     public void OnCharge()

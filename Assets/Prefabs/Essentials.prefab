@@ -11180,7 +11180,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &9197367490132310343
 Transform:
   m_ObjectHideFlags: 0
@@ -19233,6 +19233,7 @@ MonoBehaviour:
   weaponCamera: {fileID: 8297561690872437431}
   currentWeaponUI: {fileID: 3644192435627359952}
   Weaponammoslider: {fileID: 1521975763977817949}
+  eletricPistolSpawnPoint: {fileID: 4902526731862890994}
 --- !u!114 &4406444343685671707
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -20361,6 +20362,37 @@ Transform:
   - {fileID: 1645077446476123453}
   m_Father: {fileID: 5483510601962449741}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &7309944556097809442
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4902526731862890994}
+  m_Layer: 0
+  m_Name: EletricPistolPos
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4902526731862890994
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7309944556097809442}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.04973132, y: 0.07003378, z: 0.552183, w: -0.82928646}
+  m_LocalPosition: {x: 0, y: 0.0023, z: -0.001}
+  m_LocalScale: {x: 0.009999994, y: 0.009999995, z: 0.009999996}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7125878414592898661}
+  m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
 --- !u!1 &7832198762274682644
 GameObject:
   m_ObjectHideFlags: 0
@@ -21911,7 +21943,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4579441405042401164, guid: b11c8aecc6d76584c8d5acc01e8023f4, type: 3}
       propertyPath: m_DynamicOccludee
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4579441405042401164, guid: b11c8aecc6d76584c8d5acc01e8023f4, type: 3}
       propertyPath: m_UpdateWhenOffscreen
@@ -21920,10 +21952,13 @@ PrefabInstance:
     - target: {fileID: 5866666021909216657, guid: b11c8aecc6d76584c8d5acc01e8023f4, type: 3}
       propertyPath: m_Controller
       value: 
-      objectReference: {fileID: 9100000, guid: fe43381c24b78944a8a011ed50e9235a, type: 2}
+      objectReference: {fileID: 9100000, guid: 6c2742b20975a734281b6b53311887c1, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 2766220427822670571, guid: b11c8aecc6d76584c8d5acc01e8023f4, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4902526731862890994}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b11c8aecc6d76584c8d5acc01e8023f4, type: 3}
 --- !u!95 &1579980421899413791 stripped
@@ -21934,6 +21969,11 @@ Animator:
 --- !u!4 &4831547688126198629 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: b11c8aecc6d76584c8d5acc01e8023f4, type: 3}
+  m_PrefabInstance: {fileID: 4938094167422293134}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &7125878414592898661 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2766220427822670571, guid: b11c8aecc6d76584c8d5acc01e8023f4, type: 3}
   m_PrefabInstance: {fileID: 4938094167422293134}
   m_PrefabAsset: {fileID: 0}
 --- !u!137 &8866131683215592194 stripped

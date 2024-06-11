@@ -22,6 +22,10 @@ public class EletricPistol : Weapon
 
     //----- Stats -----
     //Tiro normal
+
+    readonly private float fireDelay = 0.33f;
+    private bool isOnCooldown;
+
     readonly private int unchargedHitDamage = 15;
     readonly private int unchargedOverheatCharge = 15;
     //Tiro carregado
@@ -31,7 +35,7 @@ public class EletricPistol : Weapon
     //Overheat
     private bool isOverheating;
     private Image AmmoImage;
-    readonly private float overheatDuration = 2f;
+    readonly private float overheatDuration = 1.5f;
     readonly private float timeUntilPassiveCoolOffStarts = 1f;
     readonly private float timeToFullCoolOff = 1.5f;
     //----- Visual -----
@@ -47,10 +51,8 @@ public class EletricPistol : Weapon
         {
             Debug.LogError("Erro ao encontrar Eletric Pistol Prefab em Prefabs/Weapons/EletricPistol");
         }
-        Vector3 position = new Vector3(0.6f, -0.25f, 0.9f);
-        Quaternion rotation = Quaternion.Euler(new Vector3(0, 89, 0));
         GameObject model;
-        model = weaponControl.LoadModel(modelPrefab, position, rotation);
+        model = weaponControl.LoadModel(modelPrefab, weaponControl.eletricPistolSpawnPoint);
         if (model.TryGetComponent(out EletricPistolVisual eletricPistolVisual))
         {
             visualHandler = eletricPistolVisual;
@@ -61,18 +63,39 @@ public class EletricPistol : Weapon
 
     public override void ToggleVisual(bool state)
     {
+        if(state)ArmadilloPlayerController.Instance.visualControl.EquipEletricPistol(visualHandler.transform);
+        else ArmadilloPlayerController.Instance.visualControl.UnequipEletricPistol(visualHandler.transform);
         visualHandler.gameObject.SetActive(state);
     }
     #endregion
     //Fire
     #region
+    public void StartFireCooldownTimer()
+    {
+        if(fireCooldown_Ref == null && !isOnCooldown)
+        {
+            fireCooldown_Ref = weaponControl.StartCoroutine(FireCooldown_Coroutine());
+        }
+    }
+    public bool IsFireOnCooldown()
+    {
+        return (fireCooldown_Ref != null);
+    }
+    public Coroutine fireCooldown_Ref;
+    public IEnumerator FireCooldown_Coroutine()
+    {
+        yield return new WaitForSeconds(fireDelay);
+        isOnCooldown = false;
+        fireCooldown_Ref = null;
+    }
+
     public override void OnFireButtonPerformed(InputAction.CallbackContext performed)
     {
-        StartHoldOrPressTimer();
+        if(!IsFireOnCooldown())StartHoldOrPressTimer();
     }
     public override void OnFireButtonCanceled(InputAction.CallbackContext performed)
     {
-        StopHoldOrPressTimer();
+        if (!IsFireOnCooldown()) StopHoldOrPressTimer();
     }
 
     public void StartHoldOrPressTimer()
@@ -108,6 +131,9 @@ public class EletricPistol : Weapon
             FPCameraShake.StartShake(0.4f, 0.8f, 6f);
             ChargedFire();
         }
+        ArmadilloPlayerController.Instance.visualControl.OnEletricGunFire();
+        ArmadilloPlayerController.Instance.visualControl.ToggleEletricPistolCharge(false);
+        StartFireCooldownTimer();
     }
     public void UnChargedFire()
     {
@@ -162,6 +188,7 @@ public class EletricPistol : Weapon
             holdOrPressTimer += Time.deltaTime;
             yield return null;
         }
+        ArmadilloPlayerController.Instance.visualControl.ToggleEletricPistolCharge(true);
         visualHandler.OnCharge();
         holdShakeStats = FPCameraShake.StartShake(0.05f, 1f);
         while (true)
@@ -241,6 +268,7 @@ public class EletricPistol : Weapon
     private Coroutine overheatTimer_Ref;
     public IEnumerator OverheatTimer_Coroutine()
     {
+        ArmadilloPlayerController.Instance.visualControl.ToggleEletricPistolOverheat(true);
         yield return new WaitForSeconds(0.25f);
         float timer = 0;
         int startingAmmoAmount = currentAmmoAmount;
@@ -252,6 +280,7 @@ public class EletricPistol : Weapon
             yield return new WaitForSeconds(0.05f);
         }
         isOverheating = false;
+        ArmadilloPlayerController.Instance.visualControl.ToggleEletricPistolOverheat(false);
         visualHandler.OnLeaveOverheatMode();
         currentAmmoAmount = 0;
         UpdateOverheatHUD();
