@@ -23,6 +23,7 @@ public class BreakOnBallCollision : MonoBehaviour
                 if (collision.impulse.magnitude > 200)
                 {
                     if(onDestroyParticle != null)onDestroyParticle.Play();
+                    playerControler.visualControl.OnBallHit(collision.GetContact(0).point,playerControler.transform.position);
                     m_collider.enabled = false;
                     m_meshRenderer.enabled = false;
                     StartCoroutine(ApplySpeedToPlayer(playerControler.movementControl));

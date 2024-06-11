@@ -19112,7 +19112,7 @@ MonoBehaviour:
     maxSlopeAngle: 50
   coyoteTime: 0.25
   inputBuffering: 0.25
-  movementTypeMultiplier: 1
+  sprintLurkSpeedMultiplier: {x: 0, y: 0}
   timeSinceTouchedGround: 0
   currentMovementType: 0
   whatIsClimbable:
@@ -19584,7 +19584,7 @@ Camera:
   m_AllowMSAA: 1
   m_AllowDynamicResolution: 0
   m_ForceIntoRT: 0
-  m_OcclusionCulling: 1
+  m_OcclusionCulling: 0
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
 --- !u!114 &5535767399675238097
@@ -21859,11 +21859,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: b11c8aecc6d76584c8d5acc01e8023f4, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.89
+      value: -1.375
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: b11c8aecc6d76584c8d5acc01e8023f4, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.5
+      value: 0.67
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: b11c8aecc6d76584c8d5acc01e8023f4, type: 3}
       propertyPath: m_LocalRotation.w

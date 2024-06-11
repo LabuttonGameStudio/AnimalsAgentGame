@@ -61,7 +61,7 @@ public class ArmadilloMovementController : MonoBehaviour
     [Space][Header("Movement Helpers")][SerializeField] public float coyoteTime = 0.25f;
     [SerializeField] public float inputBuffering = 0.25f;
 
-    [HideInInspector] public float movementTypeMultiplier = 1;
+    [HideInInspector] public Vector2 sprintLurkSpeedMultiplier;
 
 
     [HideInInspector] public float timeSinceTouchedGround;
@@ -114,7 +114,8 @@ public class ArmadilloMovementController : MonoBehaviour
 
     private void Awake()
     {
-        speedMultiplier = 1;    
+        sprintLurkSpeedMultiplier = Vector2.one;
+        speedMultiplier = 1;
         readyToJump = true;
         rb = GetComponent<Rigidbody>();
 
@@ -217,7 +218,7 @@ public class ArmadilloMovementController : MonoBehaviour
             ArmadilloPlayerController.Instance.visualControl.OnSprintStart();
             ArmadilloPlayerController.Instance.audioControl.ChangeCurrentMovingForm(MovementType.Sprinting);
             currentMovementType = MovementType.Sprinting;
-            movementTypeMultiplier = GetCurrentFormStats().sprintSpeedMultiplier;
+            sprintLurkSpeedMultiplier = new Vector2(GetCurrentFormStats().sprintSpeedMultiplier, 1+(GetCurrentFormStats().sprintSpeedMultiplier-1) * 0.25f);
         }
         else
         {
@@ -226,7 +227,7 @@ public class ArmadilloMovementController : MonoBehaviour
                 ArmadilloPlayerController.Instance.visualControl.OnSprintStop();
                 ArmadilloPlayerController.Instance.audioControl.ChangeCurrentMovingForm(MovementType.Default);
                 currentMovementType = MovementType.Default;
-                movementTypeMultiplier = 1;
+                sprintLurkSpeedMultiplier = Vector2.one;
             }
         }
     }
@@ -237,7 +238,7 @@ public class ArmadilloMovementController : MonoBehaviour
             currentMovementType = MovementType.Lurking;
             ArmadilloPlayerController.Instance.visualControl.OnLurkStart();
             ArmadilloPlayerController.Instance.audioControl.ChangeCurrentMovingForm(MovementType.Lurking);
-            movementTypeMultiplier = GetCurrentFormStats().lurkSpeedMultiplier;
+            sprintLurkSpeedMultiplier = new Vector2(GetCurrentFormStats().lurkSpeedMultiplier, GetCurrentFormStats().lurkSpeedMultiplier * 0.25f);
         }
         else
         {
@@ -246,7 +247,7 @@ public class ArmadilloMovementController : MonoBehaviour
                 ArmadilloPlayerController.Instance.visualControl.OnLurkStop();
                 ArmadilloPlayerController.Instance.audioControl.ChangeCurrentMovingForm(MovementType.Default);
                 currentMovementType = MovementType.Default;
-                movementTypeMultiplier = 1;
+                sprintLurkSpeedMultiplier = new Vector2(GetCurrentFormStats().lurkSpeedMultiplier, GetCurrentFormStats().lurkSpeedMultiplier * 0.25f);
             }
         }
     }
@@ -370,7 +371,7 @@ public class ArmadilloMovementController : MonoBehaviour
 
     public void OnBreakObject()
     {
-        if(ArmadilloPlayerController.Instance.currentForm== ArmadilloPlayerController.Form.Ball)
+        if (ArmadilloPlayerController.Instance.currentForm == ArmadilloPlayerController.Form.Ball)
         {
             ballState.OnBreakObject();
         }

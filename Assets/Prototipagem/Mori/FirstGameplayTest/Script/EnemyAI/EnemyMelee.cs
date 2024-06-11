@@ -100,16 +100,18 @@ public class EnemyMelee : IEnemy, IDamageable, ISoundReceiver
                     break;
             }
             deadLoopParticle.Play();
-            EnemyMasterControl.Instance.StartCoroutine(DeSpawnCoroutine(animator.gameObject));
+            EnemyMasterControl.Instance.StartCoroutine(DeSpawnCoroutine(animator.gameObject,deadLoopParticle));
             gameObject.SetActive(false);
             return;
         }
         if (currentAction == Actions.Moving || currentAction == Actions.Observing) animator.SetTrigger("isHit");
         OnDamageTaken(damage);
     }
-    private IEnumerator DeSpawnCoroutine(GameObject gameObject)
+    private IEnumerator DeSpawnCoroutine(GameObject gameObject,VisualEffect visualEffect)
     {
-        yield return new WaitForSeconds(20);
+        yield return new WaitForSeconds(5);
+        visualEffect.Stop();
+        yield return new WaitForSeconds(15);
         gameObject.SetActive(false);
     }
     private void OnDamageTaken(Damage damage)
