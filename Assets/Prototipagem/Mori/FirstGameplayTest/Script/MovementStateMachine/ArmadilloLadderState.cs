@@ -73,7 +73,6 @@ public class ArmadilloLadderState : MovementState
         pivot.y= 0;
         Vector3 dir = (point - pivot); // get point direction relative to pivot
         dir = Quaternion.Euler(angles) * dir; // rotate it
-        Debug.Log(dir);
         point = dir.normalized * (0.6f + pipeSize) + pivot; // calculate rotated point
         return point; // return it
     }

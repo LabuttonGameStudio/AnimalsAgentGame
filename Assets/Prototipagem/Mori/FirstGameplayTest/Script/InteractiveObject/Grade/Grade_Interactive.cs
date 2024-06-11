@@ -49,7 +49,6 @@ public class Grade_Interactive : MonoBehaviour,INeedRequirements
         while (timer < duration)
         {
             gateTransform.localPosition = Vector3.Lerp(startGatePos, finalGatePos, timer / duration);
-            Debug.Log(timer / duration);
             timer += Time.deltaTime;
             yield return null;
         }
