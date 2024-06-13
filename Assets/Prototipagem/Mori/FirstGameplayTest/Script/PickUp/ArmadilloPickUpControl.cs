@@ -95,7 +95,6 @@ public class ArmadilloPickUpControl : MonoBehaviour
     {
         if (connectedObject == null && actionInput != null)
         {
-            Debug.Log("RemoveInput");
             ArmadilloPlayerController.Instance.inputControl.inputAction.Armadillo.Interact.performed -= actionInput;
             actionInput = null;
         }
