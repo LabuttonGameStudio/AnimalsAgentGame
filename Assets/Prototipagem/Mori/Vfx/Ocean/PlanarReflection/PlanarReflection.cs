@@ -15,11 +15,15 @@ public class PlanarReflection : MonoBehaviour
     private void Start()
     {
         mainCamera = PlayerCamera.Instance.mainCamera;
+        reflectionCamera.fieldOfView = mainCamera.fieldOfView;
+        resolution = new Vector2(mainCamera.pixelWidth, mainCamera.pixelHeight);
+
+        reflectionRenderTexture.Release();
+        reflectionRenderTexture.width = Mathf.RoundToInt(resolution.x) * reflectionResolution / Mathf.RoundToInt(resolution.y);
+        reflectionRenderTexture.height = reflectionResolution;
     }
     private void LateUpdate()
     {
-        reflectionCamera.fieldOfView=  mainCamera.fieldOfView;
-
         Vector3 reflectionCameraPos = mainCamera.transform.position;
         reflectionCameraPos.y = -reflectionCameraPos.y + transform.position.y;
         reflectionCameraPos += offset;
@@ -30,11 +34,5 @@ public class PlanarReflection : MonoBehaviour
         //reflectionCameraRot.y = -reflectionCameraRot.y;
         reflectionCameraRot.z = 0;
         reflectionCamera.transform.rotation = Quaternion.Euler(reflectionCameraRot);
-
-        resolution = new Vector2(mainCamera.pixelWidth, mainCamera.pixelHeight);
-
-        reflectionRenderTexture.Release();
-        reflectionRenderTexture.width = Mathf.RoundToInt(resolution.x) * reflectionResolution/Mathf.RoundToInt(resolution.y);
-        reflectionRenderTexture.height = reflectionResolution;
     }
 }
