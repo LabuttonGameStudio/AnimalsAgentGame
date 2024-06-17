@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.VFX;
 
 public class BreakOnBallCollision : MonoBehaviour
 {
@@ -12,7 +13,7 @@ public class BreakOnBallCollision : MonoBehaviour
         m_meshRenderer = GetComponent<MeshRenderer>();
     }
 
-    [SerializeField] private ParticleSystem onDestroyParticle;
+    [SerializeField] private VisualEffect onDestroyVFX;
     private void OnCollisionEnter(Collision collision)
     {
         if(collision.collider.CompareTag("Player"))
@@ -22,7 +23,7 @@ public class BreakOnBallCollision : MonoBehaviour
             {
                 if (collision.impulse.magnitude > 200)
                 {
-                    if(onDestroyParticle != null)onDestroyParticle.Play();
+                    if(onDestroyVFX != null) onDestroyVFX.Play();
                     playerControler.visualControl.OnBallHit(collision.GetContact(0).point,playerControler.transform.position);
                     m_collider.enabled = false;
                     m_meshRenderer.enabled = false;
@@ -33,7 +34,7 @@ public class BreakOnBallCollision : MonoBehaviour
     }
     private IEnumerator ApplySpeedToPlayer(ArmadilloMovementController movementController)
     {
-        yield return null;
+        yield return new WaitForFixedUpdate();
         movementController.OnBreakObject();
     }    
 
