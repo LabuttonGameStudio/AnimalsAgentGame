@@ -37,7 +37,7 @@ public class ArmadilloWeaponControl : MonoBehaviour
             Debug.Log("a");
             pocketedWeaponID = 0;
         }
-        else ChangeWeapon(0);
+        else ChangeWeapon(0, true);
     }
     public GameObject LoadModel(GameObject model, Vector3 position, Quaternion rotation)
     {
@@ -105,7 +105,7 @@ public class ArmadilloWeaponControl : MonoBehaviour
         playerInput.Reload.Disable();
     }
 
-    public void ChangeWeapon(int nextWeapon)
+    public void ChangeWeapon(int nextWeapon,bool changeVisual)
     {
         PlayerInputAction.ArmadilloActions playerInput = ArmadilloPlayerController.Instance.inputControl.inputAction.Armadillo;
         if (nextWeapon < 0 || nextWeapon > weaponsInInventory.Length)
@@ -114,14 +114,14 @@ public class ArmadilloWeaponControl : MonoBehaviour
             if (currentWeaponID == -1) return;
             DefineDelegates(playerInput, DelegateType.Remove, currentWeaponID);
             ToggleStateInputs(playerInput, false);
-            weaponsInInventory[currentWeaponID].ToggleVisual(false);
+            if(changeVisual) weaponsInInventory[currentWeaponID].ToggleVisual(false);
             currentWeaponID = -1;
             return;
         }
         if (currentWeaponID != -1)
         {
             DefineDelegates(playerInput, DelegateType.Remove, currentWeaponID);
-            weaponsInInventory[currentWeaponID].ToggleVisual(false);
+            if (changeVisual) weaponsInInventory[currentWeaponID].ToggleVisual(false);
         }
         else
         {
@@ -129,7 +129,7 @@ public class ArmadilloWeaponControl : MonoBehaviour
         }
         currentWeaponID = nextWeapon;
         OnGunEquip(nextWeapon);
-        weaponsInInventory[nextWeapon].ToggleVisual(true);
+        if (changeVisual) weaponsInInventory[nextWeapon].ToggleVisual(true);
         if(DelegateDelay_Ref != null) StopCoroutine(DelegateDelay_Ref);
         DelegateDelay_Ref = StartCoroutine(DelegateDelay_Coroutine(1.125f, playerInput, DelegateType.Add, nextWeapon));
     }
@@ -140,12 +140,26 @@ public class ArmadilloWeaponControl : MonoBehaviour
         if (!state)
         {
             if (currentWeaponID != -1) pocketedWeaponID = currentWeaponID;
-            ChangeWeapon(-1);
+            ChangeWeapon(-1, true);
         }
         else
         {
-            ChangeWeapon(pocketedWeaponID);
+            ChangeWeapon(pocketedWeaponID,true);
         }
+    }
+    public void ToggleArms(bool state)
+    {
+        isGunPocketed = !state;
+        if (!state)
+        {
+            if (currentWeaponID != -1) pocketedWeaponID = currentWeaponID;
+            ChangeWeapon(-1, false);
+        }
+        else
+        {
+            ChangeWeapon(pocketedWeaponID, false);
+        }
+        ArmadilloPlayerController.Instance.visualControl.ToggleArmView(state);
     }
     public void OnGunEquip(int gunEquiped)
     {

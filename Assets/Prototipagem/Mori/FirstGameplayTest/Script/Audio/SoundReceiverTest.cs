@@ -12,7 +12,7 @@ public class SoundReceiverTest : MonoBehaviour, ISoundReceiver
     {
         if(soundData.audioType == AudioType.Suspicious)
         {
-            Debug.Log(minimalSoundNeeded < soundData.audioPercentage);
+            //Debug.Log(minimalSoundNeeded < soundData.audioPercentage);
         }
     }
 }

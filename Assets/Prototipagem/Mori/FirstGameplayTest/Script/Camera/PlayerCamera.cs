@@ -68,6 +68,7 @@ public class PlayerCamera : MonoBehaviour
         thirdPersonCameraState = new CameraThirdPersonState();
 
         //Define o estado padrao da camera para primeira pessoa
+        mainCamera.cullingMask = firstPersonMask;
         ChangeCameraState(firstPersonCameraState);
     }
 

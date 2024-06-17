@@ -134,12 +134,12 @@ public class ArmadilloVisualControl : MonoBehaviour
     public void OnClimbingStart()
     {
         OnStartClimbing();
-        ArmadilloPlayerController.Instance.weaponControl.ToggleWeapon(false);
+        ArmadilloPlayerController.Instance.weaponControl.ToggleArms(false);
     }
     public void OnClimbingStop()
     {
         isClimbing = false;
-        ArmadilloPlayerController.Instance.weaponControl.ToggleWeapon(true);
+        ArmadilloPlayerController.Instance.weaponControl.ToggleArms(true);
         switch (fp_Layer0)
         {
             case FPModeLayer0.Sprinting:
@@ -271,6 +271,12 @@ public class ArmadilloVisualControl : MonoBehaviour
     public void UnequipEletricPistol(Transform eletricPistolTransform)
     {
         fpAnimator.SetBool("zapGunEquip", false);
+        Debug.Log("a");
+    }
+
+    public void ToggleArmView(bool state)
+    {
+        fpAnimator.transform.GetChild(0).gameObject.SetActive(state);
     }
     #endregion
 }

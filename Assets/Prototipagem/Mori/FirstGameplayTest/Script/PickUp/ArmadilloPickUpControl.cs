@@ -124,7 +124,7 @@ public class ArmadilloPickUpControl : MonoBehaviour
     public void Grab(IPickUpObject grabbedObject)
     {
         ArmadilloPlayerController playerController = ArmadilloPlayerController.Instance;
-        playerController.weaponControl.ToggleWeapon(false);
+        playerController.weaponControl.ToggleArms(false);
 
         //Ebale throw objects
         playerController.inputControl.inputAction.Armadillo.Fire.Enable();
@@ -172,7 +172,7 @@ public class ArmadilloPickUpControl : MonoBehaviour
         if (connectedObject == null) return;
         ArmadilloPlayerController playerController = ArmadilloPlayerController.Instance;
 
-        playerController.weaponControl.ToggleWeapon(true);
+        playerController.weaponControl.ToggleArms(true);
 
         playerController.inputControl.inputAction.Armadillo.Fire.performed -= ThrowObject;
 

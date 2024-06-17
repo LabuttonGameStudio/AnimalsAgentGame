@@ -61,7 +61,7 @@ public class ArmadilloMovementController : MonoBehaviour
     [Space][Header("Movement Helpers")][SerializeField] public float coyoteTime = 0.25f;
     [SerializeField] public float inputBuffering = 0.25f;
 
-    [HideInInspector] public Vector2 sprintLurkSpeedMultiplier;
+    [HideInInspector] public float sprintLurkSpeedMultiplier;
 
 
     [HideInInspector] public float timeSinceTouchedGround;
@@ -102,6 +102,10 @@ public class ArmadilloMovementController : MonoBehaviour
 
     [Header("Speed Modifiers")]
     [HideInInspector] public float speedMultiplier = 1;
+
+    private bool isSprintButtonHeld;
+    private bool isLurkButtonHeld;
+
     public void OnDrawGizmos()
     {
         //Check for grounded
@@ -114,7 +118,7 @@ public class ArmadilloMovementController : MonoBehaviour
 
     private void Awake()
     {
-        sprintLurkSpeedMultiplier = Vector2.one;
+        sprintLurkSpeedMultiplier = 1;
         speedMultiplier = 1;
         readyToJump = true;
         rb = GetComponent<Rigidbody>();
@@ -169,6 +173,7 @@ public class ArmadilloMovementController : MonoBehaviour
     public void OnMovement(InputAction.CallbackContext value)
     {
         movementInputVector = value.ReadValue<Vector2>();
+        SprintCheck();
     }
     public void OnJump(InputAction.CallbackContext value)
     {
@@ -213,21 +218,28 @@ public class ArmadilloMovementController : MonoBehaviour
     }
     public void OnSprint(InputAction.CallbackContext value)
     {
-        if (value.performed)
+        isSprintButtonHeld = value.performed;
+        SprintCheck();
+    }
+
+    private void SprintCheck()
+    {
+        if (movementInputVector.y >= 0.25 && isSprintButtonHeld)
         {
             ArmadilloPlayerController.Instance.visualControl.OnSprintStart();
             ArmadilloPlayerController.Instance.audioControl.ChangeCurrentMovingForm(MovementType.Sprinting);
+            sprintLurkSpeedMultiplier = GetCurrentFormStats().sprintSpeedMultiplier;
             currentMovementType = MovementType.Sprinting;
-            sprintLurkSpeedMultiplier = new Vector2(GetCurrentFormStats().sprintSpeedMultiplier, 1+(GetCurrentFormStats().sprintSpeedMultiplier-1) * 0.25f);
+
         }
         else
         {
             if (currentMovementType == MovementType.Sprinting)
             {
+                sprintLurkSpeedMultiplier = 1;
                 ArmadilloPlayerController.Instance.visualControl.OnSprintStop();
                 ArmadilloPlayerController.Instance.audioControl.ChangeCurrentMovingForm(MovementType.Default);
                 currentMovementType = MovementType.Default;
-                sprintLurkSpeedMultiplier = Vector2.one;
             }
         }
     }
@@ -238,7 +250,7 @@ public class ArmadilloMovementController : MonoBehaviour
             currentMovementType = MovementType.Lurking;
             ArmadilloPlayerController.Instance.visualControl.OnLurkStart();
             ArmadilloPlayerController.Instance.audioControl.ChangeCurrentMovingForm(MovementType.Lurking);
-            sprintLurkSpeedMultiplier = new Vector2(GetCurrentFormStats().lurkSpeedMultiplier, GetCurrentFormStats().lurkSpeedMultiplier * 0.25f);
+            sprintLurkSpeedMultiplier = GetCurrentFormStats().lurkSpeedMultiplier;
         }
         else
         {
@@ -247,7 +259,7 @@ public class ArmadilloMovementController : MonoBehaviour
                 ArmadilloPlayerController.Instance.visualControl.OnLurkStop();
                 ArmadilloPlayerController.Instance.audioControl.ChangeCurrentMovingForm(MovementType.Default);
                 currentMovementType = MovementType.Default;
-                sprintLurkSpeedMultiplier = new Vector2(GetCurrentFormStats().lurkSpeedMultiplier, GetCurrentFormStats().lurkSpeedMultiplier * 0.25f);
+                sprintLurkSpeedMultiplier = 1;
             }
         }
     }

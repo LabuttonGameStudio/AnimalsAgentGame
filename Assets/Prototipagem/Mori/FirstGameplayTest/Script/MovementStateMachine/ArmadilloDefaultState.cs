@@ -50,27 +50,28 @@ public class ArmadilloDefaultState : MovementState
         if (movementCtrl.grounded)
         {
             Vector3 direction;
+            //Direction of movement
             if (movementCtrl.isOnSlope)
             {
                 direction = movementCtrl.GetSlopeMoveDirection(moveDirection.normalized);
-                movementApplied = movementCtrl.GetSlopeMoveDirection(moveDirection.normalized) * stats.moveSpeedMax * Time.fixedDeltaTime * 500;
             }
             else
             {
                 direction = moveDirection.normalized;
-                movementApplied = moveDirection.normalized * stats.moveSpeedMax * Time.fixedDeltaTime * 500;
             }
+            movementApplied = direction * Time.fixedDeltaTime * 500* stats.moveSpeedMax;
 
-            movementApplied = direction * stats.moveSpeedMax * Time.fixedDeltaTime * 500;
+            movementApplied *= movementCtrl.sprintLurkSpeedMultiplier;
+
             movementApplied = movementApplied * movementCtrl.speedMultiplier;
 
-            Vector3 sprintMult = Vector3.Scale(new Vector3(movementCtrl.sprintLurkSpeedMultiplier.y, 1, movementCtrl.sprintLurkSpeedMultiplier.x), moveDirection.normalized);
             //movementApplied = Vector3.Scale(sprintMult,movementApplied);
             movementCtrl.rb.AddForce(movementApplied, ForceMode.Acceleration);
         }
         else
         {
             movementApplied = moveDirection.normalized * stats.moveSpeedMax * stats.onAirSpeedMultiplier * Time.fixedDeltaTime * 500;
+            movementApplied *= 1+(movementCtrl.sprintLurkSpeedMultiplier-1)/2;
             movementApplied = movementApplied * movementCtrl.speedMultiplier;
             LedgeGrab();
             if (movementCtrl.rb.velocity.y < 0)
