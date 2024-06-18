@@ -20,14 +20,8 @@ public class HologramGlitchImage : MonoBehaviour
 
     private void Start()
     {
-        StartCoroutine(Shine());
-        StartCoroutine(Glitch());
-    }
-
-    private void Update()
-    {
-        StartCoroutine(Shine());
-        StartCoroutine(Glitch());
+        if (timeBetweenShine > 0) StartCoroutine(Shine());
+        if (timeBetweenGlitches > 0) StartCoroutine(Glitch());
     }
 
     IEnumerator Glitch()
