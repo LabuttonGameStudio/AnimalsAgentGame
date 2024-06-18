@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
+#if (UNITY_EDITOR)
+using UnityEditor;
+#endif
 
 public class GizmosExtra
 {
@@ -83,6 +85,7 @@ public class GizmosExtra
     }
     public static void DrawString(string text, Vector3 worldPos, Color? textColor = null, Color? backColor = null)
     {
+#if (UNITY_EDITOR)
         UnityEditor.Handles.BeginGUI();
         var restoreTextColor = GUI.color;
         var restoreBackColor = GUI.backgroundColor;
@@ -108,5 +111,6 @@ public class GizmosExtra
             GUI.backgroundColor = restoreBackColor;
         }
         UnityEditor.Handles.EndGUI();
+#endif
     }
 }
