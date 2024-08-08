@@ -143,6 +143,15 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Melee"",
+                    ""type"": ""Button"",
+                    ""id"": ""8f06edb5-8bd6-41f4-b0bc-91ccfa6e4190"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -332,6 +341,17 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
                     ""action"": ""Pause"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0176b23c-f055-4d77-9ca3-8efb14f8af1b"",
+                    ""path"": ""<Keyboard>/v"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Melee"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -353,6 +373,7 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
         m_Armadillo_Lurk = m_Armadillo.FindAction("Lurk", throwIfNotFound: true);
         m_Armadillo_Pause = m_Armadillo.FindAction("Pause", throwIfNotFound: true);
         m_Armadillo_Debug_Reset = m_Armadillo.FindAction("Debug_Reset", throwIfNotFound: true);
+        m_Armadillo_Melee = m_Armadillo.FindAction("Melee", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -427,6 +448,7 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
     private readonly InputAction m_Armadillo_Lurk;
     private readonly InputAction m_Armadillo_Pause;
     private readonly InputAction m_Armadillo_Debug_Reset;
+    private readonly InputAction m_Armadillo_Melee;
     public struct ArmadilloActions
     {
         private @PlayerInputAction m_Wrapper;
@@ -444,6 +466,7 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
         public InputAction @Lurk => m_Wrapper.m_Armadillo_Lurk;
         public InputAction @Pause => m_Wrapper.m_Armadillo_Pause;
         public InputAction @Debug_Reset => m_Wrapper.m_Armadillo_Debug_Reset;
+        public InputAction @Melee => m_Wrapper.m_Armadillo_Melee;
         public InputActionMap Get() { return m_Wrapper.m_Armadillo; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -492,6 +515,9 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
             @Debug_Reset.started += instance.OnDebug_Reset;
             @Debug_Reset.performed += instance.OnDebug_Reset;
             @Debug_Reset.canceled += instance.OnDebug_Reset;
+            @Melee.started += instance.OnMelee;
+            @Melee.performed += instance.OnMelee;
+            @Melee.canceled += instance.OnMelee;
         }
 
         private void UnregisterCallbacks(IArmadilloActions instance)
@@ -535,6 +561,9 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
             @Debug_Reset.started -= instance.OnDebug_Reset;
             @Debug_Reset.performed -= instance.OnDebug_Reset;
             @Debug_Reset.canceled -= instance.OnDebug_Reset;
+            @Melee.started -= instance.OnMelee;
+            @Melee.performed -= instance.OnMelee;
+            @Melee.canceled -= instance.OnMelee;
         }
 
         public void RemoveCallbacks(IArmadilloActions instance)
@@ -567,5 +596,6 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
         void OnLurk(InputAction.CallbackContext context);
         void OnPause(InputAction.CallbackContext context);
         void OnDebug_Reset(InputAction.CallbackContext context);
+        void OnMelee(InputAction.CallbackContext context);
     }
 }

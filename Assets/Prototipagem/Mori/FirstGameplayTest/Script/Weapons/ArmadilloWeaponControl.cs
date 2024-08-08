@@ -9,6 +9,7 @@ public class ArmadilloWeaponControl : MonoBehaviour
 {
     private bool isGunPocketed;
 
+    [SerializeField] private bool startWithMelee;
     [SerializeField] private bool startWithPistol;
 
     [System.NonSerialized] public Weapon[] weaponsInInventory;
@@ -28,7 +29,43 @@ public class ArmadilloWeaponControl : MonoBehaviour
     {
         weaponsInInventory = new Weapon[2];
         if (startWithPistol) GivePlayerEletricPistol();
+        if (startWithMelee) GivePlayerMelee();
     }
+    #region Melee
+    [Header("Melee")]
+    [SerializeField] private float meleeDamage;
+    [SerializeField] private float meleeStabModifier;
+    [SerializeField] private float meleeCooldown;
+    [SerializeField] private bool meleeIsOnCooldown;
+    [SerializeField] private MeleeHitbox meleeHitbox;
+    public void GivePlayerMelee()
+    {
+        PlayerInputAction inputActions = ArmadilloPlayerController.Instance.inputControl.inputAction;
+        inputActions.Armadillo.Melee.Enable();
+        inputActions.Armadillo.Melee.performed += Melee;
+    }
+    public void Melee(InputAction.CallbackContext performed)
+    {
+        if (meleeIsOnCooldown) return;
+        Debug.Log("Melee");
+        meleeHitbox.Hit(meleeDamage, meleeStabModifier);
+        StartMeleeColldownTimer();
+    }
+    private void StartMeleeColldownTimer()
+    {
+        if (meleeCooldownTimer_Ref != null) return;
+        meleeCooldownTimer_Ref = StartCoroutine(MeleeCooldownTimer_Coroutine());
+    }
+
+    private Coroutine meleeCooldownTimer_Ref;
+    private IEnumerator MeleeCooldownTimer_Coroutine()
+    {
+        meleeIsOnCooldown = true;
+        yield return new WaitForSeconds(meleeCooldown);
+        meleeIsOnCooldown = false;
+        meleeCooldownTimer_Ref = null;
+    }
+    #endregion
     public void GivePlayerEletricPistol()
     {
         weaponsInInventory[0] = new EletricPistol(this);
@@ -41,12 +78,12 @@ public class ArmadilloWeaponControl : MonoBehaviour
     }
     public GameObject LoadModel(GameObject model, Vector3 position, Quaternion rotation)
     {
-        GameObject objectInstantiated = Instantiate(model, weaponCamera.transform); 
+        GameObject objectInstantiated = Instantiate(model, weaponCamera.transform);
         objectInstantiated.transform.localPosition = position;
         objectInstantiated.transform.localRotation = rotation;
         return objectInstantiated;
     }
-    public GameObject LoadModel(GameObject model,Transform transform)
+    public GameObject LoadModel(GameObject model, Transform transform)
     {
         GameObject objectInstantiated = Instantiate(model, weaponCamera.transform);
         objectInstantiated.transform.position = transform.position;
@@ -105,7 +142,7 @@ public class ArmadilloWeaponControl : MonoBehaviour
         playerInput.Reload.Disable();
     }
 
-    public void ChangeWeapon(int nextWeapon,bool changeVisual)
+    public void ChangeWeapon(int nextWeapon, bool changeVisual)
     {
         PlayerInputAction.ArmadilloActions playerInput = ArmadilloPlayerController.Instance.inputControl.inputAction.Armadillo;
         if (nextWeapon < 0 || nextWeapon > weaponsInInventory.Length)
@@ -114,7 +151,7 @@ public class ArmadilloWeaponControl : MonoBehaviour
             if (currentWeaponID == -1) return;
             DefineDelegates(playerInput, DelegateType.Remove, currentWeaponID);
             ToggleStateInputs(playerInput, false);
-            if(changeVisual) weaponsInInventory[currentWeaponID].ToggleVisual(false);
+            if (changeVisual) weaponsInInventory[currentWeaponID].ToggleVisual(false);
             currentWeaponID = -1;
             return;
         }
@@ -130,13 +167,13 @@ public class ArmadilloWeaponControl : MonoBehaviour
         currentWeaponID = nextWeapon;
         OnGunEquip(nextWeapon);
         if (changeVisual) weaponsInInventory[nextWeapon].ToggleVisual(true);
-        if(DelegateDelay_Ref != null) StopCoroutine(DelegateDelay_Ref);
+        if (DelegateDelay_Ref != null) StopCoroutine(DelegateDelay_Ref);
         DelegateDelay_Ref = StartCoroutine(DelegateDelay_Coroutine(1.125f, playerInput, DelegateType.Add, nextWeapon));
     }
 
     public void ToggleWeapon(bool state)
     {
-        isGunPocketed =!state;
+        isGunPocketed = !state;
         if (!state)
         {
             if (currentWeaponID != -1) pocketedWeaponID = currentWeaponID;
@@ -144,7 +181,7 @@ public class ArmadilloWeaponControl : MonoBehaviour
         }
         else
         {
-            ChangeWeapon(pocketedWeaponID,true);
+            ChangeWeapon(pocketedWeaponID, true);
         }
     }
     public void ToggleArms(bool state)
