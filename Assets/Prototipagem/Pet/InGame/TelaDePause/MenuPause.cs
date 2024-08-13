@@ -54,7 +54,7 @@ public class MenuPause : MonoBehaviour
         AudioListener.volume = savedVolume;
         Volume.value = savedVolume;
 
-       Volume.onValueChanged.AddListener(SetVolume);
+        Volume.onValueChanged.AddListener(SetVolume);
 
         #endregion
 
@@ -72,7 +72,7 @@ public class MenuPause : MonoBehaviour
         #endregion
 
         #region WindowMode
-        
+
         int savedScreenMode = PlayerPrefs.GetInt(ScreenModePrefKey, 1);
 
         ApplyScreenMode(savedScreenMode);
@@ -126,8 +126,14 @@ public class MenuPause : MonoBehaviour
         Cursor.lockState = Cursor.visible ? CursorLockMode.None : CursorLockMode.Locked;
 
         Menu.SetActive(Cursor.visible);
-
-       visualControl.OnPause(Cursor.visible);
+        if (!Cursor.visible)
+        {
+            visualControl.OnPause();
+        }
+        else
+        {
+            visualControl.ReturnPause();
+        }
     }
     public void ClickConfigs()
     {
@@ -247,17 +253,17 @@ public class MenuPause : MonoBehaviour
             case 1: //medio
                 QualitySettings.shadowResolution = ShadowResolution.Medium;
                 QualitySettings.globalTextureMipmapLimit = 1;
-                QualitySettings.pixelLightCount = 2; 
+                QualitySettings.pixelLightCount = 2;
                 break;
             case 2: //alto
                 QualitySettings.shadowResolution = ShadowResolution.High;
-                QualitySettings.globalTextureMipmapLimit = 0; 
-                QualitySettings.pixelLightCount = 4; 
+                QualitySettings.globalTextureMipmapLimit = 0;
+                QualitySettings.pixelLightCount = 4;
                 break;
             case 3: //Ultra
                 QualitySettings.shadowResolution = ShadowResolution.VeryHigh;
-                QualitySettings.globalTextureMipmapLimit = 0; 
-                QualitySettings.pixelLightCount = 8; 
+                QualitySettings.globalTextureMipmapLimit = 0;
+                QualitySettings.pixelLightCount = 8;
 
                 break;
         }
@@ -283,16 +289,16 @@ public class MenuPause : MonoBehaviour
     #region Sensibility
     private void OnSensitivityChange(float newSensitivity)
     {
-        
+
         ApplyMouseSensitivity(newSensitivity);
 
-        
+
         SaveSensitivitySettings(newSensitivity);
     }
 
     private void ApplyMouseSensitivity(float sensitivity)
     {
-        PlayerCamera.Instance.firstPersonSensibility = new Vector2(sensitivity,sensitivity);
+        PlayerCamera.Instance.firstPersonSensibility = new Vector2(sensitivity, sensitivity);
     }
 
     private void SaveSensitivitySettings(float sensitivity)

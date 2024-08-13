@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class ArmadilloVisualControl : MonoBehaviour
 {
+    private readonly float crossFadeTime = 0.2f;
     private enum CameraMode
     {
         FP,
@@ -12,6 +13,7 @@ public class ArmadilloVisualControl : MonoBehaviour
     [SerializeField] private CameraMode m_CameraMode;
     private enum FPModeLayer0
     {
+        Idle,
         Walking,
         Sprinting,
         Lurking
@@ -21,12 +23,30 @@ public class ArmadilloVisualControl : MonoBehaviour
     private enum FPModeLayer1
     {
         Null,
-        LedgeGrab,
-        Sonar,
-        Gun_Default,
-        Pause,
+        ZapGun,
+        WaterGun,
+        PendriveGun,
     }
     [SerializeField] private FPModeLayer1 fp_Layer1;
+
+    private enum FPModeLayer2
+    {
+        Null,
+        Hold,
+        Interact,
+        Sonar,
+        Melee,
+        LedgeGrab
+    }
+
+    [SerializeField] private FPModeLayer2 fp_Layer2;
+
+    private enum FPModeLayer99
+    {
+        Null, Pause
+    }
+    [SerializeField] private FPModeLayer99 fp_Layer99;
+
     private bool hasGunEquiped;
     [Header("Default")]
     [SerializeField] private SkinnedMeshRenderer modelRenderer;
@@ -125,11 +145,26 @@ public class ArmadilloVisualControl : MonoBehaviour
 
     #region FirstPerson
 
+    #region FP Layer
+    public int CheckCurrentFPLayer()
+    {
+        if (fp_Layer99 != FPModeLayer99.Null) return 99;
+        if (fp_Layer2 != FPModeLayer2.Null) return 2;
+        if (fp_Layer1 != FPModeLayer1.Null) return 1;
+        return 0;
+    }
+    public bool CheckIfActionsIsPossible(int actionLayer)
+    {
+        int currentLayer = CheckCurrentFPLayer();
+        return actionLayer >= currentLayer;
+    }
+    #endregion
+
     #region LedgeGrab & Climb
     public void OnLedgeGrab()
     {
         ArmadilloPlayerController.Instance.weaponControl.ToggleWeapon(false);
-        fp_Layer1 = FPModeLayer1.LedgeGrab;
+        fp_Layer2 = FPModeLayer2.LedgeGrab;
         fpAnimator.SetTrigger("ledgeGrab");
         StartToggleWeaponDelay(0.28f, true);
     }
@@ -203,23 +238,33 @@ public class ArmadilloVisualControl : MonoBehaviour
     public void OnSonar()
     {
         ArmadilloPlayerController.Instance.weaponControl.ToggleWeapon(false);
-        fpAnimator.SetTrigger("scannerOn");
-        fp_Layer1 = FPModeLayer1.Sonar;
+        fpAnimator.CrossFade("TatuSkillSonar",crossFadeTime);
+        fp_Layer2 = FPModeLayer2.Sonar;
         StartToggleWeaponDelay(1.25f, true);
+        AnimationClip animationClip = fpAnimator.GetCurrentAnimatorClipInfo(0)[0].clip;
+        StartCoroutine(OnSonarAnimEnd_Coroutine(animationClip.length));
+    }
+    private IEnumerator OnSonarAnimEnd_Coroutine(float duration)
+    {
+        yield return new WaitForSeconds(duration);
+        if(fp_Layer2 == FPModeLayer2.Sonar)
+        {
+            fp_Layer2 = FPModeLayer2.Null;
+        }
     }
     #endregion
 
     #region Pause
-    public void OnPause(bool pause)
+    public void OnPause()
     {
-        ArmadilloPlayerController.Instance.weaponControl.ToggleWeapon(!pause);
-        fpAnimator.SetBool("isPaused", pause);
-        fp_Layer1 = FPModeLayer1.Pause;
+        fpAnimator.CrossFade("TatuPauseIdle", crossFadeTime);
+        fp_Layer99 = FPModeLayer99.Pause;
     }
 
     public void ReturnPause()
     {
-        fpAnimator.SetBool("isPaused", false);
+        fpAnimator.CrossFade("Idle", crossFadeTime);
+        fp_Layer99 = FPModeLayer99.Null;
     }
     #endregion
 
@@ -251,7 +296,7 @@ public class ArmadilloVisualControl : MonoBehaviour
     {
         if (hasGunEquiped)
         {
-            fp_Layer1 = FPModeLayer1.Gun_Default;
+            fp_Layer1 = FPModeLayer1.ZapGun;
         }
         else fp_Layer1 = FPModeLayer1.Null;
     }
@@ -291,7 +336,7 @@ public class ArmadilloVisualControl : MonoBehaviour
     }
     public void ToggleEletricPistolCharge(bool state)
     {
-        fpAnimator.SetBool("zapGunIsCharging",state);
+        fpAnimator.SetBool("zapGunIsCharging", state);
     }
     public void ToggleEletricPistolOverheat(bool state)
     {
