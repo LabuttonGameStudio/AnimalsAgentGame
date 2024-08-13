@@ -124,6 +124,8 @@ public class ArmadilloVisualControl : MonoBehaviour
     #endregion
 
     #region FirstPerson
+
+    #region LedgeGrab & Climb
     public void OnLedgeGrab()
     {
         ArmadilloPlayerController.Instance.weaponControl.ToggleWeapon(false);
@@ -150,6 +152,9 @@ public class ArmadilloVisualControl : MonoBehaviour
                 break;
         }
     }
+    #endregion
+
+    #region Sprint
     public void OnSprintStart()
     {
         if (fp_Layer0 == FPModeLayer0.Lurking)
@@ -165,6 +170,14 @@ public class ArmadilloVisualControl : MonoBehaviour
         if (fp_Layer0 == FPModeLayer0.Sprinting) fp_Layer0 = FPModeLayer0.Walking;
         ToggleRun(false);
     }
+    private void ToggleRun(bool state)
+    {
+        if (isClimbing) return;
+        fpAnimator.SetBool("isRunning", state);
+    }
+    #endregion
+
+    #region Lurk
     public void OnLurkStart()
     {
         if (fp_Layer0 == FPModeLayer0.Sprinting)
@@ -179,6 +192,14 @@ public class ArmadilloVisualControl : MonoBehaviour
         if (fp_Layer0 == FPModeLayer0.Lurking) fp_Layer0 = FPModeLayer0.Walking;
         ToggleLurking(false);
     }
+    private void ToggleLurking(bool state)
+    {
+        if (isClimbing) return;
+        fpAnimator.SetBool("isSneaking", state);
+    }
+    #endregion
+
+    #region Sonar
     public void OnSonar()
     {
         ArmadilloPlayerController.Instance.weaponControl.ToggleWeapon(false);
@@ -186,7 +207,9 @@ public class ArmadilloVisualControl : MonoBehaviour
         fp_Layer1 = FPModeLayer1.Sonar;
         StartToggleWeaponDelay(1.25f, true);
     }
+    #endregion
 
+    #region Pause
     public void OnPause(bool pause)
     {
         ArmadilloPlayerController.Instance.weaponControl.ToggleWeapon(!pause);
@@ -196,11 +219,11 @@ public class ArmadilloVisualControl : MonoBehaviour
 
     public void ReturnPause()
     {
-
         fpAnimator.SetBool("isPaused", false);
-        fp_Layer1 = FPModeLayer1.Pause;
     }
+    #endregion
 
+    #region Weapons
     private void StartToggleWeaponDelay(float delay, bool state)
     {
         if (toggleWeaponDelay_Ref != null)
@@ -209,6 +232,7 @@ public class ArmadilloVisualControl : MonoBehaviour
         }
         toggleWeaponDelay_Ref = StartCoroutine(ToggleWeaponDelay_Coroutine(delay, state));
     }
+
     private Coroutine toggleWeaponDelay_Ref;
     private IEnumerator ToggleWeaponDelay_Coroutine(float delay, bool state)
     {
@@ -223,19 +247,43 @@ public class ArmadilloVisualControl : MonoBehaviour
         toggleWeaponDelay_Ref = null;
     }
 
-    private void ToggleRun(bool state)
+    private void ReturnToDefaultState()
     {
-        if (isClimbing) return;
-        fpAnimator.SetBool("isRunning", state);
+        if (hasGunEquiped)
+        {
+            fp_Layer1 = FPModeLayer1.Gun_Default;
+        }
+        else fp_Layer1 = FPModeLayer1.Null;
     }
-    private void ToggleLurking(bool state)
+    #endregion
+    public void OnStartClimbing()
     {
-        if (isClimbing) return;
-        fpAnimator.SetBool("isSneaking", state);
+        isClimbing = true;
+        fpAnimator.SetBool("isSneaking", false);
+        fpAnimator.SetBool("isRunning", false);
     }
+    public void ToggleArmView(bool state)
+    {
+        fpAnimator.transform.GetChild(0).gameObject.SetActive(state);
+    }
+
+    #region EletricPistol
     public void OnGunEquiped()
     {
         hasGunEquiped = true;
+    }
+
+    public void EquipEletricPistolAnim()
+    {
+        fpAnimator.CrossFade("TatuZapGunEquip", 0.1f);
+    }
+    public void EquipEletricPistol(Transform eletricPistolTransform)
+    {
+        fpAnimator.CrossFade("TatuZapGunIdle", 0.1f);
+    }
+    public void UnequipEletricPistol(Transform eletricPistolTransform)
+    {
+        fpAnimator.CrossFade("TatuZapGunUnequip", 0.1f);
     }
     public void OnEletricGunFire()
     {
@@ -249,34 +297,7 @@ public class ArmadilloVisualControl : MonoBehaviour
     {
         fpAnimator.SetBool("zapGunOverheat", state);
     }
-    public void OnStartClimbing()
-    {
-        isClimbing = true;
-        fpAnimator.SetBool("isSneaking", false);
-        fpAnimator.SetBool("isRunning", false);
-    }
-    private void ReturnToDefaultState()
-    {
-        if (hasGunEquiped)
-        {
-            fp_Layer1 = FPModeLayer1.Gun_Default;
-        }
-        else fp_Layer1 = FPModeLayer1.Null;
-    }
 
-    public void EquipEletricPistol(Transform eletricPistolTransform)
-    {
-        fpAnimator.SetBool("zapGunEquip", true);
-    }
-    public void UnequipEletricPistol(Transform eletricPistolTransform)
-    {
-        fpAnimator.SetBool("zapGunEquip", false);
-        Debug.Log("a");
-    }
-
-    public void ToggleArmView(bool state)
-    {
-        fpAnimator.transform.GetChild(0).gameObject.SetActive(state);
-    }
+    #endregion
     #endregion
 }
