@@ -171,13 +171,13 @@ public class ArmadilloWeaponControl : MonoBehaviour
         DelegateDelay_Ref = StartCoroutine(DelegateDelay_Coroutine(1.125f, playerInput, DelegateType.Add, nextWeapon));
     }
 
-    public void ToggleWeapon(bool state)
+    public void ToggleWeapon(bool state,bool hideGun)
     {
         isGunPocketed = !state;
         if (!state)
         {
             if (currentWeaponID != -1) pocketedWeaponID = currentWeaponID;
-            ChangeWeapon(-1, true);
+            ChangeWeapon(-1, hideGun);
         }
         else
         {

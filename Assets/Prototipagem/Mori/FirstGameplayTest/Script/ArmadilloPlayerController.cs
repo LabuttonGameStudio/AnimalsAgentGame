@@ -222,7 +222,7 @@ public class ArmadilloPlayerController : MonoBehaviour
 
         //Move a camera para terceira pessoa em 0.5 segundos 
         currentEquipedWeapon = weaponControl.currentWeaponID;
-        weaponControl.ToggleWeapon(false);
+        weaponControl.ToggleWeapon(false,true);
         cameraControl.ChangeCameraState(cameraControl.thirdPersonCameraState);
         visualControl.OnEnterBallMode();
         audioControl.onTransformSound.PlayAudio();
@@ -294,7 +294,7 @@ public class ArmadilloPlayerController : MonoBehaviour
         yield return new WaitForSeconds(0.25f);
         sonarCamera.cullingMask = cameraControl.firstPeronSeeThroughMask;
         visualControl.OnEnterDefaultMode();
-        weaponControl.ToggleWeapon(true);
+        weaponControl.ToggleWeapon(true,true);
         inputControl.inputAction.Armadillo.Ability1.performed += ChangeToBallForm;
         changeToDefaultFormRef = null;
     }
