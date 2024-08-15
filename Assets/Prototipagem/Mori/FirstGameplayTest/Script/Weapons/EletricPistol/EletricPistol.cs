@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using static WeaponData;
 
 public class EletricPistol : Weapon
 {
@@ -16,6 +17,7 @@ public class EletricPistol : Weapon
         name = "Pistola Eletrica";
         description = "Pressione pra atirar, segure para carregar ";
         ammoSlider = armadilloWeaponControl.Weaponammoslider;
+        weaponType = WeaponType.Zapgun;
         LoadVisual();
         UpdateOverheatHUD();
     }
@@ -56,7 +58,7 @@ public class EletricPistol : Weapon
         if (model.TryGetComponent(out EletricPistolVisual eletricPistolVisual))
         {
             visualHandler = eletricPistolVisual;
-            visualHandler.gameObject.SetActive(false);
+            visualHandler.ToggleVisual(false);
         }
         else Debug.LogError("Erro ao encontrar visual handler EletricPistolVisual no prefab");
     }
@@ -65,7 +67,7 @@ public class EletricPistol : Weapon
     {
         if(state)ArmadilloPlayerController.Instance.visualControl.EquipEletricPistol(visualHandler.transform);
         else ArmadilloPlayerController.Instance.visualControl.UnequipEletricPistol(visualHandler.transform);
-        visualHandler.gameObject.SetActive(state);
+        visualHandler.ToggleVisual(state);
     }
     #endregion
     //Fire

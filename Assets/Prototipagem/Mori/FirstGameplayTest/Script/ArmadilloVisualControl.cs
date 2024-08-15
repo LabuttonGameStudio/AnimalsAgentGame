@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
-
+using static WeaponData;
 public class ArmadilloVisualControl : MonoBehaviour
 {
     private readonly float crossFadeTime = 0.2f;
@@ -48,6 +48,7 @@ public class ArmadilloVisualControl : MonoBehaviour
     }
     [SerializeField] private FPModeLayer99 fp_Layer99;
 
+    private int currentLayer;
     private bool hasGunEquiped;
     [Header("Default")]
     [SerializeField] private SkinnedMeshRenderer modelRenderer;
@@ -157,7 +158,8 @@ public class ArmadilloVisualControl : MonoBehaviour
         {
             StopCoroutine(crossFadeLayers_Ref.crossFadeCoroutine);
             fpAnimator.SetLayerWeight(crossFadeLayers_Ref.previousLayer, 0);
-            fpAnimator.SetLayerWeight(crossFadeLayers_Ref.previousLayer, 1);
+            fpAnimator.SetLayerWeight(crossFadeLayers_Ref.newLayer, 1);
+            currentLayer = crossFadeLayers_Ref.newLayer;
             crossFadeLayers_Ref = null;
         }
         crossFadeLayers_Ref = new CrossFadeLayer();
@@ -180,6 +182,7 @@ public class ArmadilloVisualControl : MonoBehaviour
         }
         fpAnimator.SetLayerWeight(crossFadeLayers_Ref.previousLayer, 0);
         fpAnimator.SetLayerWeight(crossFadeLayers_Ref.newLayer, 1);
+        currentLayer = crossFadeLayers_Ref.newLayer;
     }
     public int CheckCurrentFPLayer()
     {
@@ -210,6 +213,11 @@ public class ArmadilloVisualControl : MonoBehaviour
     private void ResetLayer2()
     {
         fp_Layer2 = FPModeLayer2.Null;
+        int activeLayer = CheckCurrentFPLayer();
+        if(activeLayer != currentLayer)
+        {
+            ChangeCurrentLayer(activeLayer);
+        }
     }
     private void ResetLayer99()
     {
@@ -312,7 +320,7 @@ public class ArmadilloVisualControl : MonoBehaviour
             fp_Layer2 = FPModeLayer2.Sonar;
 
             StartToggleWeaponDelay(1.25f, true);
-            AnimationClip animationClip = fpAnimator.GetCurrentAnimatorClipInfo(CheckCurrentFPLayer()+1)[0].clip;
+            AnimationClip animationClip = fpAnimator.GetCurrentAnimatorClipInfo(CheckCurrentFPLayer())[0].clip;
             StartCoroutine(OnSonarAnimEnd_Coroutine(animationClip.length));
         }
     }
@@ -362,33 +370,39 @@ public class ArmadilloVisualControl : MonoBehaviour
         }
         if (state) ArmadilloPlayerController.Instance.weaponControl.ToggleWeapon(state, false);
         else ArmadilloPlayerController.Instance.weaponControl.ToggleWeapon(state, false);
-        ReturnToDefaultState();
         toggleWeaponDelay_Ref = null;
     }
-
-    private void ReturnToDefaultState()
+    public void OnGunEquiped(WeaponType weaponType)
     {
-        if (hasGunEquiped)
+        if(CheckIfActionsIsPossible(1))
         {
-            fp_Layer1 = FPModeLayer1.ZapGun;
+            switch(weaponType)
+            {
+                case WeaponType.Zapgun:
+                    fp_Layer1 = FPModeLayer1.ZapGun;
+                    break;
+                case WeaponType.Watergun:
+                    fp_Layer1 = FPModeLayer1.WaterGun;
+                    break;
+                case WeaponType.Pendrivegun:
+                    fp_Layer1 = FPModeLayer1.PendriveGun;
+                    break;
+            }
+            ChangeCurrentLayer(1);
         }
-        else fp_Layer1 = FPModeLayer1.Null;
     }
+
     #endregion
 
     #region EletricPistol
-    public void OnGunEquiped()
-    {
-        hasGunEquiped = true;
-    }
-
     public void EquipEletricPistolAnim()
     {
         fpAnimator.CrossFade("TatuZapGunEquip", 0.1f);
     }
     public void EquipEletricPistol(Transform eletricPistolTransform)
     {
-        fpAnimator.CrossFade("TatuZapGunIdle", 0.1f);
+        fpAnimator.CrossFade("TatuZapGunIdle", crossFadeTime);
+
     }
     public void UnequipEletricPistol(Transform eletricPistolTransform)
     {

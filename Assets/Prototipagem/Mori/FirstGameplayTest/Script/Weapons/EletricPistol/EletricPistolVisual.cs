@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class EletricPistolVisual : MonoBehaviour
@@ -18,7 +19,10 @@ public class EletricPistolVisual : MonoBehaviour
     [SerializeField] private SoundEmitter onChargedFireSoundEmitter;
     [SerializeField] private SoundEmitter onChargingFireSoundEmitter;
 
-
+    public void ToggleVisual(bool state)
+    {
+        model.SetActive(state);
+    }
     public void OnUnchargedFire(Vector3 destination)
     {
         ZiumOnomatopeiaParticle.Play();

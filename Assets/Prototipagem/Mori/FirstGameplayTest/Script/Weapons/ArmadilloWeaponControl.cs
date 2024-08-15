@@ -4,7 +4,17 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using static WeaponData;
 
+public class WeaponData
+{
+    public enum WeaponType
+    {
+        Zapgun,
+        Watergun,
+        Pendrivegun
+    }
+}
 public class ArmadilloWeaponControl : MonoBehaviour
 {
     private bool isGunPocketed;
@@ -74,7 +84,7 @@ public class ArmadilloWeaponControl : MonoBehaviour
             Debug.Log("a");
             pocketedWeaponID = 0;
         }
-        else ChangeWeapon(0, true);
+        else ChangeWeapon(0);
     }
     public GameObject LoadModel(GameObject model, Vector3 position, Quaternion rotation)
     {
@@ -142,31 +152,33 @@ public class ArmadilloWeaponControl : MonoBehaviour
         playerInput.Reload.Disable();
     }
 
-    public void ChangeWeapon(int nextWeapon, bool changeVisual)
+    public void ChangeWeapon(int nextWeapon)
     {
         PlayerInputAction.ArmadilloActions playerInput = ArmadilloPlayerController.Instance.inputControl.inputAction.Armadillo;
         if (nextWeapon < 0 || nextWeapon > weaponsInInventory.Length)
         {
-
+            //Unequip current gun
             if (currentWeaponID == -1) return;
             DefineDelegates(playerInput, DelegateType.Remove, currentWeaponID);
             ToggleStateInputs(playerInput, false);
-            if (changeVisual) weaponsInInventory[currentWeaponID].ToggleVisual(false);
+            weaponsInInventory[currentWeaponID].ToggleVisual(false);
             currentWeaponID = -1;
             return;
         }
         if (currentWeaponID != -1)
         {
+            //Remove current weapon
             DefineDelegates(playerInput, DelegateType.Remove, currentWeaponID);
-            if (changeVisual) weaponsInInventory[currentWeaponID].ToggleVisual(false);
+            weaponsInInventory[currentWeaponID].ToggleVisual(false);
         }
         else
         {
+            //Toggle Inputs
             ToggleStateInputs(playerInput, true);
         }
         currentWeaponID = nextWeapon;
-        OnGunEquip(nextWeapon);
-        if (changeVisual) weaponsInInventory[nextWeapon].ToggleVisual(true);
+        OnGunEquip(weaponsInInventory[nextWeapon].weaponType);
+        weaponsInInventory[nextWeapon].ToggleVisual(true);
         if (DelegateDelay_Ref != null) StopCoroutine(DelegateDelay_Ref);
         DelegateDelay_Ref = StartCoroutine(DelegateDelay_Coroutine(1.125f, playerInput, DelegateType.Add, nextWeapon));
     }
@@ -177,11 +189,11 @@ public class ArmadilloWeaponControl : MonoBehaviour
         if (!state)
         {
             if (currentWeaponID != -1) pocketedWeaponID = currentWeaponID;
-            ChangeWeapon(-1, hideGun);
+            ChangeWeapon(-1);
         }
         else
         {
-            ChangeWeapon(pocketedWeaponID, true);
+            ChangeWeapon(pocketedWeaponID);
         }
     }
     public void ToggleArms(bool state)
@@ -190,16 +202,16 @@ public class ArmadilloWeaponControl : MonoBehaviour
         if (!state)
         {
             if (currentWeaponID != -1) pocketedWeaponID = currentWeaponID;
-            ChangeWeapon(-1, false);
+            ChangeWeapon(-1);
         }
         else
         {
-            ChangeWeapon(pocketedWeaponID, false);
+            ChangeWeapon(pocketedWeaponID);
         }
         ArmadilloPlayerController.Instance.visualControl.ToggleArmView(state);
     }
-    public void OnGunEquip(int gunEquiped)
+    public void OnGunEquip(WeaponType weaponType)
     {
-        ArmadilloPlayerController.Instance.visualControl.OnGunEquiped();
+        ArmadilloPlayerController.Instance.visualControl.OnGunEquiped(weaponType);
     }
 }

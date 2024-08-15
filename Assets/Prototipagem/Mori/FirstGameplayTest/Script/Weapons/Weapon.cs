@@ -3,9 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using static WeaponData;
 
 public abstract class Weapon
 {
+    public WeaponType weaponType;
     public string name;
 
     public string description;
