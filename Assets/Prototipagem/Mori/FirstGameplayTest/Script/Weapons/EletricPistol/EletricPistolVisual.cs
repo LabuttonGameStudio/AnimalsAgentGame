@@ -65,4 +65,10 @@ public class EletricPistolVisual : MonoBehaviour
     {
         onOverheat.Stop();
     }
+    public void ResetVisuals()
+    {
+        onChargingFireSoundEmitter.StopAudio();
+        chargedParticle.Stop();
+        BzzOnomatopeiaParticle.Stop();
+    }
 }

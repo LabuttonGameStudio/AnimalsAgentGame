@@ -24,7 +24,6 @@ public class EletricPistol : Weapon
 
     //----- Stats -----
     //Tiro normal
-
     readonly private float fireDelay = 0.33f;
     private bool isOnCooldown;
 
@@ -65,16 +64,30 @@ public class EletricPistol : Weapon
 
     public override void ToggleVisual(bool state)
     {
-        if(state)ArmadilloPlayerController.Instance.visualControl.EquipEletricPistol(visualHandler.transform);
-        else ArmadilloPlayerController.Instance.visualControl.UnequipEletricPistol(visualHandler.transform);
         visualHandler.ToggleVisual(state);
+    }
+    public override void OnEquip(bool playAnimation)
+    {
+        if (playAnimation) ArmadilloPlayerController.Instance.visualControl.EquipEletricPistolAnim();
+        else ArmadilloPlayerController.Instance.visualControl.EquipEletricPistol();
+
+    }
+    public override void OnUnequip()
+    {
+        ArmadilloPlayerController.Instance.visualControl.UnequipEletricPistol();
+        weaponControl.StartCoroutine(OnUnequipAnimEnd());
+    }
+    public IEnumerator OnUnequipAnimEnd()
+    {
+        yield return new WaitForSeconds(0.16f);
+        visualHandler.ToggleVisual(false);
     }
     #endregion
     //Fire
     #region
     public void StartFireCooldownTimer()
     {
-        if(fireCooldown_Ref == null && !isOnCooldown)
+        if (fireCooldown_Ref == null && !isOnCooldown)
         {
             fireCooldown_Ref = weaponControl.StartCoroutine(FireCooldown_Coroutine());
         }
@@ -93,7 +106,7 @@ public class EletricPistol : Weapon
 
     public override void OnFireButtonPerformed(InputAction.CallbackContext performed)
     {
-        if(!IsFireOnCooldown())StartHoldOrPressTimer();
+        if (!IsFireOnCooldown()) StartHoldOrPressTimer();
     }
     public override void OnFireButtonCanceled(InputAction.CallbackContext performed)
     {
@@ -276,7 +289,7 @@ public class EletricPistol : Weapon
         int startingAmmoAmount = currentAmmoAmount;
         while (timer < overheatDuration)
         {
-            currentAmmoAmount = Mathf.RoundToInt(Mathf.Lerp(startingAmmoAmount, 0, timer / (overheatDuration-0.25f)));
+            currentAmmoAmount = Mathf.RoundToInt(Mathf.Lerp(startingAmmoAmount, 0, timer / (overheatDuration - 0.25f)));
             UpdateOverheatHUD();
             timer += 0.05f;
             yield return new WaitForSeconds(0.05f);
@@ -320,4 +333,24 @@ public class EletricPistol : Weapon
     }
     #endregion
 
+    //Reset
+    public override void ResetGun()
+    {
+        Debug.Log("Reset");
+        visualHandler.ResetVisuals();
+        if (holdOrPressTimerRef != null)
+        {
+            weaponControl.StopCoroutine(holdOrPressTimerRef);
+            holdOrPressTimerRef = null;
+        }
+        holdOrPressTimer = 0;
+        if (holdShakeStats != null)
+        {
+            FPCameraShake.StopShake(holdShakeStats);
+            holdShakeStats = null;
+        }
+        isOnCooldown = false;
+        fireCooldown_Ref = null;
+        ArmadilloPlayerController.Instance.visualControl.ToggleEletricPistolCharge(false);
+    }
 }

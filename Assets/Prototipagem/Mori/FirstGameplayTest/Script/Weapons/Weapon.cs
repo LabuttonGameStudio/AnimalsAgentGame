@@ -39,4 +39,10 @@ public abstract class Weapon
 
     //Visual
     public abstract void ToggleVisual(bool state);
+
+    public abstract void OnEquip(bool playAnimation);
+
+    public abstract void OnUnequip();
+
+    public abstract void ResetGun();
 }
