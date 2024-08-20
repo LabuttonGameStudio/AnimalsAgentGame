@@ -17,11 +17,12 @@ public class WaterGunProjectileManager : MonoBehaviour
     private GameObject projectilePoolParent;
     private GameObject projectilePuddleParent;
 
-    [SerializeField] private float velocity;
+    public float velocity;
 
     private void Awake()
     {
         Instance = this;
+        transform.parent = null;
         poolParent = new GameObject();
         poolParent.name = "WaterGunPool";
 
@@ -46,27 +47,5 @@ public class WaterGunProjectileManager : MonoBehaviour
     {
         watergunProjectileInGame.Remove(waterGunProjectile);
         watergunProjectilePool.Add(waterGunProjectile);
-    }
-    float timer = 0f;
-    float interval = 0.25f;
-    private void FixedUpdate()
-    {
-        timer += Time.fixedDeltaTime;
-        if(timer> interval)
-        {
-            Fire(transform.position, transform.forward, velocity);
-            timer = 0f;
-        }
-    }
-    //Transfer to Weapon Script
-    public void Fire(Vector3 position, Vector3 direction,float velocity)
-    {
-        WaterGunProjectile waterGunProjectile = watergunProjectilePool[0];
-        watergunProjectilePool.RemoveAt(0);
-        watergunProjectileInGame.Add(waterGunProjectile);
-        waterGunProjectile.transform.position = position;
-        waterGunProjectile.duration = 1;
-        waterGunProjectile.gameObject.SetActive(true);
-        waterGunProjectile.rb.velocity = direction * velocity;
     }
 }

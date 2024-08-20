@@ -23,6 +23,9 @@ public abstract class Weapon
     public int currentAmmoAmount;
     public int maxAmmoAmount;
 
+    public int ammoReserveAmount;
+    public int maxAmmoReserveAmount;
+
     public Slider ammoSlider;
 
     //Fire
