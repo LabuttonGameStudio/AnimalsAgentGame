@@ -97,7 +97,21 @@ public class ArmadilloPlayerController : MonoBehaviour
     private void OnValidate()
     {
     }
-
+    public void TogglePlayerControls(bool state)
+    {
+        movementControl.enabled = state;
+    }
+    public void TogglePlayerOnDialogue(bool state)
+    {
+        if(state)
+        {
+            Time.timeScale = 1;
+        }
+        else
+        {
+            Time.timeScale = 0;
+        }
+    }
     public float GetCurrentVisibilityOfPlayer()
     {
         return 1;
@@ -308,18 +322,6 @@ public class ArmadilloPlayerController : MonoBehaviour
         Debug.Log("Player Die");
     }
     #endregion
-
-    public void TogglePlayerControl(bool state)
-    {
-        if (state)
-        {
-            movementControl.enabled = true;
-        }
-        else
-        {
-            movementControl.enabled = false;
-        }
-    }
 
     public void TeleportPlayer(Transform transform)
     {

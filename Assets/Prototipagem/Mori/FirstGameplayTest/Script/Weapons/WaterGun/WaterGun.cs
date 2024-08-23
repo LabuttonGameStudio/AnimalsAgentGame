@@ -165,7 +165,7 @@ public class WaterGun : Weapon
         {
             Vector3 velocity = rb.velocity / 2;
             velocity.y = velocity.y/2;
-            visualHandler.UpdateSprayVelocity(velocity);
+            //visualHandler.UpdateSprayVelocity(velocity);
             this.bodyVelocity = velocity;
             yield return new WaitForSeconds(0.05f);
         }

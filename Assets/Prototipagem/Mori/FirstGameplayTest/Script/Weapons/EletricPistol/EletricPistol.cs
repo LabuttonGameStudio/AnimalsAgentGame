@@ -360,7 +360,7 @@ public class EletricPistol : Weapon
     #region Run
     public override void ToggleOnRun(bool state)
     {
-        throw new NotImplementedException();
+       
     }
     #endregion
 }

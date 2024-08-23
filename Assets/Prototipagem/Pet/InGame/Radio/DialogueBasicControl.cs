@@ -46,7 +46,7 @@ public class DialogueBasicControl : MonoBehaviour
         for (int i = 0; i < events.Length; i++)
         {
             events[i].actionEvents.Invoke();
-            if (events[i].delay > 0) yield return new WaitForSeconds(events[i].delay);
+            if (events[i].delay > 0) yield return new WaitForSecondsRealtime(events[i].delay);
         }
     }
 
@@ -106,7 +106,7 @@ public class DialogueBasicControl : MonoBehaviour
             Coroutine typeCoroutine = StartCoroutine(TypeSentence_Coroutine(dialogue.dialogue[i].quote, false));
             currentDialogueCoroutine.coroutines.Add(typeCoroutine);
             yield return typeCoroutine;
-            yield return new WaitForSeconds(TimeBetweenSentences); // espera um tempo antes de iniciar a proxima sentença
+            yield return new WaitForSecondsRealtime(TimeBetweenSentences); // espera um tempo antes de iniciar a proxima sentença
         }
         EndDialogues(dialogue.endDialogue);
         onDialogue_Ref = null;
@@ -129,13 +129,13 @@ public class DialogueBasicControl : MonoBehaviour
                 if (interactButton.WasReleasedThisFrame()) break;
                 yield return null;
             }
-            yield return new WaitForSeconds(0.1f);
+            yield return new WaitForSecondsRealtime(0.1f);
             float timer = 0;
             bool breakBasedOnTime = false;
             while (true)
             {
                 if (interactButton.WasPerformedThisFrame()) break;
-                timer += Time.deltaTime;
+                timer += Time.unscaledDeltaTime;
                 if (timer > TimeBetweenSentences)
                 {
                     breakBasedOnTime = true;
@@ -176,14 +176,14 @@ public class DialogueBasicControl : MonoBehaviour
                         breakInWhile = true;
                         break;
                     }
-                    timer += Time.deltaTime;
+                    timer += Time.unscaledDeltaTime;
                     yield return null;
                 }
                 if (breakInWhile) break;
             }
             else
             {
-                yield return new WaitForSeconds(3f / VelocityText);
+                yield return new WaitForSecondsRealtime(3f / VelocityText);
             }
         }
         DialogueText.text = sentence;
@@ -200,7 +200,7 @@ public class DialogueBasicControl : MonoBehaviour
         while (elapsedTime < duration)
         {
             canvasGroup.alpha = Mathf.Lerp(startAlpha, endAlpha, elapsedTime / duration);
-            elapsedTime += Time.deltaTime;
+            elapsedTime += Time.unscaledDeltaTime;
             yield return null;
         }
         canvasGroup.alpha = endAlpha;

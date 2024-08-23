@@ -338,9 +338,9 @@ public class ArmadilloVisualControl : MonoBehaviour
     private Coroutine ledgeGrabTimer_Ref;
     public IEnumerator LedgeGrabTimer_Coroutine()
     {
-        yield return new WaitForSeconds(0.05f);
-        fpAnimator.SetTrigger("ledgeGrab");
-        yield return new WaitForSeconds(0.28f);
+        fpAnimator.CrossFade("TatuMoveLedgeGrab", 0.02f);
+        yield return new WaitForSeconds(0.02f);
+        yield return new WaitForSeconds(0.531f*2f);
         ResetLayer2();
         ledgeGrabTimer_Ref = null;
     }

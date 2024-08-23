@@ -43,6 +43,10 @@ public class ArmadilloWeaponControl : MonoBehaviour
         if(startWithWaterGun) GivePlayerWaterGun();
         if (startWithMelee) GivePlayerMelee();
     }
+    private void Update()
+    {
+
+    }
     #region Melee
     [Header("Melee")]
     [SerializeField] private float meleeDamage;
@@ -210,15 +214,22 @@ public class ArmadilloWeaponControl : MonoBehaviour
 
     public void ToggleWeapon(bool state,bool playAnimation)
     {
-        isGunPocketed = !state;
         if (!state)
         {
-            if (currentWeaponID != -1) pocketedWeaponID = currentWeaponID;
+            if (currentWeaponID != -1)
+            {
+                isGunPocketed = true;
+                pocketedWeaponID = currentWeaponID;
+            }
             ChangeWeapon(-1, playAnimation);
         }
         else
         {
             ChangeWeapon(pocketedWeaponID, playAnimation);
+            if(pocketedWeaponID != -1)
+            {
+                isGunPocketed = false;
+            }
         }
     }
     public void ToggleArms(bool state)
