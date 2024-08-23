@@ -21,6 +21,7 @@ public class ArmadilloWeaponControl : MonoBehaviour
 
     [SerializeField] private bool startWithMelee;
     [SerializeField] private bool startWithPistol;
+    [SerializeField] private bool startWithWaterGun;
 
     [System.NonSerialized] public Weapon[] weaponsInInventory;
 
@@ -39,6 +40,7 @@ public class ArmadilloWeaponControl : MonoBehaviour
     {
         weaponsInInventory = new Weapon[2];
         if (startWithPistol) GivePlayerEletricPistol();
+        if(startWithWaterGun) GivePlayerWaterGun();
         if (startWithMelee) GivePlayerMelee();
     }
     #region Melee
@@ -85,6 +87,11 @@ public class ArmadilloWeaponControl : MonoBehaviour
             pocketedWeaponID = 0;
         }
         else ChangeWeapon(0,true);
+    }
+    public void GivePlayerWaterGun()
+    {
+        weaponsInInventory[1] = new WaterGun(this);
+         ChangeWeapon(1, true);
     }
     public GameObject LoadModel(GameObject model, Vector3 position, Quaternion rotation)
     {
@@ -228,6 +235,14 @@ public class ArmadilloWeaponControl : MonoBehaviour
         foreach(Weapon weapon in weaponsInInventory)
         {
             if(weapon != null)weapon.ResetGun();
+        }
+    }
+
+    public void OnRun(bool state)
+    {
+        if (currentWeaponID != -1 && weaponsInInventory[currentWeaponID] != null)
+        {
+            weaponsInInventory[currentWeaponID].ToggleOnRun(state);
         }
     }
 }

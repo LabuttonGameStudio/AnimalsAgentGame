@@ -6,7 +6,7 @@ public class WaterGunProjectile : MonoBehaviour
 {
     [HideInInspector] public Rigidbody rb;
     [HideInInspector] public float duration;
-    public float timer;
+    [HideInInspector]public float timer;
     private void FixedUpdate()
     {
         timer += Time.fixedDeltaTime;

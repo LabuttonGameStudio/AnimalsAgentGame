@@ -6,7 +6,7 @@ using static UnityEditor.Experimental.GraphView.GraphView;
 using static WeaponData;
 public class ArmadilloVisualControl : MonoBehaviour
 {
-    private readonly float crossFadeTime = 0.2f;
+    public static readonly float crossFadeTime = 0.2f;
     private enum CameraMode
     {
         FP,
@@ -513,7 +513,6 @@ public class ArmadilloVisualControl : MonoBehaviour
     public void EquipEletricPistol()
     {
         fpAnimator.CrossFade("TatuZapGunIdle", crossFadeTime);
-
     }
     public void UnequipEletricPistol()
     {
@@ -532,6 +531,25 @@ public class ArmadilloVisualControl : MonoBehaviour
         fpAnimator.SetBool("zapGunOverheat", state);
     }
 
+    #endregion
+
+    #region WaterGun
+    public void EquipWaterGunAnim()
+    {
+        fpAnimator.CrossFade("TatuWaterGunEquip", 0.1f);
+    }
+    public void EquipWaterGun()
+    {
+        fpAnimator.CrossFade("TatuWaterGunIdle", crossFadeTime);
+    }
+    public void ReloadWaterGun()
+    {
+        fpAnimator.SetTrigger("waterGunReload");
+    }
+    public void ToggleOnFireWaterGun(bool state)
+    {
+        fpAnimator.SetBool("waterGunIsFiring",state);
+    }
     #endregion
     #endregion
 }

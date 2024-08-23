@@ -6,15 +6,24 @@ using UnityEngine;
 public class WaterGunProjectileManager : MonoBehaviour
 {
     public static WaterGunProjectileManager Instance;
-    [SerializeField] private GameObject watergunProjectilePrefab;
-
-    public List<WaterGunProjectile> watergunProjectilePool;
-    [HideInInspector]public List<WaterGunProjectile> watergunProjectileInGame;
-
-    [SerializeField] private int projectilePoolSize;
     private GameObject poolParent;
 
+    [Header("Projectile")]
+    [SerializeField] private GameObject watergunProjectilePrefab;
+    [SerializeField] private int projectilePoolSize;
+
+    [HideInInspector] public List<WaterGunProjectile> watergunProjectilePool;
+    [HideInInspector]public List<WaterGunProjectile> watergunProjectileInGame;
+
     private GameObject projectilePoolParent;
+
+    [Header("Puddle")]
+    [SerializeField] private GameObject waterPuddlePrefab;
+    [SerializeField] private int waterPuddlePoolSize;
+
+    [HideInInspector] public List<WaterGunProjectile> waterPuddleInPool;
+    [HideInInspector] public List<WaterGunProjectile> waterPuddleGame;
+
     private GameObject projectilePuddleParent;
 
     public float velocity;
@@ -22,7 +31,6 @@ public class WaterGunProjectileManager : MonoBehaviour
     private void Awake()
     {
         Instance = this;
-        transform.parent = null;
         poolParent = new GameObject();
         poolParent.name = "WaterGunPool";
 

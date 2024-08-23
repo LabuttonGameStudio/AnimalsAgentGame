@@ -48,4 +48,6 @@ public abstract class Weapon
     public abstract void OnUnequip();
 
     public abstract void ResetGun();
+
+    public abstract void ToggleOnRun(bool state);
 }

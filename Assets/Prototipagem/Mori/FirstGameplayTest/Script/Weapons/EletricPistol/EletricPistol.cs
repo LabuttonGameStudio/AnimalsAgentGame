@@ -334,6 +334,7 @@ public class EletricPistol : Weapon
     #endregion
 
     //Reset
+    #region
     public override void ResetGun()
     {
         Debug.Log("Reset");
@@ -353,4 +354,13 @@ public class EletricPistol : Weapon
         fireCooldown_Ref = null;
         ArmadilloPlayerController.Instance.visualControl.ToggleEletricPistolCharge(false);
     }
+    #endregion
+
+    //Run
+    #region Run
+    public override void ToggleOnRun(bool state)
+    {
+        throw new NotImplementedException();
+    }
+    #endregion
 }

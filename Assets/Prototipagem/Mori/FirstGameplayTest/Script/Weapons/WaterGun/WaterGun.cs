@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using static UnityEngine.Rendering.DebugUI;
 using static WeaponData;
 public class WaterGun : Weapon
 {
@@ -30,10 +31,11 @@ public class WaterGun : Weapon
     private Transform firePivot;
 
     //Tiro normal
+    private Vector3 bodyVelocity;
     readonly private float fireDelay = 0.33f;
     private bool isOnCooldown;
 
-    
+
     //----- Visual -----
     private WaterGunVisual visualHandler;
 
@@ -41,21 +43,32 @@ public class WaterGun : Weapon
     #region
     private void LoadVisual()
     {
-        
+        visualHandler = WaterGunVisual.Instance;
+        firePivot = visualHandler.firePivot;
     }
 
     public override void ToggleVisual(bool state)
     {
-        throw new NotImplementedException();
+        //throw new NotImplementedException();
     }
     public override void OnEquip(bool playAnimation)
     {
-        if (playAnimation) ArmadilloPlayerController.Instance.visualControl.EquipEletricPistolAnim();
-        else ArmadilloPlayerController.Instance.visualControl.EquipEletricPistol();
+        visualHandler.OnEquip(playAnimation);
+        if(UpdateWaterSprayVelocity_Ref == null )
+        {
+            UpdateWaterSprayVelocity_Ref = weaponControl.StartCoroutine(UpdateWaterSprayVelocity_Coroutine());
+        }
+        if (playAnimation) ArmadilloPlayerController.Instance.visualControl.EquipWaterGunAnim();
+        else ArmadilloPlayerController.Instance.visualControl.EquipWaterGun();
+
 
     }
     public override void OnUnequip()
     {
+        if (UpdateWaterSprayVelocity_Ref != null)
+        {
+            weaponControl.StopCoroutine(UpdateWaterSprayVelocity_Ref);
+        }
         ArmadilloPlayerController.Instance.visualControl.UnequipEletricPistol();
         weaponControl.StartCoroutine(OnUnequipAnimEnd());
     }
@@ -96,32 +109,42 @@ public class WaterGun : Weapon
     }
     public void ToggleFire(bool value)
     {
-        if(value)
+        if (currentAmmoAmount <= 0)
         {
-            if(fire_Ref == null)
+            Reload();
+            return;
+        }
+        if (value)
+        {
+            if (fire_Ref == null)
             {
-                fire_Ref = weaponControl.StartCoroutine(FireCooldown_Coroutine());
+                fire_Ref = weaponControl.StartCoroutine(Fire_Coroutine());
             }
         }
         else
         {
-            if(fire_Ref != null)
+            if (fire_Ref != null)
             {
                 weaponControl.StopCoroutine(fire_Ref);
+                fire_Ref = null;
             }
         }
+        ArmadilloPlayerController.Instance.visualControl.ToggleOnFireWaterGun(value);
+        visualHandler.ToggleOnFire(value);
     }
     public Coroutine fire_Ref;
     public IEnumerator Fire_Coroutine()
     {
-        while(currentAmmoAmount>0)
+        while (currentAmmoAmount > 0)
         {
             Fire(firePivot.position, firePivot.forward);
             currentAmmoAmount--;
             yield return new WaitForSeconds(0.25f);
         }
+        visualHandler.ToggleOnFire(false);
+        ArmadilloPlayerController.Instance.visualControl.ToggleOnFireWaterGun(false);
+        fire_Ref = null;
     }
-    //Transfer to Weapon Script
     public void Fire(Vector3 position, Vector3 direction)
     {
         WaterGunProjectileManager manager = WaterGunProjectileManager.Instance;
@@ -129,9 +152,23 @@ public class WaterGun : Weapon
         manager.watergunProjectilePool.RemoveAt(0);
         manager.watergunProjectileInGame.Add(waterGunProjectile);
         waterGunProjectile.transform.position = position;
-        waterGunProjectile.duration = 1;
+        waterGunProjectile.duration = 1.25f;
         waterGunProjectile.gameObject.SetActive(true);
-        waterGunProjectile.rb.velocity = direction * manager.velocity;
+        waterGunProjectile.rb.velocity = direction * manager.velocity + bodyVelocity;
+    }
+
+    Coroutine UpdateWaterSprayVelocity_Ref;
+    IEnumerator UpdateWaterSprayVelocity_Coroutine()
+    {
+        Rigidbody rb = ArmadilloPlayerController.Instance.movementControl.rb;
+        while (true)
+        {
+            Vector3 velocity = rb.velocity / 2;
+            velocity.y = velocity.y/2;
+            visualHandler.UpdateSprayVelocity(velocity);
+            this.bodyVelocity = velocity;
+            yield return new WaitForSeconds(0.05f);
+        }
     }
     #endregion
 
@@ -151,18 +188,59 @@ public class WaterGun : Weapon
     #region
     public override void OnReloadButtonPerformed(InputAction.CallbackContext performed)
     {
-
+        Reload();
     }
     public override void OnReloadButtonCanceled(InputAction.CallbackContext performed)
     {
 
     }
+    public void Reload()
+    {
+        if (ammoReserveAmount > 0 && currentAmmoAmount < maxAmmoAmount)
+        {
+            if (reloadTimer_Ref == null)
+            {
+                reloadTimer_Ref = weaponControl.StartCoroutine(ReloadTimer_Coroutine());
+            }
+        }
+    }
+    public Coroutine reloadTimer_Ref;
+    public IEnumerator ReloadTimer_Coroutine()
+    {
+        ArmadilloPlayerController.Instance.visualControl.ReloadWaterGun();
+        visualHandler.OnReload();
+        yield return new WaitForSeconds(3.563f + 0.25f);
+        if (ammoReserveAmount >= maxAmmoAmount)
+        {
+            int ammoDif = maxAmmoAmount - currentAmmoAmount;
+            currentAmmoAmount = maxAmmoAmount;
+            ammoReserveAmount -= ammoDif;
+            if (ammoReserveAmount < 0) ammoReserveAmount = 0;
+        }
+        else
+        {
+            currentAmmoAmount = ammoReserveAmount;
+            ammoReserveAmount = 0;
+        }
+        reloadTimer_Ref = null;
+        Debug.Log(currentAmmoAmount + "|" + ammoReserveAmount);
+    }
     #endregion
 
     //Reset
+    #region Reset
     public override void ResetGun()
     {
         Debug.Log("Reset");
         visualHandler.ResetVisuals();
     }
+    #endregion
+
+    //Run
+    #region Run
+    public override void ToggleOnRun(bool state)
+    {
+        visualHandler.ToggleOnRun(state);
+    }
+    #endregion
 }

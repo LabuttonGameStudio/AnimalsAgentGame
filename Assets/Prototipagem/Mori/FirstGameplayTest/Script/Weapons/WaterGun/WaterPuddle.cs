@@ -35,7 +35,7 @@ public class WaterPuddle : MonoBehaviour
     public IEnumerator ChangeSize_Coroutine(float newSize)
     {
         float timer = 0;
-        float duration = 0.5f;
+        float duration = 0.25f;
         float lerpSize;
         while (timer < duration)
         {
@@ -43,8 +43,8 @@ public class WaterPuddle : MonoBehaviour
             size = lerpSize;
             decalProjector.size = new Vector3(lerpSize, lerpSize, decalProjector.size.z);
             boxCollider.size = new Vector3(lerpSize, lerpSize, boxCollider.size.z);
-            timer += 0.015f;
-            yield return new WaitForSeconds(0.015f);
+            timer += 0.025f;
+            yield return new WaitForSeconds(0.025f);
         }
     }
 }

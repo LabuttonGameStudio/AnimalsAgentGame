@@ -230,7 +230,7 @@ public class ArmadilloMovementController : MonoBehaviour
             ArmadilloPlayerController.Instance.audioControl.ChangeCurrentMovingForm(MovementType.Sprinting);
             sprintLurkSpeedMultiplier = GetCurrentFormStats().sprintSpeedMultiplier;
             currentMovementType = MovementType.Sprinting;
-
+            ArmadilloPlayerController.Instance.weaponControl.OnRun(true);
         }
         else
         {
@@ -240,6 +240,7 @@ public class ArmadilloMovementController : MonoBehaviour
                 ArmadilloPlayerController.Instance.visualControl.OnSprintStop();
                 ArmadilloPlayerController.Instance.audioControl.ChangeCurrentMovingForm(MovementType.Default);
                 currentMovementType = MovementType.Default;
+                ArmadilloPlayerController.Instance.weaponControl.OnRun(false);
             }
         }
     }
