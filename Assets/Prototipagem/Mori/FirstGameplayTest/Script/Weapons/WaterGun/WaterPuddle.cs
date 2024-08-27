@@ -7,7 +7,7 @@ using UnityEngine.Rendering.Universal;
 public class WaterPuddle : MonoBehaviour
 {
     public float size;
-    private float realSize;
+    [HideInInspector]public float realSize;
     DecalProjector decalProjector;
     BoxCollider boxCollider;
     private void OnValidate()
@@ -25,6 +25,13 @@ public class WaterPuddle : MonoBehaviour
         decalProjector = GetComponent<DecalProjector>();
         boxCollider = GetComponent<BoxCollider>();
     }
+    public void UpdateSize(float newSize)
+    {
+        size = newSize;
+        realSize = size;
+        decalProjector.size = new Vector3(newSize, newSize, decalProjector.size.z);
+        boxCollider.size = new Vector3(newSize, newSize, boxCollider.size.z);
+    }
     public void ChangeSize(float deltaSize)
     {
         realSize =realSize +deltaSize;
@@ -35,14 +42,14 @@ public class WaterPuddle : MonoBehaviour
     public IEnumerator ChangeSize_Coroutine(float newSize)
     {
         float timer = 0;
-        float duration = 0.25f;
+        float duration = 0.3f;
         float lerpSize;
         while (timer < duration)
         {
             lerpSize = Mathf.Lerp(size, newSize, timer / duration);
             size = lerpSize;
-            decalProjector.size = new Vector3(lerpSize, lerpSize, decalProjector.size.z);
-            boxCollider.size = new Vector3(lerpSize, lerpSize, boxCollider.size.z);
+            decalProjector.size = new Vector3(size, size, decalProjector.size.z);
+            boxCollider.size = new Vector3(size, size, boxCollider.size.z);
             timer += 0.025f;
             yield return new WaitForSeconds(0.025f);
         }
@@ -51,7 +58,7 @@ public class WaterPuddle : MonoBehaviour
     {
         if(other.CompareTag("Puddle"))
         {
-            Debug.Log("a");
+            WaterGunProjectileManager.Instance.TryMergePuddle(this, other.gameObject);
         }
     }
     private void OnTriggerExit(Collider other)

@@ -22,11 +22,11 @@ public class WaterGunProjectileManager : MonoBehaviour
     [SerializeField] private GameObject waterPuddlePrefab;
     [SerializeField] private int waterPuddlePoolSize;
 
-    [HideInInspector] public List<WaterPuddle> waterPuddleInPool;
-    [HideInInspector] public List<WaterPuddle> waterPuddleGame;
+    public List<WaterPuddle> waterPuddleInPool;
+    public List<WaterPuddle> waterPuddleInGame;
 
     private GameObject projectilePuddleParent;
-
+    [SerializeField] private float waterPuddleMinimalSize;
 
     private void Awake()
     {
@@ -54,7 +54,7 @@ public class WaterGunProjectileManager : MonoBehaviour
         projectilePuddleParent.name = "PuddlePool";
 
         waterPuddleInPool = new List<WaterPuddle>();
-        waterPuddleGame = new List<WaterPuddle>();
+        waterPuddleInGame = new List<WaterPuddle>();
         for (int i = 0; i < waterPuddlePoolSize; i++)
         {
             waterPuddleInPool.Add(Instantiate(waterPuddlePrefab, projectilePoolParent.transform).GetComponent<WaterPuddle>());
@@ -68,28 +68,57 @@ public class WaterGunProjectileManager : MonoBehaviour
     }
     public void ReturnPuddleToPool(WaterPuddle waterPuddle)
     {
-        waterPuddleGame.Remove(waterPuddle);
+        waterPuddle.UpdateSize(waterPuddleMinimalSize);
+        waterPuddle.size = waterPuddleMinimalSize;
+        waterPuddleInGame.Remove(waterPuddle);
         waterPuddleInPool.Add(waterPuddle);
     }
     public void SpawnPuddle(Vector3 position)
     {
+        if (waterPuddleInPool.Count <= 0)
+        {
+            waterPuddleInGame[0].gameObject.SetActive(false);
+            ReturnPuddleToPool(waterPuddleInGame[0]);
+        }
         WaterPuddle waterPuddle = waterPuddleInPool[0];
         waterPuddleInPool.RemoveAt(0);
-        waterPuddleInPool.Add(waterPuddle);
+        waterPuddleInGame.Add(waterPuddle);
 
         waterPuddle.transform.position = position;
         waterPuddle.gameObject.SetActive(true);
     }
-    public void TryMergePuddle(WaterPuddle puddle1, WaterPuddle puddle2)
+    public void TryMergePuddle(WaterPuddle puddle1, GameObject puddle2)
     {
-
+        if(mergePuddle==null)
+        {
+            mergePuddle = new MergePuddle()
+            {
+                puddle1 = puddle1,
+                puddle2 = puddle2,
+            };
+        }
+        else
+        {
+            if(puddle1.gameObject == mergePuddle.puddle2)
+            {
+                MergePuddle(mergePuddle.puddle1, puddle1);
+                mergePuddle = null;
+            }
+        }
     }
+    private MergePuddle mergePuddle;
     public void MergePuddle(WaterPuddle puddle1, WaterPuddle puddle2)
     {
         Vector3 middlePoint = (puddle1.transform.position + puddle2.transform.position)/2;
         puddle2.gameObject.SetActive(false);
         puddle1.transform.position = middlePoint;
-        puddle1.ChangeSize(puddle1.size + puddle2.size);
+        puddle1.UpdateSize(puddle1.realSize + puddle2.realSize);
+        Debug.Log(puddle1.realSize + puddle2.realSize);
         ReturnPuddleToPool(puddle2);
     }
+}
+public class MergePuddle
+{
+    public WaterPuddle puddle1;
+    public GameObject puddle2;
 }
