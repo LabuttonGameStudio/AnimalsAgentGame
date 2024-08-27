@@ -167,6 +167,7 @@ public class WaterGun : Weapon
             velocity.y = velocity.y/2;
             //visualHandler.UpdateSprayVelocity(velocity);
             this.bodyVelocity = velocity;
+            visualHandler.UpdateSprayVelocity(velocity);
             yield return new WaitForSeconds(0.05f);
         }
     }

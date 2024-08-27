@@ -17,18 +17,23 @@ public class WaterGunProjectile : MonoBehaviour
     }
     private void OnTriggerEnter(Collider other)
     {
-        if(other.CompareTag("Puddle"))
+        int layerInt = other.gameObject.layer;
+        if(layerInt == LayerMask.NameToLayer("Ground"))
+        {
+            WaterGunProjectileManager.Instance.SpawnPuddle(rb.position);
+            DisableProjectile();
+        }
+        else if (other.CompareTag("Puddle"))
         {
             DisableProjectile();
             other.GetComponent<WaterPuddle>().ChangeSize(1);
         }
-        Debug.Log(other.gameObject.name);
     }
     private void DisableProjectile()
     {
         timer =0;
         rb.velocity = Vector3.zero;
-        WaterGunProjectileManager.Instance.ReturnToPool(this);
+        WaterGunProjectileManager.Instance.ReturnProjectileToPool(this);
         gameObject.SetActive(false);
     }
 }

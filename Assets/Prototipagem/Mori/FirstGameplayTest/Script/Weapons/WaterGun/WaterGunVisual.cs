@@ -12,11 +12,10 @@ public class WaterGunVisual : MonoBehaviour
 
     [SerializeField] private Animator weaponAnimator;
     [SerializeField] private VisualEffect waterSpray;
-    private float waterSpayVelocityDefault;
+    [HideInInspector]public  Vector3 waterSpayVelocity;
     private void Awake()
     {
         Instance = this;
-        waterSpayVelocityDefault = waterSpray.GetFloat("FrontForce");
     }
     public void ToggleVisual(bool state)
     {
@@ -56,6 +55,7 @@ public class WaterGunVisual : MonoBehaviour
         else
         {
             waterSpray.Stop();
+            
         }
     }
     public void OnReload()

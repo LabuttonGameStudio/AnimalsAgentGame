@@ -6,7 +6,7 @@ using UnityEngine.Rendering.Universal;
 
 public class WaterPuddle : MonoBehaviour
 {
-    [SerializeField] private float size;
+    public float size;
     private float realSize;
     DecalProjector decalProjector;
     BoxCollider boxCollider;
@@ -46,5 +46,16 @@ public class WaterPuddle : MonoBehaviour
             timer += 0.025f;
             yield return new WaitForSeconds(0.025f);
         }
+    }
+    private void OnTriggerEnter(Collider other)
+    {
+        if(other.CompareTag("Puddle"))
+        {
+            Debug.Log("a");
+        }
+    }
+    private void OnTriggerExit(Collider other)
+    {
+        
     }
 }

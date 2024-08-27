@@ -162,7 +162,7 @@ public abstract class IEnemy : MonoBehaviour , IRaycastableInLOS
             //See navmesh point
             if (aiPathList != null && aiPathList.Length > 0)
             {
-                if (navMeshAgent == null) navMeshAgent = GetComponent<NavMeshAgent>();
+                navMeshAgent = GetComponent<NavMeshAgent>();
 
                 foreach (AIPathPoint aiPathPoint in aiPathList)
                 {
