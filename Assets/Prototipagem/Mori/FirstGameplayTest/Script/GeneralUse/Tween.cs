@@ -8,7 +8,8 @@ public class Tween
     public enum LerpType
     {
         Lerp,
-        Slerp
+        Slerp,
+        Elastic
     }
     #region Move Transform
     /// <summary>
@@ -188,6 +189,43 @@ public class Tween
 
         canvasGroup.alpha = targetOpacity;
     }
+
+    #endregion
+
+    #region ScaleRectTransform
+    public static Coroutine ScaleTransform(MonoBehaviour monoBehaviour, Transform transform, Vector3 finalScale, float duration, LerpType lerpType)
+    {
+        return monoBehaviour.StartCoroutine(ScaleTransform_Coroutine(transform, finalScale, duration, lerpType));
+    }
+
+    private static IEnumerator ScaleTransform_Coroutine(Transform transform, Vector3 finalScale, float duration, LerpType lerpType)
+    {
+        float timer = 0;
+        Vector3 startScale = transform.localScale;
+
+        while (timer < duration)
+        {
+            switch (lerpType)
+            {
+                case LerpType.Lerp:
+                    transform.localScale = Vector3.Lerp(startScale, finalScale, timer / duration);
+                    break;
+                case LerpType.Slerp:
+                    transform.localScale = Vector3.Slerp(startScale, finalScale, timer / duration);
+                    break;
+                case LerpType.Elastic:
+                    float progress = timer / duration;
+                    float elasticFactor = Mathf.Sin(progress * Mathf.PI * 0.5f) * (1.0f + 0.3f * (1 - progress)); // Efeito elástico
+                    transform.localScale = Vector3.Lerp(startScale, finalScale * elasticFactor, progress);
+                    break;
+            }
+            timer += Time.deltaTime;
+            yield return null;
+        }
+
+        transform.localScale = finalScale;
+    }
+
 
     #endregion
 }

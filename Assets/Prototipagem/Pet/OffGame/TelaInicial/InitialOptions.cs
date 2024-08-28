@@ -7,24 +7,20 @@ using UnityEngine.UIElements;
 public class InitialOptions : MonoBehaviour
 {
 
-    //nao utilizar string
+    [Header("LEVEL AND LOAD")]
     public string levelToLoad;
     public string loadingScreenScene;
     public string actuallevel;
-
-    public GameObject Cinemachine1;
-    public GameObject mao;
-
     private bool levelLoaded = false;
     public float delayBeforeLoading = 10f;
 
-    public void iniciar()
+
+    public void SaveAndLoad()
     {
         // save game
 
-        if (!levelLoaded) //  level não carregado
+        if (!levelLoaded) //  level nao carregado
         {
-            StartCoroutine(CinemachineRun());
             StartCoroutine(LoadLevelAsync());
             Debug.Log("Iniciando");
             levelLoaded = true;
@@ -40,28 +36,28 @@ public class InitialOptions : MonoBehaviour
 
         yield return new WaitForSeconds(5f);
 
-        // Obtém a referência para a cena atual
+        // obtem a referência para a cena atual
         Scene currentScene = SceneManager.GetActiveScene();
 
-        // Descarrega a cena atual para evitar lags e bugs
+        // descarrega a cena atual para evitar lags e bugs
         SceneManager.UnloadSceneAsync(currentScene);
 
-        // Carrega a cena da tela de carregamento
+        // carrega a cena da tela de carregamento
         yield return SceneManager.LoadSceneAsync(loadingScreenScene, LoadSceneMode.Additive);
 
-        // Espera um tempo antes de carregar a próxima cena
+        // Epera um tempo antes de carregar a próxima cena
         yield return new WaitForSeconds(delayBeforeLoading);
 
-        // Carrega a próxima cena de forma assíncrona
+        // carrega a proxima cena de forma assincrona
         AsyncOperation levelLoadOperation = SceneManager.LoadSceneAsync(levelToLoad, LoadSceneMode.Additive);
         levelLoadOperation.allowSceneActivation = false;
 
-        // Aguarda até que a próxima cena esteja pronta para ser ativada
+        // aguarda ate que a proxima cena esteja pronta para ser ativada
         while (!levelLoadOperation.isDone)
         {
             if (levelLoadOperation.progress >= 0.9f)
             {
-                // Ativa a próxima cena
+                // Ativa a proxima cena
                 levelLoadOperation.allowSceneActivation = true;
             }
             yield return null;
@@ -72,22 +68,11 @@ public class InitialOptions : MonoBehaviour
         SceneManager.UnloadSceneAsync(actuallevel);
     }
 
-    //IEnumerator WallDown()
-    //{
-        
-   // }
-
-    IEnumerator CinemachineRun()
+    public void Exit()
     {
-        Cinemachine1.SetActive(false);
-        mao.SetActive(false);
-        yield return null;
-       
-    }
-
-    public void opcoes()
-    {
-        // i don't now
+        Application.Quit();
     }
 
 }
+
+
