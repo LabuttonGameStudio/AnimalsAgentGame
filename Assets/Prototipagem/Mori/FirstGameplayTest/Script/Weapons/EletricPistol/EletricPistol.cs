@@ -159,10 +159,9 @@ public class EletricPistol : Weapon
     {
         RaycastHit[] targetsHit;
         Transform camera = ArmadilloPlayerController.Instance.cameraControl.mainCamera.transform;
-        targetsHit = Physics.RaycastAll(camera.position, camera.forward, 20f);
+        targetsHit = Physics.RaycastAll(camera.position, camera.forward, 20f, Physics.AllLayers, QueryTriggerInteraction.Collide);
         foreach (RaycastHit raycastHit in targetsHit)
         {
-            if (raycastHit.collider.isTrigger) continue;
             //Debug.Log(raycastHit.transform.name);
             if (raycastHit.transform.TryGetComponent(out IDamageable idamageable))
             {
@@ -179,10 +178,9 @@ public class EletricPistol : Weapon
     {
         RaycastHit[] targetsHit;
         Transform camera = ArmadilloPlayerController.Instance.cameraControl.mainCamera.transform;
-        targetsHit = Physics.RaycastAll(camera.position, camera.forward, 30f);
+        targetsHit = Physics.RaycastAll(camera.position, camera.forward, 30f,Physics.AllLayers,QueryTriggerInteraction.Collide);
         foreach (RaycastHit raycastHit in targetsHit)
         {
-            if (raycastHit.collider.isTrigger) continue;
             //Debug.Log(raycastHit.transform.name);
             if (raycastHit.transform.TryGetComponent(out IDamageable idamageable))
             {

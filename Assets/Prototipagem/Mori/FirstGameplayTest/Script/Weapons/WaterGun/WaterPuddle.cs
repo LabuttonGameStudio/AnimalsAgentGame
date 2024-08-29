@@ -3,13 +3,16 @@ using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
+using static Damage;
 
-public class WaterPuddle : MonoBehaviour
+public class WaterPuddle : MonoBehaviour,IDamageable
 {
     public float size;
     [HideInInspector]public float realSize;
     DecalProjector decalProjector;
     BoxCollider boxCollider;
+
+    [HideInInspector]public List<IDamageable> damageablesInPuddle;
     private void OnValidate()
     {
         #if UNITY_EDITOR
@@ -21,6 +24,7 @@ public class WaterPuddle : MonoBehaviour
     }
     private void Awake()
     {
+        damageablesInPuddle = new List<IDamageable>();
         realSize = size;
         decalProjector = GetComponent<DecalProjector>();
         boxCollider = GetComponent<BoxCollider>();
@@ -66,9 +70,37 @@ public class WaterPuddle : MonoBehaviour
         {
             WaterGunProjectileManager.Instance.TryMergePuddle(this, other.gameObject);
         }
+        else
+        {
+            if (other.TryGetComponent(out IDamageable damageable))
+            {
+                damageablesInPuddle.Add(damageable);
+            }
+        }
     }
     private void OnTriggerExit(Collider other)
     {
-        
+        if (other.CompareTag("Puddle"))
+        {
+            
+        }
+        else
+        {
+            if (other.TryGetComponent(out IDamageable damageable))
+            {
+                damageablesInPuddle.Remove(damageable);
+            }
+        }
+    }
+
+    public void TakeDamage(Damage damage)
+    {
+        if(damage.damageType ==DamageType.Eletric)
+        {
+            foreach(IDamageable damageable in damageablesInPuddle)
+            {
+                damageable.TakeDamage(damage);
+            }
+        }
     }
 }

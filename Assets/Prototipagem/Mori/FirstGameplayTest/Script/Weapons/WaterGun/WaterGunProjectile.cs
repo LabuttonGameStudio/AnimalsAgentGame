@@ -28,6 +28,10 @@ public class WaterGunProjectile : MonoBehaviour
             DisableProjectile();
             other.GetComponent<WaterPuddle>().AddSize(1);
         }
+        else if(other.TryGetComponent(out IDamageable damageable))
+        {
+
+        }
     }
     private void DisableProjectile()
     {

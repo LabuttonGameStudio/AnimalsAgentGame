@@ -69,6 +69,7 @@ public class WaterGunProjectileManager : MonoBehaviour
     }
     public void ReturnPuddleToPool(WaterPuddle waterPuddle)
     {
+        waterPuddle.damageablesInPuddle = new List<IDamageable>();
         waterPuddle.UpdateSize(waterPuddleMinimalSize);
         waterPuddle.size = waterPuddleMinimalSize;
         waterPuddleInGame.Remove(waterPuddle);
@@ -110,9 +111,8 @@ public class WaterGunProjectileManager : MonoBehaviour
     private MergePuddle mergePuddle;
     public void MergePuddle(WaterPuddle puddle1, WaterPuddle puddle2)
     {
-        Debug.Log(puddle1.name +"|Size="+puddle1.realSize);
-        Debug.Log(puddle2.name +"|Size="+ puddle2.realSize);
-        Vector3 middlePoint = (puddle1.transform.position + puddle2.transform.position)/2;
+        float puddleMaxSize = puddle1.realSize + puddle2.realSize;
+        Vector3 middlePoint = puddle1.transform.position*(puddle1.size/ puddleMaxSize) + puddle2.transform.position*(puddle2.size/ puddleMaxSize);
         puddle2.gameObject.SetActive(false);
         puddle1.transform.position = middlePoint;
         puddle1.UpdateSize(Mathf.Max(puddle1.realSize, puddle2.realSize));
