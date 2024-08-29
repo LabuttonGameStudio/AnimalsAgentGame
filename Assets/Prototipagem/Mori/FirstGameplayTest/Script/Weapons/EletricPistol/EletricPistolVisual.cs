@@ -21,7 +21,7 @@ public class EletricPistolVisual : MonoBehaviour
     [SerializeField] private SoundEmitter onChargedFireSoundEmitter;
     [SerializeField] private SoundEmitter onChargingFireSoundEmitter;
 
-    private void Awake()
+    private void Awake()    
     {
         Instance = this;
     }
