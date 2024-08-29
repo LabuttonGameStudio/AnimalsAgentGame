@@ -32,21 +32,27 @@ public class WaterPuddle : MonoBehaviour
         decalProjector.size = new Vector3(newSize, newSize, decalProjector.size.z);
         boxCollider.size = new Vector3(newSize, newSize, boxCollider.size.z);
     }
-    public void ChangeSize(float deltaSize)
+    public void ChangeSize(float newSize)
     {
-        realSize =realSize +deltaSize;
+        realSize = newSize;
         if(changeSize_Ref!=null)StopCoroutine(changeSize_Ref);
-        changeSize_Ref = StartCoroutine(ChangeSize_Coroutine(realSize));
+        changeSize_Ref = StartCoroutine(ChangeSize_Coroutine());
+    }
+    public void AddSize(float deltaSize)
+    {
+        realSize = realSize + deltaSize;
+        if (changeSize_Ref != null) StopCoroutine(changeSize_Ref);
+        changeSize_Ref = StartCoroutine(ChangeSize_Coroutine());
     }
     public Coroutine changeSize_Ref;
-    public IEnumerator ChangeSize_Coroutine(float newSize)
+    public IEnumerator ChangeSize_Coroutine()
     {
         float timer = 0;
         float duration = 0.3f;
         float lerpSize;
         while (timer < duration)
         {
-            lerpSize = Mathf.Lerp(size, newSize, timer / duration);
+            lerpSize = Mathf.Lerp(size, realSize, timer / duration);
             size = lerpSize;
             decalProjector.size = new Vector3(size, size, decalProjector.size.z);
             boxCollider.size = new Vector3(size, size, boxCollider.size.z);

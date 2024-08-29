@@ -36,16 +36,17 @@ public class ArmadilloWeaponControl : MonoBehaviour
     [Header("Weapons")]
     [SerializeField] public Transform eletricPistolSpawnPoint;
 
+    EletricPistol eletricPistol;
+    WaterGun waterGun;
+
+
     public void Start()
     {
+        LoadWeapons();
         weaponsInInventory = new Weapon[2];
         if (startWithPistol) GivePlayerEletricPistol();
         if(startWithWaterGun) GivePlayerWaterGun();
         if (startWithMelee) GivePlayerMelee();
-    }
-    private void Update()
-    {
-
     }
     #region Melee
     [Header("Melee")]
@@ -82,20 +83,44 @@ public class ArmadilloWeaponControl : MonoBehaviour
         meleeCooldownTimer_Ref = null;
     }
     #endregion
+
+    #region Inputs
+    public void EquipSlot0Weapon(InputAction.CallbackContext performed)
+    {
+        ChangeWeapon(0,false);
+    }
+    public void EquipSlot1Weapon(InputAction.CallbackContext performed)
+    {
+        ChangeWeapon(1,false);
+    }
+    public void EquipSlot2Weapon(InputAction.CallbackContext performed)
+    {
+
+    }
+    #endregion
+    private void LoadWeapons()
+    {
+        eletricPistol = new EletricPistol(this);
+        waterGun = new WaterGun(this);
+    }
     public void GivePlayerEletricPistol()
     {
-        weaponsInInventory[0] = new EletricPistol(this);
+        weaponsInInventory[0] = eletricPistol;
         if (isGunPocketed)
         {
             Debug.Log("a");
             pocketedWeaponID = 0;
         }
         else ChangeWeapon(0,true);
+        ArmadilloPlayerController.Instance.inputControl.inputAction.Armadillo.Weapon0.Enable();
+        ArmadilloPlayerController.Instance.inputControl.inputAction.Armadillo.Weapon0.performed += EquipSlot0Weapon;
     }
     public void GivePlayerWaterGun()
     {
-        weaponsInInventory[1] = new WaterGun(this);
+        weaponsInInventory[1] = waterGun;
          ChangeWeapon(1, true);
+        ArmadilloPlayerController.Instance.inputControl.inputAction.Armadillo.Weapon1.Enable();
+        ArmadilloPlayerController.Instance.inputControl.inputAction.Armadillo.Weapon1.performed += EquipSlot1Weapon;
     }
     public GameObject LoadModel(GameObject model, Vector3 position, Quaternion rotation)
     {

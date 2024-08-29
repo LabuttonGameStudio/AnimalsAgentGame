@@ -26,7 +26,7 @@ public class WaterGunProjectile : MonoBehaviour
         else if (other.CompareTag("Puddle"))
         {
             DisableProjectile();
-            other.GetComponent<WaterPuddle>().ChangeSize(1);
+            other.GetComponent<WaterPuddle>().AddSize(1);
         }
     }
     private void DisableProjectile()

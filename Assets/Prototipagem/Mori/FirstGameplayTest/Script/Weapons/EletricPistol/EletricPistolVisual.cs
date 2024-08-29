@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class EletricPistolVisual : MonoBehaviour
 {
+    public static EletricPistolVisual Instance;
+
     [SerializeField]private GameObject model;
     [Header("VFX")]
     [SerializeField]private ParticleSystem chargedParticle;
@@ -19,6 +21,10 @@ public class EletricPistolVisual : MonoBehaviour
     [SerializeField] private SoundEmitter onChargedFireSoundEmitter;
     [SerializeField] private SoundEmitter onChargingFireSoundEmitter;
 
+    private void Awake()
+    {
+        Instance = this;
+    }
     public void ToggleVisual(bool state)
     {
         model.SetActive(state);

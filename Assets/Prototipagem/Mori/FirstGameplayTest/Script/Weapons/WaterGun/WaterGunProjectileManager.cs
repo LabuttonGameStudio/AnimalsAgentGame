@@ -59,6 +59,7 @@ public class WaterGunProjectileManager : MonoBehaviour
         {
             waterPuddleInPool.Add(Instantiate(waterPuddlePrefab, projectilePoolParent.transform).GetComponent<WaterPuddle>());
             waterPuddleInPool[i].gameObject.SetActive(false);
+            waterPuddleInPool[i].gameObject.name = "WaterPuddle"+i;
         }
     }
     public void ReturnProjectileToPool(WaterGunProjectile waterGunProjectile)
@@ -109,11 +110,13 @@ public class WaterGunProjectileManager : MonoBehaviour
     private MergePuddle mergePuddle;
     public void MergePuddle(WaterPuddle puddle1, WaterPuddle puddle2)
     {
+        Debug.Log(puddle1.name +"|Size="+puddle1.realSize);
+        Debug.Log(puddle2.name +"|Size="+ puddle2.realSize);
         Vector3 middlePoint = (puddle1.transform.position + puddle2.transform.position)/2;
         puddle2.gameObject.SetActive(false);
         puddle1.transform.position = middlePoint;
-        puddle1.UpdateSize(puddle1.realSize + puddle2.realSize);
-        Debug.Log(puddle1.realSize + puddle2.realSize);
+        puddle1.UpdateSize(Mathf.Max(puddle1.realSize, puddle2.realSize));
+        puddle1.ChangeSize(puddle1.realSize+puddle2.realSize);
         ReturnPuddleToPool(puddle2);
     }
 }

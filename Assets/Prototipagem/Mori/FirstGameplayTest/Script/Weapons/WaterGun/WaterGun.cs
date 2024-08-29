@@ -44,12 +44,13 @@ public class WaterGun : Weapon
     private void LoadVisual()
     {
         visualHandler = WaterGunVisual.Instance;
+        visualHandler.ToggleVisual(false);
         firePivot = visualHandler.firePivot;
     }
 
     public override void ToggleVisual(bool state)
     {
-        //throw new NotImplementedException();
+        visualHandler.ToggleVisual(state);
     }
     public override void OnEquip(bool playAnimation)
     {
@@ -165,8 +166,7 @@ public class WaterGun : Weapon
         {
             Vector3 velocity = rb.velocity / 2;
             velocity.y = velocity.y/2;
-            //visualHandler.UpdateSprayVelocity(velocity);
-            this.bodyVelocity = velocity;
+            bodyVelocity = velocity;
             visualHandler.UpdateSprayVelocity(velocity);
             yield return new WaitForSeconds(0.05f);
         }

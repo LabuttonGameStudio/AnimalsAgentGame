@@ -46,6 +46,7 @@ public class EletricPistol : Weapon
     #region
     private void LoadVisual()
     {
+        /*
         GameObject modelPrefab;
         modelPrefab = Resources.Load<GameObject>("Prefabs/Weapons/EletricPistol");
         if (modelPrefab == null)
@@ -60,6 +61,9 @@ public class EletricPistol : Weapon
             visualHandler.ToggleVisual(false);
         }
         else Debug.LogError("Erro ao encontrar visual handler EletricPistolVisual no prefab");
+        */
+        visualHandler = EletricPistolVisual.Instance;
+        visualHandler.ToggleVisual(false);
     }
 
     public override void ToggleVisual(bool state)
@@ -83,6 +87,7 @@ public class EletricPistol : Weapon
         visualHandler.ToggleVisual(false);
     }
     #endregion
+
     //Fire
     #region
     public void StartFireCooldownTimer()

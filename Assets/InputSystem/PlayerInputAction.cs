@@ -152,6 +152,33 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Weapon0"",
+                    ""type"": ""Button"",
+                    ""id"": ""b8b070ef-4d4b-4dee-a533-05a7334d2835"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Weapon1"",
+                    ""type"": ""Button"",
+                    ""id"": ""a76c2788-64a8-41e8-8394-a2654bc88b4d"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Weapon2"",
+                    ""type"": ""Button"",
+                    ""id"": ""03fe1c12-c5e8-41ce-922d-17f25221f061"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -484,6 +511,39 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
                     ""action"": ""Melee"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0c6d5fba-9d00-41c7-8148-ed3e44211345"",
+                    ""path"": ""<Keyboard>/1"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Weapon0"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f169ac41-bb82-46b7-83de-ff8252ec3df5"",
+                    ""path"": ""<Keyboard>/2"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Weapon1"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a26eb02f-cbb1-4e76-a2df-bc50cfda566a"",
+                    ""path"": ""<Keyboard>/3"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Weapon2"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -506,6 +566,9 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
         m_Armadillo_Pause = m_Armadillo.FindAction("Pause", throwIfNotFound: true);
         m_Armadillo_Debug_Reset = m_Armadillo.FindAction("Debug_Reset", throwIfNotFound: true);
         m_Armadillo_Melee = m_Armadillo.FindAction("Melee", throwIfNotFound: true);
+        m_Armadillo_Weapon0 = m_Armadillo.FindAction("Weapon0", throwIfNotFound: true);
+        m_Armadillo_Weapon1 = m_Armadillo.FindAction("Weapon1", throwIfNotFound: true);
+        m_Armadillo_Weapon2 = m_Armadillo.FindAction("Weapon2", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -581,6 +644,9 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
     private readonly InputAction m_Armadillo_Pause;
     private readonly InputAction m_Armadillo_Debug_Reset;
     private readonly InputAction m_Armadillo_Melee;
+    private readonly InputAction m_Armadillo_Weapon0;
+    private readonly InputAction m_Armadillo_Weapon1;
+    private readonly InputAction m_Armadillo_Weapon2;
     public struct ArmadilloActions
     {
         private @PlayerInputAction m_Wrapper;
@@ -599,6 +665,9 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
         public InputAction @Pause => m_Wrapper.m_Armadillo_Pause;
         public InputAction @Debug_Reset => m_Wrapper.m_Armadillo_Debug_Reset;
         public InputAction @Melee => m_Wrapper.m_Armadillo_Melee;
+        public InputAction @Weapon0 => m_Wrapper.m_Armadillo_Weapon0;
+        public InputAction @Weapon1 => m_Wrapper.m_Armadillo_Weapon1;
+        public InputAction @Weapon2 => m_Wrapper.m_Armadillo_Weapon2;
         public InputActionMap Get() { return m_Wrapper.m_Armadillo; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -650,6 +719,15 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
             @Melee.started += instance.OnMelee;
             @Melee.performed += instance.OnMelee;
             @Melee.canceled += instance.OnMelee;
+            @Weapon0.started += instance.OnWeapon0;
+            @Weapon0.performed += instance.OnWeapon0;
+            @Weapon0.canceled += instance.OnWeapon0;
+            @Weapon1.started += instance.OnWeapon1;
+            @Weapon1.performed += instance.OnWeapon1;
+            @Weapon1.canceled += instance.OnWeapon1;
+            @Weapon2.started += instance.OnWeapon2;
+            @Weapon2.performed += instance.OnWeapon2;
+            @Weapon2.canceled += instance.OnWeapon2;
         }
 
         private void UnregisterCallbacks(IArmadilloActions instance)
@@ -696,6 +774,15 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
             @Melee.started -= instance.OnMelee;
             @Melee.performed -= instance.OnMelee;
             @Melee.canceled -= instance.OnMelee;
+            @Weapon0.started -= instance.OnWeapon0;
+            @Weapon0.performed -= instance.OnWeapon0;
+            @Weapon0.canceled -= instance.OnWeapon0;
+            @Weapon1.started -= instance.OnWeapon1;
+            @Weapon1.performed -= instance.OnWeapon1;
+            @Weapon1.canceled -= instance.OnWeapon1;
+            @Weapon2.started -= instance.OnWeapon2;
+            @Weapon2.performed -= instance.OnWeapon2;
+            @Weapon2.canceled -= instance.OnWeapon2;
         }
 
         public void RemoveCallbacks(IArmadilloActions instance)
@@ -729,5 +816,8 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
         void OnPause(InputAction.CallbackContext context);
         void OnDebug_Reset(InputAction.CallbackContext context);
         void OnMelee(InputAction.CallbackContext context);
+        void OnWeapon0(InputAction.CallbackContext context);
+        void OnWeapon1(InputAction.CallbackContext context);
+        void OnWeapon2(InputAction.CallbackContext context);
     }
 }
