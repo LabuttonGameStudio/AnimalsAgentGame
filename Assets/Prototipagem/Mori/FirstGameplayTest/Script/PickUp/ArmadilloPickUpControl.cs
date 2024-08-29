@@ -153,13 +153,13 @@ public class ArmadilloPickUpControl : MonoBehaviour
                     collider.material = holdObjectPhysicMaterial;
                 }
 
-                objectRb.freezeRotation = true;
                 objectDefaultDrag = objectRb.drag;
                 objectDefaultConstraints = objectRb.constraints;
                 objectDefaultInterpolation = objectRb.interpolation;
                 objectDefaultCollisionDetectionMode = objectRb.collisionDetectionMode;
                 objectDefaultFreezeRotation = objectRb.freezeRotation;
 
+                objectRb.freezeRotation = true;
                 objectRb.drag = 10;
                 objectRb.useGravity = false;
                 objectRb.interpolation = RigidbodyInterpolation.Extrapolate;
