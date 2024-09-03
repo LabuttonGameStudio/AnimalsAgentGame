@@ -64,7 +64,8 @@ public class ArmadilloWeaponControl : MonoBehaviour
     public void Melee(InputAction.CallbackContext performed)
     {
         if (meleeIsOnCooldown) return;
-        Debug.Log("Melee");
+        ToggleArms(false);
+        ToggleWeapon(false,false);
         meleeHitbox.Hit(meleeDamage, meleeStabModifier);
         StartMeleeColldownTimer();
     }
@@ -81,17 +82,19 @@ public class ArmadilloWeaponControl : MonoBehaviour
         yield return new WaitForSeconds(meleeCooldown);
         meleeIsOnCooldown = false;
         meleeCooldownTimer_Ref = null;
+        ToggleWeapon(true,false);
+        ToggleArms(true);
     }
     #endregion
 
     #region Inputs
     public void EquipSlot0Weapon(InputAction.CallbackContext performed)
     {
-        ChangeWeapon(0,false);
+        if(!isGunPocketed && ArmadilloPlayerController.Instance.canSwitchWeapon) ChangeWeapon(0,false);
     }
     public void EquipSlot1Weapon(InputAction.CallbackContext performed)
     {
-        ChangeWeapon(1,false);
+        if (!isGunPocketed && ArmadilloPlayerController.Instance.canSwitchWeapon) ChangeWeapon(1,false);
     }
     public void EquipSlot2Weapon(InputAction.CallbackContext performed)
     {
@@ -121,21 +124,6 @@ public class ArmadilloWeaponControl : MonoBehaviour
          ChangeWeapon(1, true);
         ArmadilloPlayerController.Instance.inputControl.inputAction.Armadillo.Weapon1.Enable();
         ArmadilloPlayerController.Instance.inputControl.inputAction.Armadillo.Weapon1.performed += EquipSlot1Weapon;
-    }
-    public GameObject LoadModel(GameObject model, Vector3 position, Quaternion rotation)
-    {
-        GameObject objectInstantiated = Instantiate(model, weaponCamera.transform);
-        objectInstantiated.transform.localPosition = position;
-        objectInstantiated.transform.localRotation = rotation;
-        return objectInstantiated;
-    }
-    public GameObject LoadModel(GameObject model, Transform transform)
-    {
-        GameObject objectInstantiated = Instantiate(model, weaponCamera.transform);
-        objectInstantiated.transform.position = transform.position;
-        objectInstantiated.transform.rotation = transform.rotation;
-        objectInstantiated.transform.parent = transform.parent;
-        return objectInstantiated;
     }
     private enum DelegateType
     {
@@ -203,13 +191,15 @@ public class ArmadilloWeaponControl : MonoBehaviour
                 weaponsInInventory[currentWeaponID].OnUnequip();
             }
             else weaponsInInventory[currentWeaponID].ToggleVisual(false);
-
+            weaponsInInventory[currentWeaponID].ResetGun();
             currentWeaponID = -1;
+            
             return;
         }
         if (currentWeaponID != -1)
         {
             //Remove current weapon
+            weaponsInInventory[currentWeaponID].ResetGun();
             DefineDelegates(playerInput, DelegateType.Remove, currentWeaponID);
             weaponsInInventory[currentWeaponID].ToggleVisual(false);
         }

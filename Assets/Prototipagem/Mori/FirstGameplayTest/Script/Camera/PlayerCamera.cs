@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Cinemachine;
+using UnityEngine.InputSystem;
 
 public class PlayerCamera : MonoBehaviour
 {
@@ -37,8 +38,8 @@ public class PlayerCamera : MonoBehaviour
     public CameraThirdPersonState thirdPersonCameraState;
 
     [Space, Header("Cinemachine")]
-    public CinemachineVirtualCamera thirdPersonCinemachine;
     public CinemachineVirtualCamera firstPersonCinemachine;
+    public CinemachineVirtualCamera thirdPersonCinemachine;
 
 
     public void ChangeCameraState(CameraBaseState nextState)
@@ -70,6 +71,8 @@ public class PlayerCamera : MonoBehaviour
         //Define o estado padrao da camera para primeira pessoa
         mainCamera.cullingMask = firstPersonMask;
         ChangeCameraState(firstPersonCameraState);
+
+        ChangeSensibility(Vector2.zero);
     }
 
     public Vector2 GetMouseDelta()
@@ -87,6 +90,24 @@ public class PlayerCamera : MonoBehaviour
     }
     public void ToggleCullingMask(bool state)
     {
-        mainCamera.cullingMask = state? firstPersonMask: thirdPersonMask;
+        mainCamera.cullingMask = state ? firstPersonMask : thirdPersonMask;
+    }
+    public void ChangeSensibility(Vector2 sensibility)
+    {
+        return;
+        firstPersonSensibility = sensibility;
+        thirdPersonSensibility = sensibility;
+
+        InputAction inputAction = ArmadilloPlayerController.Instance.inputControl.inputAction.Armadillo.Look;
+        inputAction.ApplyBindingOverride(new InputBinding
+        {
+            overrideProcessors = "ScaleVector2Processor(x=" + sensibility.x + ", y=" + sensibility.y + ")"
+        });
+    }
+    public void ChangeCurrentSpeedModifier(float newValue)
+    {
+        currentSpeedModifier = newValue;
+        ArmadilloPlayerController.Instance.inputControl.inputAction.Armadillo.Look.ApplyParameterOverride("scaleVector2:x", firstPersonSensibility.x * currentSpeedModifier);
+        ArmadilloPlayerController.Instance.inputControl.inputAction.Armadillo.Look.ApplyParameterOverride("scaleVector2:y", firstPersonSensibility.y * currentSpeedModifier);
     }
 }

@@ -55,7 +55,7 @@ SphereCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Radius: 0.5
+  m_Radius: 0.25
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!54 &3198483639084575515
 Rigidbody:
@@ -97,8 +97,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rb: {fileID: 0}
+  playerPos: {x: 0, y: 0, z: 0}
   duration: 0
   timer: 0
+  bulletDamage: 0
 --- !u!33 &2733497922220404145
 MeshFilter:
   m_ObjectHideFlags: 0

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
 using static WeaponData;
+using static ArmadilloPlayerController;
+
 public class ArmadilloVisualControl : MonoBehaviour
 {
     public static readonly float crossFadeTime = 0.2f;
@@ -12,43 +14,8 @@ public class ArmadilloVisualControl : MonoBehaviour
         TP
     }
     [SerializeField] private CameraMode m_CameraMode;
-    private enum FPModeLayer0
-    {
-        Idle,
-        Walking,
-        Sprinting,
-        Lurking
-    }
-    [SerializeField] private FPModeLayer0 fp_Layer0;
     private bool isClimbing;
-    private enum FPModeLayer1
-    {
-        Null,
-        ZapGun,
-        WaterGun,
-        PendriveGun,
-    }
-    [SerializeField] private FPModeLayer1 fp_Layer1;
 
-    private enum FPModeLayer2
-    {
-        Null,
-        Hold,
-        Interact,
-        Sonar,
-        Melee,
-        LedgeGrab
-    }
-
-    [SerializeField] private FPModeLayer2 fp_Layer2;
-
-    private enum FPModeLayer99
-    {
-        Null, Pause
-    }
-    [SerializeField] private FPModeLayer99 fp_Layer99;
-
-    [SerializeField] private int currentLayer = 1;
     private bool hasGunEquiped;
     [Header("Default")]
     [SerializeField] private SkinnedMeshRenderer modelRenderer;
@@ -153,45 +120,26 @@ public class ArmadilloVisualControl : MonoBehaviour
     }
     #endregion
 
-    #region FP Layer
-    private void ChangeCurrentLayer(int newLayerInt)
+    #region Action Layers Animator
+    public void ChangeCurrentLayer(int newLayerInt)
     {
-        if (currentLayer == newLayerInt+1) return;
+        Debug.Log(ArmadilloPlayerController.Instance.currentLayer + 1);
         if (crossFadeLayers_Ref != null)
         {
             StopCoroutine(crossFadeLayers_Ref.crossFadeCoroutine);
             fpAnimator.SetLayerWeight(crossFadeLayers_Ref.previousLayer, 0);
             fpAnimator.SetLayerWeight(crossFadeLayers_Ref.newLayer, 1);
-            currentLayer = crossFadeLayers_Ref.newLayer;
             crossFadeLayers_Ref = null;
         }
         crossFadeLayers_Ref = new CrossFadeLayer();
-        crossFadeLayers_Ref.previousLayer = currentLayer;
+        crossFadeLayers_Ref.previousLayer = ArmadilloPlayerController.Instance.currentLayer+1;
         crossFadeLayers_Ref.newLayer = newLayerInt + 1;
         crossFadeLayers_Ref.transitionAmount = 0;
         crossFadeLayers_Ref.crossFadeCoroutine = StartCoroutine(CrossFadeLayers_Coroutine(crossFadeTime));
     }
-    private void ChangeCurrentLayer(int newLayerInt, float crossFadeDuration)
-    {
-        if (currentLayer == newLayerInt+1) return;
-        if (crossFadeLayers_Ref != null)
-        {
-            StopCoroutine(crossFadeLayers_Ref.crossFadeCoroutine);
-            fpAnimator.SetLayerWeight(crossFadeLayers_Ref.previousLayer, 0);
-            fpAnimator.SetLayerWeight(crossFadeLayers_Ref.newLayer, 1);
-            currentLayer = crossFadeLayers_Ref.newLayer;
-            crossFadeLayers_Ref = null;
-        }
-        crossFadeLayers_Ref = new CrossFadeLayer();
-        crossFadeLayers_Ref.previousLayer = currentLayer;
-        crossFadeLayers_Ref.newLayer = newLayerInt + 1;
-        crossFadeLayers_Ref.transitionAmount = 0;
-        crossFadeLayers_Ref.crossFadeCoroutine = StartCoroutine(CrossFadeLayers_Coroutine(crossFadeDuration));
-    }
     private CrossFadeLayer crossFadeLayers_Ref;
     private IEnumerator CrossFadeLayers_Coroutine(float crossFadeDuration)
     {
-        OnLayerLeave(crossFadeLayers_Ref.previousLayer-1);
         float timer = 0;
         while (timer <= crossFadeDuration)
         {
@@ -203,149 +151,34 @@ public class ArmadilloVisualControl : MonoBehaviour
         }
         fpAnimator.SetLayerWeight(crossFadeLayers_Ref.previousLayer, 0);
         fpAnimator.SetLayerWeight(crossFadeLayers_Ref.newLayer, 1);
-        currentLayer = crossFadeLayers_Ref.newLayer;
-    }
-    public int CheckCurrentFPLayer()
-    {
-        if (fp_Layer99 != FPModeLayer99.Null) return 3;
-        if (fp_Layer2 != FPModeLayer2.Null) return 2;
-        if (fp_Layer1 != FPModeLayer1.Null) return 1;
-        return 0;
-    }
-    public bool CheckIfActionsIsPossible(int actionLayer)
-    {
-        int currentLayer = CheckCurrentFPLayer();
-        return actionLayer >= currentLayer;
-    }
-
-    private void OnLayer2AnimationCancel()
-    {
-        switch (fp_Layer2)
-        {
-            case FPModeLayer2.Hold:
-                break;
-        }
-    }
-    private void ResetLayer1()
-    {
-        fp_Layer1 = FPModeLayer1.Null;
-        int activeLayer = CheckCurrentFPLayer();
-        if (activeLayer != currentLayer)
-        {
-            ChangeCurrentLayer(activeLayer);
-            switch (activeLayer)
-            {
-                case 0:
-                    OnReEnterLayer0();
-                    break;
-            }
-        }
-    }
-    private void ResetLayer2()
-    {
-        fp_Layer2 = FPModeLayer2.Null;
-        int activeLayer = CheckCurrentFPLayer();
-        if (activeLayer != currentLayer)
-        {
-            ChangeCurrentLayer(activeLayer);
-            switch (activeLayer)
-            {
-                case 0:
-                    OnReEnterLayer0();
-                    break;
-                case 1:
-                    OnReEnterLayer1();
-                    break;
-
-            }
-        }
-    }
-    private void ResetLayer99()
-    {
-        fp_Layer99 = FPModeLayer99.Null;
-        int activeLayer = CheckCurrentFPLayer();
-        if (activeLayer != currentLayer)
-        {
-            ChangeCurrentLayer(activeLayer);
-            switch (activeLayer)
-            {
-                case 0:
-                    OnReEnterLayer0();
-                    break;
-                case 1:
-                    OnReEnterLayer1();
-                    break;
-                case 2:
-                    OnReEnterLayer2();
-                    break;
-
-            }
-        }
-    }
-    private void OnReEnterLayer0()
-    {
-
-    }
-    private void OnReEnterLayer1()
-    {
-        switch (fp_Layer1)
-        {
-            case FPModeLayer1.ZapGun:
-                ArmadilloPlayerController.Instance.weaponControl.ToggleWeapon(true, false);
-                EquipEletricPistol();
-                break;
-        }
-    }
-    private void OnReEnterLayer2()
-    {
-        switch (fp_Layer2)
-        {
-
-        }
-    }
-
-    private void OnLayerLeave(int layer)
-    {
-        switch (layer)
-        {
-            case 1:
-                switch (fp_Layer1)
-                {
-                    case FPModeLayer1.ZapGun:
-                        ArmadilloPlayerController.Instance.weaponControl.ResetAllCurrentWeapons();
-                        break;
-                }
-                break;
-            case 2:
-                break;
-        }
     }
     #endregion
 
     #region LedgeGrab & Climb
     public void OnLedgeGrab()
     {
-        if (CheckIfActionsIsPossible(2))
-        {
-            ArmadilloPlayerController.Instance.weaponControl.ToggleWeapon(false, false);
-            ChangeCurrentLayer(2, 0.05f);
-            fp_Layer2 = FPModeLayer2.LedgeGrab;
-            if (ledgeGrabTimer_Ref != null) StopCoroutine(ledgeGrabTimer_Ref);
-            ledgeGrabTimer_Ref = StartCoroutine(LedgeGrabTimer_Coroutine());
-        }
+        ArmadilloPlayerController.Instance.ChangeCurrentActionLayer(2,(int)FPModeLayer2.LedgeGrab);
+        if (ledgeGrabTimer_Ref != null) StopCoroutine(ledgeGrabTimer_Ref);
+        ledgeGrabTimer_Ref = StartCoroutine(LedgeGrabTimer_Coroutine());
     }
     private Coroutine ledgeGrabTimer_Ref;
     public IEnumerator LedgeGrabTimer_Coroutine()
     {
         fpAnimator.CrossFade("TatuMoveLedgeGrab", 0.02f);
         yield return new WaitForSeconds(0.02f);
-        yield return new WaitForSeconds(0.531f*2f);
-        ResetLayer2();
+        yield return new WaitForSeconds(0.531f * 2f);
+        if (ArmadilloPlayerController.Instance.fp_Layer2 == FPModeLayer2.LedgeGrab)
+        {
+            ArmadilloPlayerController.Instance.ChangeCurrentActionLayer(2, (int)FPModeLayer2.Null);
+            ArmadilloPlayerController.Instance.UpdateCurrentLayer();
+        }
         ledgeGrabTimer_Ref = null;
+        ArmadilloPlayerController.Instance.canSwitchWeapon = true;
     }
     public void OnStartClimbing()
     {
         isClimbing = true;
+        ArmadilloPlayerController.Instance.ChangeCurrentActionLayer(2, (int)FPModeLayer2.Climb);
         fpAnimator.SetBool("isSneaking", false);
         fpAnimator.SetBool("isRunning", false);
     }
@@ -361,7 +194,9 @@ public class ArmadilloVisualControl : MonoBehaviour
         isClimbing = false;
         ArmadilloPlayerController.Instance.weaponControl.ToggleArms(true);
         ArmadilloPlayerController.Instance.weaponControl.ToggleWeapon(true, false);
-        switch (fp_Layer0)
+        ArmadilloPlayerController.Instance.ChangeCurrentActionLayer(2, (int)FPModeLayer2.Null);
+        ArmadilloPlayerController.Instance.UpdateCurrentLayer();
+        switch (ArmadilloPlayerController.Instance.fp_Layer0)
         {
             case FPModeLayer0.Sprinting:
                 ToggleRun(true);
@@ -376,17 +211,17 @@ public class ArmadilloVisualControl : MonoBehaviour
     #region Sprint
     public void OnSprintStart()
     {
-        if (fp_Layer0 == FPModeLayer0.Lurking)
+        if (ArmadilloPlayerController.Instance.fp_Layer0 == FPModeLayer0.Lurking)
         {
             ToggleLurking(false);
         }
-        fp_Layer0 = FPModeLayer0.Sprinting;
+        ArmadilloPlayerController.Instance.fp_Layer0 = FPModeLayer0.Sprinting;
         ToggleRun(true);
 
     }
     public void OnSprintStop()
     {
-        if (fp_Layer0 == FPModeLayer0.Sprinting) fp_Layer0 = FPModeLayer0.Walking;
+        if (ArmadilloPlayerController.Instance.fp_Layer0 == FPModeLayer0.Sprinting) ArmadilloPlayerController.Instance.fp_Layer0 = FPModeLayer0.Walking;
         ToggleRun(false);
     }
     private void ToggleRun(bool state)
@@ -399,16 +234,16 @@ public class ArmadilloVisualControl : MonoBehaviour
     #region Lurk
     public void OnLurkStart()
     {
-        if (fp_Layer0 == FPModeLayer0.Sprinting)
+        if (ArmadilloPlayerController.Instance.fp_Layer0 == FPModeLayer0.Sprinting)
         {
             ToggleRun(false);
         }
-        fp_Layer0 = FPModeLayer0.Lurking;
+        ArmadilloPlayerController.Instance.fp_Layer0 = FPModeLayer0.Lurking;
         ToggleLurking(true);
     }
     public void OnLurkStop()
     {
-        if (fp_Layer0 == FPModeLayer0.Lurking) fp_Layer0 = FPModeLayer0.Walking;
+        if (ArmadilloPlayerController.Instance.fp_Layer0 == FPModeLayer0.Lurking) ArmadilloPlayerController.Instance.fp_Layer0 = FPModeLayer0.Walking;
         ToggleLurking(false);
     }
     private void ToggleLurking(bool state)
@@ -422,24 +257,16 @@ public class ArmadilloVisualControl : MonoBehaviour
     //Layer 2
     public void OnSonar()
     {
-        if (CheckIfActionsIsPossible(2))
-        {
-            ArmadilloPlayerController.Instance.weaponControl.ToggleWeapon(false, false);
-            fpAnimator.CrossFade("TatuSkillSonar", crossFadeTime);
-
-            OnLayer2AnimationCancel();
-            ChangeCurrentLayer(2);
-            fp_Layer2 = FPModeLayer2.Sonar;
-
-            StartCoroutine(OnSonarAnimEnd_Coroutine(crossFadeTime * 2 + 0.75f));
-        }
+        fpAnimator.CrossFade("TatuSkillSonar", crossFadeTime);
+        StartCoroutine(OnSonarAnimEnd_Coroutine(crossFadeTime * 2 + 0.75f));
     }
     private IEnumerator OnSonarAnimEnd_Coroutine(float duration)
     {
         yield return new WaitForSeconds(duration);
-        if (fp_Layer2 == FPModeLayer2.Sonar)
+        if (ArmadilloPlayerController.Instance.fp_Layer2 == FPModeLayer2.Sonar)
         {
-            ResetLayer2();
+            ArmadilloPlayerController.Instance.ChangeCurrentActionLayer(2, (int)FPModeLayer2.Null);
+            ArmadilloPlayerController.Instance.UpdateCurrentLayer();
         }
     }
     #endregion
@@ -447,16 +274,15 @@ public class ArmadilloVisualControl : MonoBehaviour
     #region Pause
     public void OnPause()
     {
+        ArmadilloPlayerController.Instance.ChangeCurrentActionLayer(3, (int)FPModeLayer3.Pause);
         fpAnimator.CrossFade("TatuPauseIdle", crossFadeTime);
-        ChangeCurrentLayer(3);
-        fp_Layer99 = FPModeLayer99.Pause;
     }
 
     public void ReturnPause()
     {
         fpAnimator.CrossFade("Idle", crossFadeTime);
-        fp_Layer99 = FPModeLayer99.Null;
-        ResetLayer99();
+        ArmadilloPlayerController.Instance.ChangeCurrentActionLayer(3, (int)FPModeLayer3.Null);
+        ArmadilloPlayerController.Instance.UpdateCurrentLayer();
     }
     #endregion
 
@@ -484,21 +310,21 @@ public class ArmadilloVisualControl : MonoBehaviour
     }
     public void OnGunEquiped(WeaponType weaponType)
     {
-        if (CheckIfActionsIsPossible(1))
+        switch (weaponType)
         {
-            switch (weaponType)
-            {
-                case WeaponType.Zapgun:
-                    fp_Layer1 = FPModeLayer1.ZapGun;
-                    break;
-                case WeaponType.Watergun:
-                    fp_Layer1 = FPModeLayer1.WaterGun;
-                    break;
-                case WeaponType.Pendrivegun:
-                    fp_Layer1 = FPModeLayer1.PendriveGun;
-                    break;
-            }
-            ChangeCurrentLayer(1);
+            case WeaponType.Zapgun:
+                ArmadilloPlayerController.Instance.fp_Layer1 = FPModeLayer1.ZapGun;
+                break;
+            case WeaponType.Watergun:
+                ArmadilloPlayerController.Instance.fp_Layer1 = FPModeLayer1.WaterGun;
+                break;
+            case WeaponType.Pendrivegun:
+                ArmadilloPlayerController.Instance.fp_Layer1 = FPModeLayer1.PendriveGun;
+                break;
+        }
+        if (ArmadilloPlayerController.Instance.CheckIfActionIsPossible(1))
+        {
+            ArmadilloPlayerController.Instance.ChangeCurrentActionLayer(1, (int)ArmadilloPlayerController.Instance.fp_Layer1);
         }
     }
 
@@ -547,7 +373,7 @@ public class ArmadilloVisualControl : MonoBehaviour
     }
     public void ToggleOnFireWaterGun(bool state)
     {
-        fpAnimator.SetBool("waterGunIsFiring",state);
+        fpAnimator.SetBool("waterGunIsFiring", state);
     }
     #endregion
     #endregion

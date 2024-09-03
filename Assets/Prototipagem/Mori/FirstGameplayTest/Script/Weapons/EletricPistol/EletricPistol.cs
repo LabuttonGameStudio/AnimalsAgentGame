@@ -340,7 +340,6 @@ public class EletricPistol : Weapon
     #region
     public override void ResetGun()
     {
-        Debug.Log("Reset");
         visualHandler.ResetVisuals();
         if (holdOrPressTimerRef != null)
         {

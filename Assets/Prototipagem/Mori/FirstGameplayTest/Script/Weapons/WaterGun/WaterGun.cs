@@ -31,6 +31,7 @@ public class WaterGun : Weapon
     private Transform firePivot;
 
     //Tiro normal
+    private float bulletDamage = 10;
     private Vector3 bodyVelocity;
     readonly private float fireDelay = 0.33f;
     private bool isOnCooldown;
@@ -154,6 +155,8 @@ public class WaterGun : Weapon
         manager.watergunProjectileInGame.Add(waterGunProjectile);
         waterGunProjectile.transform.position = position;
         waterGunProjectile.duration = 1.25f;
+        waterGunProjectile.bulletDamage = bulletDamage;
+        waterGunProjectile.playerPos = weaponControl.transform.position;
         waterGunProjectile.gameObject.SetActive(true);
         waterGunProjectile.rb.velocity = direction * manager.velocity + bodyVelocity;
     }
@@ -232,7 +235,7 @@ public class WaterGun : Weapon
     #region Reset
     public override void ResetGun()
     {
-        Debug.Log("Reset");
+        ToggleFire(false);
         visualHandler.ResetVisuals();
     }
     #endregion

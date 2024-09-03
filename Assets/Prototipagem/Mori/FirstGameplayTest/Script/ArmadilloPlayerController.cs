@@ -6,14 +6,6 @@ using UnityEngine.InputSystem.XInput;
 using UnityEngine.InputSystem;
 using System.Linq;
 using UnityEngine.Rendering.Universal;
-public class ArmadilloForms
-{
-    public enum ArmadilloForm
-    {
-        Default = 0,
-        Ball = 1
-    }
-}
 
 public class ArmadilloPlayerController : MonoBehaviour
 {
@@ -28,7 +20,8 @@ public class ArmadilloPlayerController : MonoBehaviour
     }
     public Form currentForm;
 
-    //Armadillo Components
+    //-----Armadillo Components-----
+    #region Armadillo Components Variables
     [System.NonSerialized] public ArmadilloPlayerInputController inputControl;
     [System.NonSerialized] public ArmadilloMovementController movementControl;
     [System.NonSerialized] public PlayerCamera cameraControl;
@@ -39,35 +32,85 @@ public class ArmadilloPlayerController : MonoBehaviour
     [System.NonSerialized] public ArmadilloVisualControl visualControl;
     [System.NonSerialized] public ArmadilloAudioControl audioControl;
     [System.NonSerialized] public ArmadilloLOSControl losControl;
+    #endregion
 
-    //Player Forms
+    //-----Player Forms-----
+    #region Player Forms Variables
     [Header("Default Form")]
     [SerializeField] public Collider[] playerCollider_Default;
     [Header("Ball Form")]
     [SerializeField] public Collider[] playerCollider_Ball;
+    #endregion
 
-    private int currentEquipedWeapon;
-    [Header("Layers")]
+    //-----Layers-----
+    #region Layer Mask Variables
+    [Header("Layer Mask")]
     public LayerMask enemyLayer;
     public LayerMask interactiveLayer;
     public LayerMask pickableLayer;
     public LayerMask climbableLayer;
+    #endregion
 
+    //-----Sonar Ability-----
+    #region Sonar Ability Variables
     [Header("Sonar Ability")]
-
-    [SerializeField] private Camera sonarCamera;
-
     private bool isSonarActive;
+    [SerializeField] private Camera sonarCamera;
     [SerializeField] private float sonarDuration;
     [SerializeField] private float sonarStartLerpDuration;
     [SerializeField] private float sonarRange;
-
-
     [SerializeField] private DecalProjector[] sonarDecal;
+    #endregion
 
+    [HideInInspector] public bool canSwitchWeapon;
+
+    //----- Action Layers -----
+    #region Action Layers Variables
+    public enum FPModeLayer0
+    {
+        Idle,
+        Walking,
+        Sprinting,
+        Lurking
+    }
+    public FPModeLayer0 fp_Layer0;
+
+    public enum FPModeLayer1
+    {
+        Null,
+        ZapGun,
+        WaterGun,
+        PendriveGun,
+    }
+    public FPModeLayer1 fp_Layer1;
+
+    public enum FPModeLayer2
+    {
+        Null,
+        Hold,
+        Interact,
+        Sonar,
+        Melee,
+        LedgeGrab,
+        Climb
+    }
+    public FPModeLayer2 fp_Layer2;
+
+    public enum FPModeLayer3
+    {
+        Null,
+        Pause
+    }
+    public FPModeLayer3 fp_Layer3;
+
+    public int currentLayer;
+     public int currentAction;
+
+    #endregion
 
     private void Awake()
     {
+        canSwitchWeapon = true;
         Instance = this;
         #region Assign Components
         inputControl = GetComponent<ArmadilloPlayerInputController>();
@@ -89,13 +132,10 @@ public class ArmadilloPlayerController : MonoBehaviour
         if (startWithChangeFormAbility) UnlockChangeFormAbility();
         if (startWithSonarAbility) UnlockSonarAbility();
     }
-    private void OnDrawGizmos()
+    public void TeleportPlayer(Transform transform)
     {
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(transform.position, sonarRange);
-    }
-    private void OnValidate()
-    {
+        gameObject.transform.position = transform.position;
+        movementControl.rb.MovePosition(transform.position);
     }
     public void TogglePlayerControls(bool state)
     {
@@ -103,7 +143,7 @@ public class ArmadilloPlayerController : MonoBehaviour
     }
     public void TogglePlayerOnDialogue(bool state)
     {
-        if(state)
+        if (state)
         {
             Time.timeScale = 1;
         }
@@ -117,6 +157,8 @@ public class ArmadilloPlayerController : MonoBehaviour
         return 1;
     }
 
+    //-----Change Form Functions-----
+    #region Change Form Functions
     public void UnlockChangeFormAbility()
     {
         inputControl.inputAction.Armadillo.Ability1.Enable();
@@ -147,9 +189,10 @@ public class ArmadilloPlayerController : MonoBehaviour
         if (changeToDefaultFormRef == null) changeToDefaultFormRef = StartCoroutine(ChangeToDefaultForm_Coroutine());
         currentForm = Form.Default;
     }
-    #region Sonar Ability
-    //------ Sonar Ability ------
+    #endregion
 
+    //------Sonar Ability------
+    #region Sonar Ability
     public void UnlockSonarAbility()
     {
         inputControl.inputAction.Armadillo.Ability2.Enable();
@@ -162,15 +205,17 @@ public class ArmadilloPlayerController : MonoBehaviour
             isSonarActive = !isSonarActive;
             if (isSonarActive && SonarAbilityVFX_Ref == null)
             {
+                if (!CheckIfActionIsPossible(2)) return;
                 visualControl.OnSonar();
                 SonarAbilityVFX_Ref = StartCoroutine(SonarAbilityVFX_Coroutine(sonarStartLerpDuration));
+                ChangeCurrentActionLayer(2, (int)FPModeLayer2.Sonar);
             }
-            SonarAbility_Ref = StartCoroutine(SonarAbility_Coroutine(isSonarActive ? 0.33f : sonarRange, isSonarActive ? sonarRange : 0.33f, sonarStartLerpDuration,isSonarActive));
+            SonarAbility_Ref = StartCoroutine(SonarAbility_Coroutine(isSonarActive ? 0.33f : sonarRange, isSonarActive ? sonarRange : 0.33f, sonarStartLerpDuration, isSonarActive));
         }
     }
 
     private Coroutine SonarAbility_Ref;
-    private IEnumerator SonarAbility_Coroutine(float startValue, float finalValue, float duration,bool toggle)
+    private IEnumerator SonarAbility_Coroutine(float startValue, float finalValue, float duration, bool toggle)
     {
         yield return new WaitForSeconds(0.55f);
         if (isSonarActive) sonarCamera.enabled = true;
@@ -224,8 +269,8 @@ public class ArmadilloPlayerController : MonoBehaviour
     }
     #endregion
 
-    #region Change forms
-    //------ Change Forms ------
+    //------Change Forms------
+    #region Change Form Coroutine
 
     private Coroutine changeToBallFormRef;
     private IEnumerator ChangeToBallForm_Coroutine()
@@ -235,7 +280,6 @@ public class ArmadilloPlayerController : MonoBehaviour
         pickUpControl.Drop();
 
         //Move a camera para terceira pessoa em 0.5 segundos 
-        currentEquipedWeapon = weaponControl.currentWeaponID;
         weaponControl.ToggleWeapon(false, false);
         cameraControl.ChangeCameraState(cameraControl.thirdPersonCameraState);
         visualControl.OnEnterBallMode();
@@ -315,6 +359,7 @@ public class ArmadilloPlayerController : MonoBehaviour
 
     #endregion
 
+    //-----Die-----
     #region Die
     //----- Die -----
     public void Die()
@@ -323,9 +368,172 @@ public class ArmadilloPlayerController : MonoBehaviour
     }
     #endregion
 
-    public void TeleportPlayer(Transform transform)
+    //-----Action Layers-----
+    #region Action Layers Functions
+    public void ChangeCurrentActionLayer(int newLayer, int newActionID)
     {
-        gameObject.transform.position = transform.position;
-        movementControl.rb.MovePosition(transform.position);
+        //Get current action and layer
+        int currentLayer = GetCurrentFPLayer();
+        int currentAction;
+        switch (currentLayer)
+        {
+            default:
+            case 0:
+                currentAction = (int)fp_Layer0;
+                break;
+            case 1:
+                currentAction = (int)fp_Layer1;
+                break;
+            case 2:
+                currentAction = (int)fp_Layer2;
+                break;
+            case 3:
+                currentAction = (int)fp_Layer3;
+                break;
+        }
+
+        //If for some whatever reason it changes to the same return
+        Debug.Log(this.currentLayer + "."+newLayer + "|"+ this.currentAction + "."+ newActionID);
+        if (this.currentLayer == newLayer && this.currentAction == newActionID) return;
+
+        //Leave current action and layer
+        OnLeaveLayer(currentLayer, currentAction);
+
+        //Change current active layer and action
+        visualControl.ChangeCurrentLayer(newLayer);
+        this.currentLayer = newLayer;
+        this.currentAction = newActionID;
+        switch (newLayer)
+        {
+            default:
+            case 0:
+                fp_Layer0 = (FPModeLayer0)newActionID;
+                break;
+            case 1:
+                fp_Layer1 = (FPModeLayer1)newActionID;
+                break;
+            case 2:
+                fp_Layer2 = (FPModeLayer2)newActionID;
+                break;
+            case 3:
+                fp_Layer3 = (FPModeLayer3)newActionID;
+                break;
+        }
+
+        //Enter new layer and action
+        OnEnterLayer(newLayer);
     }
+    public void UpdateCurrentLayer()
+    {
+        int newLayer = GetCurrentFPLayer();
+        if (currentLayer != newLayer)
+        {
+            OnLeaveLayer(currentLayer);
+            OnEnterLayer(newLayer);
+            visualControl.ChangeCurrentLayer(newLayer);
+            currentLayer = newLayer;
+        }
+    }
+    public void OnEnterLayer(int layer)
+    {
+        switch (layer)
+        {
+            case 0:
+                switch (fp_Layer0)
+                {
+
+                }
+                break;
+
+            case 1:
+                ArmadilloPlayerController.Instance.weaponControl.ToggleWeapon(true, false);
+                switch (fp_Layer1)
+                {
+                    case FPModeLayer1.ZapGun:
+                        break;
+                    case FPModeLayer1.WaterGun:
+                        break;
+                }
+                break;
+
+            case 2:
+                switch (fp_Layer2)
+                {
+
+                }
+                break;
+        }
+    }
+    public void OnLeaveLayer(int layer)
+    {
+        switch (layer)
+        {
+            case 0:
+                switch (fp_Layer0)
+                {
+
+                }
+                break;
+
+            case 1:
+                ArmadilloPlayerController.Instance.weaponControl.ToggleWeapon(false, false);
+                switch (fp_Layer1)
+                {
+                    case FPModeLayer1.ZapGun:
+                        break;
+                    case FPModeLayer1.WaterGun:
+                        break;
+                }
+                break;
+
+            case 2:
+                switch (fp_Layer2)
+                {
+
+                }
+                break;
+        }
+    }
+    public void OnLeaveLayer(int layer, int enumID)
+    {
+        switch (layer)
+        {
+            case 0:
+                switch (enumID)
+                {
+
+                }
+                break;
+
+            case 1:
+                ArmadilloPlayerController.Instance.weaponControl.ToggleWeapon(false, false);
+                switch (enumID)
+                {
+                    case (int)FPModeLayer1.ZapGun:
+                        break;
+                    case (int)FPModeLayer1.WaterGun:
+                        break;
+                }
+                break;
+
+            case 2:
+                switch (enumID)
+                {
+
+                }
+                break;
+        }
+    }
+    public int GetCurrentFPLayer()
+    {
+        if (fp_Layer3 != FPModeLayer3.Null) return 3;
+        if (fp_Layer2 != FPModeLayer2.Null) return 2;
+        if (fp_Layer1 != FPModeLayer1.Null) return 1;
+        return 0;
+    }
+    public bool CheckIfActionIsPossible(int actionLayer)
+    {
+        return currentLayer <= actionLayer;
+    }
+    #endregion
 }

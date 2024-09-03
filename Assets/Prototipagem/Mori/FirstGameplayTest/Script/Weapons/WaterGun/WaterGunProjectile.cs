@@ -1,12 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using static Damage;
 public class WaterGunProjectile : MonoBehaviour
 {
     [HideInInspector] public Rigidbody rb;
+    [HideInInspector] public Vector3 playerPos;
     [HideInInspector] public float duration;
     [HideInInspector]public float timer;
+    [HideInInspector]public float bulletDamage;
     private void FixedUpdate()
     {
         timer += Time.fixedDeltaTime;
@@ -28,9 +30,10 @@ public class WaterGunProjectile : MonoBehaviour
             DisableProjectile();
             other.GetComponent<WaterPuddle>().AddSize(1);
         }
-        else if(other.TryGetComponent(out IDamageable damageable))
+        else if(other.TryGetComponent(out IDamageable damageable) && !other.CompareTag("Player"))
         {
-
+            damageable.TakeDamage(new Damage(bulletDamage, DamageType.Water, true, playerPos));
+            DisableProjectile() ;
         }
     }
     private void DisableProjectile()

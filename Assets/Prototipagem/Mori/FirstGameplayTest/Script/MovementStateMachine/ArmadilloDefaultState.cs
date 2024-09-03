@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
-
+using static ArmadilloPlayerController;
 public class ArmadilloDefaultState : MovementState
 {
     ArmadilloMovementController movementCtrl;
@@ -90,6 +90,7 @@ public class ArmadilloDefaultState : MovementState
     }
     private void LedgeGrab()
     {
+        if (!ArmadilloPlayerController.Instance.CheckIfActionIsPossible(2)) return;
         if (movementCtrl.requireJumpInputToLedgeGrab)
         {
             if (!movementCtrl.isPressingJumpButton) return;
@@ -115,14 +116,6 @@ public class ArmadilloDefaultState : MovementState
             {
                 return;
             }
-            //RaycastHit fwdHit;
-            //Vector3 lineFwdStart = new Vector3(movementCtrl.transform.position.x, downHit.point.y - 0.1f, movementCtrl.transform.position.z);
-            //Vector3 lineFwdEnd = new Vector3(movementCtrl.transform.position.x, downHit.point.y - 0.1f, movementCtrl.transform.position.z) + movementCtrl.transform.forward;
-            //Physics.Linecast(lineFwdStart, lineFwdEnd, out fwdHit, movementCtrl.whatIsGround, QueryTriggerInteraction.Ignore);
-            //Debug.DrawLine(lineFwdStart, lineFwdEnd);
-            //if (fwdHit.collider != null)
-            //{
-
             movementCtrl.hasUsedLedgeGrab = true;
             movementCtrl.timeSinceTouchedGround = 0;
             Jump();

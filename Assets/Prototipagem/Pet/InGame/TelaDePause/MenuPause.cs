@@ -24,6 +24,8 @@ public class MenuPause : MonoBehaviour
     public Toggle UltraQualityToggle;
     public Slider sensitivitySlider;
 
+    private bool isMenuOpen;
+
     private Resolution[] resolutions = new Resolution[]
      {
         new Resolution { width = 2560, height = 1440 },
@@ -115,18 +117,14 @@ public class MenuPause : MonoBehaviour
         ArmadilloPlayerController.Instance.inputControl.inputAction.Armadillo.Pause.performed += MenuOpen;
     }
 
-
-    void Update()
-    {
-
-    }
     public void MenuOpen(InputAction.CallbackContext value)
     {
-        Cursor.visible = !Cursor.visible;
-        Cursor.lockState = Cursor.visible ? CursorLockMode.None : CursorLockMode.Locked;
+        isMenuOpen = !isMenuOpen;
+        Cursor.visible = isMenuOpen;
+        Cursor.lockState = isMenuOpen ? CursorLockMode.None : CursorLockMode.Locked;
 
-        Menu.SetActive(Cursor.visible);
-        if (!Cursor.visible)
+        Menu.SetActive(isMenuOpen);
+        if (isMenuOpen)
         {
             visualControl.OnPause();
         }
@@ -287,18 +285,15 @@ public class MenuPause : MonoBehaviour
     #endregion
 
     #region Sensibility
-    private void OnSensitivityChange(float newSensitivity)
+    public void OnSensitivityChange(float newSensitivity)
     {
-
         ApplyMouseSensitivity(newSensitivity);
-
-
         SaveSensitivitySettings(newSensitivity);
     }
 
     private void ApplyMouseSensitivity(float sensitivity)
     {
-        PlayerCamera.Instance.firstPersonSensibility = new Vector2(sensitivity, sensitivity);
+        PlayerCamera.Instance.ChangeSensibility(new Vector2(sensitivity, sensitivity));
     }
 
     private void SaveSensitivitySettings(float sensitivity)
