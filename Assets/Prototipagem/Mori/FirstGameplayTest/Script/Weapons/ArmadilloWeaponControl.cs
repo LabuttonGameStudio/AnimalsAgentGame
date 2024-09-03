@@ -111,7 +111,6 @@ public class ArmadilloWeaponControl : MonoBehaviour
         weaponsInInventory[0] = eletricPistol;
         if (isGunPocketed)
         {
-            Debug.Log("a");
             pocketedWeaponID = 0;
         }
         else ChangeWeapon(0,true);

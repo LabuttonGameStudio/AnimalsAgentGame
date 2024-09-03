@@ -393,7 +393,6 @@ public class ArmadilloPlayerController : MonoBehaviour
         }
 
         //If for some whatever reason it changes to the same return
-        Debug.Log(this.currentLayer + "."+newLayer + "|"+ this.currentAction + "."+ newActionID);
         if (this.currentLayer == newLayer && this.currentAction == newActionID) return;
 
         //Leave current action and layer

@@ -15,8 +15,6 @@ public class ArmadilloVisualControl : MonoBehaviour
     }
     [SerializeField] private CameraMode m_CameraMode;
     private bool isClimbing;
-
-    private bool hasGunEquiped;
     [Header("Default")]
     [SerializeField] private SkinnedMeshRenderer modelRenderer;
     [SerializeField] private Animator modelAnimator;
@@ -123,7 +121,6 @@ public class ArmadilloVisualControl : MonoBehaviour
     #region Action Layers Animator
     public void ChangeCurrentLayer(int newLayerInt)
     {
-        Debug.Log(ArmadilloPlayerController.Instance.currentLayer + 1);
         if (crossFadeLayers_Ref != null)
         {
             StopCoroutine(crossFadeLayers_Ref.crossFadeCoroutine);

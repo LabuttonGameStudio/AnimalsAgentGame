@@ -72,7 +72,7 @@ public class WaterPuddle : MonoBehaviour,IDamageable
         }
         else
         {
-            if (other.TryGetComponent(out IDamageable damageable))
+            if (other.TryGetComponent(out IDamageable damageable) && !damageablesInPuddle.Contains(damageable))
             {
                 damageablesInPuddle.Add(damageable);
             }
@@ -86,7 +86,7 @@ public class WaterPuddle : MonoBehaviour,IDamageable
         }
         else
         {
-            if (other.TryGetComponent(out IDamageable damageable))
+            if (other.TryGetComponent(out IDamageable damageable) && damageablesInPuddle.Contains(damageable))
             {
                 damageablesInPuddle.Remove(damageable);
             }

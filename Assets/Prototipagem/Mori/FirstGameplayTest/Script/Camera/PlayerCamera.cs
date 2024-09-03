@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using Cinemachine;
 using UnityEngine.InputSystem;
-
 public class PlayerCamera : MonoBehaviour
 {
     //Singleton
@@ -71,8 +70,6 @@ public class PlayerCamera : MonoBehaviour
         //Define o estado padrao da camera para primeira pessoa
         mainCamera.cullingMask = firstPersonMask;
         ChangeCameraState(firstPersonCameraState);
-
-        ChangeSensibility(Vector2.zero);
     }
 
     public Vector2 GetMouseDelta()
@@ -94,20 +91,22 @@ public class PlayerCamera : MonoBehaviour
     }
     public void ChangeSensibility(Vector2 sensibility)
     {
-        return;
-        firstPersonSensibility = sensibility;
-        thirdPersonSensibility = sensibility;
+        //Update variables
+        firstPersonSensibility = new Vector2(sensibility.x / 40f, sensibility.y / 40f);
+        thirdPersonSensibility = sensibility/5f;
+
+        //Apply to first person, dont need for third person because is real time
+        CinemachinePOV cinemachinePOV = firstPersonCinemachine.GetCinemachineComponent<CinemachinePOV>();
+        cinemachinePOV.m_HorizontalAxis.m_MaxSpeed = firstPersonSensibility.x* currentSpeedModifier;
+        cinemachinePOV.m_VerticalAxis.m_MaxSpeed = firstPersonSensibility.y* currentSpeedModifier;
 
         InputAction inputAction = ArmadilloPlayerController.Instance.inputControl.inputAction.Armadillo.Look;
-        inputAction.ApplyBindingOverride(new InputBinding
-        {
-            overrideProcessors = "ScaleVector2Processor(x=" + sensibility.x + ", y=" + sensibility.y + ")"
-        });
     }
     public void ChangeCurrentSpeedModifier(float newValue)
     {
         currentSpeedModifier = newValue;
-        ArmadilloPlayerController.Instance.inputControl.inputAction.Armadillo.Look.ApplyParameterOverride("scaleVector2:x", firstPersonSensibility.x * currentSpeedModifier);
-        ArmadilloPlayerController.Instance.inputControl.inputAction.Armadillo.Look.ApplyParameterOverride("scaleVector2:y", firstPersonSensibility.y * currentSpeedModifier);
+        CinemachinePOV cinemachinePOV = firstPersonCinemachine.GetCinemachineComponent<CinemachinePOV>();
+        cinemachinePOV.m_HorizontalAxis.m_MaxSpeed = firstPersonSensibility.x * currentSpeedModifier;
+        cinemachinePOV.m_VerticalAxis.m_MaxSpeed = firstPersonSensibility.y * currentSpeedModifier;
     }
 }
