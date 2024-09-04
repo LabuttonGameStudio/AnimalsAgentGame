@@ -4883,7 +4883,7 @@ MonoBehaviour:
   doesLoop: 0
   loopInterval: 0
   isOneShot: 1
-  audioRange: 15
+  audioRange: 3
   audioType: 1
 --- !u!82 &1564932312544977929
 AudioSource:
@@ -4907,7 +4907,7 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 15
+  MaxDistance: 3
   Pan2D: 0
   rolloffMode: 0
   BypassEffects: 0
@@ -19607,7 +19607,7 @@ MonoBehaviour:
   doesLoop: 0
   loopInterval: 0
   isOneShot: 1
-  audioRange: 15
+  audioRange: 3
   audioType: 1
 --- !u!82 &7660865867755546994
 AudioSource:
@@ -19631,7 +19631,7 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 15
+  MaxDistance: 3
   Pan2D: 0
   rolloffMode: 0
   BypassEffects: 0
@@ -24584,13 +24584,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6fce8103fdc55004792ec60d518bcd70, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  audioName: Pistol On Fire Audio
+  audioName: Pistol On Charge Audio
   connectedAudioSource: {fileID: 5019506541431956421}
   audioClips: []
   doesLoop: 1
   loopInterval: 0.14
   isOneShot: 0
-  audioRange: 15
+  audioRange: 5
   audioType: 0
 --- !u!82 &5019506541431956421
 AudioSource:
@@ -24614,7 +24614,7 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 15
+  MaxDistance: 5
   Pan2D: 0
   rolloffMode: 0
   BypassEffects: 0

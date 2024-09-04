@@ -28,11 +28,11 @@ public class EletricPistol : Weapon
     private bool isOnCooldown;
 
     readonly private int unchargedHitDamage = 15;
-    readonly private int unchargedOverheatCharge = 15;
+    readonly private int unchargedOverheatCharge = 25;
     //Tiro carregado
     readonly private int chargedHitDamage = 50;
     readonly private float chargeTime = 0.25f;
-    readonly private int chargedOverheatCharge = 55;
+    readonly private int chargedOverheatCharge = 100;
     //Overheat
     private bool isOverheating;
     private Image AmmoImage;

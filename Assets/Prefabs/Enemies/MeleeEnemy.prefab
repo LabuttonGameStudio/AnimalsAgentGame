@@ -176,6 +176,8 @@ VFXRenderer:
   m_ReflectionProbeUsage: 0
   m_RayTracingMode: 0
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_StaticBatchInfo:
@@ -5030,6 +5032,8 @@ ParticleSystemRenderer:
   m_ReflectionProbeUsage: 0
   m_RayTracingMode: 0
   m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
   m_RenderingLayerMask: 257
   m_RendererPriority: 0
   m_Materials:
@@ -5181,7 +5185,7 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3318343570272502816, guid: dcde3f4f780194349be6dc111d73f806, type: 3}
-      propertyPath: m_Materials.Array.data[0]
+      propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: f4e3d3bf674b7774ba8c28952f0fb146, type: 2}
     - target: {fileID: 3431224432270005878, guid: dcde3f4f780194349be6dc111d73f806, type: 3}
@@ -5189,7 +5193,7 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4801062314816812735, guid: dcde3f4f780194349be6dc111d73f806, type: 3}
-      propertyPath: m_Materials.Array.data[0]
+      propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: d0774e99845930f41a1962a6dc143f22, type: 2}
     - target: {fileID: 6114996607659024900, guid: dcde3f4f780194349be6dc111d73f806, type: 3}
@@ -5229,8 +5233,12 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 7045108425104171561}
     - target: {fileID: 6642128611854272822, guid: dcde3f4f780194349be6dc111d73f806, type: 3}
-      propertyPath: secondaryAttackDamage
+      propertyPath: primaryAttackDamage
       value: 40
+      objectReference: {fileID: 0}
+    - target: {fileID: 6642128611854272822, guid: dcde3f4f780194349be6dc111d73f806, type: 3}
+      propertyPath: secondaryAttackDamage
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 6642128611854272822, guid: dcde3f4f780194349be6dc111d73f806, type: 3}
       propertyPath: onDeathByEletricParticle

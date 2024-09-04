@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Cinemachine;
 using UnityEngine.InputSystem;
+using Unity.Collections.LowLevel.Unsafe;
 public class PlayerCamera : MonoBehaviour
 {
     //Singleton
@@ -108,5 +109,10 @@ public class PlayerCamera : MonoBehaviour
         CinemachinePOV cinemachinePOV = firstPersonCinemachine.GetCinemachineComponent<CinemachinePOV>();
         cinemachinePOV.m_HorizontalAxis.m_MaxSpeed = firstPersonSensibility.x * currentSpeedModifier;
         cinemachinePOV.m_VerticalAxis.m_MaxSpeed = firstPersonSensibility.y * currentSpeedModifier;
+    }
+    public void ToggleZoom(bool state)
+    {
+        firstPersonCinemachine.m_Lens.FieldOfView = state? 20 : 60;
+        ChangeCurrentSpeedModifier(state ? 0.33f: 1);
     }
 }

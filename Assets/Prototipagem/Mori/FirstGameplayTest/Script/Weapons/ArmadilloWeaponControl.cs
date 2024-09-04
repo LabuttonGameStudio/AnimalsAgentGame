@@ -22,6 +22,7 @@ public class ArmadilloWeaponControl : MonoBehaviour
     [SerializeField] private bool startWithMelee;
     [SerializeField] private bool startWithPistol;
     [SerializeField] private bool startWithWaterGun;
+    [SerializeField] private bool startWithPendriveSniper;
 
     [System.NonSerialized] public Weapon[] weaponsInInventory;
 
@@ -38,15 +39,16 @@ public class ArmadilloWeaponControl : MonoBehaviour
 
     EletricPistol eletricPistol;
     WaterGun waterGun;
-
+    PendriveSniper pendriveSniper;
 
     public void Start()
     {
         LoadWeapons();
-        weaponsInInventory = new Weapon[2];
-        if (startWithPistol) GivePlayerEletricPistol();
-        if(startWithWaterGun) GivePlayerWaterGun();
+        weaponsInInventory = new Weapon[3];
         if (startWithMelee) GivePlayerMelee();
+        if(startWithWaterGun) GivePlayerWaterGun();
+        if(startWithPendriveSniper) GivePlayerPendriveSniper();
+        if (startWithPistol) GivePlayerEletricPistol();
     }
     #region Melee
     [Header("Melee")]
@@ -98,14 +100,17 @@ public class ArmadilloWeaponControl : MonoBehaviour
     }
     public void EquipSlot2Weapon(InputAction.CallbackContext performed)
     {
-
+        if (!isGunPocketed && ArmadilloPlayerController.Instance.canSwitchWeapon) ChangeWeapon(2, false);
     }
     #endregion
     private void LoadWeapons()
     {
         eletricPistol = new EletricPistol(this);
         waterGun = new WaterGun(this);
+        pendriveSniper = new PendriveSniper(this);
     }
+    //----- Give Player Functions -----
+    #region Give Player Weapons 
     public void GivePlayerEletricPistol()
     {
         weaponsInInventory[0] = eletricPistol;
@@ -124,6 +129,17 @@ public class ArmadilloWeaponControl : MonoBehaviour
         ArmadilloPlayerController.Instance.inputControl.inputAction.Armadillo.Weapon1.Enable();
         ArmadilloPlayerController.Instance.inputControl.inputAction.Armadillo.Weapon1.performed += EquipSlot1Weapon;
     }
+    public void GivePlayerPendriveSniper()
+    {
+        weaponsInInventory[2] = pendriveSniper;
+        ChangeWeapon(2, true);
+        ArmadilloPlayerController.Instance.inputControl.inputAction.Armadillo.Weapon2.Enable();
+        ArmadilloPlayerController.Instance.inputControl.inputAction.Armadillo.Weapon2.performed += EquipSlot2Weapon;
+    }
+    #endregion
+
+    //----- Delegate Inputs Functions -----
+    #region Delegate Input Functions
     private enum DelegateType
     {
         Add,
@@ -174,7 +190,37 @@ public class ArmadilloWeaponControl : MonoBehaviour
         playerInput.AltFire.Disable();
         playerInput.Reload.Disable();
     }
+    #endregion
 
+
+    //----- Toggle Weapons & Arms Functions-----
+    #region Toggle Weapon & Arms Functions
+    public void ToggleWeapon(bool state,bool playAnimation)
+    {
+        if (!state)
+        {
+            if (currentWeaponID != -1)
+            {
+                isGunPocketed = true;
+                pocketedWeaponID = currentWeaponID;
+            }
+            ChangeWeapon(-1, playAnimation);
+        }
+        else
+        {
+            ChangeWeapon(pocketedWeaponID, playAnimation);
+            if(pocketedWeaponID != -1)
+            {
+                isGunPocketed = false;
+            }
+        }
+    }
+    public void ToggleArms(bool state)
+    {
+        ArmadilloPlayerController.Instance.visualControl.ToggleArmView(state);
+        if(!state)ResetAllCurrentWeapons();
+    }
+    #endregion
     public void ChangeWeapon(int nextWeapon, bool playAnimation)
     {
         PlayerInputAction.ArmadilloActions playerInput = ArmadilloPlayerController.Instance.inputControl.inputAction.Armadillo;
@@ -224,32 +270,6 @@ public class ArmadilloWeaponControl : MonoBehaviour
             DelegateDelay_Ref = StartCoroutine(DelegateDelay_Coroutine(0.2f, playerInput, DelegateType.Add, nextWeapon));
         }
 
-    }
-
-    public void ToggleWeapon(bool state,bool playAnimation)
-    {
-        if (!state)
-        {
-            if (currentWeaponID != -1)
-            {
-                isGunPocketed = true;
-                pocketedWeaponID = currentWeaponID;
-            }
-            ChangeWeapon(-1, playAnimation);
-        }
-        else
-        {
-            ChangeWeapon(pocketedWeaponID, playAnimation);
-            if(pocketedWeaponID != -1)
-            {
-                isGunPocketed = false;
-            }
-        }
-    }
-    public void ToggleArms(bool state)
-    {
-        ArmadilloPlayerController.Instance.visualControl.ToggleArmView(state);
-        if(!state)ResetAllCurrentWeapons();
     }
     public void OnGunEquip(WeaponType weaponType)
     {
