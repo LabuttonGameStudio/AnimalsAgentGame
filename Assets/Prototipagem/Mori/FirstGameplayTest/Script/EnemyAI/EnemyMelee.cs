@@ -87,7 +87,7 @@ public class EnemyMelee : IEnemy, IDamageable, ISoundReceiver
     public void TakeDamage(Damage damage)
     {
         currentHp -= damage.damageAmount;
-        if (currentHp <= 0)
+        if (currentHp <= 0 && isDead==false)
         {
             isDead = true;
             animator.transform.parent = animator.transform.parent.parent;

@@ -6,6 +6,7 @@ using UnityEngine.InputSystem.XInput;
 using UnityEngine.InputSystem;
 using System.Linq;
 using UnityEngine.Rendering.Universal;
+using UnityEngine.Rendering;
 
 public class ArmadilloPlayerController : MonoBehaviour
 {
@@ -60,6 +61,8 @@ public class ArmadilloPlayerController : MonoBehaviour
     [SerializeField] private float sonarStartLerpDuration;
     [SerializeField] private float sonarRange;
     [SerializeField] private DecalProjector[] sonarDecal;
+    [SerializeField] private CanvasGroup sonarCanvasGroup;
+    [SerializeField] private Volume sonarPostProcess;
     #endregion
 
     [HideInInspector] public bool canSwitchWeapon;
@@ -104,7 +107,7 @@ public class ArmadilloPlayerController : MonoBehaviour
     public FPModeLayer3 fp_Layer3;
 
     public int currentLayer;
-     public int currentAction;
+    public int currentAction;
 
     #endregion
 
@@ -225,6 +228,16 @@ public class ArmadilloPlayerController : MonoBehaviour
         {
 
             sonarCamera.farClipPlane = Mathf.SmoothStep(startValue, finalValue, timer / duration);
+            if (toggle)
+            {
+                sonarPostProcess.weight = Mathf.Min(1, timer * 1.25f / duration);
+                sonarCanvasGroup.alpha = Mathf.Min(1, timer * 1.25f / duration);
+            }
+            else
+            {
+                sonarPostProcess.weight = 1 - Mathf.Min(1, timer * 1.25f / duration);
+                sonarCanvasGroup.alpha = 1 - Mathf.Min(1, timer * 1.25f / duration);
+            }
             timer += 0.05f;
             yield return new WaitForSeconds(0.05f);
         }
@@ -251,6 +264,7 @@ public class ArmadilloPlayerController : MonoBehaviour
             sonarDecal[1].fadeFactor = Mathf.SmoothStep(3, 0, timer / duration);
             sonarDecal[2].fadeFactor = Mathf.SmoothStep(2.75f, 0, timer / duration);
             sonarDecal[3].fadeFactor = Mathf.SmoothStep(1.5f, 0, timer / duration);
+
 
             timer += Time.deltaTime;
             yield return null;
