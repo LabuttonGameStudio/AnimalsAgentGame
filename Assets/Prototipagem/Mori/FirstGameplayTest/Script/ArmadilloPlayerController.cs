@@ -283,7 +283,7 @@ public class ArmadilloPlayerController : MonoBehaviour
     }
     #endregion
 
-    //------Change Forms------
+    //------Change Forms Coroutines------
     #region Change Form Coroutine
 
     private Coroutine changeToBallFormRef;
@@ -292,7 +292,8 @@ public class ArmadilloPlayerController : MonoBehaviour
         //Stop CheckLOS e solta objeto
         losControl.StopLOSCheck();
         pickUpControl.Drop();
-
+        movementControl.ExitLadder();
+            
         //Move a camera para terceira pessoa em 0.5 segundos 
         weaponControl.ToggleWeapon(false, false);
         cameraControl.ChangeCameraState(cameraControl.thirdPersonCameraState);
@@ -410,12 +411,12 @@ public class ArmadilloPlayerController : MonoBehaviour
         if (this.currentLayer == newLayer && this.currentAction == newActionID) return;
 
         //Leave current action and layer
-        OnLeaveLayer(currentLayer, currentAction);
 
         //Change current active layer and action
         visualControl.ChangeCurrentLayer(newLayer);
         this.currentLayer = newLayer;
         this.currentAction = newActionID;
+        OnLeaveLayer(currentLayer, currentAction);
         switch (newLayer)
         {
             default:

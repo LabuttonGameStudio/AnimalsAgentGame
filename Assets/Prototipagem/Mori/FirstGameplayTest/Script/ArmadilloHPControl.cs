@@ -131,7 +131,7 @@ public class ArmadilloHPControl : MonoBehaviour,IDamageable
     {
         float startAlpha = DeathScreen.alpha;
         float elapsedTime = 0.0f;
-
+        ArmadilloPlayerController.Instance.cameraControl.ChangeCurrentSpeedModifier(0);
         while (elapsedTime < fadeDuration)
         {
             float newAlpha = Mathf.Lerp(startAlpha, targetAlpha, elapsedTime / fadeDuration);

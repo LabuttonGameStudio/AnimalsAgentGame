@@ -350,13 +350,16 @@ public class ArmadilloMovementController : MonoBehaviour
     }
     public void EnterLadder(Transform objectTransform, Vector3 minPosition, Vector3 maxPosition, float pipeSize)
     {
-        ArmadilloPlayerController.Instance.pickUpControl.Drop();
-        ladderState.ladderObject = objectTransform;
-        ladderState.minPosition = minPosition;
-        ladderState.maxPosition = maxPosition;
-        ladderState.pipeSize = pipeSize;
-        ChangeState(ladderState);
-        ArmadilloPlayerController.Instance.visualControl.OnClimbingStart();
+        if (ArmadilloPlayerController.Instance.CheckIfActionIsPossible(2))
+        {
+            ArmadilloPlayerController.Instance.pickUpControl.Drop();
+            ladderState.ladderObject = objectTransform;
+            ladderState.minPosition = minPosition;
+            ladderState.maxPosition = maxPosition;
+            ladderState.pipeSize = pipeSize;
+            ChangeState(ladderState);
+            ArmadilloPlayerController.Instance.visualControl.OnClimbingStart();
+        }
     }
     public void ExitLadder()
     {

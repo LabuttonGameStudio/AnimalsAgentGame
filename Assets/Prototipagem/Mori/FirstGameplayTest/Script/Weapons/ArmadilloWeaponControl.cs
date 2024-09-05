@@ -46,8 +46,8 @@ public class ArmadilloWeaponControl : MonoBehaviour
         LoadWeapons();
         weaponsInInventory = new Weapon[3];
         if (startWithMelee) GivePlayerMelee();
-        if(startWithWaterGun) GivePlayerWaterGun();
-        if(startWithPendriveSniper) GivePlayerPendriveSniper();
+        if (startWithWaterGun) GivePlayerWaterGun();
+        if (startWithPendriveSniper) GivePlayerPendriveSniper();
         if (startWithPistol) GivePlayerEletricPistol();
     }
     #region Melee
@@ -67,7 +67,7 @@ public class ArmadilloWeaponControl : MonoBehaviour
     {
         if (meleeIsOnCooldown) return;
         ToggleArms(false);
-        ToggleWeapon(false,false);
+        ToggleWeapon(false, false);
         meleeHitbox.Hit(meleeDamage, meleeStabModifier);
         StartMeleeColldownTimer();
     }
@@ -84,7 +84,7 @@ public class ArmadilloWeaponControl : MonoBehaviour
         yield return new WaitForSeconds(meleeCooldown);
         meleeIsOnCooldown = false;
         meleeCooldownTimer_Ref = null;
-        ToggleWeapon(true,false);
+        ToggleWeapon(true, false);
         ToggleArms(true);
     }
     #endregion
@@ -92,17 +92,18 @@ public class ArmadilloWeaponControl : MonoBehaviour
     #region Inputs
     public void EquipSlot0Weapon(InputAction.CallbackContext performed)
     {
-        if(!isGunPocketed && ArmadilloPlayerController.Instance.canSwitchWeapon) ChangeWeapon(0,false);
+        if (!isGunPocketed && ArmadilloPlayerController.Instance.canSwitchWeapon) ChangeWeapon(0, false);
     }
     public void EquipSlot1Weapon(InputAction.CallbackContext performed)
     {
-        if (!isGunPocketed && ArmadilloPlayerController.Instance.canSwitchWeapon) ChangeWeapon(1,false);
+        if (!isGunPocketed && ArmadilloPlayerController.Instance.canSwitchWeapon) ChangeWeapon(1, false);
     }
     public void EquipSlot2Weapon(InputAction.CallbackContext performed)
     {
         if (!isGunPocketed && ArmadilloPlayerController.Instance.canSwitchWeapon) ChangeWeapon(2, false);
     }
     #endregion
+
     private void LoadWeapons()
     {
         eletricPistol = new EletricPistol(this);
@@ -116,23 +117,31 @@ public class ArmadilloWeaponControl : MonoBehaviour
         weaponsInInventory[0] = eletricPistol;
         if (isGunPocketed)
         {
-            pocketedWeaponID = 0;
+            //pocketedWeaponID = 0;
         }
-        else ChangeWeapon(0,true);
+        else ChangeWeapon(0, true);
         ArmadilloPlayerController.Instance.inputControl.inputAction.Armadillo.Weapon0.Enable();
         ArmadilloPlayerController.Instance.inputControl.inputAction.Armadillo.Weapon0.performed += EquipSlot0Weapon;
     }
     public void GivePlayerWaterGun()
     {
         weaponsInInventory[1] = waterGun;
-         ChangeWeapon(1, true);
+        if (isGunPocketed)
+        {
+            //pocketedWeaponID = 1;
+        }
+        else ChangeWeapon(1, true);
         ArmadilloPlayerController.Instance.inputControl.inputAction.Armadillo.Weapon1.Enable();
         ArmadilloPlayerController.Instance.inputControl.inputAction.Armadillo.Weapon1.performed += EquipSlot1Weapon;
     }
     public void GivePlayerPendriveSniper()
     {
         weaponsInInventory[2] = pendriveSniper;
-        ChangeWeapon(2, true);
+        if (isGunPocketed)
+        {
+            //pocketedWeaponID = 2;
+        }
+        else ChangeWeapon(2, true);
         ArmadilloPlayerController.Instance.inputControl.inputAction.Armadillo.Weapon2.Enable();
         ArmadilloPlayerController.Instance.inputControl.inputAction.Armadillo.Weapon2.performed += EquipSlot2Weapon;
     }
@@ -195,7 +204,7 @@ public class ArmadilloWeaponControl : MonoBehaviour
 
     //----- Toggle Weapons & Arms Functions-----
     #region Toggle Weapon & Arms Functions
-    public void ToggleWeapon(bool state,bool playAnimation)
+    public void ToggleWeapon(bool state, bool playAnimation)
     {
         if (!state)
         {
@@ -208,19 +217,21 @@ public class ArmadilloWeaponControl : MonoBehaviour
         }
         else
         {
-            ChangeWeapon(pocketedWeaponID, playAnimation);
-            if(pocketedWeaponID != -1)
+            if (pocketedWeaponID != -1)
             {
+                ChangeWeapon(pocketedWeaponID, playAnimation);
                 isGunPocketed = false;
+                pocketedWeaponID = -1;
             }
         }
     }
     public void ToggleArms(bool state)
     {
         ArmadilloPlayerController.Instance.visualControl.ToggleArmView(state);
-        if(!state)ResetAllCurrentWeapons();
+        if (!state) ResetAllCurrentWeapons();
     }
     #endregion
+
     public void ChangeWeapon(int nextWeapon, bool playAnimation)
     {
         PlayerInputAction.ArmadilloActions playerInput = ArmadilloPlayerController.Instance.inputControl.inputAction.Armadillo;
@@ -230,7 +241,6 @@ public class ArmadilloWeaponControl : MonoBehaviour
             if (currentWeaponID == -1) return;
             DefineDelegates(playerInput, DelegateType.Remove, currentWeaponID);
             ToggleStateInputs(playerInput, false);
-
             if (playAnimation)
             {
                 weaponsInInventory[currentWeaponID].OnUnequip();
@@ -238,7 +248,7 @@ public class ArmadilloWeaponControl : MonoBehaviour
             else weaponsInInventory[currentWeaponID].ToggleVisual(false);
             weaponsInInventory[currentWeaponID].ResetGun();
             currentWeaponID = -1;
-            
+
             return;
         }
         if (currentWeaponID != -1)
@@ -277,9 +287,9 @@ public class ArmadilloWeaponControl : MonoBehaviour
     }
     public void ResetAllCurrentWeapons()
     {
-        foreach(Weapon weapon in weaponsInInventory)
+        foreach (Weapon weapon in weaponsInInventory)
         {
-            if(weapon != null)weapon.ResetGun();
+            if (weapon != null) weapon.ResetGun();
         }
     }
 

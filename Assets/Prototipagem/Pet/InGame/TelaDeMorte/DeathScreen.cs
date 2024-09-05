@@ -17,6 +17,7 @@ public class DeathScreen : MonoBehaviour
 
     public void ReturnGame()
     {
-        SceneManager.LoadScene(sceneActual);
+        ArmadilloPlayerController.Instance.cameraControl.ChangeCurrentSpeedModifier(1);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 }
