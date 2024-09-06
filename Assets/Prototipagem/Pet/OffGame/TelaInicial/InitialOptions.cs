@@ -2,7 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UIElements;
+using UnityEngine.EventSystems;
+
 
 public class InitialOptions : MonoBehaviour
 {
@@ -13,6 +14,15 @@ public class InitialOptions : MonoBehaviour
     public string actuallevel;
     private bool levelLoaded = false;
     public float delayBeforeLoading = 10f;
+
+    [Header("MOUSE")]
+    public Texture2D cursorTexture;
+
+
+    private void Start()
+    {
+        Cursor.SetCursor(cursorTexture, Vector2.zero, CursorMode.Auto);
+    }
 
 
     public void SaveAndLoad()
