@@ -124,6 +124,7 @@ public class MenuPause : MonoBehaviour
         Cursor.lockState = isMenuOpen ? CursorLockMode.None : CursorLockMode.Locked;
 
         Menu.SetActive(isMenuOpen);
+        if(ArmadilloPlayerController.Instance.cameraControl!= null) ArmadilloPlayerController.Instance.cameraControl.ChangeCurrentSpeedModifier(isMenuOpen ? 0f : 1f);
         if (isMenuOpen)
         {
             visualControl.OnPause();

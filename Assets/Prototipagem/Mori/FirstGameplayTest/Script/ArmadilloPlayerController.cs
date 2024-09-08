@@ -102,10 +102,16 @@ public class ArmadilloPlayerController : MonoBehaviour
     public enum FPModeLayer3
     {
         Null,
-        Pause
+        Ball,
+        Climb,
     }
     public FPModeLayer3 fp_Layer3;
-
+    public enum FPModeLayer4
+    {
+        Null,
+        Pause
+    }
+    public FPModeLayer4 fp_Layer4;
     public int currentLayer;
     public int currentAction;
 
@@ -203,17 +209,25 @@ public class ArmadilloPlayerController : MonoBehaviour
     }
     public void SonarAbility(InputAction.CallbackContext value)
     {
-        if (SonarAbility_Ref == null)
+        float minimalValue = 0.33f;
+        if (SonarAbility_Ref == null && SonarAbilityVFX_Ref == null)
         {
-            isSonarActive = !isSonarActive;
-            if (isSonarActive && SonarAbilityVFX_Ref == null)
+            if (!isSonarActive)
             {
-                if (!CheckIfActionIsPossible(2)) return;
-                visualControl.OnSonar();
+                if (CheckIfActionIsPossible(2) && visualControl.isArmVisible)
+                {
+                    visualControl.OnSonar();
+                    ChangeCurrentActionLayer(2, (int)FPModeLayer2.Sonar);
+                }
                 SonarAbilityVFX_Ref = StartCoroutine(SonarAbilityVFX_Coroutine(sonarStartLerpDuration));
-                ChangeCurrentActionLayer(2, (int)FPModeLayer2.Sonar);
+                SonarAbility_Ref = StartCoroutine(SonarAbility_Coroutine(minimalValue, sonarRange, sonarStartLerpDuration, true));
+                isSonarActive = true;
             }
-            SonarAbility_Ref = StartCoroutine(SonarAbility_Coroutine(isSonarActive ? 0.33f : sonarRange, isSonarActive ? sonarRange : 0.33f, sonarStartLerpDuration, isSonarActive));
+            else
+            {
+                SonarAbility_Ref = StartCoroutine(SonarAbility_Coroutine(sonarRange, minimalValue, sonarStartLerpDuration, false));
+                isSonarActive = false;
+            }
         }
     }
 
@@ -221,30 +235,32 @@ public class ArmadilloPlayerController : MonoBehaviour
     private IEnumerator SonarAbility_Coroutine(float startValue, float finalValue, float duration, bool toggle)
     {
         yield return new WaitForSeconds(0.55f);
-        if (isSonarActive) sonarCamera.enabled = true;
-
         float timer = 0f;
-        while (timer <= duration)
+        if(toggle)
         {
-
-            sonarCamera.farClipPlane = Mathf.SmoothStep(startValue, finalValue, timer / duration);
-            if (toggle)
+            sonarCamera.enabled = true;
+            while (timer <= duration)
             {
+                sonarCamera.farClipPlane = Mathf.SmoothStep(startValue, finalValue, timer / duration);
                 sonarPostProcess.weight = Mathf.Min(1, timer * 1.25f / duration);
                 sonarCanvasGroup.alpha = Mathf.Min(1, timer * 1.25f / duration);
+                timer += 0.05f;
+                yield return new WaitForSeconds(0.05f);
             }
-            else
+        }
+        else
+        {
+            while (timer <= duration)
             {
+                sonarCamera.farClipPlane = Mathf.SmoothStep(startValue, finalValue, timer / duration);
                 sonarPostProcess.weight = 1 - Mathf.Min(1, timer * 1.25f / duration);
                 sonarCanvasGroup.alpha = 1 - Mathf.Min(1, timer * 1.25f / duration);
+                timer += 0.05f;
+                yield return new WaitForSeconds(0.05f);
             }
-            timer += 0.05f;
-            yield return new WaitForSeconds(0.05f);
+            sonarCamera.enabled = false;
         }
         sonarCamera.farClipPlane = finalValue;
-        if (!isSonarActive) sonarCamera.enabled = false;
-
-
         SonarAbility_Ref = null;
     }
     private Coroutine SonarAbilityVFX_Ref;
@@ -293,9 +309,9 @@ public class ArmadilloPlayerController : MonoBehaviour
         losControl.StopLOSCheck();
         pickUpControl.Drop();
         movementControl.ExitLadder();
-            
+
         //Move a camera para terceira pessoa em 0.5 segundos 
-        weaponControl.ToggleWeapon(false, false);
+        ChangeCurrentActionLayer(3, (int)FPModeLayer3.Ball);
         cameraControl.ChangeCameraState(cameraControl.thirdPersonCameraState);
         visualControl.OnEnterBallMode();
         audioControl.onTransformSound.PlayAudio();
@@ -367,7 +383,8 @@ public class ArmadilloPlayerController : MonoBehaviour
         yield return new WaitForSeconds(0.25f);
         sonarCamera.cullingMask = cameraControl.firstPeronSeeThroughMask;
         visualControl.OnEnterDefaultMode();
-        weaponControl.ToggleWeapon(true, true);
+        ChangeCurrentActionLayer(3, (int)FPModeLayer3.Null);
+        ArmadilloPlayerController.Instance.UpdateCurrentLayer();
         inputControl.inputAction.Armadillo.Ability1.performed += ChangeToBallForm;
         changeToDefaultFormRef = null;
     }
@@ -405,6 +422,9 @@ public class ArmadilloPlayerController : MonoBehaviour
             case 3:
                 currentAction = (int)fp_Layer3;
                 break;
+            case 4:
+                currentAction = (int)fp_Layer4;
+                break;
         }
 
         //If for some whatever reason it changes to the same return
@@ -431,6 +451,9 @@ public class ArmadilloPlayerController : MonoBehaviour
                 break;
             case 3:
                 fp_Layer3 = (FPModeLayer3)newActionID;
+                break;
+            case 4:
+                fp_Layer4 = (FPModeLayer4)newActionID;
                 break;
         }
 
@@ -476,6 +499,13 @@ public class ArmadilloPlayerController : MonoBehaviour
 
                 }
                 break;
+
+            case 3:
+                switch (fp_Layer3)
+                {
+
+                }
+                break;
         }
     }
     public void OnLeaveLayer(int layer)
@@ -502,6 +532,20 @@ public class ArmadilloPlayerController : MonoBehaviour
 
             case 2:
                 switch (fp_Layer2)
+                {
+
+                }
+                break;
+
+            case 3:
+                switch (fp_Layer3)
+                {
+
+                }
+                break;
+
+            case 4:
+                switch (fp_Layer4)
                 {
 
                 }
@@ -536,10 +580,25 @@ public class ArmadilloPlayerController : MonoBehaviour
 
                 }
                 break;
+
+            case 3:
+                switch (fp_Layer3)
+                {
+
+                }
+                break;
+
+            case 4:
+                switch (fp_Layer4)
+                {
+
+                }
+                break;
         }
     }
     public int GetCurrentFPLayer()
     {
+        if (fp_Layer4 != FPModeLayer4.Null) return 4;
         if (fp_Layer3 != FPModeLayer3.Null) return 3;
         if (fp_Layer2 != FPModeLayer2.Null) return 2;
         if (fp_Layer1 != FPModeLayer1.Null) return 1;

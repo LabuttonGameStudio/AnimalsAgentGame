@@ -27,13 +27,17 @@ public class ArmadilloVisualControl : MonoBehaviour
     [Header("Fisrt Person")]
     [SerializeField] private SkinnedMeshRenderer fpRenderer;
     [SerializeField] public Animator fpAnimator;
+    [HideInInspector] public bool isArmVisible;
 
     [Header("VFX")]
     [SerializeField] private ParticleSystem transformationSmoke;
     [SerializeField] private ParticleSystem TreckOnomatopeia;
     [SerializeField] private ParticleSystem onBallHitParticle;
 
-
+    private void Awake()
+    {
+        isArmVisible = true;
+    }
     #region VFX
     public void OnBallHit(Vector3 position, Vector3 lookAtPos)
     {
@@ -115,6 +119,7 @@ public class ArmadilloVisualControl : MonoBehaviour
     public void ToggleArmView(bool state)
     {
         fpAnimator.transform.GetChild(0).gameObject.SetActive(state);
+        isArmVisible = state;
     }
     #endregion
 
@@ -188,6 +193,7 @@ public class ArmadilloVisualControl : MonoBehaviour
 
     public void OnClimbingStop()
     {
+        if (!isClimbing) return;
         isClimbing = false;
         ArmadilloPlayerController.Instance.weaponControl.ToggleArms(true);
         ArmadilloPlayerController.Instance.weaponControl.ToggleWeapon(true, false);
@@ -271,14 +277,14 @@ public class ArmadilloVisualControl : MonoBehaviour
     #region Pause
     public void OnPause()
     {
-        ArmadilloPlayerController.Instance.ChangeCurrentActionLayer(3, (int)FPModeLayer3.Pause);
+        ArmadilloPlayerController.Instance.ChangeCurrentActionLayer(4, (int)FPModeLayer4.Pause);
         fpAnimator.CrossFade("TatuPauseIdle", crossFadeTime);
     }
 
     public void ReturnPause()
     {
         fpAnimator.CrossFade("Idle", crossFadeTime);
-        ArmadilloPlayerController.Instance.ChangeCurrentActionLayer(3, (int)FPModeLayer3.Null);
+        ArmadilloPlayerController.Instance.ChangeCurrentActionLayer(4, (int)FPModeLayer4.Null);
         ArmadilloPlayerController.Instance.UpdateCurrentLayer();
     }
     #endregion

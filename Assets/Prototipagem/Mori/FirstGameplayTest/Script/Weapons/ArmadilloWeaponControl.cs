@@ -50,6 +50,7 @@ public class ArmadilloWeaponControl : MonoBehaviour
         if (startWithPendriveSniper) GivePlayerPendriveSniper();
         if (startWithPistol) GivePlayerEletricPistol();
     }
+    //----- Melee Functions -----
     #region Melee
     [Header("Melee")]
     [SerializeField] private float meleeDamage;
@@ -65,7 +66,7 @@ public class ArmadilloWeaponControl : MonoBehaviour
     }
     public void Melee(InputAction.CallbackContext performed)
     {
-        if (meleeIsOnCooldown) return;
+        if (meleeIsOnCooldown||!ArmadilloPlayerController.Instance.visualControl.isArmVisible) return;
         ToggleArms(false);
         ToggleWeapon(false, false);
         meleeHitbox.Hit(meleeDamage, meleeStabModifier);
@@ -89,6 +90,7 @@ public class ArmadilloWeaponControl : MonoBehaviour
     }
     #endregion
 
+    //----- Inputs Functions -----
     #region Inputs
     public void EquipSlot0Weapon(InputAction.CallbackContext performed)
     {
@@ -117,7 +119,7 @@ public class ArmadilloWeaponControl : MonoBehaviour
         weaponsInInventory[0] = eletricPistol;
         if (isGunPocketed)
         {
-            //pocketedWeaponID = 0;
+            pocketedWeaponID = 0;
         }
         else ChangeWeapon(0, true);
         ArmadilloPlayerController.Instance.inputControl.inputAction.Armadillo.Weapon0.Enable();
@@ -128,7 +130,7 @@ public class ArmadilloWeaponControl : MonoBehaviour
         weaponsInInventory[1] = waterGun;
         if (isGunPocketed)
         {
-            //pocketedWeaponID = 1;
+            pocketedWeaponID = 1;
         }
         else ChangeWeapon(1, true);
         ArmadilloPlayerController.Instance.inputControl.inputAction.Armadillo.Weapon1.Enable();
@@ -139,7 +141,7 @@ public class ArmadilloWeaponControl : MonoBehaviour
         weaponsInInventory[2] = pendriveSniper;
         if (isGunPocketed)
         {
-            //pocketedWeaponID = 2;
+            pocketedWeaponID = 2;
         }
         else ChangeWeapon(2, true);
         ArmadilloPlayerController.Instance.inputControl.inputAction.Armadillo.Weapon2.Enable();
@@ -200,7 +202,6 @@ public class ArmadilloWeaponControl : MonoBehaviour
         playerInput.Reload.Disable();
     }
     #endregion
-
 
     //----- Toggle Weapons & Arms Functions-----
     #region Toggle Weapon & Arms Functions

@@ -15,6 +15,19 @@ public class Grade_Interactive : MonoBehaviour,INeedRequirements
     {
         bodyMeshRenderer.material = new Material(bodyMeshRenderer.material);
     }
+    private void OnValidate()
+    {
+        for (int i = 0; i < _requirements.Length; i++)
+        {
+            GameObject go = _requirements[i];
+            if(go == null) continue;
+            if (!go.TryGetComponent(out IRequirements requirement))
+            {
+                _requirements[i] = null;
+                Debug.LogError("Erro ao conectar ao " + go.name + ", cheque se ele possui os scripts: Antena ou Gerador");
+            }
+        }
+    }
     private void Start()
     {
         requirements = new IRequirements[_requirements.Length];

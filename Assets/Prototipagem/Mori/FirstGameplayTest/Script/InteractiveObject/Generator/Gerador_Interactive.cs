@@ -8,6 +8,8 @@ public class Gerador_Interactive : MonoBehaviour, IRequirements, InteractiveObje
 {
     public bool isTurnedOn { get; set; }
 
+    //----- Requirements -----
+    private bool needRequeriments;
     [SerializeField] private GameObject[] _requirements;
     public IRequirements[] requirements { get; set; }
     public INeedRequirements connectedObject { get; set; }
@@ -24,35 +26,88 @@ public class Gerador_Interactive : MonoBehaviour, IRequirements, InteractiveObje
     {
         bodyMeshRenderer.material = new Material(bodyMeshRenderer.material);
     }
-    private void Start()
+    private void OnValidate()
     {
-        requirements = new IRequirements[_requirements.Length];
         for (int i = 0; i < _requirements.Length; i++)
         {
             GameObject go = _requirements[i];
+            if (go != null && !go.TryGetComponent(out IRequirements requirement))
+            {
+                Debug.LogError("Erro ao conectar ao " + go.name + ", cheque se ele possui os scripts: Antena ou Gerador");
+                _requirements[i] = null;
+            }
+        }
+    }
+    private void Start()
+    {
+        //Garantee there isnt a empty array slot
+        int totalRequirements = 0;
+        for (int i = 0; i < _requirements.Length; i++)
+        {
+            GameObject go = _requirements[i];
+            if (go == null) continue;
             if (go.TryGetComponent(out IRequirements requirement))
             {
-                requirements[i] = requirement;
+                totalRequirements += 1;
+            }
+        }
+        requirements = new IRequirements[totalRequirements];
+        int currentRequerimentsIndexPos=0;
+        //Transfer from _requeriments to requirements
+        for (int i = 0; i < _requirements.Length; i++)
+        {
+            GameObject go = _requirements[i];
+            if (go == null) continue;
+            if (go.TryGetComponent(out IRequirements requirement))
+            {
+                requirements[currentRequerimentsIndexPos] = requirement;
+                currentRequerimentsIndexPos++;
             }
             else
             {
                 Debug.LogError("Erro ao conectar ao " + go.name + ", cheque se ele possui os scripts: Antena ou Gerador");
             }
         }
+        if (totalRequirements > 0) needRequeriments = true;
         foreach (IRequirements requirement in requirements)
         {
             requirement.DefineConnectedObject(this);
         }
     }
+    public Vector2 GetCurrentRequirementsMet()
+    {
+        // X = Required // Y = Total
+        int requirementsMet = 0;
+        for (int i = 0; i < requirements.Length; i++)
+        {
+            if (requirements[i].isTurnedOn) requirementsMet += 1;
+        }
+        return new Vector2(requirementsMet, requirements.Length);
+    }
     public string GetObjectDescription()
     {
         if (isTurnedOn) return "";
-        else return charged ? "ligar" : "";
+        else
+        {
+            if (needRequeriments)
+            {
+                Vector2 requirementsString = GetCurrentRequirementsMet();
+                return charged ? "Ligar" : "(" + requirementsString.x + "|" + requirementsString.y + ")";
+            }
+            else return "Ligar";
+        }
     }
-
     public string GetObjectName()
     {
-        return charged ? "Gerador" : "Gerador inativo";
+        if (isTurnedOn) return "Gerador Ligado";
+        if (needRequeriments)
+        {
+            return charged ? "Gerador" : "Gerador inativo";
+        }
+        else
+        {
+            return "Gerador";
+        }
     }
     public void OnRequirementMet()
     {
@@ -77,6 +132,7 @@ public class Gerador_Interactive : MonoBehaviour, IRequirements, InteractiveObje
                 StartCoroutine(LeverSwitchAnimation_Coroutine());
             }
         }
+        ArmadilloPlayerController.Instance.interactControl.UpdateInteractionHUD();
     }
     private IEnumerator LeverSwitchAnimation_Coroutine()
     {

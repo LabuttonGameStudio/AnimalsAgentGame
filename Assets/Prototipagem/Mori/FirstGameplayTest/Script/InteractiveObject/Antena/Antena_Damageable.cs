@@ -14,11 +14,14 @@ public class Antena_Damageable :MonoBehaviour,IRequirements, IDamageable
     {
         if (!isTurnedOn)
         {
-            if (damage.damageType == DamageType.Eletric)
+            switch (damage.damageType)
             {
-                isTurnedOn = true;
-                meshRenderers[0].sharedMaterial.SetInt("_Light_on_off", 1);
-                if (connectedObject != null) connectedObject.OnRequirementChange();
+                case DamageType.Eletric:
+                case DamageType.Hacking:
+                    isTurnedOn = true;
+                    meshRenderers[0].sharedMaterial.SetInt("_Light_on_off", 1);
+                    if (connectedObject != null) connectedObject.OnRequirementChange();
+                    break;
             }
         }
     }
