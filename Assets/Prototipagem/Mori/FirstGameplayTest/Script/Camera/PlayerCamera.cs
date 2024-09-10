@@ -41,7 +41,11 @@ public class PlayerCamera : MonoBehaviour
     public CinemachineVirtualCamera firstPersonCinemachine;
     public CinemachineVirtualCamera thirdPersonCinemachine;
 
+    //----- Zoom -----
+    [HideInInspector]public float currentZoom;
+    [HideInInspector] public float sprintZoomModifier=1f; //1.1f/1f
 
+    [HideInInspector] public float sniperZoomModifier=1f; //0.33f/1f
     public void ChangeCameraState(CameraBaseState nextState)
     {
         if (currentCameraState != null) currentCameraState.ExitState();
@@ -71,6 +75,8 @@ public class PlayerCamera : MonoBehaviour
         //Define o estado padrao da camera para primeira pessoa
         mainCamera.cullingMask = firstPersonMask;
         ChangeCameraState(firstPersonCameraState);
+
+        currentZoom = firstPersonCinemachine.m_Lens.FieldOfView;
     }
 
     public Vector2 GetMouseDelta()
@@ -112,7 +118,32 @@ public class PlayerCamera : MonoBehaviour
     }
     public void ToggleZoom(bool state)
     {
-        firstPersonCinemachine.m_Lens.FieldOfView = state? 20 : 60;
+        sniperZoomModifier = state ? 0.33f : 1f;
+        UpdateZoom();
         ChangeCurrentSpeedModifier(state ? 0.33f: 1);
+    }
+    public void UpdateZoom()
+    {
+        firstPersonCinemachine.m_Lens.FieldOfView = currentZoom * sniperZoomModifier * sprintZoomModifier;
+    }
+
+    public void StartLerpSprintZoom(float finalValue,float duration)
+    {
+        if(lerpSprintZoom_Ref != null)StopCoroutine(lerpSprintZoom_Ref);
+        lerpSprintZoom_Ref = StartCoroutine(LerpSprintZoom_Coroutine(sprintZoomModifier, finalValue,duration));
+    }
+    private Coroutine lerpSprintZoom_Ref;
+    public IEnumerator LerpSprintZoom_Coroutine(float startValue,float finalValue,float duration)
+    {
+        float timer = 0f;
+        while(timer<duration)
+        {
+            sprintZoomModifier = Mathf.Lerp(startValue,finalValue,timer/duration);
+            UpdateZoom();
+            timer += Time.deltaTime;
+            yield return null;
+        }
+        sprintZoomModifier = finalValue;
+        lerpSprintZoom_Ref = null;
     }
 }

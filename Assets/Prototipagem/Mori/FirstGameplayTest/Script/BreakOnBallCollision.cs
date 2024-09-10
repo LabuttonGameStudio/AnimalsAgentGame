@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.VFX;
 
-public class BreakOnBallCollision : MonoBehaviour
+public class BreakOnBallCollision : MonoBehaviour,IDamageable
 {
     Collider m_collider;
     MeshRenderer m_meshRenderer;
@@ -25,20 +25,38 @@ public class BreakOnBallCollision : MonoBehaviour
             {
                 if (collision.impulse.magnitude > 200)
                 {
-                    if(onDestroyVFX != null) onDestroyVFX.Play();
-                    if(puffParticle != null) puffParticle.Play();
+                    BreakPlank();
                     playerControler.visualControl.OnBallHit(collision.GetContact(0).point,playerControler.transform.position);
-                    m_collider.enabled = false;
-                    m_meshRenderer.enabled = false;
                     StartCoroutine(ApplySpeedToPlayer(playerControler.movementControl));
                 }
             }
         }
     }
+    public void BreakPlank()
+    {
+        if (onDestroyVFX != null) onDestroyVFX.Play();
+        if (puffParticle != null) puffParticle.Play();
+        m_collider.enabled = false;
+        m_meshRenderer.enabled = false;
+    }
     private IEnumerator ApplySpeedToPlayer(ArmadilloMovementController movementController)
     {
         yield return new WaitForFixedUpdate();
         movementController.OnBreakObject();
-    }    
+    }
 
+    public void TakeDamage(Damage damage)
+    {
+        Debug.Log(damage.damageAmount);
+        switch(damage.damageType)
+        {
+            case Damage.DamageType.Blunt:
+            case Damage.DamageType.Slash:
+                if(damage.damageAmount>10)
+                {
+                    BreakPlank();
+                }
+                break;
+        }
+    }
 }

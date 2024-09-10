@@ -4,6 +4,7 @@ using System.Threading;
 using UnityEngine;
 using static WeaponData;
 using static ArmadilloPlayerController;
+using Unity.VisualScripting;
 
 public class ArmadilloVisualControl : MonoBehaviour
 {
@@ -37,6 +38,10 @@ public class ArmadilloVisualControl : MonoBehaviour
     private void Awake()
     {
         isArmVisible = true;
+    }
+    private void Start()
+    {
+        StartCoroutine(ArmFollowBodyVelocity_Coroutine());
     }
     #region VFX
     public void OnBallHit(Vector3 position, Vector3 lookAtPos)
@@ -121,6 +126,23 @@ public class ArmadilloVisualControl : MonoBehaviour
         fpAnimator.transform.GetChild(0).gameObject.SetActive(state);
         isArmVisible = state;
     }
+    private IEnumerator ArmFollowBodyVelocity_Coroutine()
+    {
+        Vector3 defaultPosition = fpAnimator.transform.localPosition;
+        Rigidbody rb = ArmadilloPlayerController.Instance.movementControl.rb;
+        Vector3 currentOffset = rb.transform.InverseTransformDirection(rb.velocity) / 100;
+        while (true)
+        {
+            currentOffset = Vector3.Lerp(currentOffset, rb.transform.InverseTransformDirection(rb.velocity), Time.fixedDeltaTime * 10);
+            if (currentOffset != Vector3.zero)
+            {
+                Vector3 offset = currentOffset;
+                offset = offset / 200f;
+                fpAnimator.transform.localPosition = defaultPosition + offset;
+            }
+            yield return new WaitForFixedUpdate();
+        }
+    }
     #endregion
 
     #region Action Layers Animator
@@ -134,7 +156,7 @@ public class ArmadilloVisualControl : MonoBehaviour
             crossFadeLayers_Ref = null;
         }
         crossFadeLayers_Ref = new CrossFadeLayer();
-        crossFadeLayers_Ref.previousLayer = ArmadilloPlayerController.Instance.currentLayer+1;
+        crossFadeLayers_Ref.previousLayer = ArmadilloPlayerController.Instance.currentLayer + 1;
         crossFadeLayers_Ref.newLayer = newLayerInt + 1;
         crossFadeLayers_Ref.transitionAmount = 0;
         crossFadeLayers_Ref.crossFadeCoroutine = StartCoroutine(CrossFadeLayers_Coroutine(crossFadeTime));
@@ -159,7 +181,7 @@ public class ArmadilloVisualControl : MonoBehaviour
     #region LedgeGrab & Climb
     public void OnLedgeGrab()
     {
-        ArmadilloPlayerController.Instance.ChangeCurrentActionLayer(2,(int)FPModeLayer2.LedgeGrab);
+        ArmadilloPlayerController.Instance.ChangeCurrentActionLayer(2, (int)FPModeLayer2.LedgeGrab);
         if (ledgeGrabTimer_Ref != null) StopCoroutine(ledgeGrabTimer_Ref);
         ledgeGrabTimer_Ref = StartCoroutine(LedgeGrabTimer_Coroutine());
     }
@@ -211,7 +233,20 @@ public class ArmadilloVisualControl : MonoBehaviour
     }
     #endregion
 
+    #region Walk
+    private PivotOffsetStats walkOffSet;
+    public void OnWalkStart()
+    {
+
+    }
+    public void OnWalkStop()
+    {
+
+    }
+    #endregion
+
     #region Sprint
+    private PivotOffsetStats sprintOffSet;
     public void OnSprintStart()
     {
         if (ArmadilloPlayerController.Instance.fp_Layer0 == FPModeLayer0.Lurking)
@@ -220,12 +255,25 @@ public class ArmadilloVisualControl : MonoBehaviour
         }
         ArmadilloPlayerController.Instance.fp_Layer0 = FPModeLayer0.Sprinting;
         ToggleRun(true);
-
+        Vector3 direction = Vector3.up / 25 + Vector3.right / 50;
+        if (sprintOffSet == null)
+        {
+            sprintOffSet = FPCameraShake.Instance.StartPivotOffsetLoop(16, direction);
+            PlayerCamera playerCamera = ArmadilloPlayerController.Instance.cameraControl;
+            playerCamera.StartLerpSprintZoom(1.025f, 0.2f);
+        }
     }
     public void OnSprintStop()
     {
         if (ArmadilloPlayerController.Instance.fp_Layer0 == FPModeLayer0.Sprinting) ArmadilloPlayerController.Instance.fp_Layer0 = FPModeLayer0.Walking;
         ToggleRun(false);
+        if (sprintOffSet != null)
+        {
+            FPCameraShake.Instance.StopPivotOffset(sprintOffSet);
+            PlayerCamera playerCamera = ArmadilloPlayerController.Instance.cameraControl;
+            playerCamera.StartLerpSprintZoom(1f, 0.2f);
+            sprintOffSet = null;
+        }
     }
     private void ToggleRun(bool state)
     {
@@ -377,6 +425,25 @@ public class ArmadilloVisualControl : MonoBehaviour
     public void ToggleOnFireWaterGun(bool state)
     {
         fpAnimator.SetBool("waterGunIsFiring", state);
+    }
+    #endregion
+
+    #region On Air
+    private ShakeStats onAirShake;
+    private PivotOffsetStats onAirOffset;
+    public void EnterOnAir()
+    {
+        if (onAirShake == null) onAirShake = FPCameraShake.StartShake(0.1f, 0.2f);
+    }
+    public void ExitOnAir()
+    {
+        if (onAirShake != null)
+        {
+            FPCameraShake.StopShake(onAirShake);
+            onAirShake = null;
+        }
+        FPCameraShake.StartShake(0.15f, 0.2f, 0.1f);
+        FPCameraShake.Instance.StartPivotOffsetFixed(0.05f, Vector3.down / 10, 0.2f, 0.2f);
     }
     #endregion
     #endregion

@@ -12399,6 +12399,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5707324081081399211}
   - component: {fileID: 3581808014371081820}
+  - component: {fileID: 1658274846777834586}
   - component: {fileID: 183797650583800808}
   - component: {fileID: 5359673911791591497}
   m_Layer: 0
@@ -12463,6 +12464,21 @@ MonoBehaviour:
         m_Calls: []
   m_LegacyBlendHint: 0
   m_ComponentOwner: {fileID: 4094686151579198885}
+--- !u!114 &1658274846777834586
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2488422623650733358}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 44d70cc20219cd84593f67d248eafe36, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Offset: {x: 0, y: 0, z: 0}
+  m_ApplyAfter: 1
+  m_PreserveComposition: 0
 --- !u!114 &183797650583800808
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12738,6 +12754,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3758886534972022595}
   - component: {fileID: 4255132301383909723}
+  - component: {fileID: 4706012458391524483}
   - component: {fileID: 3817648595166847707}
   m_Layer: 0
   m_Name: TPCamera
@@ -12801,6 +12818,21 @@ MonoBehaviour:
         m_Calls: []
   m_LegacyBlendHint: 0
   m_ComponentOwner: {fileID: 7710643782037171208}
+--- !u!114 &4706012458391524483
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2942870110699476827}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 44d70cc20219cd84593f67d248eafe36, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Offset: {x: 0, y: 0, z: 0}
+  m_ApplyAfter: 1
+  m_PreserveComposition: 0
 --- !u!114 &3817648595166847707
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21962,6 +21994,9 @@ MonoBehaviour:
   yRotation: 0
   firstPersonCinemachine: {fileID: 3581808014371081820}
   thirdPersonCinemachine: {fileID: 4255132301383909723}
+  currentZoom: 0
+  sprintZoomModifier: 1
+  sniperZoomModifier: 1
 --- !u!114 &4561842666295304376
 MonoBehaviour:
   m_ObjectHideFlags: 0
