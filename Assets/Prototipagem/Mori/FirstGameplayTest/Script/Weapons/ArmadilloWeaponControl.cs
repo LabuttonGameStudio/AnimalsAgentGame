@@ -66,7 +66,7 @@ public class ArmadilloWeaponControl : MonoBehaviour
     }
     public void Melee(InputAction.CallbackContext performed)
     {
-        if (meleeIsOnCooldown||!ArmadilloPlayerController.Instance.visualControl.isArmVisible) return;
+        if (meleeIsOnCooldown || !ArmadilloPlayerController.Instance.visualControl.isArmVisible) return;
         ToggleArms(false);
         ToggleWeapon(false, false);
         meleeHitbox.Hit(meleeDamage, meleeStabModifier);
@@ -299,6 +299,33 @@ public class ArmadilloWeaponControl : MonoBehaviour
         if (currentWeaponID != -1 && weaponsInInventory[currentWeaponID] != null)
         {
             weaponsInInventory[currentWeaponID].ToggleOnRun(state);
+        }
+    }
+    public bool GainAmmo(WeaponType weaponType, int ammoAmount)
+    {
+        Weapon weapon;
+        switch (weaponType)
+        {
+            case WeaponType.Watergun:
+            default:
+                weapon = waterGun;
+                break;
+            case WeaponType.Pendrivegun:
+                weapon = pendriveSniper;
+                break;
+        }
+        int ammoReserves;
+        if(weapon.ammoReserveAmount >= weapon.maxAmmoReserveAmount)
+        {
+            return false;
+        }
+        else
+        {
+            ammoReserves = weapon.ammoReserveAmount;
+            ammoReserves += ammoAmount;
+            ammoReserves = Mathf.Min(ammoReserves, weapon.maxAmmoReserveAmount);
+            weapon.ammoReserveAmount = ammoReserves;
+            return true;
         }
     }
 }

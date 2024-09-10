@@ -46,17 +46,23 @@ public class ArmadilloHPControl : MonoBehaviour,IDamageable
             UpdateHealthBar();
         }
     }
-    public void OnHeal(float heal)
+    public bool OnHeal(float heal)
     {
+        if (currentHp >= maxHp)
+        {
+            return false;
+        }
         if (currentHp + currentGreyHp + heal > maxHp)
         {
             currentHp = maxHp;
             currentGreyHp = 0;
             UpdateHealthBar();
-            return;
+            return true;
         }
         currentHp += heal + currentGreyHp;
         currentGreyHp = 0;
+        UpdateHealthBar();
+        return true;
     }
     public void UpdateHealthBar()
     {
