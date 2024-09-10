@@ -58,6 +58,9 @@ public class PlayerCamera : MonoBehaviour
         firstPersonSensibility = Vector2.one;
         thirdPersonSensibility = Vector2.one;
         currentSpeedModifier = 1f;
+        sprintZoomModifier = 1f;
+        sniperZoomModifier = 1f;
+        currentZoom = firstPersonCinemachine.m_Lens.FieldOfView;
         Instance = this;
     }
     private void Start()
@@ -75,8 +78,6 @@ public class PlayerCamera : MonoBehaviour
         //Define o estado padrao da camera para primeira pessoa
         mainCamera.cullingMask = firstPersonMask;
         ChangeCameraState(firstPersonCameraState);
-
-        currentZoom = firstPersonCinemachine.m_Lens.FieldOfView;
     }
 
     public Vector2 GetMouseDelta()
