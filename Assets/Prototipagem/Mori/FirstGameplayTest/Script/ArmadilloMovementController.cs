@@ -72,7 +72,7 @@ public class ArmadilloMovementController : MonoBehaviour
         Sprinting,
         Lurking
     }
-    [HideInInspector] public MovementType currentMovementType;
+    public MovementType currentMovementType;
 
     [Header("Ground Check")]
     public LayerMask whatIsClimbable;
@@ -104,7 +104,6 @@ public class ArmadilloMovementController : MonoBehaviour
     [HideInInspector] public float speedMultiplier = 1;
 
     private bool isSprintButtonHeld;
-    private bool isLurkButtonHeld;
 
     public void OnDrawGizmos()
     {
@@ -251,16 +250,16 @@ public class ArmadilloMovementController : MonoBehaviour
         MovementType currentMovementType = this.currentMovementType;
         if (value.performed)
         {
-            currentMovementType = MovementType.Lurking;
+            this.currentMovementType = MovementType.Lurking;
             ArmadilloPlayerController.Instance.audioControl.ChangeCurrentMovingForm(MovementType.Lurking);
             sprintLurkSpeedMultiplier = GetCurrentFormStats().lurkSpeedMultiplier;
         }
         else
         {
-            if (currentMovementType == MovementType.Lurking)
+            if (this.currentMovementType == MovementType.Lurking)
             {
                 ArmadilloPlayerController.Instance.audioControl.ChangeCurrentMovingForm(MovementType.Default);
-                currentMovementType = MovementType.Default;
+                this.currentMovementType = MovementType.Default;
                 sprintLurkSpeedMultiplier = 1;
             }
         }

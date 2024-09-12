@@ -50,14 +50,15 @@ public class ContainerDoor : MonoBehaviour, InteractiveObject
     {
         float timer = 0;
         float duration = 0.25f;
-        float lerpAngle = startValue;
+        Quaternion startQuaternion = Quaternion.Euler(transform.localRotation.eulerAngles.x, startValue, transform.localRotation.eulerAngles.z);
+        Quaternion finalQuaternion = Quaternion.Euler(transform.localRotation.eulerAngles.x, finalValue, transform.localRotation.eulerAngles.z);
         while (timer < duration)
         {
-            lerpAngle = Mathf.Lerp(lerpAngle, finalValue, timer/duration);
-            transform.localRotation = Quaternion.Euler(transform.localRotation.eulerAngles.x, lerpAngle, transform.localRotation.eulerAngles.z);
+            transform.localRotation = Quaternion.Lerp(startQuaternion,finalQuaternion,timer/duration);
             timer += Time.deltaTime;
             yield return null;
         }
+        transform.localRotation = finalQuaternion;
         lerpAngle_Ref = null;
     }
 }

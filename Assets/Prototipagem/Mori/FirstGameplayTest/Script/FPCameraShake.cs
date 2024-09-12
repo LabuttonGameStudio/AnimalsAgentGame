@@ -156,7 +156,7 @@ public class FPCameraShake : MonoBehaviour
         StopCoroutine(stats.coroutine);
         if (stats.fadeOutTime > 0)
         {
-            StoptPivotOffsetFixed_Coroutine(stats);
+            StartCoroutine(StoptPivotOffsetFixed_Coroutine(stats));
         }
         else
         {
@@ -174,11 +174,7 @@ public class FPCameraShake : MonoBehaviour
         yield return StartCoroutine(FadePivotOffsetFixed_Coroutine(stats, FadeType.FadeOut));
         stats.currentOffset = Vector3.zero;
         currentOperatingOffset.Remove(stats);
-        if (currentOperatingOffset.Count <= 0 && updateCurrentOffset_Ref != null)
-        {
-            StopCoroutine(updateCurrentOffset_Ref);
-            updateCurrentOffset_Ref = null;
-        }
+        CheckStopUpdateCurrentOffset();
     }
 
     #endregion
@@ -277,11 +273,7 @@ public class FPCameraShake : MonoBehaviour
         }
         stats.currentOffset = Vector3.zero;
         currentOperatingOffset.Remove(stats);
-        if (currentOperatingOffset.Count <= 0 && updateCurrentOffset_Ref != null)
-        {
-            StopCoroutine(updateCurrentOffset_Ref);
-            updateCurrentOffset_Ref = null;
-        }
+        CheckStopUpdateCurrentOffset();
 
     }
     #endregion
@@ -307,7 +299,17 @@ public class FPCameraShake : MonoBehaviour
             currentOffset += currentOperatingOffset[i].currentOffset;
         }
         cinemachineCameraOffsetArray[0].m_Offset = currentOffset;
-        cinemachineCameraOffsetArray[1].m_Offset = currentOffset;
+        //cinemachineCameraOffsetArray[1].m_Offset = currentOffset;
+    }
+    private void CheckStopUpdateCurrentOffset()
+    {
+        if (currentOperatingOffset.Count <= 0 && updateCurrentOffset_Ref != null)
+        {
+            StopCoroutine(updateCurrentOffset_Ref);
+            updateCurrentOffset_Ref = null;
+        }
+        cinemachineCameraOffsetArray[0].m_Offset = Vector3.zero;
+        cinemachineCameraOffsetArray[1].m_Offset = Vector3.zero;
     }
     #endregion
 

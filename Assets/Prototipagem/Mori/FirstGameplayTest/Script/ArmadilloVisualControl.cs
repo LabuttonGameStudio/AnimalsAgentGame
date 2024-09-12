@@ -42,6 +42,7 @@ public class ArmadilloVisualControl : MonoBehaviour
     private void Start()
     {
         StartCoroutine(ArmFollowBodyVelocity_Coroutine());
+        OnWalkStart();
     }
     #region VFX
     public void OnBallHit(Vector3 position, Vector3 lookAtPos)
@@ -237,11 +238,40 @@ public class ArmadilloVisualControl : MonoBehaviour
     private PivotOffsetStats walkOffSet;
     public void OnWalkStart()
     {
+        if(walkOffSet == null)
+        {
+            Vector3 direction = Vector3.up / 30;
+            walkOffSet = FPCameraShake.Instance.StartPivotOffsetLoop(12, Vector3.zero);
+            checkWalkMovement_Ref = StartCoroutine(CheckWalkMovement_Coroutine(walkOffSet, direction));
+        }
+    }
+    private Coroutine checkWalkMovement_Ref;
+    private IEnumerator CheckWalkMovement_Coroutine(PivotOffsetStats offsetStats, Vector3 offsetRealValue)
+    {
+        ArmadilloMovementController movementController = ArmadilloPlayerController.Instance.movementControl;
+        while (true)
+        {
+            if (movementController.movementInputVector.magnitude > 0.1f)
+            {
+                offsetStats.offset = offsetRealValue;
+            }
+            else
+            {
+                offsetStats.offset = Vector3.zero;
 
+            }
+            yield return new WaitForFixedUpdate();
+        }
     }
     public void OnWalkStop()
     {
-
+        if (walkOffSet != null)
+        {
+            StopCoroutine(checkWalkMovement_Ref);
+            checkWalkMovement_Ref = null;
+            FPCameraShake.Instance.StopPivotOffset(walkOffSet);
+            walkOffSet = null;
+        }
     }
     #endregion
 
@@ -283,6 +313,8 @@ public class ArmadilloVisualControl : MonoBehaviour
     #endregion
 
     #region Lurk
+    private PivotOffsetStats lurkOffSet;
+    private PivotOffsetStats lurkOffSet1;
     public void OnLurkStart()
     {
         if (ArmadilloPlayerController.Instance.fp_Layer0 == FPModeLayer0.Sprinting)
@@ -291,11 +323,54 @@ public class ArmadilloVisualControl : MonoBehaviour
         }
         ArmadilloPlayerController.Instance.fp_Layer0 = FPModeLayer0.Lurking;
         ToggleLurking(true);
+        if (lurkOffSet == null)
+        {
+            Vector3 direction = Vector3.up / 35;
+            lurkOffSet = FPCameraShake.Instance.StartPivotOffsetLoop(6, Vector3.zero);
+            checkLurkMovement_Ref = StartCoroutine(CheckLurkMovement_Coroutine(lurkOffSet, direction));
+
+            PlayerCamera playerCamera = ArmadilloPlayerController.Instance.cameraControl;
+            playerCamera.StartLerpSprintZoom(0.95f, 0.2f);
+
+            Vector3 lowerCamera = Vector3.down / 30;
+            lurkOffSet1 = FPCameraShake.Instance.StartPivotOffsetFixed(lowerCamera, 0.2f);
+        }
+    }
+    private Coroutine checkLurkMovement_Ref;
+    private IEnumerator CheckLurkMovement_Coroutine(PivotOffsetStats offsetStats, Vector3 offsetRealValue)
+    {
+        ArmadilloMovementController movementController = ArmadilloPlayerController.Instance.movementControl;
+        while(true)
+        {
+            if(movementController.movementInputVector.magnitude>0.1f)
+            {
+                offsetStats.offset = offsetRealValue;
+            }
+            else
+            {
+                offsetStats.offset = Vector3.zero;
+
+            }
+            yield return new WaitForFixedUpdate();
+        }
     }
     public void OnLurkStop()
     {
         if (ArmadilloPlayerController.Instance.fp_Layer0 == FPModeLayer0.Lurking) ArmadilloPlayerController.Instance.fp_Layer0 = FPModeLayer0.Walking;
         ToggleLurking(false);
+        if (lurkOffSet != null)
+        {
+            PlayerCamera playerCamera = ArmadilloPlayerController.Instance.cameraControl;
+            playerCamera.StartLerpSprintZoom(1f, 0.2f);
+
+            lurkOffSet1.fadeOutTime = 0.2f;
+            FPCameraShake.Instance.StoptPivotOffsetFixed(lurkOffSet1);
+            lurkOffSet1 = null;
+            StopCoroutine(checkLurkMovement_Ref);
+            checkLurkMovement_Ref = null;
+            FPCameraShake.Instance.StopPivotOffset(lurkOffSet);
+            lurkOffSet = null;
+        }
     }
     private void ToggleLurking(bool state)
     {

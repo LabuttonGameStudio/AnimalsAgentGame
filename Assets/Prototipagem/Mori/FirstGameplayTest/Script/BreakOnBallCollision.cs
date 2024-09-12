@@ -23,7 +23,7 @@ public class BreakOnBallCollision : MonoBehaviour,IDamageable
             ArmadilloPlayerController playerControler = ArmadilloPlayerController.Instance;
             if (playerControler.currentForm == ArmadilloPlayerController.Form.Ball)
             {
-                if (collision.impulse.magnitude > 200)
+                if (collision.impulse.magnitude > 350)
                 {
                     BreakPlank();
                     playerControler.visualControl.OnBallHit(collision.GetContact(0).point,playerControler.transform.position);
