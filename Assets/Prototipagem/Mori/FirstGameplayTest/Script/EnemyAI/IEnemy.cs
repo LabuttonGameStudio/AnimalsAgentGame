@@ -24,7 +24,7 @@ public class AIPathPoint
 
 }
 
-public abstract class IEnemy : MonoBehaviour , IRaycastableInLOS
+public abstract class IEnemy : MonoBehaviour, IRaycastableInLOS
 {
     #region Path Finding|NavMesh Variables
     [HideInInspector] public NavMeshAgent navMeshAgent;
@@ -135,43 +135,101 @@ public abstract class IEnemy : MonoBehaviour , IRaycastableInLOS
     protected float detectionLevelDecreased;
     #endregion
 
-
-    private void OnDrawGizmos()
+    #region Gizmos
+#if UNITY_EDITOR
+    private void OnDrawGizmosSelected()
     {
         //Desenha o gizmos da area onde o inimigo ira ver
-        if (!Application.isPlaying)
+        //Visibility Mesh
+        if (!fovWedgeMesh) return;
+        if (ArmadilloPlayerController.Instance != null)
         {
-            //Visibility Mesh
-            if (!fovWedgeMesh) return;
-            if (ArmadilloPlayerController.Instance != null)
+            if (CheckForLOS(ArmadilloPlayerController.Instance.gameObject))
             {
-                if (CheckForLOS(ArmadilloPlayerController.Instance.gameObject))
-                {
-                    Color red = Color.red;
-                    red.a = colorOfFovMesh.a;
-                    Gizmos.color = red;
-                }
-                else Gizmos.color = colorOfFovMesh;
+                Color red = Color.red;
+                red.a = colorOfFovMesh.a;
+                Gizmos.color = red;
             }
             else Gizmos.color = colorOfFovMesh;
-            Gizmos.DrawMesh(fovWedgeMesh, eyeTransform.position, eyeTransform.rotation);
+        }
+        else Gizmos.color = colorOfFovMesh;
 
-            Gizmos.color = Color.red;
-            Gizmos.DrawCube(transform.position + transform.forward, Vector3.one / 3);
+        Gizmos.DrawMesh(fovWedgeMesh, eyeTransform.position, eyeTransform.rotation);
 
-            //See navmesh point
-            if (aiPathList != null && aiPathList.Length > 0)
+        //See navmesh point
+        if (aiPathList != null && aiPathList.Length > 0)
+        {
+            navMeshAgent = GetComponent<NavMeshAgent>();
+            //Draw Cylinder
+            foreach (AIPathPoint aiPathPoint in aiPathList)
             {
-                navMeshAgent = GetComponent<NavMeshAgent>();
+                GizmosExtra.DrawCylinder(aiPathPoint.transformOfPathPoint.position - new Vector3(0, navMeshAgent.height / 2, 0), Quaternion.identity, navMeshAgent.height, navMeshAgent.radius, Color.red);
 
-                foreach (AIPathPoint aiPathPoint in aiPathList)
-                {
-                    GizmosExtra.DrawCylinder(aiPathPoint.transformOfPathPoint.position - new Vector3(0, navMeshAgent.height / 2, 0), Quaternion.identity, navMeshAgent.height, navMeshAgent.radius, Color.red);
-                }
+            }
+            Vector3 direction;
+            Vector3 middlePoint;
+            GUIStyle style = new GUIStyle();
+            style.normal.textColor = Color.red;
+            style.fontSize = 15;
+            style.fontStyle = FontStyle.Bold;
+            direction = aiPathList[0].transformOfPathPoint.position - transform.position;
+            if (direction.magnitude > 1f) GizmosExtra.DrawArrow(transform.position, direction * 0.75f);
+            switch (pathLoopType)
+            {
+                case PathLoopTypes.DontLoop:
+                    for (int i = 1; i < aiPathList.Length; i++)
+                    {
+                        direction = aiPathList[i].transformOfPathPoint.position - aiPathList[i - 1].transformOfPathPoint.position;
+                        middlePoint = aiPathList[i - 1].transformOfPathPoint.position + direction * 0.75f / 2;
+                        UnityEditor.Handles.Label(middlePoint, (i - 1).ToString(), style);
 
+                        GizmosExtra.DrawArrow(aiPathList[i - 1].transformOfPathPoint.position, direction * 0.75f);
+                    }
+                    break;
+
+                case PathLoopTypes.Loop:
+                    for (int i = 1; i < aiPathList.Length; i++)
+                    {
+                        direction = aiPathList[i].transformOfPathPoint.position - aiPathList[i - 1].transformOfPathPoint.position;
+                        middlePoint = aiPathList[i - 1].transformOfPathPoint.position + direction * 0.75f / 2;
+
+                        UnityEditor.Handles.Label(middlePoint, (i - 1).ToString(), style);
+
+                        GizmosExtra.DrawArrow(aiPathList[i - 1].transformOfPathPoint.position, direction * 0.75f);
+                    }
+                    direction = aiPathList[0].transformOfPathPoint.position - aiPathList[aiPathList.Length - 1].transformOfPathPoint.position;
+                    middlePoint = aiPathList[aiPathList.Length - 1].transformOfPathPoint.position + direction * 0.75f / 2;
+
+                    UnityEditor.Handles.Label(middlePoint, (aiPathList.Length).ToString(), style);
+
+                    GizmosExtra.DrawArrow(aiPathList[aiPathList.Length - 1].transformOfPathPoint.position, direction * 0.75f);
+                    break;
+
+                case PathLoopTypes.Boomerang:
+                    for (int i = 1; i < aiPathList.Length; i++)
+                    {
+                        direction = aiPathList[i].transformOfPathPoint.position - aiPathList[i - 1].transformOfPathPoint.position;
+                        middlePoint = aiPathList[i - 1].transformOfPathPoint.position + direction * 0.25f / 2;
+
+                        UnityEditor.Handles.Label(middlePoint, (i - 1).ToString(), style);
+
+                        GizmosExtra.DrawArrow(aiPathList[i - 1].transformOfPathPoint.position, direction * 0.25f);
+                    }
+                    for (int i = aiPathList.Length - 1; i > 0; i--)
+                    {
+                        direction = aiPathList[i - 1].transformOfPathPoint.position - aiPathList[i].transformOfPathPoint.position;
+                        middlePoint = aiPathList[i].transformOfPathPoint.position + direction * 0.25f / 2;
+
+                        UnityEditor.Handles.Label(middlePoint, (aiPathList.Length + aiPathList.Length - 2 - i).ToString(), style);
+
+                        GizmosExtra.DrawArrow(aiPathList[i].transformOfPathPoint.position, direction * 0.25f);
+                    }
+                    break;
             }
         }
     }
+#endif
+    #endregion
     private void Awake()
     {
         //Se for o primeiro inimigo a existir cria a lista de cones de visibilidade para armazenar eles e poder reusar depois
@@ -575,10 +633,10 @@ public abstract class IEnemy : MonoBehaviour , IRaycastableInLOS
 
         //Look Side 1
         animator.SetBool("isWalking", true);
-        lerpRotate_Ref = StartCoroutine(LerpRotate_Coroutine(90 * randomDirection,durationPerAction));
+        lerpRotate_Ref = StartCoroutine(LerpRotate_Coroutine(90 * randomDirection, durationPerAction));
         yield return lerpRotate_Ref;
 
-        lerpRotate_Ref = StartCoroutine(LerpRotate_Coroutine(90 * randomDirection,durationPerAction));
+        lerpRotate_Ref = StartCoroutine(LerpRotate_Coroutine(90 * randomDirection, durationPerAction));
         yield return lerpRotate_Ref;
         animator.SetBool("isWalking", false);
         yield return new WaitForSeconds(durationPerAction);
@@ -621,12 +679,12 @@ public abstract class IEnemy : MonoBehaviour , IRaycastableInLOS
     /// Faz lerping em fixed update de olhar na direcao
     /// </summary>
     /// <param name="direction"></param>
-    public void LerpLookAt(Vector3 position,float velocity)
+    public void LerpLookAt(Vector3 position, float velocity)
     {
         Vector3 direction = position - transform.position;
         direction.y = 0;
         Quaternion lookAtRotation = Quaternion.LookRotation(direction);
-        transform.rotation = Quaternion.Lerp(transform.rotation, lookAtRotation,velocity* 3 * Time.fixedDeltaTime);
+        transform.rotation = Quaternion.Lerp(transform.rotation, lookAtRotation, velocity * 3 * Time.fixedDeltaTime);
     }
 
     //Corotina de rodar para um lado 
