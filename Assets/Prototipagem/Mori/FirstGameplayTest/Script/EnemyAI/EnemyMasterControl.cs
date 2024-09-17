@@ -24,14 +24,10 @@ public class EnemyMasterControl : MonoBehaviour
     private void Awake()
     {
         Instance = this;
-
     }
     private void Start()
     {
         ToggleCheckLoop(true);
-    }
-    private void Update()
-    {
     }
     private void ToggleCheckLoop(bool state)
     {
@@ -50,6 +46,7 @@ public class EnemyMasterControl : MonoBehaviour
             checkActionLoop_Ref = null;
         }
     }
+
     #region Visibility Check
     private Coroutine checkVisibilityLoop_Ref;
     private IEnumerator CheckVisibilityLoop_Coroutine()
@@ -60,23 +57,17 @@ public class EnemyMasterControl : MonoBehaviour
             yield return new WaitForSeconds(0.1f);
         }
         int currentEnemyIndex = 0;
-        float lastTickTime=0;
         while (true)
         {
+            float interval = visibilityTickInterval / allEnemiesList.Count;
             if (allEnemiesList[currentEnemyIndex].isDead) yield return null;
             else
             {
                 allEnemiesList[currentEnemyIndex].VisibilityUpdate();
             }
-
             currentEnemyIndex++;
             if (currentEnemyIndex >= allEnemiesList.Count) currentEnemyIndex = 0;
-
-            float interval = visibilityTickInterval / allEnemiesList.Count;
-            m_visibilityTickInverval = Time.time - lastTickTime;
-            float tickInterval = Mathf.Max(interval - m_visibilityTickInverval, 0);
-            lastTickTime = Time.time;
-            yield return new WaitForSecondsRealtime(tickInterval);
+            yield return new WaitForSecondsRealtime(interval);
         }
     }
     #endregion

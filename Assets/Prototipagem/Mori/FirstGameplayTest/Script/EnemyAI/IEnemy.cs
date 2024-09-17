@@ -705,7 +705,6 @@ public abstract class IEnemy : MonoBehaviour, IRaycastableInLOS
     #endregion
 
     #region Line Of Sight
-    //A refazer
 
     /// <summary>
     /// Checa se o inimigo consegue ver o objeto
@@ -752,6 +751,7 @@ public abstract class IEnemy : MonoBehaviour, IRaycastableInLOS
         //Check for Angle
         float deltaAngle = Vector3.Angle(direction, eyeTransform.forward);
         if (deltaAngle > fieldOfView / 2) return 0;
+
 
         //Check for direct Line of sight
         if (Physics.Linecast(origin, destination, out RaycastHit hitInfo, visionBlockLayers, QueryTriggerInteraction.Ignore))

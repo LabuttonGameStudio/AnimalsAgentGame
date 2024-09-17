@@ -240,7 +240,7 @@ public class ArmadilloVisualControl : MonoBehaviour
     {
         if(walkOffSet == null)
         {
-            Vector3 direction = Vector3.up / 30;
+            Vector3 direction = Vector3.up / 40;
             walkOffSet = FPCameraShake.Instance.StartPivotOffsetLoop(12, Vector3.zero);
             checkWalkMovement_Ref = StartCoroutine(CheckWalkMovement_Coroutine(walkOffSet, direction));
         }
