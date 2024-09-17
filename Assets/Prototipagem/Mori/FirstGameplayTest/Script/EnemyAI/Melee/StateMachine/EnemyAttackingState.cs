@@ -208,6 +208,9 @@ public class EnemyAttackingState : MeleeEnemyState
     public override void OnEnterState()
     {
         iEnemy.navMeshAgent.isStopped = false;
+        iEnemy.navMeshAgent.autoBraking = false;
+        iEnemy.navMeshAgent.acceleration *= 1.25f;
+        iEnemy.navMeshAgent.speed *= 1.25f;
         StartMovingToPlayer();
     }
 

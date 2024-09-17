@@ -6,6 +6,7 @@ public class EnemyMeleeAttackHitBox : MonoBehaviour
 {
     [HideInInspector]public EnemyMelee aiController;
     private Collider connectedCollider;
+    private List<IDamageable> targets = new List<IDamageable>();
     private void Awake()
     {
         connectedCollider = GetComponent<Collider>();
@@ -28,7 +29,6 @@ public class EnemyMeleeAttackHitBox : MonoBehaviour
         }
         return (targets.Count > 0);
     }
-    private List<IDamageable> targets = new List<IDamageable>();
     private void OnTriggerEnter(Collider other)
     {
         if(other.TryGetComponent(out IDamageable idamageable))

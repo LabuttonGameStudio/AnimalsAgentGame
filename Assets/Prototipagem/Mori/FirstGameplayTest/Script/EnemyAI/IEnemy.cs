@@ -26,6 +26,8 @@ public class AIPathPoint
 
 public abstract class IEnemy : MonoBehaviour, IRaycastableInLOS
 {
+    //-----Variables-----
+    #region Variables
     #region Path Finding|NavMesh Variables
     [HideInInspector] public NavMeshAgent navMeshAgent;
 
@@ -67,10 +69,10 @@ public abstract class IEnemy : MonoBehaviour, IRaycastableInLOS
     protected float currentDamageReduction;
 
     //Is Dead
-    public bool isDead;
+    [HideInInspector] public bool isDead;
 
     //Is on Alert
-    public bool isOnAlert;
+    [HideInInspector] public bool isOnAlert;
     #endregion
 
     #region EnemyComponents
@@ -134,8 +136,10 @@ public abstract class IEnemy : MonoBehaviour, IRaycastableInLOS
     [Tooltip("De 0 a 100"), Range(0, 100)] protected float detectionLevel;
     protected float detectionLevelDecreased;
     #endregion
+    #endregion
 
-    #region Gizmos
+    //-----Gizmos Pathfimding-----
+    #region Gizmos Pathdinding
 #if UNITY_EDITOR
     private void OnDrawGizmosSelected()
     {
@@ -230,6 +234,9 @@ public abstract class IEnemy : MonoBehaviour, IRaycastableInLOS
     }
 #endif
     #endregion
+
+    //-----Base Functions-----
+    #region Base Functions
     private void Awake()
     {
         //Se for o primeiro inimigo a existir cria a lista de cones de visibilidade para armazenar eles e poder reusar depois
@@ -278,15 +285,27 @@ public abstract class IEnemy : MonoBehaviour, IRaycastableInLOS
 
         //Baseado no tipo do inimigo roda o StartDele
         OnStart();
+
+        fixedUpdate_Ref = StartCoroutine(FixedUpdate_Coroutine());
     }
     protected abstract void OnStart();
-    private void FixedUpdate()
+    private Coroutine fixedUpdate_Ref;
+    private IEnumerator FixedUpdate_Coroutine()
     {
-        //Baseado no tipo de inimigo roda o FixedUpdate dele
-        OnFixedUpdate();
+        while (true)
+        {
+            OnFixedUpdate();
+            yield return new WaitForFixedUpdate();
+        }
     }
     protected abstract void OnFixedUpdate();
+    private void OnDisable()
+    {
+       StopCoroutine(fixedUpdate_Ref); 
+    }
+    #endregion
 
+    //-----Create Vision Cones-----
     #region VisibilityCone
     /// <summary>
     /// Cria a mesh de visibilidade do inimigo
@@ -401,6 +420,7 @@ public abstract class IEnemy : MonoBehaviour, IRaycastableInLOS
     }
     #endregion
 
+    //-----Visibility Check------
     #region Visibility
     public void VisibilityUpdate()
     {
@@ -411,141 +431,7 @@ public abstract class IEnemy : MonoBehaviour, IRaycastableInLOS
     public abstract void OnVisibilityUpdate();
     #endregion
 
-    #region Actions
-    public void ActionUpdate()
-    {
-        //Intervalado pelo tick do Controlador geral dos inimigos, roda uma checagem para determinar oq o inimigo fara nesse momento
-        //Baseado no tipo do inimigo
-        OnActionUpdate();
-    }
-    public abstract void OnActionUpdate();
-    #endregion
-
-    #region NavMesh
-    /// <summary>
-    /// Tenta definir um novo destino para o inimigo seguir
-    /// </summary>
-    /// <param name="position">posicao requesitada</param>
-    /// <returns></returns>
-    public bool TrySetNextDestination(Vector3 position)
-    {
-        if (navMeshAgent.SetDestination(position))
-        {
-            return true;
-        }
-        else
-        {
-            Debug.LogError("Error in " + name + " in setting destination of point " + aiPathList[currentPathPoint].transformOfPathPoint.name);
-            return false;
-        }
-    }
-
-    /// <summary>
-    /// Baseado no tipo de looping e na progressao da rota, retorna o proximo ponto
-    /// </summary>
-    /// <returns></returns>
-    public Vector3 NextPathPoint()
-    {
-        //Checka se é o caso de loopar a rota ou somente ir para o proximo ponto 
-        switch (pathLoopType)
-        {
-            case PathLoopTypes.DontLoop:
-                if (currentPathPoint + 1 >= aiPathList.Length)
-                {
-                    OnRoamingPathEnd();
-                    return Vector3.zero;
-                }
-                else
-                {
-                    currentPathPoint++;
-                }
-                break;
-            case PathLoopTypes.Loop:
-                if ((currentPathPoint + 1) >= aiPathList.Length)
-                {
-                    currentPathPoint = 0;
-                }
-                else currentPathPoint++;
-                break;
-            case PathLoopTypes.Boomerang:
-                if (isBoomerangForward)
-                {
-                    if (currentPathPoint + 1 >= aiPathList.Length)
-                    {
-                        isBoomerangForward = false;
-                        currentPathPoint--;
-                    }
-                    else currentPathPoint++;
-                }
-                else
-                {
-                    if (currentPathPoint - 1 < 0)
-                    {
-                        isBoomerangForward = true;
-                        currentPathPoint++;
-                    }
-                    else currentPathPoint--;
-                }
-                break;
-
-        }
-        return aiPathList[currentPathPoint].transformOfPathPoint.position;
-    }
-    protected abstract void OnRoamingPathEnd();
-
-    /// <summary>
-    /// Checa se o ponto de destino atual esta proximo
-    /// </summary>
-    /// <returns></returns>
-    public bool CheckForProximityOfPoint()
-    {
-        Vector3 currentPos = transform.position;
-        Vector3 destinationPos = navMeshAgent.destination;
-        return Vector3.Distance(currentPos, destinationPos) < navMeshAgent.height / 2 + 0.25f;
-    }
-    #endregion
-
-    #region WaitOnPoint
-    /// <summary>
-    /// Comeca o processa de esperar parado em um ponto determinado
-    /// </summary>
-    /// <param name="duration"></param>
-    public void StartWaitOnPoint(float duration)
-    {
-        //Se caso ele ja estiver esperando, reseta o timer atual
-        if (waitOnPoint_Ref != null)
-        {
-            StopCoroutine(waitOnPoint_Ref);
-        }
-        //Inicia um novo timer de espera
-        waitOnPoint_Ref = StartCoroutine(WaitOnPoint_Coroutine(duration));
-    }
-
-    //Coroutina de esperar em um ponto
-    public Coroutine waitOnPoint_Ref;
-    public IEnumerator WaitOnPoint_Coroutine(float duration)
-    {
-        navMeshAgent.isStopped = true;
-        yield return new WaitForSeconds(duration);
-        navMeshAgent.isStopped = false;
-        waitOnPoint_Ref = null;
-    }
-
-
-    /// <summary>
-    /// Quebra o estado de parado do inimigo
-    /// </summary>
-    public void StopWaitOnPoint()
-    {
-        if (waitOnPoint_Ref != null)
-        {
-            StopCoroutine(waitOnPoint_Ref);
-            waitOnPoint_Ref = null;
-            navMeshAgent.isStopped = false;
-        }
-    }
-    #endregion
-
+    //-----Look Around Functions------
     #region Look
     /// <summary>
     /// Tenta iniciar o processo do inimigo de olhar em volta
@@ -675,6 +561,7 @@ public abstract class IEnemy : MonoBehaviour, IRaycastableInLOS
         Quaternion lookAtRotation = Quaternion.LookRotation(direction);
         transform.rotation = lookAtRotation;
     }
+
     /// <summary>
     /// Faz lerping em fixed update de olhar na direcao
     /// </summary>
@@ -704,6 +591,7 @@ public abstract class IEnemy : MonoBehaviour, IRaycastableInLOS
     }
     #endregion
 
+    //-----Check Line of Sight Functions-----
     #region Line Of Sight
 
     /// <summary>
@@ -762,6 +650,145 @@ public abstract class IEnemy : MonoBehaviour, IRaycastableInLOS
     }
     #endregion
 
+    //-----Action Check-----
+    #region Actions
+    public void ActionUpdate()
+    {
+        //Intervalado pelo tick do Controlador geral dos inimigos, roda uma checagem para determinar oq o inimigo fara nesse momento
+        //Baseado no tipo do inimigo
+        OnActionUpdate();
+    }
+    public abstract void OnActionUpdate();
+    #endregion
+    
+    //----- Navmesh Functions-----
+    #region NavMesh
+    /// <summary>
+    /// Tenta definir um novo destino para o inimigo seguir
+    /// </summary>
+    /// <param name="position">posicao requesitada</param>
+    /// <returns></returns>
+    public bool TrySetNextDestination(Vector3 position)
+    {
+        if (navMeshAgent.SetDestination(position))
+        {
+            return true;
+        }
+        else
+        {
+            Debug.LogError("Error in " + name + " in setting destination of point " + aiPathList[currentPathPoint].transformOfPathPoint.name);
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Baseado no tipo de looping e na progressao da rota, retorna o proximo ponto
+    /// </summary>
+    /// <returns></returns>
+    public Vector3 NextPathPoint()
+    {
+        //Checka se é o caso de loopar a rota ou somente ir para o proximo ponto 
+        switch (pathLoopType)
+        {
+            case PathLoopTypes.DontLoop:
+                if (currentPathPoint + 1 >= aiPathList.Length)
+                {
+                    OnRoamingPathEnd();
+                    return Vector3.zero;
+                }
+                else
+                {
+                    currentPathPoint++;
+                }
+                break;
+            case PathLoopTypes.Loop:
+                if ((currentPathPoint + 1) >= aiPathList.Length)
+                {
+                    currentPathPoint = 0;
+                }
+                else currentPathPoint++;
+                break;
+            case PathLoopTypes.Boomerang:
+                if (isBoomerangForward)
+                {
+                    if (currentPathPoint + 1 >= aiPathList.Length)
+                    {
+                        isBoomerangForward = false;
+                        currentPathPoint--;
+                    }
+                    else currentPathPoint++;
+                }
+                else
+                {
+                    if (currentPathPoint - 1 < 0)
+                    {
+                        isBoomerangForward = true;
+                        currentPathPoint++;
+                    }
+                    else currentPathPoint--;
+                }
+                break;
+        }
+        navMeshAgent.autoBraking = aiPathList[currentPathPoint].waitTimeOnPoint >= 0;
+        return aiPathList[currentPathPoint].transformOfPathPoint.position;
+    }
+    protected abstract void OnRoamingPathEnd();
+
+    /// <summary>
+    /// Checa se o ponto de destino atual esta proximo
+    /// </summary>
+    /// <returns></returns>
+    public bool CheckForProximityOfPoint()
+    {
+        Vector3 currentPos = transform.position;
+        Vector3 destinationPos = navMeshAgent.destination;
+        return Vector3.Distance(currentPos, destinationPos) < navMeshAgent.height / 2 + 0.25f;
+    }
+    #endregion
+
+    //-----Wait on Point Functions-----
+    #region WaitOnPoint
+    /// <summary>
+    /// Comeca o processa de esperar parado em um ponto determinado
+    /// </summary>
+    /// <param name="duration"></param>
+    public void StartWaitOnPoint(float duration)
+    {
+        //Se caso ele ja estiver esperando, reseta o timer atual
+        if (waitOnPoint_Ref != null)
+        {
+            StopCoroutine(waitOnPoint_Ref);
+        }
+        //Inicia um novo timer de espera
+        waitOnPoint_Ref = StartCoroutine(WaitOnPoint_Coroutine(duration));
+    }
+
+    //Coroutina de esperar em um ponto
+    public Coroutine waitOnPoint_Ref;
+    public IEnumerator WaitOnPoint_Coroutine(float duration)
+    {
+        navMeshAgent.isStopped = true;
+        yield return new WaitForSeconds(duration);
+        navMeshAgent.isStopped = false;
+        waitOnPoint_Ref = null;
+    }
+
+
+    /// <summary>
+    /// Quebra o estado de parado do inimigo
+    /// </summary>
+    public void StopWaitOnPoint()
+    {
+        if (waitOnPoint_Ref != null)
+        {
+            StopCoroutine(waitOnPoint_Ref);
+            waitOnPoint_Ref = null;
+            navMeshAgent.isStopped = false;
+        }
+    }
+    #endregion
+
+    //-----Toggle Alert-----
     #region Alert
     public void ToggleAlert(bool state)
     {
