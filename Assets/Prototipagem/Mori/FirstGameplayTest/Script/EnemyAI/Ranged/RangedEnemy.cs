@@ -4,6 +4,15 @@ using UnityEngine;
 
 public class RangedEnemy : IEnemy, IDamageable, ISoundReceiver
 {
+    //-----Variables-----
+    #region
+    protected RangedEnemy currentState;
+
+    protected MeleeEnemyRoamingState enemyRoamingState;
+    protected MeleeEnemyObservingState enemyObservingState;
+    protected MeleeEnemySearchingState enemySearchingState;
+    protected MeleeEnemyAttackingState enemyAttackingState;
+    #endregion
     //-----Action Update-----
     #region Action Update Functions
     public override void OnActionUpdate()

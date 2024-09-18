@@ -18,10 +18,10 @@ public class EnemyMelee : IEnemy, IDamageable, ISoundReceiver
 
     [HideInInspector] public MeleeEnemyState currentEnemyState;
 
-    protected EnemyRoamingState enemyRoamingState;
-    protected EnemyObservingState enemyObservingState;
-    protected EnemySearchingState enemySearchingState;
-    protected EnemyAttackingState enemyAttackingState;
+    protected MeleeEnemyRoamingState enemyRoamingState;
+    protected MeleeEnemyObservingState enemyObservingState;
+    protected MeleeEnemySearchingState enemySearchingState;
+    protected MeleeEnemyAttackingState enemyAttackingState;
     [SerializeField, Tooltip("Nivel de detecção necessario para trocar para o estado de searching")] private readonly float searchingStateBreakPoint = 50;
     #endregion
 
@@ -52,10 +52,10 @@ public class EnemyMelee : IEnemy, IDamageable, ISoundReceiver
     [SerializeField] private VisualEffect deadLoopParticle;
     protected override void OnAwake()
     {
-        enemyRoamingState = new EnemyRoamingState(this);
-        enemyObservingState = new EnemyObservingState(this);
-        enemySearchingState = new EnemySearchingState(this);
-        enemyAttackingState = new EnemyAttackingState(this);
+        enemyRoamingState = new MeleeEnemyRoamingState(this);
+        enemyObservingState = new MeleeEnemyObservingState(this);
+        enemySearchingState = new MeleeEnemySearchingState(this);
+        enemyAttackingState = new MeleeEnemyAttackingState(this);
 
         ChangeCurrentAIBehaviour(AIBehaviour.Roaming);
     }

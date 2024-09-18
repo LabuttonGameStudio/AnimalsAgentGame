@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using static IEnemy;
 
-public class EnemyRoamingState : MeleeEnemyState
+public class MeleeEnemyRoamingState : MeleeEnemyState
 {
     public enum RoamingStates
     {
@@ -15,11 +15,11 @@ public class EnemyRoamingState : MeleeEnemyState
 
     private MeleeRoaming_MovingSubState movingSubState;
     private MeleeRoaming_StoppedSubState stoppedSubState;
-    public EnemyRoamingState(EnemyMelee enemyCtrl) : base(enemyCtrl)
+    public MeleeEnemyRoamingState(EnemyMelee enemyCtrl) : base(enemyCtrl)
     {
         movingSubState = new MeleeRoaming_MovingSubState();
         stoppedSubState = new MeleeRoaming_StoppedSubState();
-        stoppedSubState.FixedUpdate_Event = new UnityEngine.Events.UnityEvent<EnemyRoamingState>();
+        stoppedSubState.FixedUpdate_Event = new UnityEngine.Events.UnityEvent<MeleeEnemyRoamingState>();
         iEnemy = enemyCtrl;
     }
     public override void OnVisibilityUpdate()
@@ -69,13 +69,13 @@ public class EnemyRoamingState : MeleeEnemyState
 
     public void StopMovement()
     {
-        stoppedSubState.FixedUpdate_Event = new UnityEngine.Events.UnityEvent<EnemyRoamingState>();
+        stoppedSubState.FixedUpdate_Event = new UnityEngine.Events.UnityEvent<MeleeEnemyRoamingState>();
         stoppedSubState.FixedUpdate_Event.AddListener(stoppedSubState.CheckForEndOfWaitOnPointCoroutine);
         ToggleMovement(false);
     }
     public void StopMovementAndLookAround()
     {
-        stoppedSubState.FixedUpdate_Event = new UnityEngine.Events.UnityEvent<EnemyRoamingState>();
+        stoppedSubState.FixedUpdate_Event = new UnityEngine.Events.UnityEvent<MeleeEnemyRoamingState>();
         stoppedSubState.FixedUpdate_Event.AddListener(stoppedSubState.CheckForEndOfLookAroundCoroutine);
         ToggleMovement(false);
     }

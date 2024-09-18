@@ -5,23 +5,23 @@ using UnityEngine.Events;
 
 public class MeleeRoaming_StoppedSubState : MeleeRoaming_SubState
 {
-    public UnityEvent<EnemyRoamingState> FixedUpdate_Event;
+    public UnityEvent<MeleeEnemyRoamingState> FixedUpdate_Event;
 
-    public void CheckForEndOfWaitOnPointCoroutine(EnemyRoamingState enemyRoamingState)
+    public void CheckForEndOfWaitOnPointCoroutine(MeleeEnemyRoamingState enemyRoamingState)
     {
         if(enemyRoamingState.iEnemy.waitOnPoint_Ref  == null)
         {
             enemyRoamingState.ToggleMovement(true);
         }
     }
-    public void CheckForEndOfLookAroundCoroutine(EnemyRoamingState enemyRoamingState)
+    public void CheckForEndOfLookAroundCoroutine(MeleeEnemyRoamingState enemyRoamingState)
     {
         if (enemyRoamingState.iEnemy.lookAround_Ref == null)
         {
             enemyRoamingState.ToggleMovement(true);
         }
     }
-    public override void OnFixedUpdate(EnemyRoamingState enemyRoamingState)
+    public override void OnFixedUpdate(MeleeEnemyRoamingState enemyRoamingState)
     {
         FixedUpdate_Event.Invoke(enemyRoamingState);
     }

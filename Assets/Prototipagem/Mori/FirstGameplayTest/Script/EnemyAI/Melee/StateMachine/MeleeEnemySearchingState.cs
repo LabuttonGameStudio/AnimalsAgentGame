@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class EnemySearchingState : MeleeEnemyState
+public class MeleeEnemySearchingState : MeleeEnemyState
 {
     private enum ObservingStates
     {
@@ -12,7 +12,7 @@ public class EnemySearchingState : MeleeEnemyState
         LookingAround
     }
     private ObservingStates currentState;
-    public EnemySearchingState(EnemyMelee enemyCtrl) : base(enemyCtrl)
+    public MeleeEnemySearchingState(EnemyMelee enemyCtrl) : base(enemyCtrl)
     {
         iEnemy = enemyCtrl;
     }

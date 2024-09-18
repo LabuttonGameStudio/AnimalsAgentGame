@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class MeleeRoaming_MovingSubState : MeleeRoaming_SubState
 {
-    public override void OnFixedUpdate(EnemyRoamingState enemyRoamingState)
+    public override void OnFixedUpdate(MeleeEnemyRoamingState enemyRoamingState)
     {
         IEnemy iEnemy = enemyRoamingState.iEnemy;
         Vector3 movingDirection = iEnemy.navMeshAgent.velocity + iEnemy.transform.position;

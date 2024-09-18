@@ -5,9 +5,9 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UIElements;
 
-public class EnemyAttackingState : MeleeEnemyState
+public class MeleeEnemyAttackingState : MeleeEnemyState
 {
-    public EnemyAttackingState(EnemyMelee enemyCtrl) : base(enemyCtrl)
+    public MeleeEnemyAttackingState(EnemyMelee enemyCtrl) : base(enemyCtrl)
     {
         iEnemy = enemyCtrl;
     }

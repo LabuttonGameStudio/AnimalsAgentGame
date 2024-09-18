@@ -4,5 +4,5 @@ using UnityEngine;
 
 public abstract class MeleeRoaming_SubState 
 {
-    public abstract void OnFixedUpdate(EnemyRoamingState enemyRoamingState);
+    public abstract void OnFixedUpdate(MeleeEnemyRoamingState enemyRoamingState);
 }

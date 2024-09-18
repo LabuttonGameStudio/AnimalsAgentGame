@@ -157,7 +157,7 @@ public abstract class IEnemy : MonoBehaviour, IRaycastableInLOS
             else Gizmos.color = colorOfFovMesh;
         }
         else Gizmos.color = colorOfFovMesh;
-
+        if (eyeTransform == null) return;
         Gizmos.DrawMesh(fovWedgeMesh, eyeTransform.position, eyeTransform.rotation);
 
         //See navmesh point

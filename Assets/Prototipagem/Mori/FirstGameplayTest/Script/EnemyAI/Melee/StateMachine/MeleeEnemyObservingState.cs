@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using static IEnemy;
 
-public class EnemyObservingState : MeleeEnemyState
+public class MeleeEnemyObservingState : MeleeEnemyState
 {
     private enum ObservingStates
     {
@@ -15,7 +15,7 @@ public class EnemyObservingState : MeleeEnemyState
         LookingAround
     }
     private ObservingStates currentState;
-    public EnemyObservingState(EnemyMelee enemyCtrl) : base(enemyCtrl)
+    public MeleeEnemyObservingState(EnemyMelee enemyCtrl) : base(enemyCtrl)
     {
         iEnemy = enemyCtrl;
     }
