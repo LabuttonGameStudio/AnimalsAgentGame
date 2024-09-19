@@ -7,6 +7,7 @@ public class Antena_Damageable :MonoBehaviour,IRequirements, IDamageable
 {
     public bool isTurnedOn { get;  set; }
     public INeedRequirements connectedObject { get; set; }
+    private BulletManager objectiveManager;
 
     [SerializeField] public MeshRenderer[] meshRenderers;
 
@@ -21,6 +22,9 @@ public class Antena_Damageable :MonoBehaviour,IRequirements, IDamageable
                     isTurnedOn = true;
                     meshRenderers[0].sharedMaterial.SetInt("_Light_on_off", 1);
                     if (connectedObject != null) connectedObject.OnRequirementChange();
+                    // Notifica o ObjectiveManager
+                    if (objectiveManager != null)
+                        objectiveManager.OnAntennaActivated();
                     break;
             }
         }
@@ -31,5 +35,7 @@ public class Antena_Damageable :MonoBehaviour,IRequirements, IDamageable
         Material material = new Material(meshRenderers[0].material);
         meshRenderers[0].sharedMaterial = material;
         meshRenderers[1].sharedMaterial = material;
+        objectiveManager = Object.FindFirstObjectByType<BulletManager>();
+        
     }
 }

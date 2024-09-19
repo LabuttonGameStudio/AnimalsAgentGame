@@ -6,7 +6,8 @@ using static Tween;
 public class TweenPopUpAuto : MonoBehaviour
 {
     public RectTransform objectToScale; 
-    public float scaleDuration = 0.5f; 
+    public float scaleDuration = 0.5f;
+    public float TimeForStart = 0f;
     public Tween.LerpType lerpType = Tween.LerpType.Lerp; 
 
     void Start()
@@ -14,7 +15,7 @@ public class TweenPopUpAuto : MonoBehaviour
         objectToScale.localScale = Vector3.zero;
         StartCoroutine(ScaleUp());
     }
-    
+
     public void StartScaleDown()
     {
         StartCoroutine(ScaleDown());
@@ -27,7 +28,7 @@ public class TweenPopUpAuto : MonoBehaviour
 
     IEnumerator ScaleUp()
     {
-        yield return new WaitForSeconds(0.6f);
+        yield return new WaitForSeconds(TimeForStart);
 
         Vector3 initialScale = Vector3.zero; 
         Vector3 midScale = new Vector3(1.2f, 1.2f, 1.2f); 
@@ -51,6 +52,7 @@ public class TweenPopUpAuto : MonoBehaviour
 
         // Reduz de 1.2 ats 1.0
         yield return Tween.ScaleTransform(this, objectToScale, finalScale, scaleDuration / 2, lerpType);
+
     }
 
 
