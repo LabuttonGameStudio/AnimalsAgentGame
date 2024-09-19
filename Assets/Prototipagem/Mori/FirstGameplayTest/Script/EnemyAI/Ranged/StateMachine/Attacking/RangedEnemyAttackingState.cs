@@ -2,17 +2,35 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RangedEnemyAttackingState : MonoBehaviour
+public class RangedEnemyAttackingState : RangedEnemyState
 {
-    // Start is called before the first frame update
-    void Start()
+    public RangedEnemyAttackingState(RangedEnemy enemyCtrl) : base(enemyCtrl)
+    {
+        iEnemy = enemyCtrl;
+    }
+
+    public override void OnActionUpdate()
     {
         
     }
 
-    // Update is called once per frame
-    void Update()
+    public override void OnEnterState()
     {
         
+    }
+
+    public override void OnExitState()
+    {
+        
+    }
+
+    public override void OnFixedUpdate()
+    {
+
+    }
+
+    public override void OnVisibilityUpdate()
+    {
+
     }
 }

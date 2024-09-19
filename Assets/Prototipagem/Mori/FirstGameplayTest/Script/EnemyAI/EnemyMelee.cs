@@ -1,9 +1,6 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AI;
 using static AIBehaviourEnums;
-using static SoundGeneralControl;
 using AudioType = SoundGeneralControl.AudioType;
 using UnityEngine.VFX;
 using static Damage;

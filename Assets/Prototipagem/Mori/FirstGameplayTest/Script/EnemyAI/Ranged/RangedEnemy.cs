@@ -5,7 +5,7 @@ using UnityEngine;
 public class RangedEnemy : IEnemy, IDamageable, ISoundReceiver
 {
     //-----Variables-----
-    #region
+    #region State Machine Variables
     protected RangedEnemy currentState;
 
     protected MeleeEnemyRoamingState enemyRoamingState;
@@ -13,6 +13,7 @@ public class RangedEnemy : IEnemy, IDamageable, ISoundReceiver
     protected MeleeEnemySearchingState enemySearchingState;
     protected MeleeEnemyAttackingState enemyAttackingState;
     #endregion
+
     //-----Action Update-----
     #region Action Update Functions
     public override void OnActionUpdate()
@@ -29,7 +30,7 @@ public class RangedEnemy : IEnemy, IDamageable, ISoundReceiver
     }
     #endregion
 
-    //-----Visibility Update-----]
+    //-----Visibility Update-----
     #region Visibility Update Functions
     public override void OnVisibilityUpdate()
     {
