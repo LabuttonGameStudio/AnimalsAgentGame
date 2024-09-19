@@ -2,9 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RangedEnemySearchiingState : RangedEnemyState
+public class RangedEnemySearchingState : RangedEnemyState
 {
-    public RangedEnemySearchiingState(RangedEnemy enemyCtrl) : base(enemyCtrl)
+    public RangedEnemySearchingState(RangedEnemy enemyCtrl) : base(enemyCtrl)
     {
         iEnemy = enemyCtrl;
     }

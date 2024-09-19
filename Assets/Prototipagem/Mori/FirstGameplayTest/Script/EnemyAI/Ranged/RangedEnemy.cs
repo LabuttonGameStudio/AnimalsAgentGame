@@ -6,12 +6,22 @@ public class RangedEnemy : IEnemy, IDamageable, ISoundReceiver
 {
     //-----Variables-----
     #region State Machine Variables
-    protected RangedEnemy currentState;
 
-    protected MeleeEnemyRoamingState enemyRoamingState;
-    protected MeleeEnemyObservingState enemyObservingState;
-    protected MeleeEnemySearchingState enemySearchingState;
-    protected MeleeEnemyAttackingState enemyAttackingState;
+    public enum CurrentStateEnum
+    {
+        roaming,
+        observing,
+        searching,
+        attacking
+    }
+
+    public CurrentStateEnum stateEnum;
+    protected RangedEnemyState currentState;
+
+    protected RangedEnemyRoamingState enemyRoamingState;
+    protected RangedEnemyObservingState enemyObservingState;
+    protected RangedEnemySearchingState enemySearchingState;
+    protected RangedEnemyAttackingState enemyAttackingState;
     #endregion
 
     //-----Action Update-----
@@ -50,7 +60,11 @@ public class RangedEnemy : IEnemy, IDamageable, ISoundReceiver
     #region Base Functions
     protected override void OnAwake()
     {
-
+        enemyRoamingState = new RangedEnemyRoamingState(this);
+        enemyObservingState = new RangedEnemyObservingState(this);
+        enemySearchingState = new RangedEnemySearchingState(this);
+        enemyAttackingState = new RangedEnemyAttackingState(this);
+        currentState = enemyRoamingState;
     }
     protected override void OnStart()
     {
@@ -58,10 +72,18 @@ public class RangedEnemy : IEnemy, IDamageable, ISoundReceiver
     }
     protected override void OnFixedUpdate()
     {
-
+        currentState.OnFixedUpdate();
     }
     #endregion
-
+    //-----State Machine Functions-----
+    #region State Machine
+    protected void ChangeCurrentState(RangedEnemyState newState)
+    {
+        currentState.OnExitState();
+        newState.OnEnterState();
+        currentState = newState;
+    }
+    #endregion
     //-----Pathfinding-----
     #region Pathfinding Functions
     protected override void OnRoamingPathEnd()
