@@ -18,10 +18,10 @@ public class RangedEnemy : IEnemy, IDamageable, ISoundReceiver
     public CurrentStateEnum stateEnum;
     protected RangedEnemyState currentState;
 
-    protected RangedEnemyRoamingState enemyRoamingState;
-    protected RangedEnemyObservingState enemyObservingState;
-    protected RangedEnemySearchingState enemySearchingState;
-    protected RangedEnemyAttackingState enemyAttackingState;
+    public RangedEnemyRoamingState enemyRoamingState;
+    public RangedEnemyObservingState enemyObservingState;
+    public RangedEnemySearchingState enemySearchingState;
+    public RangedEnemyAttackingState enemyAttackingState;
     #endregion
 
     //-----Action Update-----
@@ -44,7 +44,7 @@ public class RangedEnemy : IEnemy, IDamageable, ISoundReceiver
     #region Visibility Update Functions
     public override void OnVisibilityUpdate()
     {
-
+        currentState.OnVisibilityUpdate();
     }
     #endregion
 
@@ -75,15 +75,17 @@ public class RangedEnemy : IEnemy, IDamageable, ISoundReceiver
         currentState.OnFixedUpdate();
     }
     #endregion
+
     //-----State Machine Functions-----
     #region State Machine
-    protected void ChangeCurrentState(RangedEnemyState newState)
+    public void ChangeCurrentState(RangedEnemyState newState)
     {
         currentState.OnExitState();
         newState.OnEnterState();
         currentState = newState;
     }
     #endregion
+
     //-----Pathfinding-----
     #region Pathfinding Functions
     protected override void OnRoamingPathEnd()
