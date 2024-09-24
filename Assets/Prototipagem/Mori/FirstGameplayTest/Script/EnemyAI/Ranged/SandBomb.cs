@@ -5,15 +5,21 @@ using UnityEngine;
 public class SandBomb : MonoBehaviour
 {
     Rigidbody rb;
+    SphereCollider sphereCollider;
     [SerializeField] private ParticleSystem explosionParticle;
+    private MeshRenderer meshRenderer;
     [HideInInspector] public float explosionRange=3;
     [HideInInspector] public float damage;
     [SerializeField] SandSlowArea sandSlowArea;
 
+    [SerializeField] private ParticleSystem buildUpParticle;
+    [SerializeField] private ParticleSystemForceField buildUpParticleForceField;
 
     private void Awake()
     {
+        meshRenderer = GetComponent<MeshRenderer>();
         rb = GetComponent<Rigidbody>();
+        sphereCollider = GetComponent<SphereCollider>();
         explosionRange = 3;
         damage = 30;
     }
@@ -23,7 +29,28 @@ public class SandBomb : MonoBehaviour
     }
     private void Start()
     {
-        gameObject.SetActive(false);
+        ToggleFunctions(false);
+        ToggleVisual(false);
+    }
+    public void ToggleVisual(bool state)
+    {
+        meshRenderer.enabled = state;
+    }
+    public void ToggleFunctions(bool state)
+    {
+        rb.isKinematic = !state;
+        sphereCollider.enabled = state;
+        this.enabled = state;
+    }
+    public void StartSpawnVFX()
+    {
+        buildUpParticle.Play();
+        buildUpParticleForceField.enabled= true;
+    }
+    public void StopSpawnVFX()
+    {
+        buildUpParticle.Stop();
+        buildUpParticleForceField.enabled = false;
     }
     public void Launch(Vector3 startPoint, Vector3 finalPoint)
     {
@@ -39,9 +66,10 @@ public class SandBomb : MonoBehaviour
         float totalDistance = deltaDistance.magnitude;
         float timer = 0;
         float duration = totalDistance / 20;
+        float height = totalDistance / 8;
         while (timer < duration)
         {
-            rb.MovePosition(MathFExtras.Parabola(startPoint, finalPoint, 3, timer / duration));
+            rb.MovePosition(MathFExtras.Parabola(startPoint, finalPoint, height, timer / duration));
             timer += Time.fixedDeltaTime;
             yield return new WaitForFixedUpdate();
         }
@@ -53,7 +81,8 @@ public class SandBomb : MonoBehaviour
             StopCoroutine(launchParable_Ref);
             launchParable_Ref = null;
             Explode();
-            gameObject.SetActive(false);
+            ToggleVisual(false);
+            ToggleFunctions(false);
         }
     }
     public void Explode()

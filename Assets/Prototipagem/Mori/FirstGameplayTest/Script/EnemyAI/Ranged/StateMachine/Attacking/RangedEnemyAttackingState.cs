@@ -87,9 +87,10 @@ public class RangedEnemyAttackingState : RangedEnemyState
         iEnemy.weakAttackLaser.ResetLaser();
         Vector3 direction = iEnemy.weakAttackLaser.target - iEnemy.firePivot.position;
         direction.Normalize();
-        iEnemy.weakAttackProjectile.Fire(iEnemy.firePivot.position, direction*2);
         iEnemy.animator.SetTrigger("sniperFire");
         iEnemy.animator.SetBool("isLoadingSniper", false);
+        yield return new WaitForSeconds(0.25f+1.2f/2);
+        iEnemy.weakAttackProjectile.Fire(iEnemy.firePivot.position, direction*2);
         yield return new WaitForSeconds(0.33f);
     }
 
@@ -97,6 +98,12 @@ public class RangedEnemyAttackingState : RangedEnemyState
     {
         iEnemy.animator.SetBool("isLoadingCannon", true);
         yield return new WaitForSeconds(2.292f / 2);
+        iEnemy.strongAttackProjectile.StartSpawnVFX();
+        yield return new WaitForSeconds(0.5f);
+        iEnemy.strongAttackProjectile.StopSpawnVFX();
+        iEnemy.strongAttackProjectile.ToggleVisual(true);
+        yield return new WaitForSeconds(0.5f);
+        iEnemy.strongAttackProjectile.ToggleFunctions(true);
         iEnemy.strongAttackProjectile.Launch(iEnemy.firePivot.position,ArmadilloPlayerController.Instance.transform.position);
         iEnemy.animator.SetTrigger("cannonFire");
         iEnemy.animator.SetBool("isLoadingCannon", false);
