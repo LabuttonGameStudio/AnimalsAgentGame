@@ -8,7 +8,7 @@ public class SandSlowArea : MonoBehaviour
     {
         if(other.CompareTag("Player"))
         {
-            ArmadilloPlayerController.Instance.movementControl.speedMultiplier = 0.25f;
+            ArmadilloPlayerController.Instance.movementControl.speedMultiplier = 0.5f;
         }
     }
     private void OnTriggerExit(Collider other)

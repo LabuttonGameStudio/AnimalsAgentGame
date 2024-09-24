@@ -744,6 +744,16 @@ public abstract class IEnemy : MonoBehaviour, IRaycastableInLOS
         Vector3 destinationPos = navMeshAgent.destination;
         return Vector3.Distance(currentPos, destinationPos) < navMeshAgent.height / 2 + 0.25f;
     }
+
+    public IEnumerator WaitToReachNextPoint_Coroutine()
+    {
+        while(true)
+        {
+            if(CheckForProximityOfPoint())yield break;
+            yield return new WaitForFixedUpdate();
+        }
+    }
+
     #endregion
 
     //-----Wait on Point Functions-----

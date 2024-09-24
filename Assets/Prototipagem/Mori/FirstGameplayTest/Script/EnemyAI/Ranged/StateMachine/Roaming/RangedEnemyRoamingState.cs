@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class RangedEnemyRoamingState : RangedEnemyState
@@ -14,6 +15,7 @@ public class RangedEnemyRoamingState : RangedEnemyState
 
     public override void OnEnterState()
     {
+
         Debug.Log("Roaming Enter");
     }
 
@@ -29,9 +31,9 @@ public class RangedEnemyRoamingState : RangedEnemyState
 
     public override void OnVisibilityUpdate()
     {
-        if(iEnemy.stateEnum != RangedEnemy.CurrentStateEnum.roaming)
+        if (iEnemy.stateEnum != RangedEnemy.CurrentStateEnum.roaming)
         {
-            switch(iEnemy.stateEnum)
+            switch (iEnemy.stateEnum)
             {
                 case RangedEnemy.CurrentStateEnum.roaming:
                     iEnemy.ChangeCurrentState(iEnemy.enemyRoamingState);
@@ -46,6 +48,16 @@ public class RangedEnemyRoamingState : RangedEnemyState
                     iEnemy.ChangeCurrentState(iEnemy.enemyAttackingState);
                     break;
             }
+        }
+    }
+
+    private Coroutine loopRoamingPath_Ref;
+    public IEnumerator LoopRoamingPath_Coroutine()
+    {
+        iEnemy.TrySetNextDestination(iEnemy.aiPathList[0].transformOfPathPoint.position);
+        while(true)
+        {
+            yield return iEnemy.WaitToReachNextPoint_Coroutine();
         }
     }
 }

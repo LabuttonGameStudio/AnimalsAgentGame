@@ -24,11 +24,22 @@ public class RangedEnemy : IEnemy, IDamageable, ISoundReceiver
     public RangedEnemyAttackingState enemyAttackingState;
     #endregion
 
+    #region Combat Variables
+    [Header("Combat Variables")]
+    public LaserTrackPlayer weakAttackLaser;
+
+    public SandProjectile weakAttackProjectile;
+
+    public SandBomb strongAttackProjectile;
+
+    public Transform firePivot;
+    #endregion
+
     //-----Action Update-----
     #region Action Update Functions
     public override void OnActionUpdate()
     {
-
+        currentState.OnActionUpdate();
     }
     #endregion
 
@@ -68,7 +79,7 @@ public class RangedEnemy : IEnemy, IDamageable, ISoundReceiver
     }
     protected override void OnStart()
     {
-
+        animator.SetBool("isWalking", true);
     }
     protected override void OnFixedUpdate()
     {
