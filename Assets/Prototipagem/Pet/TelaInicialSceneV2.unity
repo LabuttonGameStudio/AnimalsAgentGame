@@ -735,9 +735,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 454385268}
-        m_TargetAssemblyTypeName: TweenPopUpAuto, Assembly-CSharp
-        m_MethodName: StartScaleDown
+      - m_Target: {fileID: 454385269}
+        m_TargetAssemblyTypeName: TweenOpenSystem, Assembly-CSharp
+        m_MethodName: ClosePanel
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -913,6 +913,18 @@ MonoBehaviour:
       - m_Target: {fileID: 1039980604}
         m_TargetAssemblyTypeName: TweenFade, Assembly-CSharp
         m_MethodName: StartFade
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 444690796}
+        m_TargetAssemblyTypeName: CinematicControlSystem, Assembly-CSharp
+        m_MethodName: StartCinematic
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1477,6 +1489,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   objectToScale: {fileID: 376490952}
   scaleDuration: 0.2
+  TimeForStart: 0
   lerpType: 2
 --- !u!1 &407061533
 GameObject:
@@ -1531,6 +1544,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   objectToScale: {fileID: 407061534}
   scaleDuration: 0.4
+  TimeForStart: 0
   lerpType: 2
 --- !u!114 &407061536
 MonoBehaviour:
@@ -1745,9 +1759,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 454385268}
-        m_TargetAssemblyTypeName: TweenPopUpAuto, Assembly-CSharp
-        m_MethodName: StartScaleUP
+      - m_Target: {fileID: 454385269}
+        m_TargetAssemblyTypeName: TweenOpenSystem, Assembly-CSharp
+        m_MethodName: OpenPanel
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1910,6 +1924,7 @@ GameObject:
   m_Component:
   - component: {fileID: 444690794}
   - component: {fileID: 444690795}
+  - component: {fileID: 444690796}
   m_Layer: 5
   m_Name: SaveMenu
   m_TagString: Untagged
@@ -1926,7 +1941,7 @@ RectTransform:
   m_GameObject: {fileID: 444690793}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1634662417}
@@ -1951,8 +1966,37 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   objectToScale: {fileID: 444690794}
-  scaleDuration: 0.4
+  scaleDuration: 0.5
   lerpType: 1
+--- !u!114 &444690796
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 444690793}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5161e56be1823894887bc252789a1d80, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  eventSequence:
+  - events:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 2028851115}
+          m_TargetAssemblyTypeName: UnityEngine.Animator, UnityEngine
+          m_MethodName: ResetTrigger
+          m_Mode: 5
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: isSneaking
+            m_BoolArgument: 1
+          m_CallState: 2
+    delay: 0.3
 --- !u!1 &454385266
 GameObject:
   m_ObjectHideFlags: 0
@@ -1962,7 +2006,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 454385267}
-  - component: {fileID: 454385268}
+  - component: {fileID: 454385269}
   m_Layer: 5
   m_Name: Buttons
   m_TagString: Untagged
@@ -1993,7 +2037,7 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &454385268
+--- !u!114 &454385269
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2002,12 +2046,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 454385266}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dba016cb770711a43a697d9fb4725c2f, type: 3}
+  m_Script: {fileID: 11500000, guid: e368b5f04a2f6d9468953cd0c992728f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  objectToScale: {fileID: 454385267}
-  scaleDuration: 0.5
-  lerpType: 2
+  panelToOpen: {fileID: 454385267}
+  openDuration: 0.2
+  TimeForStart: 0.5
+  lerpType: 1
 --- !u!1 &463354505
 GameObject:
   m_ObjectHideFlags: 0
@@ -2061,6 +2106,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   objectToScale: {fileID: 463354506}
   scaleDuration: 0.4
+  TimeForStart: 0
   lerpType: 2
 --- !u!114 &463354508
 MonoBehaviour:
@@ -3105,7 +3151,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   objectToScale: {fileID: 868675209}
-  scaleDuration: 0.4
+  scaleDuration: 0.2
+  TimeForStart: 0.5
   lerpType: 1
 --- !u!4 &873675220 stripped
 Transform:
@@ -4338,7 +4385,6 @@ GameObject:
   - component: {fileID: 1204234259}
   - component: {fileID: 1204234262}
   - component: {fileID: 1204234261}
-  - component: {fileID: 1204234263}
   - component: {fileID: 1204234264}
   m_Layer: 5
   m_Name: TelaCentral
@@ -4365,7 +4411,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: -1.2, y: -6.1}
-  m_SizeDelta: {x: 230, y: 0}
+  m_SizeDelta: {x: 230, y: 130}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1204234261
 MonoBehaviour:
@@ -4405,21 +4451,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1204234258}
   m_CullTransparentMesh: 1
---- !u!114 &1204234263
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1204234258}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dba016cb770711a43a697d9fb4725c2f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  objectToScale: {fileID: 1204234259}
-  scaleDuration: 0.7
-  lerpType: 2
 --- !u!114 &1204234264
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4433,10 +4464,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   panelToOpen: {fileID: 1204234259}
-  openHeight: 135
-  closedHeight: 0
-  openDuration: 0.2
-  lerpType: 0
+  openDuration: 0.3
+  TimeForStart: 0.8
+  lerpType: 1
 --- !u!4 &1207162641 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: cce33216e0c4d0141b1ec1c829b59ade, type: 3}
@@ -4934,6 +4964,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   objectToScale: {fileID: 1366696610}
   scaleDuration: 0.4
+  TimeForStart: 0
   lerpType: 2
 --- !u!114 &1366696612
 MonoBehaviour:
@@ -5180,7 +5211,7 @@ MonoBehaviour:
   loadingScreenScene: TeladeCarregamentoScene
   actuallevel: TelaInicialSceneV2
   delayBeforeLoading: 11
-  cursorTexture: {fileID: 2800000, guid: c127ad7471b260c4da1d9b99e90aff1c, type: 3}
+  cursorTexture: {fileID: 2800000, guid: c74b06c2bc9b3b2459f4dd4ea9202f92, type: 3}
 --- !u!114 &1517162739
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5540,6 +5571,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   objectToScale: {fileID: 1669131980}
   scaleDuration: 0.4
+  TimeForStart: 0
   lerpType: 2
 --- !u!114 &1669131982
 MonoBehaviour:

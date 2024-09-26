@@ -43,6 +43,8 @@ public class TweenPopUpAuto : MonoBehaviour
 
     IEnumerator ScaleDown()
     {
+        yield return new WaitForSeconds(TimeForStart);
+
         Vector3 initialScale = Vector3.one;
         Vector3 midScale = new Vector3(1.2f, 1.2f, 1.2f); 
         Vector3 finalScale = Vector3.zero; 
