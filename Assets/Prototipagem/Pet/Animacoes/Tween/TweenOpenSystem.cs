@@ -5,11 +5,11 @@ using UnityEngine;
 public class TweenOpenSystem : MonoBehaviour
 {
     public RectTransform panelToOpen; // O painel que será animado
-    public float openDuration = 1f; // Duração da animação
+    public float openDuration = 1f; // Duracao da animacao
     public float TimeForStart = 0f;
-    public Tween.LerpType lerpType; // Tipo de interpolação (Lerp ou Slerp)
+    public Tween.LerpType lerpType; // Tipo de interpolacao (Lerp ou Slerp)
 
-    private Vector2 originalScale; // Guardará a escala original do painel
+    private Vector2 originalScale; // Guardara a escala original do painel
 
     void Start()
     {
@@ -21,11 +21,28 @@ public class TweenOpenSystem : MonoBehaviour
     public void OpenPanel()
     {
 
-        // Inicia a animação para abrir o painel
+        // Inicia a animacao para abrir o painel
         StartCoroutine(OpenPanelAnimation());
     }
+    public void ClosePanel()
+    {
+        StartCoroutine(ClosePanelAnimation());
+        
+    }
 
-    private IEnumerator OpenPanelAnimation()
+        private IEnumerator ClosePanelAnimation()
+    {
+        yield return new WaitForSeconds(TimeForStart);
+
+        
+        Vector3 startScale = new Vector3(panelToOpen.localScale.x, 1f, panelToOpen.localScale.z); // Começa com Y = 0
+        Vector3 finalScale = new Vector3(panelToOpen.localScale.x, 0f, panelToOpen.localScale.z); // Depois ajusta para Y = 1 (tamanho final)
+
+        // Volta para 1.0
+        yield return Tween.ScaleTransform(this, panelToOpen, finalScale, openDuration / 2, lerpType);
+    }
+
+        private IEnumerator OpenPanelAnimation()
     {
         yield return new WaitForSeconds(TimeForStart);
 

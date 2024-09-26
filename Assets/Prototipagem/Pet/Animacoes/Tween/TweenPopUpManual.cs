@@ -27,7 +27,7 @@ public class TweenPopUpManual : MonoBehaviour
     {
         yield return new WaitForSeconds(0.6f);
         Vector3 initialScale = Vector3.zero;
-        Vector3 midScale = new Vector3(1.4f, 1.4f, 1.4f);
+        Vector3 midScale = new Vector3(1.2f, 1.2f, 1.2f);
         Vector3 finalScale = Vector3.one;
 
         //Aumenta de 0 ate 1.2
@@ -40,7 +40,7 @@ public class TweenPopUpManual : MonoBehaviour
     IEnumerator ScaleDown()
     {
         Vector3 initialScale = Vector3.one;
-        Vector3 midScale = new Vector3(1.4f, 1.4f, 1.4f);
+        Vector3 midScale = new Vector3(1.2f, 1.2f, 1.2f);
         Vector3 finalScale = Vector3.zero;
 
         //Aumenta de 0 ate 1.2
