@@ -18,10 +18,10 @@ public class TweenPopUpInfo : MonoBehaviour
     void Update()
     {
         // Verifica se o objeto está escalado em Vector3.one e se o jogador pressiona Esc
-        /*if (objectToScale.localScale == Vector3.one && Input.GetKeyDown(KeyCode.Escape))
+        if (objectToScale.localScale == Vector3.one && Input.GetKeyDown(KeyCode.Escape))
         {
             StartScaleDown();
-        }*/
+        }
     }
 
     public void StartScaleDown()

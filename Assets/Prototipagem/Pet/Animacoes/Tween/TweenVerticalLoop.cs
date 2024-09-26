@@ -22,7 +22,7 @@ public class TweenVerticalLoop : MonoBehaviour
     {
         Vector2 finalPosition = startPos + Vector2.up * moveDistance; 
 
-        while (true) 
+        while (enabled) 
         {
             yield return Tween.MoveRectTransform(this, objectToMove, finalPosition, moveDuration, lerpType);
 
