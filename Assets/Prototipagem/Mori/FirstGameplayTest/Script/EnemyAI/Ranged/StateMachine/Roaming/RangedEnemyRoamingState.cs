@@ -15,12 +15,28 @@ public class RangedEnemyRoamingState : RangedEnemyState
 
     public override void OnEnterState()
     {
+        if (iEnemy.isStatic)
+        {
 
+        }
+        else
+        {
+            Debug.Log("a");
+            if (loopRoamingPath_Ref == null)
+            {
+                loopRoamingPath_Ref = iEnemy.StartCoroutine(LoopRoamingPath_Coroutine());
+            }
+        }
         Debug.Log("Roaming Enter");
     }
 
     public override void OnExitState()
     {
+        if (loopRoamingPath_Ref != null)
+        {
+            iEnemy.StopCoroutine(loopRoamingPath_Ref);
+            loopRoamingPath_Ref = null;
+        }
         Debug.Log("Roaming Exit");
     }
 
@@ -41,9 +57,26 @@ public class RangedEnemyRoamingState : RangedEnemyState
     private Coroutine loopRoamingPath_Ref;
     public IEnumerator LoopRoamingPath_Coroutine()
     {
-        while(true)
+        if (iEnemy.TrySetNextDestination(iEnemy.aiPathList[iEnemy.currentPathPoint].transformOfPathPoint.position))
         {
-            yield return iEnemy.WaitToReachNextPoint_Coroutine();
+            yield return iEnemy.RoamingWaitToReachNextPoint();
+        }
+        while (true)
+        {
+            if (iEnemy.CheckNextPathPoint())
+            {
+                if (iEnemy.TrySetNextDestination(iEnemy.NextPathPoint()))
+                {
+                    yield return iEnemy.RoamingWaitToReachNextPoint();
+                }
+            }
+            else
+            {
+                loopRoamingPath_Ref = null;
+                iEnemy.isStatic = true;
+                yield break;
+            }
+            yield return new WaitForFixedUpdate();
         }
     }
 }

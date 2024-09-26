@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static AIBehaviourEnums;
 
 public class RangedEnemy : IEnemy, IDamageable, ISoundReceiver
 {
@@ -35,6 +36,9 @@ public class RangedEnemy : IEnemy, IDamageable, ISoundReceiver
     public Transform firePivot;
     #endregion
 
+    #region Detection Variables
+    public float timeToMaxDetect;
+    #endregion
     //-----Action Update-----
     #region Action Update Functions
     public override void OnActionUpdate()
@@ -76,6 +80,7 @@ public class RangedEnemy : IEnemy, IDamageable, ISoundReceiver
         enemySearchingState = new RangedEnemySearchingState(this);
         enemyAttackingState = new RangedEnemyAttackingState(this);
         currentState = enemyRoamingState;
+        currentState.OnEnterState();
     }
     protected override void OnStart()
     {
@@ -103,6 +108,19 @@ public class RangedEnemy : IEnemy, IDamageable, ISoundReceiver
     protected override void OnRoamingPathEnd()
     {
 
+    }
+    #endregion
+
+    //-----Detection Level-----
+    #region Detection
+
+    public void IncreaseDetection()
+    {
+        
+    }
+    public IEnumerator DecreaseDetectionTimer_Coroutine()
+    {
+        yield return null;
     }
     #endregion
 }

@@ -26,11 +26,15 @@ public class RangedEnemyObservingState : RangedEnemyState
 
     public override void OnFixedUpdate()
     {
+        iEnemy.LerpLookAt(iEnemy.lastKnownPlayerPos, 1);
         Debug.Log("Observing FixedUpdate");
     }
 
     public override void OnVisibilityUpdate()
     {
-        
+        if (iEnemy.CheckForPlayerLOS() > 0)
+        {
+            
+        }
     }
 }

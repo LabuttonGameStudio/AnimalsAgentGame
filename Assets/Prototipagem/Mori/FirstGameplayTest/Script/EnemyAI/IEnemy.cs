@@ -691,6 +691,19 @@ public abstract class IEnemy : MonoBehaviour, IRaycastableInLOS
         }
     }
 
+    public bool CheckNextPathPoint()
+    {
+        switch (pathLoopType)
+        {
+            case PathLoopTypes.DontLoop:
+                return currentPathPoint + 1 < aiPathList.Length;
+            case PathLoopTypes.Loop:
+            case PathLoopTypes.Boomerang:
+            default:
+                return true;
+        }
+    }
+
     /// <summary>
     /// Baseado no tipo de looping e na progressao da rota, retorna o proximo ponto
     /// </summary>
@@ -755,6 +768,15 @@ public abstract class IEnemy : MonoBehaviour, IRaycastableInLOS
         return Vector3.Distance(currentPos, destinationPos) < navMeshAgent.height / 2 + 0.25f;
     }
 
+    public IEnumerator RoamingWaitToReachNextPoint()
+    {
+        while (true)
+        {
+            if (CheckForProximityOfPoint()) yield break;
+            LerpLookAt(rb.position + navMeshAgent.velocity*10,1);
+            yield return new WaitForFixedUpdate();
+        }
+    }
     public IEnumerator WaitToReachNextPoint_Coroutine()
     {
         while(true)
