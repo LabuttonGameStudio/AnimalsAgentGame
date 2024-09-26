@@ -31,30 +31,16 @@ public class RangedEnemyRoamingState : RangedEnemyState
 
     public override void OnVisibilityUpdate()
     {
-        if (iEnemy.stateEnum != RangedEnemy.CurrentStateEnum.roaming)
+        if (iEnemy.CheckForPlayerLOS() > 0)
         {
-            switch (iEnemy.stateEnum)
-            {
-                case RangedEnemy.CurrentStateEnum.roaming:
-                    iEnemy.ChangeCurrentState(iEnemy.enemyRoamingState);
-                    break;
-                case RangedEnemy.CurrentStateEnum.observing:
-                    iEnemy.ChangeCurrentState(iEnemy.enemyObservingState);
-                    break;
-                case RangedEnemy.CurrentStateEnum.searching:
-                    iEnemy.ChangeCurrentState(iEnemy.enemySearchingState);
-                    break;
-                case RangedEnemy.CurrentStateEnum.attacking:
-                    iEnemy.ChangeCurrentState(iEnemy.enemyAttackingState);
-                    break;
-            }
+            iEnemy.lastKnownPlayerPos = ArmadilloPlayerController.Instance.transform.position;
+            iEnemy.ChangeCurrentState(iEnemy.enemyAttackingState);
         }
     }
 
     private Coroutine loopRoamingPath_Ref;
     public IEnumerator LoopRoamingPath_Coroutine()
     {
-        iEnemy.TrySetNextDestination(iEnemy.aiPathList[0].transformOfPathPoint.position);
         while(true)
         {
             yield return iEnemy.WaitToReachNextPoint_Coroutine();

@@ -10,14 +10,20 @@ public class LaserTrackPlayer : MonoBehaviour
     {
         laserTrail = GetComponent<LineRenderer>();
     }
+    private void Start()
+    {
+        gameObject.SetActive(false);
+    }
     public void ResetLaser()
     {
-        laserTrail.SetPosition(1, Vector3.zero);
+        laserTrail.SetPosition(0, transform.position);
+        laserTrail.SetPosition(1, transform.position);
     }
 
     private void Update()
     {
-        Vector3 position = Vector3.Lerp(laserTrail.GetPosition(1), target - transform.position, Time.deltaTime*10);
+        Vector3 position = Vector3.Lerp(laserTrail.GetPosition(1), target, Time.deltaTime*10);
+        laserTrail.SetPosition(0, transform.position);
         laserTrail.SetPosition(1, position);
     }
 }

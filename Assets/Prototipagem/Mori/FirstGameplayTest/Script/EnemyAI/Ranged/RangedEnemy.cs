@@ -91,6 +91,7 @@ public class RangedEnemy : IEnemy, IDamageable, ISoundReceiver
     #region State Machine
     public void ChangeCurrentState(RangedEnemyState newState)
     {
+        if (currentState == newState) return;
         currentState.OnExitState();
         newState.OnEnterState();
         currentState = newState;

@@ -554,6 +554,16 @@ public abstract class IEnemy : MonoBehaviour, IRaycastableInLOS
             }
         }
     }
+    public IEnumerator LerpLookAt_Coroutine(Transform lookAtTransform, float velocity,float duration)
+    {
+        float timer = 0;
+        while(timer<duration)
+        {
+            LerpLookAt(lookAtTransform.position, velocity);
+            timer += Time.fixedDeltaTime;
+            yield return new WaitForFixedUpdate();
+        }
+    }
     public void LookAt(Vector3 position)
     {
         Vector3 direction = position - transform.position;
