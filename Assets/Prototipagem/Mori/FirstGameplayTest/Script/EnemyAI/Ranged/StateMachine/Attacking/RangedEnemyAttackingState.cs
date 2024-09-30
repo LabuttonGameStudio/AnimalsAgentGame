@@ -16,7 +16,10 @@ public class RangedEnemyAttackingState : RangedEnemyState
 
     public override void OnEnterState()
     {
+        iEnemy.currentStateEnum = RangedEnemy.CurrentStateEnum.attacking;
+        iEnemy.enemyBehaviourVisual.ChangeVisualState(AIBehaviourEnums.AIBehaviour.Attacking);
         iEnemy.animator.SetBool("isWalking", false);
+        iEnemy.navMeshAgent.ResetPath();
         iEnemy.animator.SetBool("isTurret", true);
         attackLoop_Ref = iEnemy.StartCoroutine(AttackLoop_Coroutine());
         Debug.Log("Attacking Enter");
@@ -97,13 +100,28 @@ public class RangedEnemyAttackingState : RangedEnemyState
 
     private IEnumerator StrongAttack_Coroutine()
     {
+        float timer = 0;
         iEnemy.animator.SetBool("isLoadingCannon", true);
         yield return iEnemy.LerpLookAt_Coroutine(ArmadilloPlayerController.Instance.transform, 2, 2.292f / 2);
         iEnemy.strongAttackProjectile.StartSpawnVFX();
-        yield return iEnemy.LerpLookAt_Coroutine(ArmadilloPlayerController.Instance.transform, 2, 0.5f);
+        while (timer < 0.5f)
+        {
+            iEnemy.LerpLookAt(ArmadilloPlayerController.Instance.transform.position, 2);
+            iEnemy.strongAttackProjectile.transform.position = iEnemy.firePivot.position;
+            timer += Time.fixedDeltaTime;
+            yield return new WaitForFixedUpdate();
+        }
+        timer = 0;
         iEnemy.strongAttackProjectile.StopSpawnVFX();
         iEnemy.strongAttackProjectile.ToggleVisual(true);
-        yield return iEnemy.LerpLookAt_Coroutine(ArmadilloPlayerController.Instance.transform, 2, 0.5f);
+        while (timer<0.5f)
+        {
+            iEnemy.LerpLookAt(ArmadilloPlayerController.Instance.transform.position, 2);
+            iEnemy.strongAttackProjectile.transform.position = iEnemy.firePivot.position;
+            timer += Time.fixedDeltaTime;
+            yield return new WaitForFixedUpdate();
+        }
+        timer = 0;
         iEnemy.strongAttackProjectile.ToggleFunctions(true);
         iEnemy.strongAttackProjectile.Launch(iEnemy.firePivot.position, ArmadilloPlayerController.Instance.transform.position);
         iEnemy.animator.SetTrigger("cannonFire");

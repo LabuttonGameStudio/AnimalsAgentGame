@@ -15,17 +15,20 @@ public class RangedEnemyRoamingState : RangedEnemyState
 
     public override void OnEnterState()
     {
+        iEnemy.currentStateEnum = RangedEnemy.CurrentStateEnum.roaming;
+        iEnemy.enemyBehaviourVisual.ChangeVisualState(AIBehaviourEnums.AIBehaviour.Roaming);
         if (iEnemy.isStatic)
         {
 
         }
         else
         {
-            Debug.Log("a");
-            if (loopRoamingPath_Ref == null)
+            if (loopRoamingPath_Ref != null)
             {
-                loopRoamingPath_Ref = iEnemy.StartCoroutine(LoopRoamingPath_Coroutine());
+                iEnemy.StopCoroutine(loopRoamingPath_Ref);
+                loopRoamingPath_Ref = null;
             }
+            loopRoamingPath_Ref = iEnemy.StartCoroutine(LoopRoamingPath_Coroutine());
         }
         Debug.Log("Roaming Enter");
     }
@@ -35,7 +38,7 @@ public class RangedEnemyRoamingState : RangedEnemyState
         if (loopRoamingPath_Ref != null)
         {
             iEnemy.StopCoroutine(loopRoamingPath_Ref);
-            loopRoamingPath_Ref = null;
+            //loopRoamingPath_Ref = null;
         }
         Debug.Log("Roaming Exit");
     }
@@ -50,7 +53,7 @@ public class RangedEnemyRoamingState : RangedEnemyState
         if (iEnemy.CheckForPlayerLOS() > 0)
         {
             iEnemy.lastKnownPlayerPos = ArmadilloPlayerController.Instance.transform.position;
-            iEnemy.ChangeCurrentState(iEnemy.enemyAttackingState);
+            iEnemy.ChangeCurrentState(iEnemy.enemyObservingState);
         }
     }
 
@@ -60,6 +63,20 @@ public class RangedEnemyRoamingState : RangedEnemyState
         if (iEnemy.TrySetNextDestination(iEnemy.aiPathList[iEnemy.currentPathPoint].transformOfPathPoint.position))
         {
             yield return iEnemy.RoamingWaitToReachNextPoint();
+            if (iEnemy.aiPathList[iEnemy.currentPathPoint].waitTimeOnPoint > 0)
+            {
+                if (iEnemy.aiPathList[iEnemy.currentPathPoint].lookAroundOnPoint)
+                {
+                    if (iEnemy.TryStartRandomLookAround(iEnemy.aiPathList[iEnemy.currentPathPoint].waitTimeOnPoint, out Coroutine lookAroundcoroutine))
+                    {
+                        yield return lookAroundcoroutine;
+                    }
+                }
+                else
+                {
+                    yield return new WaitForSeconds(iEnemy.aiPathList[iEnemy.currentPathPoint].waitTimeOnPoint);
+                }
+            }
         }
         while (true)
         {
@@ -67,7 +84,22 @@ public class RangedEnemyRoamingState : RangedEnemyState
             {
                 if (iEnemy.TrySetNextDestination(iEnemy.NextPathPoint()))
                 {
+                    iEnemy.animator.SetBool("isWalking", true);
                     yield return iEnemy.RoamingWaitToReachNextPoint();
+                    if (iEnemy.aiPathList[iEnemy.currentPathPoint].waitTimeOnPoint > 0)
+                    {
+                        if (iEnemy.aiPathList[iEnemy.currentPathPoint].lookAroundOnPoint)
+                        {
+                            if (iEnemy.TryStartRandomLookAround(iEnemy.aiPathList[iEnemy.currentPathPoint].waitTimeOnPoint, out Coroutine lookAroundcoroutine))
+                            {
+                                yield return lookAroundcoroutine;
+                            }
+                        }
+                        else
+                        {
+                            yield return new WaitForSeconds(iEnemy.aiPathList[iEnemy.currentPathPoint].waitTimeOnPoint);
+                        }
+                    }
                 }
             }
             else

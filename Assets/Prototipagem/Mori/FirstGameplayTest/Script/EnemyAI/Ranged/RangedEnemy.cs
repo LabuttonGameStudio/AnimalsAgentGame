@@ -16,7 +16,7 @@ public class RangedEnemy : IEnemy, IDamageable, ISoundReceiver
         attacking
     }
 
-    public CurrentStateEnum stateEnum;
+    public CurrentStateEnum currentStateEnum;
     protected RangedEnemyState currentState;
 
     public RangedEnemyRoamingState enemyRoamingState;
@@ -37,6 +37,7 @@ public class RangedEnemy : IEnemy, IDamageable, ISoundReceiver
     #endregion
 
     #region Detection Variables
+    [Header("Detection")]
     public float timeToMaxDetect;
     #endregion
     //-----Action Update-----
@@ -67,7 +68,26 @@ public class RangedEnemy : IEnemy, IDamageable, ISoundReceiver
     #region Take Damage Functions
     public void TakeDamage(Damage damage)
     {
-
+        currentHp = currentHp- damage.damageAmount;
+        if (currentHp <= 0)
+        {
+            isDead = true;
+            animator.transform.parent = animator.transform.parent.parent;
+            animator.SetBool("isWalking",false);
+            animator.SetTrigger("isDefeated");
+            gameObject.SetActive(false);
+        }
+        else if (damage.wasMadeByPlayer)
+        {
+            switch (currentStateEnum)
+            {
+                case CurrentStateEnum.roaming:
+                case CurrentStateEnum.observing:
+                    lastKnownPlayerPos = damage.originPoint;
+                    ChangeCurrentState(enemySearchingState);
+                    break;
+            }
+        }
     }
     #endregion
 
@@ -84,7 +104,7 @@ public class RangedEnemy : IEnemy, IDamageable, ISoundReceiver
     }
     protected override void OnStart()
     {
-        animator.SetBool("isWalking", true);
+
     }
     protected override void OnFixedUpdate()
     {
@@ -116,11 +136,19 @@ public class RangedEnemy : IEnemy, IDamageable, ISoundReceiver
 
     public void IncreaseDetection()
     {
-        
-    }
-    public IEnumerator DecreaseDetectionTimer_Coroutine()
-    {
-        yield return null;
+        float increasePerTick = 100 * EnemyMasterControl.Instance.visibilityTickInterval / timeToMaxDetect;
+        if (detectionLevel + increasePerTick >= 100)
+        {
+            detectionLevel = 100;
+            ChangeCurrentState(enemyAttackingState);
+            return;
+        }
+        else detectionLevel += increasePerTick;
+        //Se ele nao estiver acima de 100 mas estiver acima do nivel necessario para entrar em estado de procura
+        if (detectionLevel > 50)
+        {
+            ChangeCurrentState(enemySearchingState);
+        }
     }
     #endregion
 }

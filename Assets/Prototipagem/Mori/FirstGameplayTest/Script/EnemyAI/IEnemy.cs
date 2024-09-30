@@ -126,14 +126,14 @@ public abstract class IEnemy : MonoBehaviour, IRaycastableInLOS
     //Estado principal atual de behaviour
     [SerializeField] public AIBehaviour currentAIBehaviour;
     //Visual Referente ao estado atual do inimigo
-    [SerializeField] protected EnemyBehaviourVisual enemyBehaviourVisual;
+    [SerializeField] public EnemyBehaviourVisual enemyBehaviourVisual;
 
     //Nivel de deteccao do inimigo(0-100), determina o tipo de behaviour dele 
     //0 Roaming
     //1-50 Observing
     //51-100 Searching
     //100+ Attacking
-    [Tooltip("De 0 a 100"), Range(0, 100)] protected float detectionLevel;
+    [Tooltip("De 0 a 100"), Range(0, 100),HideInInspector] public float detectionLevel;
     protected float detectionLevelDecreased;
     #endregion
     #endregion
