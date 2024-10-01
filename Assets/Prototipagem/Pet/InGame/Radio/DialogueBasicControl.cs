@@ -54,7 +54,7 @@ public class DialogueBasicControl : MonoBehaviour
     {
         if (currentDialogueCoroutine != null)
         {
-            for (int i = 0;i < currentDialogueCoroutine.coroutines.Count; i++)
+            for (int i = 0; i < currentDialogueCoroutine.coroutines.Count; i++)
             {
                 if (currentDialogueCoroutine.coroutines[i] != null) StopCoroutine(currentDialogueCoroutine.coroutines[i]);
             }
@@ -161,10 +161,27 @@ public class DialogueBasicControl : MonoBehaviour
         DialogueText.text = "";
 
         InputAction interactButton = ArmadilloPlayerController.Instance.inputControl.inputAction.Armadillo.Interact;
-
-        foreach (char letter in sentence.ToCharArray())
+        for (int i = 0; i < sentence.Length; i++)
         {
-            DialogueText.text += letter;
+            if (sentence[i] == '<')
+            {
+                string commandLine = "<";
+                for (int j = i + 1; j < sentence.Length; j++)
+                {
+                    if (sentence[j] != '>')
+                    {
+                        commandLine += sentence[j];
+                    }
+                    else
+                    {
+                        commandLine += ">";
+                        DialogueText.text += commandLine;
+                        i = j + 1;
+                        break;
+                    }
+                }
+            }
+            DialogueText.text += sentence[i];
             bool breakInWhile = false;
             float timer = 0f;
             if (canInputBreak)

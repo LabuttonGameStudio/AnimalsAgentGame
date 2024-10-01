@@ -7,10 +7,11 @@ using UnityEngine.Events;
 [Serializable]
 public class DialogueText 
 {
+    public string title;
     [Header("Infos")]
     public Sprite portrait;
     public string name;
-    public string quote;
+    [TextArea(1, 20)] public string quote;
 
     [Header("Events")]
     public DialogueEvent[] eventOnDialogueBoxEnter;

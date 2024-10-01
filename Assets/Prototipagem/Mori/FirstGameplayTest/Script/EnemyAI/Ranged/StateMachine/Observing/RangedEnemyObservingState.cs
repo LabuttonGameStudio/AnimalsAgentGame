@@ -26,7 +26,7 @@ public class RangedEnemyObservingState : RangedEnemyState
             onPlayerEnterVision_Ref= null;
         }
         onPlayerEnterVision_Ref = iEnemy.StartCoroutine(OnPlayerEnterVision_Coroutine());
-        Debug.Log("Observing Enter");
+        //Debug.Log("Observing Enter");
     }
 
     public override void OnExitState()

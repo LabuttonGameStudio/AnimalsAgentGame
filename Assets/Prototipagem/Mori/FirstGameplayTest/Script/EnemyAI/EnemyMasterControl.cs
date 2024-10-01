@@ -15,7 +15,7 @@ public class EnemyMasterControl : MonoBehaviour
     [HideInInspector] public List<IEnemy> allEnemiesList = new List<IEnemy>();
 
     public float visibilityTickInterval = 0.025f;
-    private float m_visibilityTickInverval=0f;
+    private float m_visibilityTickInverval = 0f;
     public float actionTickInterval = 0.025f;
     private float m_actionTickInterval = 0f;
 
@@ -70,7 +70,7 @@ public class EnemyMasterControl : MonoBehaviour
 
             float interval = visibilityTickInterval / allEnemiesList.Count;
             m_actionTickInterval = Time.time - lastTickTime;
-            float tickInterval = Mathf.Max(interval - m_actionTickInterval, 0);
+            float tickInterval= interval-Mathf.Max(m_actionTickInterval-interval,0);
             lastTickTime = Time.time;
             yield return new WaitForSeconds(tickInterval);
         }

@@ -30,7 +30,7 @@ public class RangedEnemyRoamingState : RangedEnemyState
             }
             loopRoamingPath_Ref = iEnemy.StartCoroutine(LoopRoamingPath_Coroutine());
         }
-        Debug.Log("Roaming Enter");
+        //Debug.Log("Roaming Enter");
     }
 
     public override void OnExitState()
@@ -40,12 +40,12 @@ public class RangedEnemyRoamingState : RangedEnemyState
             iEnemy.StopCoroutine(loopRoamingPath_Ref);
             //loopRoamingPath_Ref = null;
         }
-        Debug.Log("Roaming Exit");
+        //Debug.Log("Roaming Exit");
     }
 
     public override void OnFixedUpdate()
     {
-        Debug.Log("Roaming FixedUpdate");
+        //Debug.Log("Roaming FixedUpdate");
     }
 
     public override void OnVisibilityUpdate()

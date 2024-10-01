@@ -27,7 +27,7 @@ public class RangedEnemySearchingState : RangedEnemyState
             onPlayerEnterVision_Ref = null;
         }
         onPlayerEnterVision_Ref = iEnemy.StartCoroutine(OnPlayerEnterVision_Coroutine());
-        Debug.Log("Searching Enter");
+        //Debug.Log("Searching Enter");
     }
 
     public override void OnExitState()
@@ -42,12 +42,12 @@ public class RangedEnemySearchingState : RangedEnemyState
             iEnemy.StopCoroutine(onPlayerLeaveVision_Ref);
             //onPlayerLeaveVision_Ref = null;
         }
-        Debug.Log("Searching Exit");
+        //Debug.Log("Searching Exit");
     }
 
     public override void OnFixedUpdate()
     {
-        Debug.Log("Searching FixedUpdate");
+        //Debug.Log("Searching FixedUpdate");
     }
 
     public override void OnVisibilityUpdate()
@@ -91,7 +91,6 @@ public class RangedEnemySearchingState : RangedEnemyState
         while (true)
         {
             iEnemy.LerpLookAt(iEnemy.lastKnownPlayerPos, 1);
-            Debug.Log("Enter Vision");
             yield return new WaitForFixedUpdate();
         }
     }

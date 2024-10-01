@@ -22,17 +22,17 @@ public class RangedEnemyAttackingState : RangedEnemyState
         iEnemy.navMeshAgent.ResetPath();
         iEnemy.animator.SetBool("isTurret", true);
         attackLoop_Ref = iEnemy.StartCoroutine(AttackLoop_Coroutine());
-        Debug.Log("Attacking Enter");
+        //Debug.Log("Attacking Enter");
     }
 
     public override void OnExitState()
     {
-        Debug.Log("Attacking Exit");
+        //Debug.Log("Attacking Exit");
     }
 
     public override void OnFixedUpdate()
     {
-        Debug.Log("Attacking FixedUpdate");
+        //Debug.Log("Attacking FixedUpdate");
     }
 
     public override void OnVisibilityUpdate()
