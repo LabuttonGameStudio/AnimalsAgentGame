@@ -38,6 +38,7 @@ public class ArmadilloPlayerController : MonoBehaviour
     //-----Player Forms-----
     #region Player Forms Variables
     [Header("Default Form")]
+    [SerializeField] private IconActivate formChangeIcon;
     [SerializeField] public Collider[] playerCollider_Default;
     [Header("Ball Form")]
     [SerializeField] public Collider[] playerCollider_Ball;
@@ -55,7 +56,7 @@ public class ArmadilloPlayerController : MonoBehaviour
     //-----Sonar Ability-----
     #region Sonar Ability Variables
     [Header("Sonar Ability")]
-    private bool isSonarActive;
+    [SerializeField] private IconActivate sonarIcon;
     [SerializeField] private Camera sonarCamera;
     [SerializeField] private float sonarDuration;
     [SerializeField] private float sonarStartLerpDuration;
@@ -63,6 +64,7 @@ public class ArmadilloPlayerController : MonoBehaviour
     [SerializeField] private DecalProjector[] sonarDecal;
     [SerializeField] private CanvasGroup sonarCanvasGroup;
     [SerializeField] private Volume sonarPostProcess;
+    private bool isSonarActive;
     #endregion
 
     [HideInInspector] public bool canSwitchWeapon;
@@ -76,7 +78,7 @@ public class ArmadilloPlayerController : MonoBehaviour
         Sprinting,
         Lurking
     }
-    public FPModeLayer0 fp_Layer0;
+    [HideInInspector] public FPModeLayer0 fp_Layer0;
 
     public enum FPModeLayer1
     {
@@ -85,7 +87,7 @@ public class ArmadilloPlayerController : MonoBehaviour
         WaterGun,
         PendriveGun,
     }
-    public FPModeLayer1 fp_Layer1;
+    [HideInInspector] public FPModeLayer1 fp_Layer1;
 
     public enum FPModeLayer2
     {
@@ -97,7 +99,7 @@ public class ArmadilloPlayerController : MonoBehaviour
         LedgeGrab,
         Climb
     }
-    public FPModeLayer2 fp_Layer2;
+    [HideInInspector] public FPModeLayer2 fp_Layer2;
 
     public enum FPModeLayer3
     {
@@ -105,15 +107,17 @@ public class ArmadilloPlayerController : MonoBehaviour
         Ball,
         Climb,
     }
-    public FPModeLayer3 fp_Layer3;
+    [HideInInspector] public FPModeLayer3 fp_Layer3;
+
     public enum FPModeLayer4
     {
         Null,
         Pause
     }
-    public FPModeLayer4 fp_Layer4;
-    public int currentLayer;
-    public int currentAction;
+    [HideInInspector] public FPModeLayer4 fp_Layer4;
+
+    [HideInInspector] public int currentLayer;
+    [HideInInspector] public int currentAction;
 
     #endregion
 
@@ -177,12 +181,14 @@ public class ArmadilloPlayerController : MonoBehaviour
     {
         if (Form.Ball == currentForm) return;
         if (changeToBallFormRef == null) changeToBallFormRef = StartCoroutine(ChangeToBallForm_Coroutine());
+        formChangeIcon.ActivatePopUp();
         currentForm = Form.Ball;
     }
     public void ChangeToBallForm(InputAction.CallbackContext value)
     {
         if (Form.Ball == currentForm) return;
         if (changeToBallFormRef == null) changeToBallFormRef = StartCoroutine(ChangeToBallForm_Coroutine());
+        formChangeIcon.ActivatePopUp();
         currentForm = Form.Ball;
     }
 
@@ -190,12 +196,14 @@ public class ArmadilloPlayerController : MonoBehaviour
     {
         if (Form.Default == currentForm) return;
         if (changeToDefaultFormRef == null) changeToDefaultFormRef = StartCoroutine(ChangeToDefaultForm_Coroutine());
+        formChangeIcon.DeactivatePopUp();
         currentForm = Form.Default;
     }
     public void ChangeToDefaultForm(InputAction.CallbackContext value)
     {
         if (Form.Default == currentForm) return;
         if (changeToDefaultFormRef == null) changeToDefaultFormRef = StartCoroutine(ChangeToDefaultForm_Coroutine());
+        formChangeIcon.DeactivatePopUp();
         currentForm = Form.Default;
     }
     #endregion
@@ -221,11 +229,13 @@ public class ArmadilloPlayerController : MonoBehaviour
                 }
                 SonarAbilityVFX_Ref = StartCoroutine(SonarAbilityVFX_Coroutine(sonarStartLerpDuration));
                 SonarAbility_Ref = StartCoroutine(SonarAbility_Coroutine(minimalValue, sonarRange, sonarStartLerpDuration, true));
+                sonarIcon.ActivatePopUp();
                 isSonarActive = true;
             }
             else
             {
                 SonarAbility_Ref = StartCoroutine(SonarAbility_Coroutine(sonarRange, minimalValue, sonarStartLerpDuration, false));
+                sonarIcon.DeactivatePopUp();
                 isSonarActive = false;
             }
         }
@@ -236,7 +246,7 @@ public class ArmadilloPlayerController : MonoBehaviour
     {
         yield return new WaitForSeconds(0.55f);
         float timer = 0f;
-        if(toggle)
+        if (toggle)
         {
             sonarCamera.enabled = true;
             while (timer <= duration)

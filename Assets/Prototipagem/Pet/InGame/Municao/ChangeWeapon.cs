@@ -10,7 +10,7 @@ public class ChangeWeapon : MonoBehaviour
 
     [Header("CROSSHAIR")]
     public GameObject[] WeaponsCross; // crosshair das armas
-    public GameObject SliderAmmunition; // slider da mira
+    public CanvasGroup SliderAmmunition; // slider da mira
 
     [Header("MATERIALS")]
     public Material activeMaterial; // mat para arma ativa

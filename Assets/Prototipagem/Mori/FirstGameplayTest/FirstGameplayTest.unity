@@ -2384,6 +2384,17 @@ Transform:
   - {fileID: 905347717}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &634458251 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1150559733725712210, guid: eb11bd31773d7a64aa560b99e8e3727a, type: 3}
+  m_PrefabInstance: {fileID: 3725515854391060306}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8467b78848fec1d4d85d725f3ceaf2b3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &647694526
 GameObject:
   m_ObjectHideFlags: 0
@@ -3919,6 +3930,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5476472386100842931, guid: 5e6fc123e444e7f45ab78b704561dbb1, type: 3}
   m_PrefabInstance: {fileID: 1484564807}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &944256626 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3932122983053061728, guid: eb11bd31773d7a64aa560b99e8e3727a, type: 3}
+  m_PrefabInstance: {fileID: 3725515854391060306}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8467b78848fec1d4d85d725f3ceaf2b3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &969700546 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 265311748267505994, guid: f12a5efd4670f494a8532748f8149004, type: 3}
@@ -8105,12 +8127,12 @@ MonoBehaviour:
   - title: Ablu blu
     portrait: {fileID: 0}
     name: Sai
-    quote: 'Abuble bu ble bu <color="blue">Blue,</color> Abuble bu ble bu '
+    quote: Abuble bu ble bu <color="blue">Blue,</color> Abuble bu ble bu
     eventOnDialogueBoxEnter: []
   - title: 
     portrait: {fileID: 0}
     name: Sai
-    quote: 'Abuble bu ble bu <color="blue">Blue,</color> Abuble bu ble bu '
+    quote: 
     eventOnDialogueBoxEnter: []
   startDialogue: []
   endDialogue: []
@@ -9179,6 +9201,10 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 763587638313110531, guid: eb11bd31773d7a64aa560b99e8e3727a, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 777360086448386461, guid: eb11bd31773d7a64aa560b99e8e3727a, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -9243,6 +9269,10 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1150521090950286804, guid: eb11bd31773d7a64aa560b99e8e3727a, type: 3}
+      propertyPath: m_Name
+      value: SonarSkill
+      objectReference: {fileID: 0}
     - target: {fileID: 1156167358493192698, guid: eb11bd31773d7a64aa560b99e8e3727a, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -9250,6 +9280,10 @@ PrefabInstance:
     - target: {fileID: 1156167358493192698, guid: eb11bd31773d7a64aa560b99e8e3727a, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1240548662919113814, guid: eb11bd31773d7a64aa560b99e8e3727a, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1383285191488793065, guid: eb11bd31773d7a64aa560b99e8e3727a, type: 3}
       propertyPath: useTargetCamera
@@ -9671,6 +9705,14 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 4598202488311139231, guid: eb11bd31773d7a64aa560b99e8e3727a, type: 3}
+      propertyPath: m_Name
+      value: ChangeFormSkill
+      objectReference: {fileID: 0}
+    - target: {fileID: 4598202488311139231, guid: eb11bd31773d7a64aa560b99e8e3727a, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4799095186844354438, guid: eb11bd31773d7a64aa560b99e8e3727a, type: 3}
       propertyPath: m_IsActive
       value: 1
@@ -9739,6 +9781,10 @@ PrefabInstance:
       propertyPath: requireWInputToLedgeGrab
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 5377988042958078218, guid: eb11bd31773d7a64aa560b99e8e3727a, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5570221528459450666, guid: eb11bd31773d7a64aa560b99e8e3727a, type: 3}
       propertyPath: m_IsActive
       value: 1
@@ -9800,9 +9846,17 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6112989399156946717, guid: eb11bd31773d7a64aa560b99e8e3727a, type: 3}
+      propertyPath: sonarIcon
+      value: 
+      objectReference: {fileID: 944256626}
+    - target: {fileID: 6112989399156946717, guid: eb11bd31773d7a64aa560b99e8e3727a, type: 3}
       propertyPath: ballMeshRender
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 6112989399156946717, guid: eb11bd31773d7a64aa560b99e8e3727a, type: 3}
+      propertyPath: formChangeIcon
+      value: 
+      objectReference: {fileID: 634458251}
     - target: {fileID: 6112989399156946717, guid: eb11bd31773d7a64aa560b99e8e3727a, type: 3}
       propertyPath: outlineSonarEffect
       value: 
@@ -9817,10 +9871,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6112989399156946717, guid: eb11bd31773d7a64aa560b99e8e3727a, type: 3}
       propertyPath: startWithInvisibilityAbility
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6131353093147031893, guid: eb11bd31773d7a64aa560b99e8e3727a, type: 3}
-      propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6166795682513644974, guid: eb11bd31773d7a64aa560b99e8e3727a, type: 3}

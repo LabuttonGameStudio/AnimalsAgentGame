@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Localization;
+using UnityEngine.Localization.Components;
 
 [Serializable]
 public class DialogueText 
