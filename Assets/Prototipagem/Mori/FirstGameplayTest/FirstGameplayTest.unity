@@ -7991,6 +7991,7 @@ GameObject:
   - component: {fileID: 1940751841}
   - component: {fileID: 1940751840}
   - component: {fileID: 1940751843}
+  - component: {fileID: 1940751844}
   m_Layer: 0
   m_Name: CoconutArea
   m_TagString: Untagged
@@ -8113,6 +8114,34 @@ MonoBehaviour:
     eventOnDialogueBoxEnter: []
   startDialogue: []
   endDialogue: []
+--- !u!114 &1940751844
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1940751839}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56eb0353ae6e5124bb35b17aff880f16, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_StringReference:
+    m_TableReference:
+      m_TableCollectionName: GUID:1d0e44c143faa904097658f43e41089e
+    m_TableEntryReference:
+      m_KeyId: 78187962368
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  m_FormatArguments: []
+  m_UpdateString:
+    m_PersistentCalls:
+      m_Calls: []
+  references:
+    version: 2
+    RefIds: []
 --- !u!1 &1941359986
 GameObject:
   m_ObjectHideFlags: 0
