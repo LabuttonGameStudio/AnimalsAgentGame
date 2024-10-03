@@ -64,6 +64,10 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _Triplanar_36db8c4e0fbf4d01aca72a8dc718308b_Texture_1_Texture2D:
+        m_Texture: {fileID: 2800000, guid: b5c026347680e4347892cfaac48aebdd, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _Triplanar_7c9f4cfdda6744048a51911d2a438544_Texture_1_Texture2D:
         m_Texture: {fileID: 2800000, guid: b5c026347680e4347892cfaac48aebdd, type: 3}
         m_Scale: {x: 1, y: 1}
@@ -72,14 +76,16 @@ Material:
     m_Floats:
     - _Blend_Triplanar: 1
     - _Brick_Noise: 1
+    - _ClampVar: 3
     - _Contrast_Noise_Brick: 10.42
     - _Contraste_Hole_A: -2.41
     - _Contraste_Hole_B: 1
     - _Extra_Normal: 1
-    - _Extra_Normal_Itensity: 1
+    - _Extra_Normal_Itensity: 1.5
     - _Float: 3.24
     - _Float_1: 0.46
     - _Hole_Strenght: -0.04
+    - _IntensityVar: 2
     - _Mask_HUE: 1
     - _Mask_UV: 1
     - _Noise_Brick_Contrast: 1
@@ -90,10 +96,12 @@ Material:
     - _Noise_Size_clamp: 5.26
     - _Noise_Size_extra: 1
     - _Smoothness_Controler: 0.82
+    - _TileVAR: -0.04
     - _Tiling_Noise_Brick: 0.04
     - _Tilling_Noise_Brick: 1
     - _UV_Tiles_Extra: 1.5
     m_Colors:
+    - _ColorVar: {r: 0.80784315, g: 0.80784315, b: 0.80784315, a: 0}
     - _Color_Tint: {r: 1, g: 1, b: 1, a: 0}
     - _Vector2: {r: -0.14, g: 0.83, b: 0, a: 0}
   m_BuildTextureStacks: []
