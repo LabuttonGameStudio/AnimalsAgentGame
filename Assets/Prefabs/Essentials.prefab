@@ -387,7 +387,7 @@ MonoBehaviour:
   m_EndAngleFade: 180
   m_UVScale: {x: 1, y: 1}
   m_UVBias: {x: 0, y: 0}
-  m_DecalLayerMask: 1
+  m_DecalLayerMask: 4294967295
   m_ScaleMode: 0
   m_Offset: {x: 0, y: 0, z: 0.5}
   m_Size: {x: 0, y: 1, z: 1}
@@ -18341,7 +18341,6 @@ MonoBehaviour:
   allEnemiesList: []
   visibilityTickInterval: 0.025
   actionTickInterval: 0.025
-  m_actionTickInterval: 0
 --- !u!1 &3860130320773771220
 GameObject:
   m_ObjectHideFlags: 0
@@ -18860,7 +18859,7 @@ MonoBehaviour:
   m_EndAngleFade: 180
   m_UVScale: {x: 1, y: 1}
   m_UVBias: {x: 0, y: 0}
-  m_DecalLayerMask: 1
+  m_DecalLayerMask: 4294967295
   m_ScaleMode: 0
   m_Offset: {x: 0, y: 0, z: 0.5}
   m_Size: {x: 0, y: 1, z: 1}
@@ -20107,7 +20106,7 @@ MonoBehaviour:
   m_EndAngleFade: 180
   m_UVScale: {x: 1, y: 1}
   m_UVBias: {x: 0, y: 0}
-  m_DecalLayerMask: 1
+  m_DecalLayerMask: 4294967295
   m_ScaleMode: 0
   m_Offset: {x: 0, y: 0, z: 0.5}
   m_Size: {x: 0, y: 1, z: 1}
@@ -22015,6 +22014,7 @@ MonoBehaviour:
   startWithChangeFormAbility: 0
   startWithSonarAbility: 0
   currentForm: 0
+  formChangeIcon: {fileID: 1150559733725712210}
   playerCollider_Default:
   - {fileID: 2346160075134265153}
   playerCollider_Ball:
@@ -22031,6 +22031,7 @@ MonoBehaviour:
   climbableLayer:
     serializedVersion: 2
     m_Bits: 1024
+  sonarIcon: {fileID: 3932122983053061728}
   sonarCamera: {fileID: 4455966302502267435}
   sonarDuration: 10
   sonarStartLerpDuration: 1.25
@@ -24467,7 +24468,7 @@ MonoBehaviour:
   m_EndAngleFade: 180
   m_UVScale: {x: 1, y: 1}
   m_UVBias: {x: 0, y: 0}
-  m_DecalLayerMask: 1
+  m_DecalLayerMask: 4294967295
   m_ScaleMode: 0
   m_Offset: {x: 0, y: 0, z: 0.5}
   m_Size: {x: 0, y: 1, z: 1}
@@ -26606,7 +26607,7 @@ PrefabInstance:
     - target: {fileID: 6193818076100436666, guid: 5ddd5c2fe062a4b499082c582278f362, type: 3}
       propertyPath: SliderAmmunition
       value: 
-      objectReference: {fileID: 6570695866348198232}
+      objectReference: {fileID: 3581867173888760428}
     - target: {fileID: 6193818076100436666, guid: 5ddd5c2fe062a4b499082c582278f362, type: 3}
       propertyPath: 'WeaponsCross.Array.data[0]'
       value: 
@@ -26619,6 +26620,30 @@ PrefabInstance:
       propertyPath: 'WeaponsCross.Array.data[2]'
       value: 
       objectReference: {fileID: 8931530952394657039}
+    - target: {fileID: 6193818076100436666, guid: 5ddd5c2fe062a4b499082c582278f362, type: 3}
+      propertyPath: weaponUIElements.Array.data[0].crosshairRect
+      value: 
+      objectReference: {fileID: 6001149056826400112}
+    - target: {fileID: 6193818076100436666, guid: 5ddd5c2fe062a4b499082c582278f362, type: 3}
+      propertyPath: weaponUIElements.Array.data[1].crosshairRect
+      value: 
+      objectReference: {fileID: 6332575974295845193}
+    - target: {fileID: 6193818076100436666, guid: 5ddd5c2fe062a4b499082c582278f362, type: 3}
+      propertyPath: weaponUIElements.Array.data[2].crosshairRect
+      value: 
+      objectReference: {fileID: 6001149056826400112}
+    - target: {fileID: 6193818076100436666, guid: 5ddd5c2fe062a4b499082c582278f362, type: 3}
+      propertyPath: weaponUIElements.Array.data[0].crosshairCanvasGroup
+      value: 
+      objectReference: {fileID: 447080953947517266}
+    - target: {fileID: 6193818076100436666, guid: 5ddd5c2fe062a4b499082c582278f362, type: 3}
+      propertyPath: weaponUIElements.Array.data[1].crosshairCanvasGroup
+      value: 
+      objectReference: {fileID: 705869973497550609}
+    - target: {fileID: 6193818076100436666, guid: 5ddd5c2fe062a4b499082c582278f362, type: 3}
+      propertyPath: weaponUIElements.Array.data[2].crosshairCanvasGroup
+      value: 
+      objectReference: {fileID: 447080953947517266}
     m_RemovedComponents: []
     m_RemovedGameObjects:
     - {fileID: 3273753736942856131, guid: 5ddd5c2fe062a4b499082c582278f362, type: 3}
@@ -26738,6 +26763,28 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 7264452908446518809, guid: 5f8407cb62da50440bbd8510f2d8f630, type: 3}
   m_PrefabInstance: {fileID: 7334961274752275128}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1150559733725712210 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7655168914347646442, guid: 5f8407cb62da50440bbd8510f2d8f630, type: 3}
+  m_PrefabInstance: {fileID: 7334961274752275128}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8467b78848fec1d4d85d725f3ceaf2b3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &3932122983053061728 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6006308146922781912, guid: 5f8407cb62da50440bbd8510f2d8f630, type: 3}
+  m_PrefabInstance: {fileID: 7334961274752275128}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8467b78848fec1d4d85d725f3ceaf2b3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &7807713244915319124
 PrefabInstance:
   m_ObjectHideFlags: 0

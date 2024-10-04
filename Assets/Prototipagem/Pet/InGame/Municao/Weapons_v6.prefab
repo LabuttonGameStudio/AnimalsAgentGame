@@ -982,17 +982,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd210189636db6a4ab796e9286923a64, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  WeaponsIcons:
-  - {fileID: 2331140951048998683}
-  - {fileID: 6307249041776307040}
-  - {fileID: 7704663307997073726}
-  WeaponsCross:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  weaponUIElements:
+  - iconRect: {fileID: 2331140951048998683}
+    iconGraphic: {fileID: 5027631340014530340}
+    iconCanvasGroup: {fileID: 148673570654139333}
+    crosshairRect: {fileID: 0}
+    crosshairCanvasGroup: {fileID: 0}
+  - iconRect: {fileID: 6307249041776307040}
+    iconGraphic: {fileID: 3162417612637106407}
+    iconCanvasGroup: {fileID: 3052484916602401551}
+    crosshairRect: {fileID: 0}
+    crosshairCanvasGroup: {fileID: 0}
+  - iconRect: {fileID: 7704663307997073726}
+    iconGraphic: {fileID: 6549222567441929850}
+    iconCanvasGroup: {fileID: 190939958665482345}
+    crosshairRect: {fileID: 0}
+    crosshairCanvasGroup: {fileID: 0}
   SliderAmmunition: {fileID: 0}
   activeMaterial: {fileID: 2100000, guid: 75c494a57847c6645a4645ae8ec83600, type: 2}
-  deactivatedMaterial: {fileID: 2100000, guid: b9855503388ae244793415ec11dca2cc, type: 2}
+  disabledMaterial: {fileID: 2100000, guid: b9855503388ae244793415ec11dca2cc, type: 2}
   popupScale: 1.2
   normalScale: 0.9
   scaleDuration: 0.2

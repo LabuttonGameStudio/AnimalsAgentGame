@@ -94,15 +94,27 @@ public class ArmadilloWeaponControl : MonoBehaviour
     #region Inputs
     public void EquipSlot0Weapon(InputAction.CallbackContext performed)
     {
-        if (!isGunPocketed && ArmadilloPlayerController.Instance.canSwitchWeapon) ChangeWeapon(0, false);
+        if (!isGunPocketed && ArmadilloPlayerController.Instance.canSwitchWeapon)
+        {
+            ChangeWeapon(0, false);
+            ChangeWeaponUI.Instance.SelectItem(0);
+        }
     }
     public void EquipSlot1Weapon(InputAction.CallbackContext performed)
     {
-        if (!isGunPocketed && ArmadilloPlayerController.Instance.canSwitchWeapon) ChangeWeapon(1, false);
+        if (!isGunPocketed && ArmadilloPlayerController.Instance.canSwitchWeapon)
+        {
+            ChangeWeapon(1, false);
+            ChangeWeaponUI.Instance.SelectItem(1);
+        }
     }
     public void EquipSlot2Weapon(InputAction.CallbackContext performed)
     {
-        if (!isGunPocketed && ArmadilloPlayerController.Instance.canSwitchWeapon) ChangeWeapon(2, false);
+        if (!isGunPocketed && ArmadilloPlayerController.Instance.canSwitchWeapon)
+        {
+            ChangeWeapon(2, false);
+            ChangeWeaponUI.Instance.SelectItem(2);
+        }
     }
     #endregion
 
@@ -121,7 +133,11 @@ public class ArmadilloWeaponControl : MonoBehaviour
         {
             pocketedWeaponID = 0;
         }
-        else ChangeWeapon(0, true);
+        else
+        {
+            ChangeWeapon(0, true);
+            ChangeWeaponUI.Instance.SelectItem(0);
+        }
         ArmadilloPlayerController.Instance.inputControl.inputAction.Armadillo.Weapon0.Enable();
         ArmadilloPlayerController.Instance.inputControl.inputAction.Armadillo.Weapon0.performed += EquipSlot0Weapon;
     }
@@ -132,7 +148,11 @@ public class ArmadilloWeaponControl : MonoBehaviour
         {
             pocketedWeaponID = 1;
         }
-        else ChangeWeapon(1, true);
+        else
+        {
+            ChangeWeapon(1, true);
+            ChangeWeaponUI.Instance.SelectItem(1);
+        }
         ArmadilloPlayerController.Instance.inputControl.inputAction.Armadillo.Weapon1.Enable();
         ArmadilloPlayerController.Instance.inputControl.inputAction.Armadillo.Weapon1.performed += EquipSlot1Weapon;
     }
@@ -143,7 +163,11 @@ public class ArmadilloWeaponControl : MonoBehaviour
         {
             pocketedWeaponID = 2;
         }
-        else ChangeWeapon(2, true);
+        else
+        {
+            ChangeWeapon(2, true);
+            ChangeWeaponUI.Instance.SelectItem(2);
+        }
         ArmadilloPlayerController.Instance.inputControl.inputAction.Armadillo.Weapon2.Enable();
         ArmadilloPlayerController.Instance.inputControl.inputAction.Armadillo.Weapon2.performed += EquipSlot2Weapon;
     }
