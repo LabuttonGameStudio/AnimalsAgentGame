@@ -41,9 +41,23 @@ Material:
         m_Texture: {fileID: 2800000, guid: 6d0e8aeaa00af024599b552c5d2f2dc4, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _Emissive_Tex:
+        m_Texture: {fileID: 2800000, guid: 389abb320327cf64db1c5623e7db4a56, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MaskMap:
+        m_Texture: {fileID: 2800000, guid: c46fdcd7d0ae1194891cb9cfb86cb62c, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _NormalMap:
+        m_Texture: {fileID: 2800000, guid: 0bcc3c926ff08f8468a98dcc33f96ebb, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _Emissive: 0
-    m_Colors: []
+    - _Emissive: 1
+    - _Emissive_intensity: 142.65
+    m_Colors:
+    - _Emissive_Color: {r: 1, g: 0.87460804, b: 0.504717, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
