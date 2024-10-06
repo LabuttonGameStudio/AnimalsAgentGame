@@ -38,7 +38,8 @@ public class DialogueBasicControl : MonoBehaviour
     }
     public void Start()
     {
-        ArmadilloPlayerController.Instance.inputControl.inputAction.Armadillo.Interact.Enable();
+        ArmadilloPlayerController.Instance.inputControl.inputAction.Dialogue.Enable();
+        ArmadilloPlayerController.Instance.inputControl.inputAction.Dialogue.SkipDialogue.Enable();
         currentDialogueCoroutine = new DialogueCoroutines();
     }
     private IEnumerator SequenceDialogueEvents(DialogueEvent[] events)
@@ -119,7 +120,7 @@ public class DialogueBasicControl : MonoBehaviour
             Name.text = dialogue.dialogue[i].name;
 
             currentDialogueCoroutine.coroutines.Add(StartCoroutine(SequenceDialogueEvents(dialogue.dialogue[i].eventOnDialogueBoxEnter)));
-            InputAction interactButton = ArmadilloPlayerController.Instance.inputControl.inputAction.Armadillo.Interact;
+            InputAction interactButton = ArmadilloPlayerController.Instance.inputControl.inputAction.Dialogue.SkipDialogue;
 
             Coroutine typeSequenceCoroutine = StartCoroutine(TypeSentence_Coroutine(dialogue.dialogue[i].quote, true));
             currentDialogueCoroutine.coroutines.Add(typeSequenceCoroutine);
@@ -160,7 +161,7 @@ public class DialogueBasicControl : MonoBehaviour
     {
         DialogueText.text = "";
 
-        InputAction interactButton = ArmadilloPlayerController.Instance.inputControl.inputAction.Armadillo.Interact;
+        InputAction interactButton = ArmadilloPlayerController.Instance.inputControl.inputAction.Dialogue.SkipDialogue;
         for (int i = 0; i < sentence.Length; i++)
         {
             if (sentence[i] == '<')

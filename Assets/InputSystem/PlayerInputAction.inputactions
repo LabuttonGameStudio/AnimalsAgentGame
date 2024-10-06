@@ -105,15 +105,6 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Pause",
-                    "type": "Button",
-                    "id": "fc398917-2a93-4cfa-80f3-bbd529fa0d16",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
                     "name": "Debug_Reset",
                     "type": "Button",
                     "id": "9cec7742-1366-4e59-b85c-18b46c10fc0d",
@@ -459,17 +450,6 @@
                 },
                 {
                     "name": "",
-                    "id": "761d1c2c-c05b-4679-835d-41249b44df4c",
-                    "path": "<Keyboard>/m",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Pause",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "0176b23c-f055-4d77-9ca3-8efb14f8af1b",
                     "path": "<Keyboard>/v",
                     "interactions": "",
@@ -520,6 +500,62 @@
                     "processors": "",
                     "groups": "",
                     "action": "Weapon2",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "Dialogue",
+            "id": "68ddf00f-fff2-4ad4-8187-c722095f71da",
+            "actions": [
+                {
+                    "name": "SkipDialogue",
+                    "type": "Button",
+                    "id": "dad0d012-1d38-4a69-9cfe-4ace31774564",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "bb4eae33-3a9c-464c-9243-98ea42ea131c",
+                    "path": "<Keyboard>/e",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SkipDialogue",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "Pause",
+            "id": "bf819547-5ca8-4bf8-a760-37d9c0a5f1d1",
+            "actions": [
+                {
+                    "name": "EnterPause",
+                    "type": "Button",
+                    "id": "d00abdd3-46d2-46fb-99ce-2a4de24ab9d2",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "c4051fdd-d854-40cb-acb2-58b41584cadd",
+                    "path": "<Keyboard>/m",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "EnterPause",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

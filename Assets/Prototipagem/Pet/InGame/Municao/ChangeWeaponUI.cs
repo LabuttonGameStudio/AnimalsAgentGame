@@ -19,20 +19,20 @@ public class ChangeWeaponUI : MonoBehaviour
     public static ChangeWeaponUI Instance;
 
     [Header("WEAPONS")]
-    public WeaponUIElements[] weaponUIElements;
+    [SerializeField] private WeaponUIElements[] weaponUIElements;
 
     [Header("CROSSHAIR")]
-    public CanvasGroup SliderAmmunition; // slider da mira
+    [SerializeField] private CanvasGroup SliderAmmunition; // slider da mira
 
     [Header("MATERIALS")]
-    public Material activeMaterial; // mat para arma ativa
-    public Material disabledMaterial; // para arma desativa
+    [SerializeField] private Material activeMaterial; // mat para arma ativa
+    [SerializeField] private Material disabledMaterial; // para arma desativa
 
     [Header("ANIMATION")]
-    public float popupScale = 1.2f; // Tamanho do icone quando ativado
-    public float normalScale = 1f; // Tamanho do icone quando desativado
-    public float scaleDuration = 0.5f; // Duracaoo da transicao de escala
-    public Tween.LerpType lerpType = Tween.LerpType.Lerp;
+    [SerializeField] private float popupScale = 1.2f; // Tamanho do icone quando ativado
+    [SerializeField] private float normalScale = 1f; // Tamanho do icone quando desativado
+    [SerializeField] private float scaleDuration = 0.5f; // Duracaoo da transicao de escala
+    [SerializeField] private Tween.LerpType lerpType = Tween.LerpType.Lerp;
     int selectedIndex;
     private void Awake()
     {

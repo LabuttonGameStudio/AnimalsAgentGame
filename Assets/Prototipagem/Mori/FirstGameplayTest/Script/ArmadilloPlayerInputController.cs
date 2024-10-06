@@ -21,7 +21,14 @@ public class ArmadilloPlayerInputController : MonoBehaviour
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
-
+    public void TogglePlayerControls(bool toggle)
+    {
+        if (toggle)
+        {
+            inputAction.Armadillo.Enable();
+        }
+        else inputAction.Armadillo.Disable();
+    }
     public void ToggleChangeWeapon(bool state)
     {
         if (state)

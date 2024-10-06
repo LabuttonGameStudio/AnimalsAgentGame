@@ -238,7 +238,7 @@ public class ArmadilloVisualControl : MonoBehaviour
     private PivotOffsetStats walkOffSet;
     public void OnWalkStart()
     {
-        if(walkOffSet == null)
+        if (walkOffSet == null)
         {
             Vector3 direction = Vector3.up / 40;
             walkOffSet = FPCameraShake.Instance.StartPivotOffsetLoop(12, Vector3.zero);
@@ -253,14 +253,25 @@ public class ArmadilloVisualControl : MonoBehaviour
         {
             if (movementController.movementInputVector.magnitude > 0.1f)
             {
-                offsetStats.offset = offsetRealValue;
+                yield return LerpOffset_Coroutine(offsetStats, 0.1f, offsetRealValue);
             }
             else
             {
-                offsetStats.offset = Vector3.zero;
-
+                yield return LerpOffset_Coroutine(offsetStats, 0.1f, Vector3.zero);
             }
             yield return new WaitForFixedUpdate();
+        }
+    }
+    IEnumerator LerpOffset_Coroutine(PivotOffsetStats offsetStats, float duration, Vector3 offsetFinalValue)
+    {
+        float timer = 0;
+        Vector3 startValue = offsetStats.offset;
+        while (timer < duration)
+        {
+
+            offsetStats.offset = Vector3.Lerp(startValue, offsetFinalValue, timer/duration);
+            timer += Time.deltaTime;
+            yield return null;
         }
     }
     public void OnWalkStop()
@@ -340,15 +351,15 @@ public class ArmadilloVisualControl : MonoBehaviour
     private IEnumerator CheckLurkMovement_Coroutine(PivotOffsetStats offsetStats, Vector3 offsetRealValue)
     {
         ArmadilloMovementController movementController = ArmadilloPlayerController.Instance.movementControl;
-        while(true)
+        while (true)
         {
-            if(movementController.movementInputVector.magnitude>0.1f)
+            if (movementController.movementInputVector.magnitude > 0.1f)
             {
-                offsetStats.offset = offsetRealValue;
+                yield return LerpOffset_Coroutine(offsetStats, 0.1f, offsetRealValue);
             }
             else
             {
-                offsetStats.offset = Vector3.zero;
+                yield return LerpOffset_Coroutine(offsetStats, 0.1f, Vector3.zero);
 
             }
             yield return new WaitForFixedUpdate();

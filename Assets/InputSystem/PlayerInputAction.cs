@@ -127,15 +127,6 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Pause"",
-                    ""type"": ""Button"",
-                    ""id"": ""fc398917-2a93-4cfa-80f3-bbd529fa0d16"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
                     ""name"": ""Debug_Reset"",
                     ""type"": ""Button"",
                     ""id"": ""9cec7742-1366-4e59-b85c-18b46c10fc0d"",
@@ -481,17 +472,6 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""761d1c2c-c05b-4679-835d-41249b44df4c"",
-                    ""path"": ""<Keyboard>/m"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Pause"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
                     ""id"": ""0176b23c-f055-4d77-9ca3-8efb14f8af1b"",
                     ""path"": ""<Keyboard>/v"",
                     ""interactions"": """",
@@ -546,6 +526,62 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""Dialogue"",
+            ""id"": ""68ddf00f-fff2-4ad4-8187-c722095f71da"",
+            ""actions"": [
+                {
+                    ""name"": ""SkipDialogue"",
+                    ""type"": ""Button"",
+                    ""id"": ""dad0d012-1d38-4a69-9cfe-4ace31774564"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""bb4eae33-3a9c-464c-9243-98ea42ea131c"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SkipDialogue"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
+        },
+        {
+            ""name"": ""Pause"",
+            ""id"": ""bf819547-5ca8-4bf8-a760-37d9c0a5f1d1"",
+            ""actions"": [
+                {
+                    ""name"": ""EnterPause"",
+                    ""type"": ""Button"",
+                    ""id"": ""d00abdd3-46d2-46fb-99ce-2a4de24ab9d2"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""c4051fdd-d854-40cb-acb2-58b41584cadd"",
+                    ""path"": ""<Keyboard>/m"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""EnterPause"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": []
@@ -563,12 +599,17 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
         m_Armadillo_Ability2 = m_Armadillo.FindAction("Ability2", throwIfNotFound: true);
         m_Armadillo_Sprint = m_Armadillo.FindAction("Sprint", throwIfNotFound: true);
         m_Armadillo_Lurk = m_Armadillo.FindAction("Lurk", throwIfNotFound: true);
-        m_Armadillo_Pause = m_Armadillo.FindAction("Pause", throwIfNotFound: true);
         m_Armadillo_Debug_Reset = m_Armadillo.FindAction("Debug_Reset", throwIfNotFound: true);
         m_Armadillo_Melee = m_Armadillo.FindAction("Melee", throwIfNotFound: true);
         m_Armadillo_Weapon0 = m_Armadillo.FindAction("Weapon0", throwIfNotFound: true);
         m_Armadillo_Weapon1 = m_Armadillo.FindAction("Weapon1", throwIfNotFound: true);
         m_Armadillo_Weapon2 = m_Armadillo.FindAction("Weapon2", throwIfNotFound: true);
+        // Dialogue
+        m_Dialogue = asset.FindActionMap("Dialogue", throwIfNotFound: true);
+        m_Dialogue_SkipDialogue = m_Dialogue.FindAction("SkipDialogue", throwIfNotFound: true);
+        // Pause
+        m_Pause = asset.FindActionMap("Pause", throwIfNotFound: true);
+        m_Pause_EnterPause = m_Pause.FindAction("EnterPause", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -641,7 +682,6 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
     private readonly InputAction m_Armadillo_Ability2;
     private readonly InputAction m_Armadillo_Sprint;
     private readonly InputAction m_Armadillo_Lurk;
-    private readonly InputAction m_Armadillo_Pause;
     private readonly InputAction m_Armadillo_Debug_Reset;
     private readonly InputAction m_Armadillo_Melee;
     private readonly InputAction m_Armadillo_Weapon0;
@@ -662,7 +702,6 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
         public InputAction @Ability2 => m_Wrapper.m_Armadillo_Ability2;
         public InputAction @Sprint => m_Wrapper.m_Armadillo_Sprint;
         public InputAction @Lurk => m_Wrapper.m_Armadillo_Lurk;
-        public InputAction @Pause => m_Wrapper.m_Armadillo_Pause;
         public InputAction @Debug_Reset => m_Wrapper.m_Armadillo_Debug_Reset;
         public InputAction @Melee => m_Wrapper.m_Armadillo_Melee;
         public InputAction @Weapon0 => m_Wrapper.m_Armadillo_Weapon0;
@@ -710,9 +749,6 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
             @Lurk.started += instance.OnLurk;
             @Lurk.performed += instance.OnLurk;
             @Lurk.canceled += instance.OnLurk;
-            @Pause.started += instance.OnPause;
-            @Pause.performed += instance.OnPause;
-            @Pause.canceled += instance.OnPause;
             @Debug_Reset.started += instance.OnDebug_Reset;
             @Debug_Reset.performed += instance.OnDebug_Reset;
             @Debug_Reset.canceled += instance.OnDebug_Reset;
@@ -765,9 +801,6 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
             @Lurk.started -= instance.OnLurk;
             @Lurk.performed -= instance.OnLurk;
             @Lurk.canceled -= instance.OnLurk;
-            @Pause.started -= instance.OnPause;
-            @Pause.performed -= instance.OnPause;
-            @Pause.canceled -= instance.OnPause;
             @Debug_Reset.started -= instance.OnDebug_Reset;
             @Debug_Reset.performed -= instance.OnDebug_Reset;
             @Debug_Reset.canceled -= instance.OnDebug_Reset;
@@ -800,6 +833,98 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
         }
     }
     public ArmadilloActions @Armadillo => new ArmadilloActions(this);
+
+    // Dialogue
+    private readonly InputActionMap m_Dialogue;
+    private List<IDialogueActions> m_DialogueActionsCallbackInterfaces = new List<IDialogueActions>();
+    private readonly InputAction m_Dialogue_SkipDialogue;
+    public struct DialogueActions
+    {
+        private @PlayerInputAction m_Wrapper;
+        public DialogueActions(@PlayerInputAction wrapper) { m_Wrapper = wrapper; }
+        public InputAction @SkipDialogue => m_Wrapper.m_Dialogue_SkipDialogue;
+        public InputActionMap Get() { return m_Wrapper.m_Dialogue; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(DialogueActions set) { return set.Get(); }
+        public void AddCallbacks(IDialogueActions instance)
+        {
+            if (instance == null || m_Wrapper.m_DialogueActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_DialogueActionsCallbackInterfaces.Add(instance);
+            @SkipDialogue.started += instance.OnSkipDialogue;
+            @SkipDialogue.performed += instance.OnSkipDialogue;
+            @SkipDialogue.canceled += instance.OnSkipDialogue;
+        }
+
+        private void UnregisterCallbacks(IDialogueActions instance)
+        {
+            @SkipDialogue.started -= instance.OnSkipDialogue;
+            @SkipDialogue.performed -= instance.OnSkipDialogue;
+            @SkipDialogue.canceled -= instance.OnSkipDialogue;
+        }
+
+        public void RemoveCallbacks(IDialogueActions instance)
+        {
+            if (m_Wrapper.m_DialogueActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        public void SetCallbacks(IDialogueActions instance)
+        {
+            foreach (var item in m_Wrapper.m_DialogueActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_DialogueActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    public DialogueActions @Dialogue => new DialogueActions(this);
+
+    // Pause
+    private readonly InputActionMap m_Pause;
+    private List<IPauseActions> m_PauseActionsCallbackInterfaces = new List<IPauseActions>();
+    private readonly InputAction m_Pause_EnterPause;
+    public struct PauseActions
+    {
+        private @PlayerInputAction m_Wrapper;
+        public PauseActions(@PlayerInputAction wrapper) { m_Wrapper = wrapper; }
+        public InputAction @EnterPause => m_Wrapper.m_Pause_EnterPause;
+        public InputActionMap Get() { return m_Wrapper.m_Pause; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(PauseActions set) { return set.Get(); }
+        public void AddCallbacks(IPauseActions instance)
+        {
+            if (instance == null || m_Wrapper.m_PauseActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_PauseActionsCallbackInterfaces.Add(instance);
+            @EnterPause.started += instance.OnEnterPause;
+            @EnterPause.performed += instance.OnEnterPause;
+            @EnterPause.canceled += instance.OnEnterPause;
+        }
+
+        private void UnregisterCallbacks(IPauseActions instance)
+        {
+            @EnterPause.started -= instance.OnEnterPause;
+            @EnterPause.performed -= instance.OnEnterPause;
+            @EnterPause.canceled -= instance.OnEnterPause;
+        }
+
+        public void RemoveCallbacks(IPauseActions instance)
+        {
+            if (m_Wrapper.m_PauseActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        public void SetCallbacks(IPauseActions instance)
+        {
+            foreach (var item in m_Wrapper.m_PauseActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_PauseActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    public PauseActions @Pause => new PauseActions(this);
     public interface IArmadilloActions
     {
         void OnMovement(InputAction.CallbackContext context);
@@ -813,11 +938,18 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
         void OnAbility2(InputAction.CallbackContext context);
         void OnSprint(InputAction.CallbackContext context);
         void OnLurk(InputAction.CallbackContext context);
-        void OnPause(InputAction.CallbackContext context);
         void OnDebug_Reset(InputAction.CallbackContext context);
         void OnMelee(InputAction.CallbackContext context);
         void OnWeapon0(InputAction.CallbackContext context);
         void OnWeapon1(InputAction.CallbackContext context);
         void OnWeapon2(InputAction.CallbackContext context);
+    }
+    public interface IDialogueActions
+    {
+        void OnSkipDialogue(InputAction.CallbackContext context);
+    }
+    public interface IPauseActions
+    {
+        void OnEnterPause(InputAction.CallbackContext context);
     }
 }

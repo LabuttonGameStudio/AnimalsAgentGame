@@ -113,8 +113,8 @@ public class MenuPause : MonoBehaviour
         #endregion
 
 
-        ArmadilloPlayerController.Instance.inputControl.inputAction.Armadillo.Pause.Enable();
-        ArmadilloPlayerController.Instance.inputControl.inputAction.Armadillo.Pause.performed += MenuOpen;
+        ArmadilloPlayerController.Instance.inputControl.inputAction.Pause.EnterPause.Enable();
+        ArmadilloPlayerController.Instance.inputControl.inputAction.Pause.EnterPause.performed += MenuOpen;
     }
 
     public void MenuOpen(InputAction.CallbackContext value)

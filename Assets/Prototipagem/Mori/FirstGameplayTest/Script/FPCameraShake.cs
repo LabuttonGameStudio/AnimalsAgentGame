@@ -94,9 +94,9 @@ public class FPCameraShake : MonoBehaviour
         }
         return stats;
     }
-    public PivotOffsetStats StartPivotOffsetFixed(Vector3 offset,float fadeInTime)
+    public PivotOffsetStats StartPivotOffsetFixed(Vector3 offset, float fadeInTime)
     {
-        PivotOffsetStats stats = new PivotOffsetStats() { offset = offset, fadeInTime = fadeInTime};
+        PivotOffsetStats stats = new PivotOffsetStats() { offset = offset, fadeInTime = fadeInTime };
         stats.coroutine = StartCoroutine(FadePivotOffsetFixed_Coroutine(stats, FadeType.FadeIn));
         currentOperatingOffset.Add(stats);
         if (updateCurrentOffset_Ref == null)
@@ -233,6 +233,15 @@ public class FPCameraShake : MonoBehaviour
         }
         else
         {
+            float timer = 0;
+            Vector3 startOffset = stats.currentOffset;
+            while (timer < 0.1f)
+            {
+
+                stats.currentOffset = Vector3.Lerp(startOffset, Vector3.Lerp(stats.offset, stats.offset * (-1), (1 + Mathf.Sin(Time.time * stats.frequency)) / 2), timer / 0.1f);
+                timer += Time.deltaTime;
+                yield return null;
+            }
             while (true)
             {
                 stats.currentOffset = Vector3.Lerp(stats.offset, stats.offset * (-1), (1 + Mathf.Sin(Time.time * stats.frequency)) / 2);
