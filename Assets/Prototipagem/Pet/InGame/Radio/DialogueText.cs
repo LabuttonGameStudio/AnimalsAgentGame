@@ -9,9 +9,9 @@ using UnityEngine.Localization.Components;
 [Serializable]
 public class DialogueText 
 {
-    public string title;
     [Header("Infos")]
-    public Sprite portrait;
+    public Sprite portraitBackground;
+    public Material portrait;
     public string name;
     [TextArea(1, 20)] public string quote;
 

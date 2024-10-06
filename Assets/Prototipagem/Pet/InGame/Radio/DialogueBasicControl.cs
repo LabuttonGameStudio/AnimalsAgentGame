@@ -22,9 +22,12 @@ public class DialogueBasicControl : MonoBehaviour
 
     [Header("COMPONENTS")]
     public CanvasGroup Radio;
-    public Image Icon;
+    public Image IconBackground;
+    public SpriteRenderer Waves;
+    public Graphic Icon;
     public TMP_Text Skip;
     public TMP_Text Name;
+    public TMP_Text AgentTitle;
     public TMP_Text DialogueText;
 
     [Header("SETTINGS")]
@@ -69,8 +72,11 @@ public class DialogueBasicControl : MonoBehaviour
         currentDialogueCoroutine = new DialogueCoroutines();
         currentDialogue = dialogue;
 
-        Icon.sprite = dialogue.dialogue[0].portrait;
+        IconBackground.sprite = dialogue.dialogue[0].portraitBackground;
+        Icon.material = dialogue.dialogue[0].portrait;
         Name.text = dialogue.dialogue[0].name;
+        AgentTitle.text = dialogue.dialogue[0].name;
+        SetOpacity(1);
 
         currentDialogueCoroutine.coroutines.Add(StartCoroutine(Fade(Radio, 0f, 1f, FadeDuration)));
 
@@ -93,6 +99,7 @@ public class DialogueBasicControl : MonoBehaviour
     {
         currentDialogueCoroutine.coroutines.Add(StartCoroutine(Fade(Radio, 1f, 0f, FadeDuration)));
         currentDialogueCoroutine.coroutines.Add(StartCoroutine(SequenceDialogueEvents(endevent)));
+        SetOpacity(0);
     }
 
 
@@ -101,8 +108,10 @@ public class DialogueBasicControl : MonoBehaviour
     {
         for (int i = 0; i < dialogue.dialogue.Length; i++)
         {
-            Icon.sprite = dialogue.dialogue[i].portrait;
+            IconBackground.sprite = dialogue.dialogue[i].portraitBackground;
+            Icon.material = dialogue.dialogue[i].portrait;
             Name.text = dialogue.dialogue[i].name;
+            AgentTitle.text = dialogue.dialogue[i].name;
             currentDialogueCoroutine.coroutines.Add(StartCoroutine(SequenceDialogueEvents(dialogue.dialogue[i].eventOnDialogueBoxEnter)));
             Coroutine typeCoroutine = StartCoroutine(TypeSentence_Coroutine(dialogue.dialogue[i].quote, false));
             currentDialogueCoroutine.coroutines.Add(typeCoroutine);
@@ -116,8 +125,10 @@ public class DialogueBasicControl : MonoBehaviour
     {
         for (int i = 0; i < dialogue.dialogue.Length; i++)
         {
-            Icon.sprite = dialogue.dialogue[i].portrait;
+            IconBackground.sprite = dialogue.dialogue[i].portraitBackground;
+            Icon.material = dialogue.dialogue[i].portrait;
             Name.text = dialogue.dialogue[i].name;
+            AgentTitle.text = dialogue.dialogue[i].name;
 
             currentDialogueCoroutine.coroutines.Add(StartCoroutine(SequenceDialogueEvents(dialogue.dialogue[i].eventOnDialogueBoxEnter)));
             InputAction interactButton = ArmadilloPlayerController.Instance.inputControl.inputAction.Dialogue.SkipDialogue;
@@ -207,6 +218,12 @@ public class DialogueBasicControl : MonoBehaviour
         DialogueText.text = sentence;
     }
 
+    public void SetOpacity(float opacityValue)
+    {
+       Color color = Waves.color;
+       color.a = opacityValue;
+       Waves.color = color;
+    }
 
     public Coroutine StartFade(CanvasGroup canvasGroup, float startAlpha, float endAlpha, float duration)
     {
