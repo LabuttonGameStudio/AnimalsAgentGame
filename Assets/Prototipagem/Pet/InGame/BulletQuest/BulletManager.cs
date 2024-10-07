@@ -20,7 +20,11 @@ public class BulletManager : MonoBehaviour
     [SerializeField] private List<Antena_Damageable> antenas;
 
     private int activatedAntenas = 0;
-
+    private void Awake()
+    {
+        Graphic targetGraphic = targetObject.GetComponent<Graphic>();
+        targetGraphic.material = new Material(targetGraphic.material);
+    }
     public void UpdateText(string newTitle, string newDescription)
     {
         titleText.text = newTitle;

@@ -24,6 +24,11 @@ public class ArmadilloPlayerInputController : MonoBehaviour
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
+    public void LockPlayerOnDialogue(bool toggle)
+    {
+        TogglePlayerControls(toggle);
+        TogglePauseControls(toggle);
+    }
     public void TogglePlayerControls(bool toggle)
     {
         if (toggle)
@@ -44,6 +49,15 @@ public class ArmadilloPlayerInputController : MonoBehaviour
             inputAction.Dialogue.Enable();
         }
         else inputAction.Dialogue.Disable();
+    }
+
+    public void TogglePauseControls(bool toggle)
+    {
+        if (toggle)
+        {
+            inputAction.Pause.Enable();
+        }
+        else inputAction.Pause.Disable();
     }
     public void ToggleChangeWeapon(bool state)
     {

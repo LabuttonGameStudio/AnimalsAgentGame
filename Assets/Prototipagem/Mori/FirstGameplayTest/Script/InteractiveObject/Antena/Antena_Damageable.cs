@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using static Damage;
 
 public class Antena_Damageable :MonoBehaviour,IRequirements, IDamageable
@@ -9,8 +10,11 @@ public class Antena_Damageable :MonoBehaviour,IRequirements, IDamageable
     public INeedRequirements connectedObject { get; set; }
     private BulletManager objectiveManager;
 
-    [SerializeField] public MeshRenderer[] meshRenderers;
+    [SerializeField] private UnityEvent consequences;
 
+    [Space(10),SerializeField] public MeshRenderer[] meshRenderers;
+
+    [Space(10),SerializeField] private CableSpline[] cableSplines;
     public void TakeDamage(Damage damage)
     {
         if (!isTurnedOn)
@@ -21,6 +25,11 @@ public class Antena_Damageable :MonoBehaviour,IRequirements, IDamageable
                 case DamageType.Hacking:
                     isTurnedOn = true;
                     meshRenderers[0].sharedMaterial.SetInt("_Light_on_off", 1);
+                    foreach(CableSpline cableSpline in cableSplines)
+                    {
+                        cableSpline.ToggleSpline(true);
+                    }
+                    consequences.Invoke();
                     if (connectedObject != null) connectedObject.OnRequirementChange();
                     // Notifica o ObjectiveManager
                     if (objectiveManager != null)

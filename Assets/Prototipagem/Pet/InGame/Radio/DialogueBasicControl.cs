@@ -3,10 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using UnityEngine.Events;
 using UnityEngine.InputSystem;
-using UnityEngine.Localization.Tables;
-using UnityEditor.Localization;
+using UnityEngine.Localization;
 
 
 public class DialogueCoroutines
@@ -37,8 +35,6 @@ public class DialogueBasicControl : MonoBehaviour
     public float TimeBetweenSentences;
     public float FadeDuration = 0.5f;
 
-    [Header("Localization Table")]
-    [SerializeField] private StringTableCollection characterTable;
 
     private void Awake()
     {
