@@ -8095,14 +8095,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ed03f7f3dde066478b6c38b82f3efff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  dialogueTable: {fileID: 0}
   pauseBetweenSentences: 0
   dialogue:
-  - title: Ablu blu
+  - portraitBackground: {fileID: 0}
     portrait: {fileID: 0}
     name: Sai
     quote: Abuble bu ble bu <color="blue">Blue,</color> Abuble bu ble bu
     eventOnDialogueBoxEnter: []
-  - title: 
+  - portraitBackground: {fileID: 0}
     portrait: {fileID: 0}
     name: Sai
     quote: 
@@ -8505,14 +8506,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ed03f7f3dde066478b6c38b82f3efff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  dialogueTable: {fileID: 0}
   pauseBetweenSentences: 1
   dialogue:
-  - title: 
+  - portraitBackground: {fileID: 0}
     portrait: {fileID: 21300000, guid: 731664e8f8d587b49bb219f2fd281ec7, type: 3}
     name: Gerson
     quote: Eu sou o gerson
     eventOnDialogueBoxEnter: []
-  - title: 
+  - portraitBackground: {fileID: 0}
     portrait: {fileID: 21300000, guid: 40a346501c07f834ca0a97722d57116e, type: 3}
     name: Roberto
     quote: Eu sou o roberto
@@ -9333,6 +9335,22 @@ PrefabInstance:
     - target: {fileID: 2294353723878762877, guid: eb11bd31773d7a64aa560b99e8e3727a, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: -77.82001
+      objectReference: {fileID: 0}
+    - target: {fileID: 2406480152105192766, guid: eb11bd31773d7a64aa560b99e8e3727a, type: 3}
+      propertyPath: m_Color.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2406480152105192766, guid: eb11bd31773d7a64aa560b99e8e3727a, type: 3}
+      propertyPath: m_Color.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2406480152105192766, guid: eb11bd31773d7a64aa560b99e8e3727a, type: 3}
+      propertyPath: m_Color.g
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2406480152105192766, guid: eb11bd31773d7a64aa560b99e8e3727a, type: 3}
+      propertyPath: m_Color.r
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2410548206883089601, guid: eb11bd31773d7a64aa560b99e8e3727a, type: 3}
       propertyPath: 'm_ActiveFontFeatures.Array.data[0]'
@@ -10700,7 +10718,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5657193980638182572, guid: 5e6fc123e444e7f45ab78b704561dbb1, type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5726076111737658576, guid: 5e6fc123e444e7f45ab78b704561dbb1, type: 3}
       propertyPath: m_Layer
@@ -10784,7 +10802,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9044015245498109999, guid: 5e6fc123e444e7f45ab78b704561dbb1, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9047328055246666070, guid: 5e6fc123e444e7f45ab78b704561dbb1, type: 3}
       propertyPath: m_Layer

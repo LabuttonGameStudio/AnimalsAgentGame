@@ -3,7 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using Cinemachine;
 using UnityEngine.InputSystem;
-using Unity.Collections.LowLevel.Unsafe;
+public class SensibilityModifier
+{
+    public float sensibilityModifier;
+    public SensibilityModifier(float sensibilityModifier)
+    {
+        this.sensibilityModifier = sensibilityModifier;
+    }
+}
 public class PlayerCamera : MonoBehaviour
 {
     //Singleton
@@ -39,6 +46,7 @@ public class PlayerCamera : MonoBehaviour
 
     [Space, Header("Cinemachine")]
     public CinemachineVirtualCamera firstPersonCinemachine;
+    private CinemachinePOV firstPersonCinemachinePOV;
     public CinemachineVirtualCamera thirdPersonCinemachine;
 
     //----- Zoom -----
@@ -46,6 +54,9 @@ public class PlayerCamera : MonoBehaviour
     [HideInInspector] public float sprintZoomModifier=1f; //1.1f/1f
 
     [HideInInspector] public float sniperZoomModifier=1f; //0.33f/1f
+
+    //Sensibility Modifiers
+    public List<SensibilityModifier> sensibilityModifiers = new List<SensibilityModifier>();
     public void ChangeCameraState(CameraBaseState nextState)
     {
         if (currentCameraState != null) currentCameraState.ExitState();
@@ -55,6 +66,7 @@ public class PlayerCamera : MonoBehaviour
 
     private void Awake()
     {
+        sensibilityModifiers = new List<SensibilityModifier> ();
         firstPersonSensibility = Vector2.one;
         thirdPersonSensibility = Vector2.one;
         currentSpeedModifier = 1f;
@@ -79,7 +91,6 @@ public class PlayerCamera : MonoBehaviour
         mainCamera.cullingMask = firstPersonMask;
         ChangeCameraState(firstPersonCameraState);
     }
-
     public Vector2 GetMouseDelta()
     {
         return inputController.inputAction.Armadillo.Look.ReadValue<Vector2>();
@@ -104,18 +115,37 @@ public class PlayerCamera : MonoBehaviour
         thirdPersonSensibility = sensibility/5f;
 
         //Apply to first person, dont need for third person because is real time
-        CinemachinePOV cinemachinePOV = firstPersonCinemachine.GetCinemachineComponent<CinemachinePOV>();
-        cinemachinePOV.m_HorizontalAxis.m_MaxSpeed = firstPersonSensibility.x* currentSpeedModifier;
-        cinemachinePOV.m_VerticalAxis.m_MaxSpeed = firstPersonSensibility.y* currentSpeedModifier;
-
-        InputAction inputAction = ArmadilloPlayerController.Instance.inputControl.inputAction.Armadillo.Look;
+        UpdateCurrentSensibilitySpeed();
     }
     public void ChangeCurrentSpeedModifier(float newValue)
     {
         currentSpeedModifier = newValue;
-        CinemachinePOV cinemachinePOV = firstPersonCinemachine.GetCinemachineComponent<CinemachinePOV>();
-        cinemachinePOV.m_HorizontalAxis.m_MaxSpeed = firstPersonSensibility.x * currentSpeedModifier;
-        cinemachinePOV.m_VerticalAxis.m_MaxSpeed = firstPersonSensibility.y * currentSpeedModifier;
+
+        UpdateCurrentSensibilitySpeed();
+    }
+    public void UpdateCurrentSensibilitySpeed()
+    {
+        float currentModifier =1;
+        if (firstPersonCinemachinePOV == null) firstPersonCinemachinePOV = firstPersonCinemachine.GetCinemachineComponent<CinemachinePOV>();
+        foreach (SensibilityModifier sensibilityModifier in sensibilityModifiers)
+        {
+            currentModifier *= sensibilityModifier.sensibilityModifier;
+        }
+        firstPersonCinemachinePOV.m_HorizontalAxis.m_MaxSpeed = firstPersonSensibility.x * currentSpeedModifier* currentModifier;
+        firstPersonCinemachinePOV.m_VerticalAxis.m_MaxSpeed = firstPersonSensibility.y * currentSpeedModifier* currentModifier;
+    }
+    public void AddSensibilityModifier(SensibilityModifier sensibilityModifier)
+    {
+        sensibilityModifiers.Add(sensibilityModifier);
+        UpdateCurrentSensibilitySpeed();
+    }
+    public void RemoveSensibilityModifier(SensibilityModifier sensibilityModifier)
+    {
+        if(sensibilityModifiers.Contains(sensibilityModifier))
+        {
+            sensibilityModifiers.Remove(sensibilityModifier);
+            UpdateCurrentSensibilitySpeed();
+        }
     }
     public void ToggleZoom(bool state)
     {

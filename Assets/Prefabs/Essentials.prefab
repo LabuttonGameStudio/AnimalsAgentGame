@@ -20513,7 +20513,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_ShowDebugText: 1
   m_ShowCameraFrustum: 1
-  m_IgnoreTimeScale: 1
+  m_IgnoreTimeScale: 0
   m_WorldUpOverride: {fileID: 0}
   m_UpdateMethod: 2
   m_BlendUpdateMethod: 1
@@ -25954,10 +25954,6 @@ PrefabInstance:
       propertyPath: m_Color.r
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 240795572544239350, guid: c586bfc8e3eb01e468e94af7623ca740, type: 3}
-      propertyPath: m_Material
-      value: 
-      objectReference: {fileID: 2100000, guid: 5c25074fdcb3ec149bc2b136887620fd, type: 2}
     - target: {fileID: 2677528999442120784, guid: c586bfc8e3eb01e468e94af7623ca740, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -26039,7 +26035,11 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3263334931682524841, guid: c586bfc8e3eb01e468e94af7623ca740, type: 3}
-      propertyPath: m_Alpha
+      propertyPath: m_Interactable
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3263334931682524841, guid: c586bfc8e3eb01e468e94af7623ca740, type: 3}
+      propertyPath: m_BlocksRaycasts
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7980655786010776617, guid: c586bfc8e3eb01e468e94af7623ca740, type: 3}
@@ -26255,6 +26255,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6544562486705739702, guid: d69fbfd47a73b46468f3bd7cffd0e1ee, type: 3}
+      propertyPath: characterTable
+      value: 
+      objectReference: {fileID: 11400000, guid: 8c306dabe41c5b94aadd75d0b8b9f399, type: 2}
     - target: {fileID: 8564336792935437061, guid: d69fbfd47a73b46468f3bd7cffd0e1ee, type: 3}
       propertyPath: m_Color.a
       value: 0

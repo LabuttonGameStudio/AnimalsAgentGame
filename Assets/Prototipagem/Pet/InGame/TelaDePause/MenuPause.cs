@@ -44,7 +44,6 @@ public class MenuPause : MonoBehaviour
     private const string SensitivityPrefKey = "MouseSensitivity";
 
     public ArmadilloVisualControl visualControl;
-
     void Start()
     {
         #region Sound
@@ -115,16 +114,32 @@ public class MenuPause : MonoBehaviour
 
         ArmadilloPlayerController.Instance.inputControl.inputAction.Pause.EnterPause.Enable();
         ArmadilloPlayerController.Instance.inputControl.inputAction.Pause.EnterPause.performed += MenuOpen;
+
     }
 
     public void MenuOpen(InputAction.CallbackContext value)
+
     {
         isMenuOpen = !isMenuOpen;
         Cursor.visible = isMenuOpen;
         Cursor.lockState = isMenuOpen ? CursorLockMode.None : CursorLockMode.Locked;
 
         Menu.SetActive(isMenuOpen);
-        if(ArmadilloPlayerController.Instance.cameraControl!= null) ArmadilloPlayerController.Instance.cameraControl.ChangeCurrentSpeedModifier(isMenuOpen ? 0f : 1f);
+        if (ArmadilloPlayerController.Instance.cameraControl != null)
+        {
+            if(isMenuOpen)
+            {
+                Time.timeScale = 0;
+                ArmadilloPlayerController.Instance.inputControl.TogglePlayerControls(false);
+                ArmadilloPlayerController.Instance.inputControl.ToggleDialogueControls(false);
+            }
+            else
+            { 
+                Time.timeScale = 1;
+                ArmadilloPlayerController.Instance.inputControl.TogglePlayerControls(true);
+                ArmadilloPlayerController.Instance.inputControl.ToggleDialogueControls(true);
+            }
+        }
         if (isMenuOpen)
         {
             visualControl.OnPause();

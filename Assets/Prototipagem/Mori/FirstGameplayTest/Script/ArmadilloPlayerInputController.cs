@@ -7,9 +7,12 @@ using UnityEngine.SceneManagement;
 public class ArmadilloPlayerInputController : MonoBehaviour
 {
     public PlayerInputAction inputAction;
+
+    private SensibilityModifier zeroSensibilityModifier;
     private void Awake()
     {
         inputAction = new PlayerInputAction();
+        zeroSensibilityModifier = new SensibilityModifier(0);
     }
     private void Start()
     {
@@ -26,8 +29,21 @@ public class ArmadilloPlayerInputController : MonoBehaviour
         if (toggle)
         {
             inputAction.Armadillo.Enable();
+            ArmadilloPlayerController.Instance.cameraControl.RemoveSensibilityModifier(zeroSensibilityModifier);
         }
-        else inputAction.Armadillo.Disable();
+        else
+        {
+            inputAction.Armadillo.Disable();
+            ArmadilloPlayerController.Instance.cameraControl.AddSensibilityModifier(zeroSensibilityModifier);
+        }
+    }
+    public void ToggleDialogueControls(bool toggle)
+    {
+        if (toggle)
+        {
+            inputAction.Dialogue.Enable();
+        }
+        else inputAction.Dialogue.Disable();
     }
     public void ToggleChangeWeapon(bool state)
     {

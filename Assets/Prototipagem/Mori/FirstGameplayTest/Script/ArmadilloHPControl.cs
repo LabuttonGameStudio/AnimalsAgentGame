@@ -1,9 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Rendering;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ArmadilloHPControl : MonoBehaviour,IDamageable
+public class ArmadilloHPControl : MonoBehaviour, IDamageable
 {
     [Header("HP Stats")]
     public float maxHp;
@@ -20,27 +21,22 @@ public class ArmadilloHPControl : MonoBehaviour,IDamageable
     [System.NonSerialized] public bool isInvulnerable;
     public float invulnerabilityDuration;
 
-    private bool isFadingIn = false;
-    private bool isFadingOut = false;
-
-
     public void TakeDamage(Damage damage)
     {
         if (!isInvulnerable)
         {
-            if (currentHp - damage.damageAmount < 0)
+            if (currentHp - damage.damageAmount <= 0)
             {
                 ArmadilloPlayerController.Instance.Die();
                 StartCoroutine(DeathScreenFade(1f, 1f));
                 currentHp = 0;
                 UpdateHealthBar();
+                isInvulnerable = true;
                 return;
             }
             StartInvulnerabilityTimer();
-            if (!isFadingIn && !isFadingOut)
-            {
-                StartCoroutine(DamageScreenFade(1f, 0.5f));
-            }
+            if (damageScreenFade_Ref != null) StopCoroutine(damageScreenFade_Ref);
+            damageScreenFade_Ref = StartCoroutine(DamageScreenFade_Coroutine(1f, 0.25f));
             currentHp -= damage.damageAmount;
             currentGreyHp = damage.damageAmount / 2;
             UpdateHealthBar();
@@ -66,7 +62,6 @@ public class ArmadilloHPControl : MonoBehaviour,IDamageable
     }
     public void UpdateHealthBar()
     {
-        
         currentHpSlider.value = currentHp / maxHp;
         currentGreyHpSlider.value = (currentHp + currentGreyHp) / maxHp;
     }
@@ -88,11 +83,9 @@ public class ArmadilloHPControl : MonoBehaviour,IDamageable
         invulnerabilityTimer_Ref = null;
     }
 
-
-    private IEnumerator DamageScreenFade(float targetAlpha, float fadeDuration)
+    private Coroutine damageScreenFade_Ref;
+    private IEnumerator DamageScreenFade_Coroutine(float targetAlpha, float fadeDuration)
     {
-        isFadingIn = true;
-
         float startAlpha = DamageScreen.alpha;
         float elapsedTime = 0.0f;
 
@@ -110,10 +103,7 @@ public class ArmadilloHPControl : MonoBehaviour,IDamageable
         DamageScreen.alpha = targetAlpha;
 
         // Espera um tempo antes de começar a diminuir o alpha
-        yield return new WaitForSeconds(0.2f);
-
-        isFadingIn = false;
-        isFadingOut = true;
+        yield return new WaitForSeconds(0.5f);
 
         elapsedTime = 0.0f;
 
@@ -127,23 +117,29 @@ public class ArmadilloHPControl : MonoBehaviour,IDamageable
 
             yield return null;
         }
-
+        damageScreenFade_Ref = null;
         DamageScreen.alpha = 0f;
-
-        isFadingOut = false;
     }
 
     IEnumerator DeathScreenFade(float targetAlpha, float fadeDuration)
     {
         float startAlpha = DeathScreen.alpha;
         float elapsedTime = 0.0f;
-        ArmadilloPlayerController.Instance.cameraControl.ChangeCurrentSpeedModifier(0);
+        ArmadilloPlayerController.Instance.inputControl.TogglePlayerControls(false);
+        float timer = 0;
+        while(timer<0.25f)
+        {
+            Time.timeScale = 1 - timer / 0.25f;
+            timer += Time.unscaledDeltaTime;
+            yield return null;
+        }
+        Time.timeScale = 0;
         while (elapsedTime < fadeDuration)
         {
             float newAlpha = Mathf.Lerp(startAlpha, targetAlpha, elapsedTime / fadeDuration);
             DeathScreen.alpha = newAlpha;
 
-            elapsedTime += Time.deltaTime;
+            elapsedTime += Time.unscaledDeltaTime;
 
             yield return null;
         }
@@ -151,8 +147,5 @@ public class ArmadilloHPControl : MonoBehaviour,IDamageable
         DeathScreen.alpha = targetAlpha;
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
-
-        //Cursor.lockState = CursorLockMode.Locked;
-        //Cursor.visible = false;
     }
 }

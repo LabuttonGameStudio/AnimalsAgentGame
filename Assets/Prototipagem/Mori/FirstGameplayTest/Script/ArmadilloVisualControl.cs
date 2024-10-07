@@ -171,7 +171,7 @@ public class ArmadilloVisualControl : MonoBehaviour
             crossFadeLayers_Ref.transitionAmount = timer / crossFadeDuration;
             fpAnimator.SetLayerWeight(crossFadeLayers_Ref.previousLayer, 1 - crossFadeLayers_Ref.transitionAmount);
             fpAnimator.SetLayerWeight(crossFadeLayers_Ref.newLayer, crossFadeLayers_Ref.transitionAmount);
-            timer += Time.deltaTime;
+            timer += Time.unscaledDeltaTime;
             yield return null;
         }
         fpAnimator.SetLayerWeight(crossFadeLayers_Ref.previousLayer, 0);

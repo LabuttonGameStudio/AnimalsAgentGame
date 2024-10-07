@@ -12,12 +12,15 @@ public class DeathScreen : MonoBehaviour
 
     public void ReturninicialScreen()
     {
+        Time.timeScale = 1;
+        ArmadilloPlayerController.Instance.inputControl.TogglePlayerControls(true);
         SceneManager.LoadScene(sceneInicial);
     }
 
     public void ReturnGame()
     {
-        ArmadilloPlayerController.Instance.cameraControl.ChangeCurrentSpeedModifier(1);
+        Time.timeScale = 1;
+        ArmadilloPlayerController.Instance.inputControl.TogglePlayerControls(true);
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 }
