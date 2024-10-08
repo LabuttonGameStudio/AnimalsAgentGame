@@ -75,8 +75,8 @@ public class DialogueBasicControl : MonoBehaviour
 
         IconBackground.sprite = dialogue.dialogue[0].portraitBackground;
         Icon.material = dialogue.dialogue[0].portrait;
-        Name.text = dialogue.dialogue[0].name;
-        AgentTitle.text = dialogue.dialogue[0].name;
+        Name.text = dialogue.dialogue[0].localizedName.GetLocalizedString();
+        AgentTitle.text = dialogue.dialogue[0].localizedQuote.GetLocalizedString();
         SetOpacity(1);
 
         currentDialogueCoroutine.coroutines.Add(StartCoroutine(Fade(Radio, 0f, 1f, FadeDuration)));
@@ -111,10 +111,10 @@ public class DialogueBasicControl : MonoBehaviour
         {
             IconBackground.sprite = dialogue.dialogue[i].portraitBackground;
             Icon.material = dialogue.dialogue[i].portrait;
-            Name.text = dialogue.dialogue[i].name;
-            AgentTitle.text = dialogue.dialogue[i].name;
+            Name.text = dialogue.dialogue[i].localizedName.GetLocalizedString();
+            AgentTitle.text = dialogue.dialogue[i].localizedName.GetLocalizedString();
             currentDialogueCoroutine.coroutines.Add(StartCoroutine(SequenceDialogueEvents(dialogue.dialogue[i].eventOnDialogueBoxEnter)));
-            Coroutine typeCoroutine = StartCoroutine(TypeSentence_Coroutine(dialogue.dialogue[i].quote, false));
+            Coroutine typeCoroutine = StartCoroutine(TypeSentence_Coroutine(dialogue.dialogue[i].localizedQuote.GetLocalizedString(), false));
             currentDialogueCoroutine.coroutines.Add(typeCoroutine);
             yield return typeCoroutine;
             yield return new WaitForSecondsRealtime(TimeBetweenSentences); // espera um tempo antes de iniciar a proxima sentença
@@ -128,13 +128,13 @@ public class DialogueBasicControl : MonoBehaviour
         {
             IconBackground.sprite = dialogue.dialogue[i].portraitBackground;
             Icon.material = dialogue.dialogue[i].portrait;
-            Name.text = dialogue.dialogue[i].name;
-            AgentTitle.text = dialogue.dialogue[i].name;
+            Name.text = dialogue.dialogue[i].localizedName.GetLocalizedString();
+            AgentTitle.text = dialogue.dialogue[i].localizedName.GetLocalizedString();
 
             currentDialogueCoroutine.coroutines.Add(StartCoroutine(SequenceDialogueEvents(dialogue.dialogue[i].eventOnDialogueBoxEnter)));
             InputAction interactButton = ArmadilloPlayerController.Instance.inputControl.inputAction.Dialogue.SkipDialogue;
 
-            Coroutine typeSequenceCoroutine = StartCoroutine(TypeSentence_Coroutine(dialogue.dialogue[i].quote, true));
+            Coroutine typeSequenceCoroutine = StartCoroutine(TypeSentence_Coroutine(dialogue.dialogue[i].localizedQuote.GetLocalizedString(), true));
             currentDialogueCoroutine.coroutines.Add(typeSequenceCoroutine);
             yield return typeSequenceCoroutine;
             while (true)
