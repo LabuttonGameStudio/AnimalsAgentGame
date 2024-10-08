@@ -10,10 +10,8 @@ public class DialogueText
     public Material portrait;
 
     public LocalizedString localizedName;
-    public string name;
 
     public LocalizedString localizedQuote;
-    [TextArea(1, 20)] public string quote;
 
     [Header("Events")]
     public DialogueEvent[] eventOnDialogueBoxEnter;
