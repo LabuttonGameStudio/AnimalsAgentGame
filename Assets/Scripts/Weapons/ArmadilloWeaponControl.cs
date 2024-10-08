@@ -69,7 +69,6 @@ public class ArmadilloWeaponControl : MonoBehaviour
         if (meleeIsOnCooldown || !ArmadilloPlayerController.Instance.visualControl.isArmVisible) return;
         ToggleArms(false);
         ToggleWeapon(false, false);
-        meleeHitbox.Hit(meleeDamage, meleeStabModifier);
         StartMeleeColldownTimer();
     }
     private void StartMeleeColldownTimer()
@@ -82,6 +81,8 @@ public class ArmadilloWeaponControl : MonoBehaviour
     private IEnumerator MeleeCooldownTimer_Coroutine()
     {
         meleeIsOnCooldown = true;
+        yield return new WaitForSeconds(0.2f);
+        meleeHitbox.Hit(meleeDamage, meleeStabModifier, out bool isTakeDown);
         yield return new WaitForSeconds(meleeCooldown);
         meleeIsOnCooldown = false;
         meleeCooldownTimer_Ref = null;
@@ -339,7 +340,7 @@ public class ArmadilloWeaponControl : MonoBehaviour
                 break;
         }
         int ammoReserves;
-        if(weapon.ammoReserveAmount >= weapon.maxAmmoReserveAmount)
+        if (weapon.ammoReserveAmount >= weapon.maxAmmoReserveAmount)
         {
             return false;
         }

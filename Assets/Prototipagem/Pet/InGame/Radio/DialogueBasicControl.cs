@@ -176,22 +176,29 @@ public class DialogueBasicControl : MonoBehaviour
         InputAction interactButton = ArmadilloPlayerController.Instance.inputControl.inputAction.Dialogue.SkipDialogue;
         for (int i = 0; i < sentence.Length; i++)
         {
-            if (sentence[i] == '<')
+            while (true)
             {
-                string commandLine = "<";
-                for (int j = i + 1; j < sentence.Length; j++)
+                if (sentence[i] == '<')
                 {
-                    if (sentence[j] != '>')
+                    string commandLine = "<";
+                    for (int j = i + 1; j < sentence.Length; j++)
                     {
-                        commandLine += sentence[j];
+                        if (sentence[j] != '>')
+                        {
+                            commandLine += sentence[j];
+                        }
+                        else
+                        {
+                            commandLine += ">";
+                            DialogueText.text += commandLine;
+                            i = j + 1;
+                            break;
+                        }
                     }
-                    else
-                    {
-                        commandLine += ">";
-                        DialogueText.text += commandLine;
-                        i = j + 1;
-                        break;
-                    }
+                }
+                else
+                {
+                    break;
                 }
             }
             DialogueText.text += sentence[i];

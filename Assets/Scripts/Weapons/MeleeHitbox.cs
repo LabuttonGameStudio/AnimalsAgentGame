@@ -29,11 +29,12 @@ public class MeleeHitbox : MonoBehaviour
             damageablesInHitbox.Remove(other);
         }
     }
-    public void Hit(float meleeDamage, float meleeStabModifier)
+    public void Hit(float meleeDamage, float meleeStabModifier,out bool isTakedown)
     {
         if (damageablesInHitbox.Count <= 0)
         {
             MeleeAnimator.Instance.PlayRandomMeleeAnimation();
+            isTakedown = false;
             return;
         }
         //Check if somehit is a takedown
@@ -56,11 +57,13 @@ public class MeleeHitbox : MonoBehaviour
                 meleeFinalDamage *= meleeStabModifier;
                 StartCoroutine(Takedown(new Damage(meleeFinalDamage, DamageType.Slash, true, ArmadilloPlayerController.Instance.transform.position), damageable));
                 MeleeAnimator.Instance.PlayTakedownAnimation();
+                isTakedown = true;
                 return;
             }
         }
         //Do damage for all entities
         MeleeAnimator.Instance.PlayRandomMeleeAnimation();
+        isTakedown = true;
         for (int i = 0; i < damageablesInHitbox.Count; ++i)
         {
             IDamageable damageable = damageablesInHitbox.ElementAt(i).Value;
