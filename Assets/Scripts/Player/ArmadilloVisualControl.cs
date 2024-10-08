@@ -269,7 +269,7 @@ public class ArmadilloVisualControl : MonoBehaviour
         while (timer < duration)
         {
 
-            offsetStats.offset = Vector3.Lerp(startValue, offsetFinalValue, timer/duration);
+            offsetStats.offset = Vector3.Lerp(startValue, offsetFinalValue, timer / duration);
             timer += Time.deltaTime;
             yield return null;
         }
@@ -411,15 +411,21 @@ public class ArmadilloVisualControl : MonoBehaviour
     #region Pause
     public void OnPause()
     {
-        ArmadilloPlayerController.Instance.ChangeCurrentActionLayer(4, (int)FPModeLayer4.Pause);
-        fpAnimator.CrossFade("TatuPauseIdle", crossFadeTime);
+        if (m_CameraMode == CameraMode.FP)
+        {
+            ArmadilloPlayerController.Instance.ChangeCurrentActionLayer(4, (int)FPModeLayer4.Pause);
+            fpAnimator.CrossFade("TatuPauseIdle", crossFadeTime);
+        }
     }
 
     public void ReturnPause()
     {
-        fpAnimator.CrossFade("Idle", crossFadeTime);
-        ArmadilloPlayerController.Instance.ChangeCurrentActionLayer(4, (int)FPModeLayer4.Null);
-        ArmadilloPlayerController.Instance.UpdateCurrentLayer();
+        if (m_CameraMode == CameraMode.FP)
+        {
+            fpAnimator.CrossFade("Idle", crossFadeTime);
+            ArmadilloPlayerController.Instance.ChangeCurrentActionLayer(4, (int)FPModeLayer4.Null);
+            ArmadilloPlayerController.Instance.UpdateCurrentLayer();
+        }
     }
     #endregion
 
