@@ -4,14 +4,16 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using static IPickUpObject;
 
-public class PickUpBox : MonoBehaviour, IPickUpObject
+public class PickUpObject : MonoBehaviour, IPickUpObject
 {
     private Rigidbody rb;
-    [SerializeField]private float objectSize;
-    [SerializeField]private PickUpObjectType pickUpObjectType;
-    [SerializeField] private string objectName;
-    [SerializeField] private string onGroundDescription;
-    [SerializeField] private string pickedUpDescription;
+    public float objectSize;
+    public PickUpObjectType pickUpObjectType;
+    public string objectName;
+    public string onGroundDescription;
+    public string pickedUpDescription;
+
+    private MeshRenderer meshRenderer;
     public bool isBeeingHeld { get; set; }
     public PickUpObjectType m_pickUpObjectType
     {
@@ -26,10 +28,14 @@ public class PickUpBox : MonoBehaviour, IPickUpObject
 
     private void OnDrawGizmosSelected()
     {
-        Gizmos.DrawWireSphere(transform.position, objectSize);
+        meshRenderer = GetComponent<MeshRenderer>();
+        Vector3 centerPos;
+        centerPos = meshRenderer.bounds.center;
+        Gizmos.DrawWireSphere(centerPos, objectSize);
     }
     private void Awake()
     {
+        meshRenderer = GetComponent<MeshRenderer>();
         rb = GetComponent<Rigidbody>();
         isBeeingHeld = false;
     }
@@ -40,8 +46,9 @@ public class PickUpBox : MonoBehaviour, IPickUpObject
     {
         return isBeeingHeld ? pickedUpDescription : onGroundDescription;
     }
-    private void FixedUpdate()
+
+    public Vector3 GetObjectDeltaCenter()
     {
-        rb.AddForce(Vector3.up*(-1)*10f,ForceMode.Acceleration);
+        return meshRenderer.bounds.center-rb.position;
     }
 }

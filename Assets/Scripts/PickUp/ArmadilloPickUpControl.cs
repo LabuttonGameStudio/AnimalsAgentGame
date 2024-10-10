@@ -33,6 +33,11 @@ public class ArmadilloPickUpControl : MonoBehaviour
     private RigidbodyInterpolation objectDefaultInterpolation;
     private CollisionDetectionMode objectDefaultCollisionDetectionMode;
 
+    private void Awake()
+    {
+        rotateSensibilityModifier = new SensibilityModifier(0);
+    }
+
     public bool CanJumpOnConnectedObject()
     {
         if (connectedObject != null)
@@ -42,9 +47,8 @@ public class ArmadilloPickUpControl : MonoBehaviour
                 default:
                 case PickUpObjectType.Small:
                 case PickUpObjectType.Medium:
-                    return false;
                 case PickUpObjectType.Big:
-                    return true;
+                    return false;
             }
         }
         else return true;
@@ -113,6 +117,7 @@ public class ArmadilloPickUpControl : MonoBehaviour
         ClearInteractButtonAction();
     }
     #endregion
+
     public void InteractWithPickUpObject(InputAction.CallbackContext value, IPickUpObject pickUpObject)
     {
         if (connectedObject != null)
@@ -130,6 +135,11 @@ public class ArmadilloPickUpControl : MonoBehaviour
         //Ebale throw objects
         playerController.inputControl.inputAction.Armadillo.Fire.Enable();
         playerController.inputControl.inputAction.Armadillo.Fire.performed += ThrowObject;
+
+        if (rotateObjectCheck_Ref == null)
+        {
+            rotateObjectCheck_Ref = StartCoroutine(RotateObjectCheck_Coroutine());
+        }
 
         switch (grabbedObject.m_pickUpObjectType)
         {
@@ -177,6 +187,12 @@ public class ArmadilloPickUpControl : MonoBehaviour
         playerController.weaponControl.ToggleWeapon(true, false);
 
         playerController.inputControl.inputAction.Armadillo.Fire.performed -= ThrowObject;
+
+        if (rotateObjectCheck_Ref != null)
+        {
+            StopCoroutine(rotateObjectCheck_Ref);
+            rotateObjectCheck_Ref = null;
+        }
 
         switch (connectedObject.m_pickUpObjectType)
         {
@@ -260,9 +276,9 @@ public class ArmadilloPickUpControl : MonoBehaviour
         ArmadilloPlayerController.Instance.movementControl.speedMultiplier = 0.75f;
         while (true)
         {
-            Vector3 holdArea = cameraTransform.position + cameraTransform.forward * 3f;
+            Vector3 holdArea = cameraTransform.position + cameraTransform.forward * (connectedObject.m_objectSize + 1.5f);
 
-            Vector3 moveDirection = holdArea - objectRb.position;
+            Vector3 moveDirection = holdArea - connectedObject.GetObjectDeltaCenter() - objectRb.position;
             Vector3 moveForce = moveDirection * mediumObjectPickUpForce + rigidbodyOfPlayer.velocity * 600;
             //HorizontalForce
 
@@ -302,7 +318,7 @@ public class ArmadilloPickUpControl : MonoBehaviour
         Rigidbody connectedRigidbody = objectRb;
         Camera camera = ArmadilloPlayerController.Instance.cameraControl.mainCamera;
 
-        Vector3 throwForce=Vector3.zero;
+        Vector3 throwForce = Vector3.zero;
         switch (connectedObject.m_pickUpObjectType)
         {
             case PickUpObjectType.Small:
@@ -321,5 +337,52 @@ public class ArmadilloPickUpControl : MonoBehaviour
         }
         connectedRigidbody.AddForce(throwForce, ForceMode.Impulse);
     }
+    #endregion
+
+    #region RotateObject
+    SensibilityModifier rotateSensibilityModifier;
+
+    public void StartRotateCheck()
+    {
+        if (rotateObjectCheck_Ref == null)
+        {
+            rotateObjectCheck_Ref = StartCoroutine(RotateObjectCheck_Coroutine());
+            ArmadilloPlayerController.Instance.cameraControl.AddSensibilityModifier(rotateSensibilityModifier);
+        }
+    }
+
+    public void StopRotateCheck()
+    {
+        if (rotateObjectCheck_Ref != null)
+        {
+            StopCoroutine(rotateObjectCheck_Ref);
+            rotateObjectCheck_Ref = null;
+            ArmadilloPlayerController.Instance.cameraControl.RemoveSensibilityModifier(rotateSensibilityModifier);
+        }
+
+    }
+    private Coroutine rotateObjectCheck_Ref;
+    public IEnumerator RotateObjectCheck_Coroutine()
+    {
+        ArmadilloPlayerController playerController = ArmadilloPlayerController.Instance;
+        playerController.inputControl.inputAction.Armadillo.AltFire.Enable();
+
+        Coroutine rotateObject;
+        while (true)
+        {
+            //Debug.Log(playerController.inputControl.inputAction.Armadillo.Look.ReadValue<Vector2>());
+            yield return null;
+        }
+    }
+    private IEnumerator RotateObject_Coroutine()
+    {
+        ArmadilloPlayerController playerController = ArmadilloPlayerController.Instance;
+        while (true)
+        {
+            Debug.Log(playerController.inputControl.inputAction.Armadillo.Look.ReadValue<Vector2>());
+            yield return null;
+        }
+    }
+
     #endregion
 }

@@ -28,4 +28,5 @@ public interface IPickUpObject : IRaycastableInLOS
     public abstract string GetObjectName();
 
     public abstract string GetObjectDescription();
+    public abstract Vector3 GetObjectDeltaCenter();
 }
