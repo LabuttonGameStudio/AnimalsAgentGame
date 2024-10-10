@@ -103,4 +103,9 @@ public class WaterPuddle : MonoBehaviour,IDamageable
             }
         }
     }
+
+    bool IDamageable.isDead()
+    {
+        return false;
+    }
 }

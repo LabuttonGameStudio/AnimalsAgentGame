@@ -39,6 +39,7 @@ public class RangedEnemy : IEnemy, IDamageable, ISoundReceiver
     #region Detection Variables
     [Header("Detection")]
     public float timeToMaxDetect;
+
     #endregion
     //-----Action Update-----
     #region Action Update Functions
@@ -88,6 +89,11 @@ public class RangedEnemy : IEnemy, IDamageable, ISoundReceiver
                     break;
             }
         }
+    }
+
+    bool IDamageable.isDead()
+    {
+        return isDead;
     }
     #endregion
 

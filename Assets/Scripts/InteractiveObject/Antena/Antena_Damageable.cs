@@ -39,6 +39,10 @@ public class Antena_Damageable :MonoBehaviour,IRequirements, IDamageable
         }
     }
 
+    bool IDamageable.isDead()
+    {
+        return isTurnedOn;
+    }
     void Awake()
     {
         Material material = new Material(meshRenderers[0].material);

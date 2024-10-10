@@ -21,6 +21,11 @@ public class ArmadilloHPControl : MonoBehaviour, IDamageable
     [System.NonSerialized] public bool isInvulnerable;
     public float invulnerabilityDuration;
 
+    private void Start()
+    {
+        UpdateHealthBar();
+    }
+
     public void TakeDamage(Damage damage)
     {
         if (!isInvulnerable)
@@ -65,9 +70,9 @@ public class ArmadilloHPControl : MonoBehaviour, IDamageable
         currentHpSlider.value = currentHp / maxHp;
         currentGreyHpSlider.value = (currentHp + currentGreyHp) / maxHp;
     }
-    private void Start()
+    bool IDamageable.isDead()
     {
-        UpdateHealthBar();
+        return currentHp<=0;
     }
 
     private void StartInvulnerabilityTimer()

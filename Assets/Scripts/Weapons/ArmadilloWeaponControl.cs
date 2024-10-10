@@ -1,9 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using static Damage;
 using static WeaponData;
 
 public class WeaponData
@@ -56,7 +58,7 @@ public class ArmadilloWeaponControl : MonoBehaviour
     [SerializeField] private float meleeDamage;
     [SerializeField] private float meleeStabModifier;
     [SerializeField] private float meleeCooldown;
-    [SerializeField] private bool meleeIsOnCooldown;
+    private bool meleeIsOnCooldown;
     [SerializeField] private MeleeHitbox meleeHitbox;
     public void GivePlayerMelee()
     {
@@ -81,14 +83,58 @@ public class ArmadilloWeaponControl : MonoBehaviour
     private IEnumerator MeleeCooldownTimer_Coroutine()
     {
         meleeIsOnCooldown = true;
-        yield return new WaitForSeconds(0.2f);
-        meleeHitbox.Hit(meleeDamage, meleeStabModifier, out bool isTakeDown);
+        yield return Hit_Coroutine(meleeDamage, meleeStabModifier);
+        ToggleWeapon(true, false);
+        ToggleArms(true);
         yield return new WaitForSeconds(meleeCooldown);
         meleeIsOnCooldown = false;
         meleeCooldownTimer_Ref = null;
-        ToggleWeapon(true, false);
-        ToggleArms(true);
     }
+
+    public IEnumerator Hit_Coroutine(float meleeDamage, float meleeStabModifier)
+    {
+        if (meleeHitbox.damageablesInHitbox.Count <= 0)
+        {
+            MeleeAnimator.Instance.PlayRandomMeleeAnimation();
+            yield return new WaitForSeconds(0.469f);
+            yield break;
+        }
+        meleeHitbox.CheckListIntegrity();
+        for (int i = 0; i < meleeHitbox.damageablesInHitbox.Count; ++i)
+        {
+            IDamageable damageable = meleeHitbox.damageablesInHitbox.ElementAt(i).Value;
+            Collider collider = meleeHitbox.damageablesInHitbox.ElementAt(i).Key;
+
+            if (collider.gameObject.layer != LayerMask.NameToLayer("Enemies")) continue;
+
+            //Check backstab
+            Transform enemyTransform = collider.transform;
+            Vector3 dirFromEnemyToPlayer = transform.position - enemyTransform.position;
+            dirFromEnemyToPlayer.Normalize();
+            float dot = Vector3.Dot(enemyTransform.forward, dirFromEnemyToPlayer);
+
+            float meleeFinalDamage = meleeDamage;
+            if (dot < 0.25f)
+            {
+                meleeFinalDamage *= meleeStabModifier;
+                MeleeAnimator.Instance.PlayTakedownAnimation();
+                yield return new WaitForSeconds(0.42f);
+                damageable.TakeDamage(new Damage(meleeFinalDamage, DamageType.Slash, true, ArmadilloPlayerController.Instance.transform.position));
+                yield return new WaitForSeconds(1.406f - 0.42f);
+                yield break;
+            }
+        }
+        //Do damage for all entities
+        MeleeAnimator.Instance.PlayRandomMeleeAnimation();
+        yield return new WaitForSeconds(0.2f);
+        for (int i = 0; i < meleeHitbox.damageablesInHitbox.Count; ++i)
+        {
+            IDamageable damageable = meleeHitbox.damageablesInHitbox.ElementAt(i).Value;
+            damageable.TakeDamage(new Damage(meleeDamage, DamageType.Slash, true, ArmadilloPlayerController.Instance.transform.position));
+        }
+        yield return new WaitForSeconds(0.469f - 0.2f);
+    }
+
     #endregion
 
     //----- Inputs Functions -----

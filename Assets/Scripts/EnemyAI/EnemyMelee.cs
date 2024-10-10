@@ -103,6 +103,10 @@ public class EnemyMelee : IEnemy, IDamageable, ISoundReceiver
         if (currentAction == Actions.Moving || currentAction == Actions.Observing) animator.SetTrigger("isHit");
         OnDamageTaken(damage);
     }
+    bool IDamageable.isDead()
+    {
+        return isDead;
+    }
     private IEnumerator DeSpawnCoroutine(GameObject gameObject,VisualEffect visualEffect)
     {
         yield return new WaitForSeconds(5);

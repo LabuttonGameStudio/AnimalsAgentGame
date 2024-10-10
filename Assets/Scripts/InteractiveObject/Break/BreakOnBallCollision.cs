@@ -59,4 +59,9 @@ public class BreakOnBallCollision : MonoBehaviour,IDamageable
                 break;
         }
     }
+
+    bool IDamageable.isDead()
+    {
+        return !m_collider.enabled;
+    }
 }
