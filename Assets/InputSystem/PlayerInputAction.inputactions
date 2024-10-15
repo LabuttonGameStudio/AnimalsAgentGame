@@ -506,6 +506,85 @@
             ]
         },
         {
+            "name": "HoldObject",
+            "id": "a4a2383a-74d8-493e-8adb-d5f555f4c8ef",
+            "actions": [
+                {
+                    "name": "Throw",
+                    "type": "Button",
+                    "id": "c9504c13-79be-43a7-a859-42f5f68e2e6a",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "RotateToggle",
+                    "type": "Button",
+                    "id": "c0f59797-ac9f-4d24-830a-a1ab8d50ef11",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Rotate",
+                    "type": "Value",
+                    "id": "18af9ca9-edef-4625-9368-ab916d8df7fd",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "3c4e0faf-e834-4d12-86e4-b9fa9f381405",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Throw",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "2b1966a0-a722-4ccd-b386-46e331d16091",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "RotateToggle",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "5682f412-7dc9-4129-89ef-375928ca4d16",
+                    "path": "<Mouse>/delta",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Rotate",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "4398b354-3aed-4196-851b-357c1fc0ede2",
+                    "path": "<Gamepad>/rightStick",
+                    "interactions": "",
+                    "processors": "ScaleVector2(x=4,y=4)",
+                    "groups": "",
+                    "action": "Rotate",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
             "name": "Dialogue",
             "id": "68ddf00f-fff2-4ad4-8187-c722095f71da",
             "actions": [

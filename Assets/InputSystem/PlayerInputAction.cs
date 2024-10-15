@@ -528,6 +528,85 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
             ]
         },
         {
+            ""name"": ""HoldObject"",
+            ""id"": ""a4a2383a-74d8-493e-8adb-d5f555f4c8ef"",
+            ""actions"": [
+                {
+                    ""name"": ""Throw"",
+                    ""type"": ""Button"",
+                    ""id"": ""c9504c13-79be-43a7-a859-42f5f68e2e6a"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""RotateToggle"",
+                    ""type"": ""Button"",
+                    ""id"": ""c0f59797-ac9f-4d24-830a-a1ab8d50ef11"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Rotate"",
+                    ""type"": ""Value"",
+                    ""id"": ""18af9ca9-edef-4625-9368-ab916d8df7fd"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""3c4e0faf-e834-4d12-86e4-b9fa9f381405"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Throw"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""2b1966a0-a722-4ccd-b386-46e331d16091"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""RotateToggle"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""5682f412-7dc9-4129-89ef-375928ca4d16"",
+                    ""path"": ""<Mouse>/delta"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Rotate"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""4398b354-3aed-4196-851b-357c1fc0ede2"",
+                    ""path"": ""<Gamepad>/rightStick"",
+                    ""interactions"": """",
+                    ""processors"": ""ScaleVector2(x=4,y=4)"",
+                    ""groups"": """",
+                    ""action"": ""Rotate"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
+        },
+        {
             ""name"": ""Dialogue"",
             ""id"": ""68ddf00f-fff2-4ad4-8187-c722095f71da"",
             ""actions"": [
@@ -604,6 +683,11 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
         m_Armadillo_Weapon0 = m_Armadillo.FindAction("Weapon0", throwIfNotFound: true);
         m_Armadillo_Weapon1 = m_Armadillo.FindAction("Weapon1", throwIfNotFound: true);
         m_Armadillo_Weapon2 = m_Armadillo.FindAction("Weapon2", throwIfNotFound: true);
+        // HoldObject
+        m_HoldObject = asset.FindActionMap("HoldObject", throwIfNotFound: true);
+        m_HoldObject_Throw = m_HoldObject.FindAction("Throw", throwIfNotFound: true);
+        m_HoldObject_RotateToggle = m_HoldObject.FindAction("RotateToggle", throwIfNotFound: true);
+        m_HoldObject_Rotate = m_HoldObject.FindAction("Rotate", throwIfNotFound: true);
         // Dialogue
         m_Dialogue = asset.FindActionMap("Dialogue", throwIfNotFound: true);
         m_Dialogue_SkipDialogue = m_Dialogue.FindAction("SkipDialogue", throwIfNotFound: true);
@@ -834,6 +918,68 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
     }
     public ArmadilloActions @Armadillo => new ArmadilloActions(this);
 
+    // HoldObject
+    private readonly InputActionMap m_HoldObject;
+    private List<IHoldObjectActions> m_HoldObjectActionsCallbackInterfaces = new List<IHoldObjectActions>();
+    private readonly InputAction m_HoldObject_Throw;
+    private readonly InputAction m_HoldObject_RotateToggle;
+    private readonly InputAction m_HoldObject_Rotate;
+    public struct HoldObjectActions
+    {
+        private @PlayerInputAction m_Wrapper;
+        public HoldObjectActions(@PlayerInputAction wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Throw => m_Wrapper.m_HoldObject_Throw;
+        public InputAction @RotateToggle => m_Wrapper.m_HoldObject_RotateToggle;
+        public InputAction @Rotate => m_Wrapper.m_HoldObject_Rotate;
+        public InputActionMap Get() { return m_Wrapper.m_HoldObject; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(HoldObjectActions set) { return set.Get(); }
+        public void AddCallbacks(IHoldObjectActions instance)
+        {
+            if (instance == null || m_Wrapper.m_HoldObjectActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_HoldObjectActionsCallbackInterfaces.Add(instance);
+            @Throw.started += instance.OnThrow;
+            @Throw.performed += instance.OnThrow;
+            @Throw.canceled += instance.OnThrow;
+            @RotateToggle.started += instance.OnRotateToggle;
+            @RotateToggle.performed += instance.OnRotateToggle;
+            @RotateToggle.canceled += instance.OnRotateToggle;
+            @Rotate.started += instance.OnRotate;
+            @Rotate.performed += instance.OnRotate;
+            @Rotate.canceled += instance.OnRotate;
+        }
+
+        private void UnregisterCallbacks(IHoldObjectActions instance)
+        {
+            @Throw.started -= instance.OnThrow;
+            @Throw.performed -= instance.OnThrow;
+            @Throw.canceled -= instance.OnThrow;
+            @RotateToggle.started -= instance.OnRotateToggle;
+            @RotateToggle.performed -= instance.OnRotateToggle;
+            @RotateToggle.canceled -= instance.OnRotateToggle;
+            @Rotate.started -= instance.OnRotate;
+            @Rotate.performed -= instance.OnRotate;
+            @Rotate.canceled -= instance.OnRotate;
+        }
+
+        public void RemoveCallbacks(IHoldObjectActions instance)
+        {
+            if (m_Wrapper.m_HoldObjectActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        public void SetCallbacks(IHoldObjectActions instance)
+        {
+            foreach (var item in m_Wrapper.m_HoldObjectActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_HoldObjectActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    public HoldObjectActions @HoldObject => new HoldObjectActions(this);
+
     // Dialogue
     private readonly InputActionMap m_Dialogue;
     private List<IDialogueActions> m_DialogueActionsCallbackInterfaces = new List<IDialogueActions>();
@@ -943,6 +1089,12 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
         void OnWeapon0(InputAction.CallbackContext context);
         void OnWeapon1(InputAction.CallbackContext context);
         void OnWeapon2(InputAction.CallbackContext context);
+    }
+    public interface IHoldObjectActions
+    {
+        void OnThrow(InputAction.CallbackContext context);
+        void OnRotateToggle(InputAction.CallbackContext context);
+        void OnRotate(InputAction.CallbackContext context);
     }
     public interface IDialogueActions
     {

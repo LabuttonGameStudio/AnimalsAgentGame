@@ -133,19 +133,12 @@ public class ArmadilloPickUpControl : MonoBehaviour
         playerController.weaponControl.ToggleWeapon(false, false);
 
         //Ebale throw objects
-        playerController.inputControl.inputAction.Armadillo.Fire.Enable();
-        playerController.inputControl.inputAction.Armadillo.Fire.performed += ThrowObject;
-
-        if (rotateObjectCheck_Ref == null)
-        {
-            rotateObjectCheck_Ref = StartCoroutine(RotateObjectCheck_Coroutine());
-        }
+        playerController.inputControl.ToggleHoldObjectControls(true);
+        playerController.inputControl.inputAction.HoldObject.Throw.Enable();
+        playerController.inputControl.inputAction.HoldObject.Throw.performed += ThrowObject;
 
         switch (grabbedObject.m_pickUpObjectType)
         {
-            case PickUpObjectType.Small:
-
-                break;
             case PickUpObjectType.Medium:
             case PickUpObjectType.Big:
                 grabbedObject.isBeeingHeld = true;
@@ -177,6 +170,14 @@ public class ArmadilloPickUpControl : MonoBehaviour
                 ToggleHoldObjectCoroutine(true, grabbedObject.m_pickUpObjectType);
                 break;
         }
+
+        switch (connectedObject.m_pickUpObjectType)
+        {
+            case PickUpObjectType.Small:
+            case PickUpObjectType.Medium:
+                StartRotateCheck();
+                break;
+        }
     }
     public void Drop()
     {
@@ -186,8 +187,7 @@ public class ArmadilloPickUpControl : MonoBehaviour
         playerController.weaponControl.ToggleArms(true);
         playerController.weaponControl.ToggleWeapon(true, false);
 
-        playerController.inputControl.inputAction.Armadillo.Fire.performed -= ThrowObject;
-
+        playerController.inputControl.inputAction.HoldObject.Throw.performed -= ThrowObject;
         if (rotateObjectCheck_Ref != null)
         {
             StopCoroutine(rotateObjectCheck_Ref);
@@ -197,8 +197,14 @@ public class ArmadilloPickUpControl : MonoBehaviour
         switch (connectedObject.m_pickUpObjectType)
         {
             case PickUpObjectType.Small:
-
+            case PickUpObjectType.Medium:
+                StopRotateCheck();
+                StopRotateObject();
                 break;
+        }
+
+        switch (connectedObject.m_pickUpObjectType)
+        {
             case PickUpObjectType.Medium:
             case PickUpObjectType.Big:
                 ArmadilloPlayerController.Instance.movementControl.speedMultiplier = 1f;
@@ -238,6 +244,8 @@ public class ArmadilloPickUpControl : MonoBehaviour
                 else UpdateInteractionHUD(null);
                 break;
         }
+
+        playerController.inputControl.ToggleHoldObjectControls(false);
     }
     private void ToggleHoldObjectCoroutine(bool state, PickUpObjectType pickUpObjectType)
     {
@@ -347,7 +355,6 @@ public class ArmadilloPickUpControl : MonoBehaviour
         if (rotateObjectCheck_Ref == null)
         {
             rotateObjectCheck_Ref = StartCoroutine(RotateObjectCheck_Coroutine());
-            ArmadilloPlayerController.Instance.cameraControl.AddSensibilityModifier(rotateSensibilityModifier);
         }
     }
 
@@ -357,7 +364,8 @@ public class ArmadilloPickUpControl : MonoBehaviour
         {
             StopCoroutine(rotateObjectCheck_Ref);
             rotateObjectCheck_Ref = null;
-            ArmadilloPlayerController.Instance.cameraControl.RemoveSensibilityModifier(rotateSensibilityModifier);
+
+            ArmadilloPlayerController.Instance.inputControl.inputAction.HoldObject.RotateToggle.Disable();
         }
 
     }
@@ -365,21 +373,53 @@ public class ArmadilloPickUpControl : MonoBehaviour
     public IEnumerator RotateObjectCheck_Coroutine()
     {
         ArmadilloPlayerController playerController = ArmadilloPlayerController.Instance;
-        playerController.inputControl.inputAction.Armadillo.AltFire.Enable();
-
-        Coroutine rotateObject;
+        playerController.inputControl.inputAction.HoldObject.RotateToggle.Enable();
         while (true)
         {
-            //Debug.Log(playerController.inputControl.inputAction.Armadillo.Look.ReadValue<Vector2>());
+            if (playerController.inputControl.inputAction.HoldObject.RotateToggle.WasPressedThisFrame())
+            {   
+                StartRotateObject();
+            }
+            else if (playerController.inputControl.inputAction.HoldObject.RotateToggle.WasReleasedThisFrame())
+            {
+                StopRotateObject();
+            }
             yield return null;
         }
     }
+
+    private void StartRotateObject()
+    {
+        if (rotateObject_Ref == null)
+        {
+            ArmadilloPlayerController.Instance.inputControl.inputAction.HoldObject.Rotate.Enable();
+            ArmadilloPlayerController.Instance.cameraControl.AddSensibilityModifier(rotateSensibilityModifier);
+            rotateObject_Ref = StartCoroutine(RotateObject_Coroutine());
+        }
+    }
+    private void StopRotateObject()
+    {
+        if (rotateObject_Ref != null)
+        {
+            StopCoroutine(rotateObject_Ref);
+            rotateObject_Ref = null;
+            ArmadilloPlayerController.Instance.inputControl.inputAction.HoldObject.Rotate.Disable();
+            ArmadilloPlayerController.Instance.cameraControl.RemoveSensibilityModifier(rotateSensibilityModifier);
+        }
+    }
+    private Coroutine rotateObject_Ref;
     private IEnumerator RotateObject_Coroutine()
     {
         ArmadilloPlayerController playerController = ArmadilloPlayerController.Instance;
+        Transform cameraTransform = ArmadilloPlayerController.Instance.cameraControl.mainCamera.transform;
         while (true)
         {
-            Debug.Log(playerController.inputControl.inputAction.Armadillo.Look.ReadValue<Vector2>());
+            Vector2 inputValue = playerController.inputControl.inputAction.HoldObject.Rotate.ReadValue<Vector2>();
+            if(MathF.Abs(inputValue.x)<=2)inputValue.x = 0;
+            if(MathF.Abs(inputValue.y)<=2)inputValue.y = 0;
+            Debug.Log(inputValue);
+            objectRb.transform.Rotate(Vector3.up*-1,15* inputValue.x*Time.deltaTime, Space.World);
+            objectRb.transform.Rotate(cameraTransform.right, 15 * inputValue.y * Time.deltaTime, Space.World);
             yield return null;
         }
     }

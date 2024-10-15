@@ -28,6 +28,7 @@ public class ArmadilloPlayerInputController : MonoBehaviour
     {
         TogglePlayerControls(toggle);
         TogglePauseControls(toggle);
+        ToggleHoldObjectControls(toggle);
     }
     public void TogglePlayerControls(bool toggle)
     {
@@ -49,6 +50,18 @@ public class ArmadilloPlayerInputController : MonoBehaviour
             inputAction.Dialogue.Enable();
         }
         else inputAction.Dialogue.Disable();
+    }
+
+    public void ToggleHoldObjectControls(bool toggle)
+    {
+        if(toggle)
+        {
+            inputAction.HoldObject.Enable();
+        }
+        else
+        {
+            inputAction.HoldObject.Disable();
+        }
     }
 
     public void TogglePauseControls(bool toggle)
