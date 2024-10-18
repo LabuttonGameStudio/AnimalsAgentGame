@@ -22239,7 +22239,6 @@ MonoBehaviour:
   meleeDamage: 25
   meleeStabModifier: 2
   meleeCooldown: 1
-  meleeIsOnCooldown: 0
   meleeHitbox: {fileID: 146960808389161219}
 --- !u!114 &4406444343685671707
 MonoBehaviour:
@@ -26344,6 +26343,10 @@ PrefabInstance:
     - target: {fileID: 7682828844343463876, guid: 28f2550f1d717b3468b388e9f2ab37b8, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7949793410748760544, guid: 28f2550f1d717b3468b388e9f2ab37b8, type: 3}
+      propertyPath: m_Parameters.textureMode
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
