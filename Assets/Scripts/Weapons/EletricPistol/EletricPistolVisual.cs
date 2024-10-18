@@ -72,6 +72,11 @@ public class EletricPistolVisual : MonoBehaviour
         projectileLineRenderer.endColor = new Color(projectileLineRenderer.endColor.r, projectileLineRenderer.endColor.g, projectileLineRenderer.endColor.b, projectileLineRendererEndAlphaValue);
     }
 
+    private void UpdateUI()
+    {
+
+    }
+
     public void ResetVisuals()
     {
 

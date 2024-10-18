@@ -31,8 +31,8 @@ public class EletricPistol : Weapon
 
     readonly private int unchargedHitDamage = 15;
 
-    readonly private float damageFallOffStartRange;
-    readonly private float damageFallOffEndRange;
+    readonly private float damageFallOffStartRange = 5;
+    readonly private float damageFallOffEndRange = 20;
     //----- Visual -----
     private EletricPistolVisual visualHandler;
 
@@ -116,7 +116,12 @@ public class EletricPistol : Weapon
             if (raycastHit.transform.TryGetComponent(out IDamageable idamageable))
             {
                 Damage damage = new Damage(unchargedHitDamage, Damage.DamageType.Eletric, true, weaponControl.transform.position);
-                idamageable.TakeDamage(damage);
+                if (raycastHit.distance > damageFallOffStartRange)
+                {
+                    damage.damageAmount = Mathf.Lerp(damage.damageAmount, 0.1f, (raycastHit.distance-damageFallOffStartRange)/(damageFallOffEndRange-damageFallOffStartRange));
+                    idamageable.TakeDamage(damage);
+                }
+                else idamageable.TakeDamage(damage);
                 ArmadilloUIControl.Instance.StartHitMarker();
                 hitPoint = raycastHit.point;
                 if (!raycastHit.collider.isTrigger)break;
