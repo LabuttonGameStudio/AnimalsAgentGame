@@ -10,6 +10,7 @@ public class MenuPause : MonoBehaviour
 {
     [Header("OPTIONS")]
     public GameObject Menu;
+    public GameObject Background;
     public GameObject Configs;
     public GameObject Controls;
     public GameObject Exiit;
@@ -112,8 +113,13 @@ public class MenuPause : MonoBehaviour
         #endregion
 
 
-        ArmadilloPlayerController.Instance.inputControl.inputAction.Pause.EnterPause.Enable();
-        ArmadilloPlayerController.Instance.inputControl.inputAction.Pause.EnterPause.performed += MenuOpen;
+        if (ArmadilloPlayerController.Instance != null &&
+            ArmadilloPlayerController.Instance.inputControl != null &&
+            ArmadilloPlayerController.Instance.inputControl.inputAction != null)
+        {
+            ArmadilloPlayerController.Instance.inputControl.inputAction.Pause.EnterPause.Enable();
+            ArmadilloPlayerController.Instance.inputControl.inputAction.Pause.EnterPause.performed += MenuOpen;
+        }
 
     }
 
@@ -124,6 +130,7 @@ public class MenuPause : MonoBehaviour
         Cursor.visible = isMenuOpen;
         Cursor.lockState = isMenuOpen ? CursorLockMode.None : CursorLockMode.Locked;
 
+        Background.SetActive(isMenuOpen);
         Menu.SetActive(isMenuOpen);
         if (ArmadilloPlayerController.Instance.cameraControl != null)
         {
@@ -142,11 +149,18 @@ public class MenuPause : MonoBehaviour
         }
         if (isMenuOpen)
         {
-            visualControl.OnPause();
+            if(visualControl != null)
+            {
+                visualControl.OnPause();
+            }
+                
         }
         else
         {
-            visualControl.ReturnPause();
+            if (visualControl != null)
+            {
+                visualControl.ReturnPause();
+            }
         }
     }
     public void ClickConfigs()

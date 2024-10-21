@@ -13,7 +13,7 @@ public class InitialOptions : MonoBehaviour
     public string loadingScreenScene;
     public string actuallevel;
     private bool levelLoaded = false;
-    public float delayBeforeLoading = 10f;
+    public float delayBeforeLoading = 10f; // para o tutorial ir carregando
 
     [Header("MOUSE")]
     public Texture2D cursorTexture;
@@ -38,44 +38,41 @@ public class InitialOptions : MonoBehaviour
 
     }
 
-    //verificar dps
+    //verificar dps Mori
     IEnumerator LoadLevelAsync()
     {
+        // anim 
+        yield return new WaitForSeconds(2f);
 
-        //salvar game
-
-        yield return new WaitForSeconds(5f);
-
-        // obtem a referência para a cena atual
-        Scene currentScene = SceneManager.GetActiveScene();
-
-        // descarrega a cena atual para evitar lags e bugs
-        SceneManager.UnloadSceneAsync(currentScene);
-
-        // carrega a cena da tela de carregamento
+        // Carrega a cena da tela de carregamento
         yield return SceneManager.LoadSceneAsync(loadingScreenScene, LoadSceneMode.Additive);
+        SceneManager.UnloadSceneAsync(actuallevel);
 
-        // Epera um tempo antes de carregar a próxima cena
-        yield return new WaitForSeconds(delayBeforeLoading);
-
-        // carrega a proxima cena de forma assincrona
+        // carrega de forma assin o tutorial
         AsyncOperation levelLoadOperation = SceneManager.LoadSceneAsync(levelToLoad, LoadSceneMode.Additive);
-        levelLoadOperation.allowSceneActivation = false;
+        //levelLoadOperation.allowSceneActivation = false;  // nao att imediatamente
 
-        // aguarda ate que a proxima cena esteja pronta para ser ativada
+        // delay para carregar a cena de tuto
+        float elapsedTime = 0f;
+        while (elapsedTime < delayBeforeLoading)
+        {
+            elapsedTime += Time.deltaTime;
+            yield return null;  
+        }
+
+        // aguarda se nao tiver carregado a cena
         while (!levelLoadOperation.isDone)
         {
             if (levelLoadOperation.progress >= 0.9f)
             {
-                // Ativa a proxima cena
+                //att quando estivar quase ompleto
                 levelLoadOperation.allowSceneActivation = true;
             }
             yield return null;
         }
 
-        // Descarrega a cena da tela de carregamento
+        // descarrega loading
         SceneManager.UnloadSceneAsync(loadingScreenScene);
-        SceneManager.UnloadSceneAsync(actuallevel);
     }
 
     public void Exit()

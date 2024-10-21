@@ -40,7 +40,7 @@ public class TweenPopUpInfo : MonoBehaviour
 
         Vector3 initialScale = Vector3.zero;
         Vector3 midScale = new Vector3(1.2f, 1.2f, 1.2f);
-        Vector3 finalScale = Vector3.one;
+        Vector3 finalScale = new Vector3(0.8f, 0.8f, 0.8f);
 
         //Aumenta de 0 atea1.2
         yield return Tween.ScaleTransform(this, objectToScale, midScale, scaleDuration / 2, lerpType);
