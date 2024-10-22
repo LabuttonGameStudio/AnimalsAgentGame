@@ -13,9 +13,11 @@ public class EletricPistol : Weapon
     {
         weaponControl = armadilloWeaponControl;
         ammoType = AmmoType.Ammo;
-        maxAmmoAmount = 12;
+
         currentAmmoAmount = 12;
-        maxAmmoAmount = 24;
+        maxAmmoAmount = 12;
+
+        ammoReserveAmount = 24;
         maxAmmoReserveAmount = 36;
         name = "Pistola Eletrica";
         description = "Pressione pra atirar, segure para carregar ";
@@ -25,7 +27,7 @@ public class EletricPistol : Weapon
     }
 
     //----- Stats -----
-    //Tiro normal
+    //Fire
     readonly private float fireDelay = 0.33f;
     private bool isOnCooldown;
 
@@ -33,8 +35,14 @@ public class EletricPistol : Weapon
 
     readonly private float damageFallOffStartRange = 5;
     readonly private float damageFallOffEndRange = 20;
+
+    //Reload
+    readonly private float reloadDuration = 1.75f;
+
     //----- Visual -----
     private EletricPistolVisual visualHandler;
+
+    private bool isReloading;
 
     //Visual
     #region
@@ -52,6 +60,7 @@ public class EletricPistol : Weapon
     {
         if (playAnimation) ArmadilloPlayerController.Instance.visualControl.EquipEletricPistolAnim();
         else ArmadilloPlayerController.Instance.visualControl.EquipEletricPistol();
+        visualHandler.UpdateUI(currentAmmoAmount, maxAmmoAmount);
 
     }
     public override void OnUnequip()
@@ -77,7 +86,7 @@ public class EletricPistol : Weapon
     }
     public bool IsFireOnCooldown()
     {
-        return (fireCooldown_Ref != null);
+        return (fireCooldown_Ref != null || isReloading);
     }
     public Coroutine fireCooldown_Ref;
     public IEnumerator FireCooldown_Coroutine()
@@ -93,16 +102,30 @@ public class EletricPistol : Weapon
     }
     public override void OnFireButtonCanceled(InputAction.CallbackContext performed)
     {
-        if (!IsFireOnCooldown()) Fire();
+
+    }
+
+    private bool AmmoCheck()
+    {
+        return currentAmmoAmount > 0;
     }
 
     public void Fire()
     {
-        FPCameraShake.StartShake(0.15f, 0.4f, 5f);
-        FireRaycast();
-        ArmadilloPlayerController.Instance.visualControl.OnEletricGunFire();
-        ArmadilloPlayerController.Instance.visualControl.ToggleEletricPistolCharge(false);
-        StartFireCooldownTimer();
+        if (AmmoCheck())
+        {
+            FPCameraShake.StartShake(0.15f, 0.4f, 5f);
+            FireRaycast();
+            ArmadilloPlayerController.Instance.visualControl.OnEletricGunFire();
+            currentAmmoAmount -= 1;
+            currentAmmoAmount = Mathf.Max(currentAmmoAmount, 0);
+            visualHandler.UpdateUI(currentAmmoAmount, maxAmmoAmount);
+            StartFireCooldownTimer();
+        }
+        else
+        {
+            Reload();
+        }
     }
     public void FireRaycast()
     {
@@ -118,13 +141,13 @@ public class EletricPistol : Weapon
                 Damage damage = new Damage(unchargedHitDamage, Damage.DamageType.Eletric, true, weaponControl.transform.position);
                 if (raycastHit.distance > damageFallOffStartRange)
                 {
-                    damage.damageAmount = Mathf.Lerp(damage.damageAmount, 0.1f, (raycastHit.distance-damageFallOffStartRange)/(damageFallOffEndRange-damageFallOffStartRange));
+                    damage.damageAmount = Mathf.Lerp(damage.damageAmount, 0.1f, (raycastHit.distance - damageFallOffStartRange) / (damageFallOffEndRange - damageFallOffStartRange));
                     idamageable.TakeDamage(damage);
                 }
                 else idamageable.TakeDamage(damage);
                 ArmadilloUIControl.Instance.StartHitMarker();
                 hitPoint = raycastHit.point;
-                if (!raycastHit.collider.isTrigger)break;
+                if (!raycastHit.collider.isTrigger) break;
             }
         }
         visualHandler.OnUnchargedFire(hitPoint);
@@ -148,11 +171,47 @@ public class EletricPistol : Weapon
     #region
     public override void OnReloadButtonPerformed(InputAction.CallbackContext performed)
     {
-
+        Reload();
     }
     public override void OnReloadButtonCanceled(InputAction.CallbackContext performed)
     {
 
+    }
+
+    private void Reload()
+    {
+        if (reload_Ref == null && !isReloading && currentAmmoAmount<maxAmmoAmount && ammoReserveAmount>0)
+        {
+            isReloading = true;
+            reload_Ref = weaponControl.StartCoroutine(Reload_Coroutine());
+        }
+    }
+    private Coroutine reload_Ref;
+    private IEnumerator Reload_Coroutine()
+    {
+        ArmadilloPlayerController.Instance.visualControl.ToggleEletricPistolOverheat(true);
+        visualHandler.ToggleReload(true);
+        yield return new WaitForSeconds(reloadDuration);
+        ArmadilloPlayerController.Instance.visualControl.ToggleEletricPistolOverheat(false);
+        visualHandler.ToggleReload(false);
+        ReplenishAmmo();
+        visualHandler.UpdateUI(currentAmmoAmount, maxAmmoAmount);
+        isReloading = false;
+        reload_Ref = null;
+    }
+
+    private void ReplenishAmmo()
+    {
+        if(currentAmmoAmount+ammoReserveAmount>=maxAmmoAmount)
+        {
+            ammoReserveAmount -= maxAmmoAmount-currentAmmoAmount;
+            currentAmmoAmount = maxAmmoAmount;
+        }
+        else
+        {
+            currentAmmoAmount += ammoReserveAmount;
+            ammoReserveAmount = 0;
+        }
     }
     #endregion
 
@@ -164,6 +223,15 @@ public class EletricPistol : Weapon
         isOnCooldown = false;
         fireCooldown_Ref = null;
         ArmadilloPlayerController.Instance.visualControl.ToggleEletricPistolCharge(false);
+
+        if(reload_Ref != null)
+        {
+            weaponControl.StopCoroutine(reload_Ref);
+            ArmadilloPlayerController.Instance.visualControl.ToggleEletricPistolOverheat(false);
+            visualHandler.ToggleReload(false);
+            isReloading = false;
+            reload_Ref = null;
+        }
     }
     #endregion
 
@@ -173,10 +241,5 @@ public class EletricPistol : Weapon
     {
 
     }
-    #endregion
-
-    //Old Pistol
-    #region OldPistol
-
     #endregion
 }

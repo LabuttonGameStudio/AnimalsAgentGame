@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class EletricPistolVisual : MonoBehaviour
 {
@@ -16,10 +17,11 @@ public class EletricPistolVisual : MonoBehaviour
     [SerializeField] public Transform audioEmitterTransform;
     [SerializeField] private SoundEmitter onUnchargedFireSoundEmitter;
 
-
+    //Projectile Line Renderer
     float projectileLineRendererStartAlphaValue;
     float projectileLineRendererEndAlphaValue;
 
+    //
     private void Awake()
     {
         Instance = this;
@@ -72,9 +74,18 @@ public class EletricPistolVisual : MonoBehaviour
         projectileLineRenderer.endColor = new Color(projectileLineRenderer.endColor.r, projectileLineRenderer.endColor.g, projectileLineRenderer.endColor.b, projectileLineRendererEndAlphaValue);
     }
 
-    private void UpdateUI()
+    public void UpdateUI(int currentAmount,int totalAmount)
     {
-
+        Slider ammoSlider = ArmadilloPlayerController.Instance.weaponControl.Weaponammoslider;
+        ammoSlider.value = (float)currentAmount/(float)totalAmount;
+        ammoSlider.fillRect.GetComponent<Image>().color = Color.Lerp(Color.red,Color.white,ammoSlider.value);
+        ArmadilloPlayerController.Instance.weaponControl.currentWeaponUI.text = " x" + Mathf.Round(ammoSlider.value*100).ToString() + "%";
+    }
+    
+    public void ToggleReload(bool toggle)
+    {
+        if(toggle)onReloadParticle.Play();
+        else onReloadParticle.Stop();
     }
 
     public void ResetVisuals()
