@@ -40,6 +40,7 @@ public class SandProjectile : MonoBehaviour
     }
     private void OnTriggerEnter(Collider other)
     {
+        if (other.gameObject.layer == LayerMask.NameToLayer("Enemies")) return;
         Vector3 hitPosition = transform.position;
         if (other.TryGetComponent(out IDamageable damageable))
         {

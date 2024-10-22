@@ -105,10 +105,10 @@ public class MenuPause : MonoBehaviour
         #endregion
 
         #region Sensibility
-        float savedSensitivity = PlayerPrefs.GetFloat(SensitivityPrefKey, 10f);
+        float savedSensitivity = PlayerPrefs.GetFloat(SensitivityPrefKey, 0.25f);
 
         sensitivitySlider.value = savedSensitivity;
-
+        OnSensitivityChange(savedSensitivity);
         sensitivitySlider.onValueChanged.AddListener(OnSensitivityChange);
         #endregion
 

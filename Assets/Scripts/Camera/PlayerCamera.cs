@@ -67,8 +67,6 @@ public class PlayerCamera : MonoBehaviour
     private void Awake()
     {
         sensibilityModifiers = new List<SensibilityModifier> ();
-        firstPersonSensibility = Vector2.one;
-        thirdPersonSensibility = Vector2.one;
         currentSpeedModifier = 1f;
         sprintZoomModifier = 1f;
         sniperZoomModifier = 1f;
