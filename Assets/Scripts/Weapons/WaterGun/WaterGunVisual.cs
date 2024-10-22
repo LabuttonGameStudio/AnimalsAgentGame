@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.VFX;
 using static ArmadilloVisualControl;
 
@@ -65,5 +66,13 @@ public class WaterGunVisual : MonoBehaviour
     public void ToggleOnRun(bool state)
     {
         weaponAnimator.SetBool("waterGunIsRunning",state);
+    }
+
+    public void UpdateUI(int currentAmount, int totalAmount)
+    {
+        Slider ammoSlider = ArmadilloPlayerController.Instance.weaponControl.Weaponammoslider;
+        ammoSlider.value = (float)currentAmount / (float)totalAmount;
+        ammoSlider.fillRect.GetComponent<Image>().color = Color.Lerp(Color.red, Color.white, ammoSlider.value);
+        ArmadilloPlayerController.Instance.weaponControl.currentWeaponUI.text = " x" + Mathf.Round(ammoSlider.value * 100).ToString() + "%";
     }
 }
