@@ -19,6 +19,9 @@ public class ArmadilloBallState : MovementState
         movementCtrl = movementControl;
         movementCtrl.rb.constraints = RigidbodyConstraints.None;
         ArmadilloPlayerController.Instance.audioControl.StopMovingAudio();
+        ArmadilloPlayerController.Instance.hpControl.currentShield = ArmadilloPlayerController.Instance.ballShieldAmount;
+        ArmadilloPlayerController.Instance.hpControl.UpdateHealthBar();
+        shieldCheck_Ref = ArmadilloPlayerController.Instance.StartCoroutine(ShieldCheck_Coroutine());
     }
 
 
@@ -35,6 +38,13 @@ public class ArmadilloBallState : MovementState
     }
     public override void ExitState()
     {
+        if (shieldCheck_Ref != null)
+        {
+            ArmadilloPlayerController.Instance.StopCoroutine(shieldCheck_Ref);
+            shieldCheck_Ref = null;
+            ArmadilloPlayerController.Instance.hpControl.currentShield = 0;
+            ArmadilloPlayerController.Instance.hpControl.UpdateHealthBar();
+        }
         previousVelocityInput = Vector3.zero;
         velocity = Vector3.zero;
     }
@@ -53,14 +63,14 @@ public class ArmadilloBallState : MovementState
 
         if (movementCtrl.grounded)
         {
-            if(movementCtrl.isOnSlope) moveDirection = movementCtrl.GetSlopeMoveDirection(moveDirection.normalized) * stats.moveSpeedMax * 10;
+            if (movementCtrl.isOnSlope) moveDirection = movementCtrl.GetSlopeMoveDirection(moveDirection.normalized) * stats.moveSpeedMax * 10;
             else moveDirection = moveDirection.normalized * stats.moveSpeedMax * 10;
 
             moveDirection = Vector3.SmoothDamp(previousVelocityInput, moveDirection, ref velocity, 1 / stats.moveSpeedAcceleration);
             movementCtrl.rb.AddForce(moveDirection, ForceMode.Acceleration);
             previousVelocityInput = moveDirection;
 
-            if(moveDirection.magnitude>0.1f) movementCtrl.rb.MoveRotation(Quaternion.LookRotation(moveDirection));
+            if (moveDirection.magnitude > 0.1f) movementCtrl.rb.MoveRotation(Quaternion.LookRotation(moveDirection));
         }
         else
         {
@@ -94,5 +104,20 @@ public class ArmadilloBallState : MovementState
         //    Vector3 limitedVel = flatVel.normalized * movementCtrl.maxMoveSpeed_Ball;
         //    movementCtrl.rb.velocity = new Vector3(limitedVel.x, movementCtrl.rb.velocity.y, limitedVel.z);
         //}
+    }
+
+    private Coroutine shieldCheck_Ref;
+    private IEnumerator ShieldCheck_Coroutine()
+    {
+        while (true)
+        {
+            if (ArmadilloPlayerController.Instance.hpControl.currentShield <= 0)
+            {
+                ArmadilloPlayerController.Instance.ChangeToDefaultForm();
+                shieldCheck_Ref = null;
+                yield break;
+            }
+            yield return new WaitForFixedUpdate();
+        }
     }
 }

@@ -11,9 +11,12 @@ public class ArmadilloHPControl : MonoBehaviour, IDamageable
     public float currentHp;
     public float currentGreyHp;
 
+    public float currentShield;
+
     [Space, Header("HP UI")]
     public Slider currentHpSlider;
     public Slider currentGreyHpSlider;
+    public Slider currentShieldSlider;
     public CanvasGroup DamageScreen;
     public CanvasGroup DeathScreen;
 
@@ -30,6 +33,19 @@ public class ArmadilloHPControl : MonoBehaviour, IDamageable
     {
         if (!isInvulnerable)
         {
+            if (currentShield > 0)
+            {
+                if (currentShield >= damage.damageAmount / 2f)
+                {
+                    currentShield -= damage.damageAmount / 2f;
+                    damage.damageAmount = damage.damageAmount/2f;
+                }
+                else
+                {
+                    damage.damageAmount -= currentShield/2f;
+                    currentShield = 0;
+                }
+            }
             if (currentHp - damage.damageAmount <= 0)
             {
                 ArmadilloPlayerController.Instance.Die();
@@ -44,6 +60,8 @@ public class ArmadilloHPControl : MonoBehaviour, IDamageable
             damageScreenFade_Ref = StartCoroutine(DamageScreenFade_Coroutine(1f, 0.25f));
             currentHp -= damage.damageAmount;
             currentGreyHp = damage.damageAmount / 2;
+            if (regenGreyHealth_Ref != null) StopCoroutine(regenGreyHealth_Ref);
+            regenGreyHealth_Ref = StartCoroutine(RegenGreyHealth_Coroutine());
             UpdateHealthBar();
         }
     }
@@ -69,10 +87,11 @@ public class ArmadilloHPControl : MonoBehaviour, IDamageable
     {
         currentHpSlider.value = currentHp / maxHp;
         currentGreyHpSlider.value = (currentHp + currentGreyHp) / maxHp;
+        currentShieldSlider.value = currentShield / maxHp;
     }
     bool IDamageable.isDead()
     {
-        return currentHp<=0;
+        return currentHp <= 0;
     }
 
     private void StartInvulnerabilityTimer()
@@ -89,6 +108,21 @@ public class ArmadilloHPControl : MonoBehaviour, IDamageable
     }
 
     private Coroutine damageScreenFade_Ref;
+
+    private Coroutine regenGreyHealth_Ref;
+    private IEnumerator RegenGreyHealth_Coroutine()
+    {
+        yield return new WaitForSeconds(5);
+        while (currentGreyHp > 0)
+        {
+            currentGreyHp--;
+            currentGreyHp = Mathf.Min(0,currentGreyHp);
+            currentHp++;
+            UpdateHealthBar();
+            yield return new WaitForSeconds(0.1f);
+        }
+        regenGreyHealth_Ref = null;
+    }
     private IEnumerator DamageScreenFade_Coroutine(float targetAlpha, float fadeDuration)
     {
         float startAlpha = DamageScreen.alpha;
@@ -132,7 +166,7 @@ public class ArmadilloHPControl : MonoBehaviour, IDamageable
         float elapsedTime = 0.0f;
         ArmadilloPlayerController.Instance.inputControl.TogglePlayerControls(false);
         float timer = 0;
-        while(timer<0.25f)
+        while (timer < 0.25f)
         {
             Time.timeScale = 1 - timer / 0.25f;
             timer += Time.unscaledDeltaTime;

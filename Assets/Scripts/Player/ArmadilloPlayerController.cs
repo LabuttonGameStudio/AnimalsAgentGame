@@ -42,6 +42,7 @@ public class ArmadilloPlayerController : MonoBehaviour
     [SerializeField] public Collider[] playerCollider_Default;
     [Header("Ball Form")]
     [SerializeField] public Collider[] playerCollider_Ball;
+    [SerializeField] public float ballShieldAmount;
     #endregion
 
     //-----Layers-----
