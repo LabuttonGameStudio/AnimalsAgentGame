@@ -557,6 +557,15 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""ResetRotation"",
+                    ""type"": ""Button"",
+                    ""id"": ""20c4a678-0154-4550-99a1-a8f03ce6fee7"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -601,6 +610,17 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
                     ""processors"": ""ScaleVector2(x=4,y=4)"",
                     ""groups"": """",
                     ""action"": ""Rotate"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""1eb9e1bf-aba2-4085-a8fa-0a2043004dd2"",
+                    ""path"": ""<Mouse>/middleButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ResetRotation"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -688,6 +708,7 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
         m_HoldObject_Throw = m_HoldObject.FindAction("Throw", throwIfNotFound: true);
         m_HoldObject_RotateToggle = m_HoldObject.FindAction("RotateToggle", throwIfNotFound: true);
         m_HoldObject_Rotate = m_HoldObject.FindAction("Rotate", throwIfNotFound: true);
+        m_HoldObject_ResetRotation = m_HoldObject.FindAction("ResetRotation", throwIfNotFound: true);
         // Dialogue
         m_Dialogue = asset.FindActionMap("Dialogue", throwIfNotFound: true);
         m_Dialogue_SkipDialogue = m_Dialogue.FindAction("SkipDialogue", throwIfNotFound: true);
@@ -924,6 +945,7 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
     private readonly InputAction m_HoldObject_Throw;
     private readonly InputAction m_HoldObject_RotateToggle;
     private readonly InputAction m_HoldObject_Rotate;
+    private readonly InputAction m_HoldObject_ResetRotation;
     public struct HoldObjectActions
     {
         private @PlayerInputAction m_Wrapper;
@@ -931,6 +953,7 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
         public InputAction @Throw => m_Wrapper.m_HoldObject_Throw;
         public InputAction @RotateToggle => m_Wrapper.m_HoldObject_RotateToggle;
         public InputAction @Rotate => m_Wrapper.m_HoldObject_Rotate;
+        public InputAction @ResetRotation => m_Wrapper.m_HoldObject_ResetRotation;
         public InputActionMap Get() { return m_Wrapper.m_HoldObject; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -949,6 +972,9 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
             @Rotate.started += instance.OnRotate;
             @Rotate.performed += instance.OnRotate;
             @Rotate.canceled += instance.OnRotate;
+            @ResetRotation.started += instance.OnResetRotation;
+            @ResetRotation.performed += instance.OnResetRotation;
+            @ResetRotation.canceled += instance.OnResetRotation;
         }
 
         private void UnregisterCallbacks(IHoldObjectActions instance)
@@ -962,6 +988,9 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
             @Rotate.started -= instance.OnRotate;
             @Rotate.performed -= instance.OnRotate;
             @Rotate.canceled -= instance.OnRotate;
+            @ResetRotation.started -= instance.OnResetRotation;
+            @ResetRotation.performed -= instance.OnResetRotation;
+            @ResetRotation.canceled -= instance.OnResetRotation;
         }
 
         public void RemoveCallbacks(IHoldObjectActions instance)
@@ -1095,6 +1124,7 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
         void OnThrow(InputAction.CallbackContext context);
         void OnRotateToggle(InputAction.CallbackContext context);
         void OnRotate(InputAction.CallbackContext context);
+        void OnResetRotation(InputAction.CallbackContext context);
     }
     public interface IDialogueActions
     {

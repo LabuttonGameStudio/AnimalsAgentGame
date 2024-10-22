@@ -535,6 +535,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
+                },
+                {
+                    "name": "ResetRotation",
+                    "type": "Button",
+                    "id": "20c4a678-0154-4550-99a1-a8f03ce6fee7",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -579,6 +588,17 @@
                     "processors": "ScaleVector2(x=4,y=4)",
                     "groups": "",
                     "action": "Rotate",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "1eb9e1bf-aba2-4085-a8fa-0a2043004dd2",
+                    "path": "<Mouse>/middleButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ResetRotation",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

@@ -139,6 +139,7 @@ public class ArmadilloPickUpControl : MonoBehaviour
 
         switch (grabbedObject.m_pickUpObjectType)
         {
+            case PickUpObjectType.Small:
             case PickUpObjectType.Medium:
             case PickUpObjectType.Big:
                 grabbedObject.isBeeingHeld = true;
@@ -151,9 +152,9 @@ public class ArmadilloPickUpControl : MonoBehaviour
                     objectDefaultCollider = collider;
                     if (collider.material != null)
                     {
-                        objectDefaultPhysicMaterial = collider.material;
+                        objectDefaultPhysicMaterial = collider.sharedMaterial;
                     }
-                    collider.material = holdObjectPhysicMaterial;
+                    collider.sharedMaterial = holdObjectPhysicMaterial;
                 }
 
                 objectDefaultDrag = objectRb.drag;
@@ -205,6 +206,7 @@ public class ArmadilloPickUpControl : MonoBehaviour
 
         switch (connectedObject.m_pickUpObjectType)
         {
+            case PickUpObjectType.Small:
             case PickUpObjectType.Medium:
             case PickUpObjectType.Big:
                 ArmadilloPlayerController.Instance.movementControl.speedMultiplier = 1f;
@@ -214,7 +216,7 @@ public class ArmadilloPickUpControl : MonoBehaviour
 
                 if (objectDefaultPhysicMaterial != null)
                 {
-                    objectDefaultCollider.material = objectDefaultPhysicMaterial;
+                    objectDefaultCollider.sharedMaterial = objectDefaultPhysicMaterial;
                     objectDefaultPhysicMaterial = null;
                 }
 
@@ -256,6 +258,7 @@ public class ArmadilloPickUpControl : MonoBehaviour
                 switch (pickUpObjectType)
                 {
                     case PickUpObjectType.Small:
+                        holdObject_Ref = StartCoroutine(HoldMediumObject_Coroutine());
                         break;
                     case PickUpObjectType.Medium:
                         holdObject_Ref = StartCoroutine(HoldMediumObject_Coroutine());
@@ -331,7 +334,7 @@ public class ArmadilloPickUpControl : MonoBehaviour
         {
             case PickUpObjectType.Small:
                 Drop();
-                throwForce = camera.transform.forward * smallObjectThrowForce;
+                throwForce = camera.transform.forward * mediumObjectThrowForce;
                 break;
             case PickUpObjectType.Medium:
                 Drop();
@@ -343,6 +346,7 @@ public class ArmadilloPickUpControl : MonoBehaviour
                 throwForce.y = 0;
                 break;
         }
+        connectedRigidbody.velocity = Vector3.zero;
         connectedRigidbody.AddForce(throwForce, ForceMode.Impulse);
     }
     #endregion
@@ -415,11 +419,12 @@ public class ArmadilloPickUpControl : MonoBehaviour
         while (true)
         {
             Vector2 inputValue = playerController.inputControl.inputAction.HoldObject.Rotate.ReadValue<Vector2>();
-            if(MathF.Abs(inputValue.x)<=2)inputValue.x = 0;
-            if(MathF.Abs(inputValue.y)<=2)inputValue.y = 0;
-            Debug.Log(inputValue);
-            objectRb.transform.Rotate(Vector3.up*-1,15* inputValue.x*Time.deltaTime, Space.World);
-            objectRb.transform.Rotate(cameraTransform.right, 15 * inputValue.y * Time.deltaTime, Space.World);
+            Vector3 right = Vector3.Cross(cameraTransform.transform.up,objectRb.position-cameraTransform.position);
+            Vector3 up = Vector3.Cross(objectRb.position - cameraTransform.position, right);
+
+            objectRb.rotation = Quaternion.AngleAxis(3 * -inputValue.x*Time.deltaTime, up) * objectRb.rotation;
+            objectRb.rotation = Quaternion.AngleAxis(3 * inputValue.y * Time.deltaTime, right) * objectRb.rotation;
+
             yield return null;
         }
     }
