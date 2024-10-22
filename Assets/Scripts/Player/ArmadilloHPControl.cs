@@ -116,7 +116,7 @@ public class ArmadilloHPControl : MonoBehaviour, IDamageable
         while (currentGreyHp > 0)
         {
             currentGreyHp--;
-            currentGreyHp = Mathf.Min(0,currentGreyHp);
+            currentGreyHp = Mathf.Max(0,currentGreyHp);
             currentHp++;
             UpdateHealthBar();
             yield return new WaitForSeconds(0.1f);
