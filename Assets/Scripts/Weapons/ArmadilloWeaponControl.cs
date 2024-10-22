@@ -55,75 +55,59 @@ public class ArmadilloWeaponControl : MonoBehaviour
     //----- Melee Functions -----
     #region Melee
     [Header("Melee")]
-    [SerializeField] private float meleeDamage;
-    [SerializeField] private float meleeStabModifier;
+    [SerializeField] private float weakMeleeDamage;
+    [SerializeField] private float strongMeleeDamage;
     [SerializeField] private float meleeCooldown;
     private bool meleeIsOnCooldown;
     [SerializeField] private MeleeHitbox meleeHitbox;
-    public void GivePlayerMelee()
-    {
-        PlayerInputAction inputActions = ArmadilloPlayerController.Instance.inputControl.inputAction;
-        inputActions.Armadillo.Melee.Enable();
-        inputActions.Armadillo.Melee.performed += Melee;
-    }
+
+    [SerializeField] private float heavyMeleeHoldDuration;
+
+    private float meleeHoldDuration;
     public void Melee(InputAction.CallbackContext performed)
     {
         if (meleeIsOnCooldown || !ArmadilloPlayerController.Instance.visualControl.isArmVisible) return;
-        ToggleArms(false);
-        ToggleWeapon(false, false);
-        StartMeleeColldownTimer();
-    }
-    private void StartMeleeColldownTimer()
-    {
-        if (meleeCooldownTimer_Ref != null) return;
-        meleeCooldownTimer_Ref = StartCoroutine(MeleeCooldownTimer_Coroutine());
-    }
-
-    private Coroutine meleeCooldownTimer_Ref;
-    private IEnumerator MeleeCooldownTimer_Coroutine()
-    {
-        meleeIsOnCooldown = true;
-        yield return Hit_Coroutine(meleeDamage, meleeStabModifier);
-        ToggleWeapon(true, false);
-        ToggleArms(true);
-        yield return new WaitForSeconds(meleeCooldown);
-        meleeIsOnCooldown = false;
-        meleeCooldownTimer_Ref = null;
-    }
-
-    public IEnumerator Hit_Coroutine(float meleeDamage, float meleeStabModifier)
-    {
-        if (meleeHitbox.damageablesInHitbox.Count <= 0)
+        if(pressOrHoldHit_Ref == null && hit_Ref ==null)
         {
-            MeleeAnimator.Instance.PlayRandomMeleeAnimation();
-            yield return new WaitForSeconds(0.469f);
-            yield break;
+            ToggleArms(false);
+            ToggleWeapon(false, false);
+            pressOrHoldHit_Ref = StartCoroutine(PressOrHoldHit_Coroutine());
         }
-        meleeHitbox.CheckListIntegrity();
-        for (int i = 0; i < meleeHitbox.damageablesInHitbox.Count; ++i)
+    }
+    public void MeleeCancel(InputAction.CallbackContext performed)
+    {
+        if (pressOrHoldHit_Ref != null)
         {
-            IDamageable damageable = meleeHitbox.damageablesInHitbox.ElementAt(i).Value;
-            Collider collider = meleeHitbox.damageablesInHitbox.ElementAt(i).Key;
-
-            if (collider.gameObject.layer != LayerMask.NameToLayer("Enemies")) continue;
-
-            //Check backstab
-            Transform enemyTransform = collider.transform;
-            Vector3 dirFromEnemyToPlayer = transform.position - enemyTransform.position;
-            dirFromEnemyToPlayer.Normalize();
-            float dot = Vector3.Dot(enemyTransform.forward, dirFromEnemyToPlayer);
-
-            float meleeFinalDamage = meleeDamage;
-            if (dot < 0.25f)
+            StopCoroutine(pressOrHoldHit_Ref);
+            if (meleeHoldDuration < heavyMeleeHoldDuration)
             {
-                meleeFinalDamage *= meleeStabModifier;
-                MeleeAnimator.Instance.PlayTakedownAnimation();
-                yield return new WaitForSeconds(0.42f);
-                damageable.TakeDamage(new Damage(meleeFinalDamage, DamageType.Slash, true, ArmadilloPlayerController.Instance.transform.position));
-                yield return new WaitForSeconds(1.406f - 0.42f);
-                yield break;
+                hit_Ref = StartCoroutine(HitWeak_Coroutine(weakMeleeDamage));
             }
+            else
+            {
+                hit_Ref = StartCoroutine(HitStrong_Coroutine(strongMeleeDamage));
+            }
+            pressOrHoldHit_Ref = null;
         }
+    }
+
+    private Coroutine pressOrHoldHit_Ref;
+    private IEnumerator PressOrHoldHit_Coroutine()
+    {
+        meleeHoldDuration = 0;
+        while(meleeHoldDuration<heavyMeleeHoldDuration)
+        {
+            meleeHoldDuration += Time.deltaTime;
+            yield return null;
+        }
+        hit_Ref = StartCoroutine(HitStrong_Coroutine(strongMeleeDamage));
+        pressOrHoldHit_Ref = null;
+    }
+
+    private Coroutine hit_Ref;
+    public IEnumerator HitWeak_Coroutine(float meleeDamage)
+    {
+        meleeHitbox.CheckListIntegrity();
         //Do damage for all entities
         MeleeAnimator.Instance.PlayRandomMeleeAnimation();
         yield return new WaitForSeconds(0.2f);
@@ -133,8 +117,28 @@ public class ArmadilloWeaponControl : MonoBehaviour
             damageable.TakeDamage(new Damage(meleeDamage, DamageType.Slash, true, ArmadilloPlayerController.Instance.transform.position));
         }
         yield return new WaitForSeconds(0.469f - 0.2f);
+        ToggleWeapon(true, false);
+        ToggleArms(true);
+        yield return new WaitForSeconds(meleeCooldown);
+        hit_Ref = null;
     }
-
+    public IEnumerator HitStrong_Coroutine(float meleeDamage)
+    {
+        meleeHitbox.CheckListIntegrity();
+        //Do damage for all entities
+        MeleeAnimator.Instance.PlayTakedownAnimation();
+        yield return new WaitForSeconds(0.42f);
+        for (int i = 0; i < meleeHitbox.damageablesInHitbox.Count; ++i)
+        {
+            IDamageable damageable = meleeHitbox.damageablesInHitbox.ElementAt(i).Value;
+            damageable.TakeDamage(new Damage(meleeDamage, DamageType.Slash, true, ArmadilloPlayerController.Instance.transform.position));
+        }
+        yield return new WaitForSeconds(1.406f - 0.42f);
+        ToggleWeapon(true, false);
+        ToggleArms(true);
+        yield return new WaitForSeconds(meleeCooldown);
+        hit_Ref = null;
+    }
     #endregion
 
     //----- Inputs Functions -----
@@ -173,6 +177,13 @@ public class ArmadilloWeaponControl : MonoBehaviour
     }
     //----- Give Player Functions -----
     #region Give Player Weapons 
+    public void GivePlayerMelee()
+    {
+        PlayerInputAction inputActions = ArmadilloPlayerController.Instance.inputControl.inputAction;
+        inputActions.Armadillo.Melee.Enable();
+        inputActions.Armadillo.Melee.performed += Melee;
+        inputActions.Armadillo.Melee.canceled += MeleeCancel;
+    }
     public void GivePlayerEletricPistol()
     {
         weaponsInInventory[0] = eletricPistol;

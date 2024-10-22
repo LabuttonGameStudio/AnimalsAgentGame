@@ -19,7 +19,6 @@ public class MeleeHitbox : MonoBehaviour
         {
             if (!damageablesInHitbox.ElementAt(i).Key.gameObject.activeInHierarchy || damageablesInHitbox.ElementAt(i).Value.isDead())
             {
-                Debug.Log("Removed from list");
                 damageablesInHitbox.Remove(damageablesInHitbox.ElementAt(i).Key);
                 i--;
             }
@@ -36,7 +35,6 @@ public class MeleeHitbox : MonoBehaviour
     private void OnTriggerExit(Collider other)
     {
         if (other.CompareTag("Player")) return;
-        Debug.Log("removed");
         if (damageablesInHitbox.ContainsKey(other))
         {
             damageablesInHitbox.Remove(other);
