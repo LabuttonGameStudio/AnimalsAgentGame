@@ -41,6 +41,9 @@ public class RangedEnemy : IEnemy, IDamageable, ISoundReceiver
     public float timeToMaxDetect;
 
     #endregion
+
+    //------
+
     //-----Action Update-----
     #region Action Update Functions
     public override void OnActionUpdate()
