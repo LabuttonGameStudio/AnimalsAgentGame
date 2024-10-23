@@ -24,7 +24,7 @@ public class EnemyMelee : IEnemy, IDamageable, ISoundReceiver
     [SerializeField, Tooltip("Nivel de detecção necessario para trocar para o estado de searching")] private readonly float searchingStateBreakPoint = 50;
 
 
-    [SerializeField] private AIBehaviour meleeEnemyStateEnum;
+    [SerializeField] private AIBehaviour currentStateEnum;
     #endregion
 
     //Combat Variables
@@ -40,6 +40,8 @@ public class EnemyMelee : IEnemy, IDamageable, ISoundReceiver
     public float secondaryAttackDamage;
     public EnemyMeleeAttackHitBox secondaryAttackHitbox;
     public float secondaryAttackCooldown;
+
+    private bool playHitAnimation;
     #endregion
 
     //Sfx Variables
@@ -64,18 +66,18 @@ public class EnemyMelee : IEnemy, IDamageable, ISoundReceiver
         enemyObservingState = new MeleeEnemyObservingState(this);
         enemySearchingState = new MeleeEnemySearchingState(this);
         enemyAttackingState = new MeleeEnemyAttackingState(this);
-        switch(meleeEnemyStateEnum)
+        switch(currentStateEnum)
         {
-            case MeleeEnemyStateEnum.Roaming:
+            case AIBehaviour.Roaming:
                 currentState = enemyRoamingState;
                 break;
-            case MeleeEnemyStateEnum.Observing:
+            case AIBehaviour.Observing:
                 currentState = enemyObservingState;
                 break;  
-            case MeleeEnemyStateEnum.Searching:
+            case AIBehaviour.Searching:
                 currentState = enemySearchingState;
                 break;
-            case MeleeEnemyStateEnum.Attacking:
+            case AIBehaviour.Attacking:
                 currentState = enemyAttackingState;
                 break;
         }
@@ -137,7 +139,7 @@ public class EnemyMelee : IEnemy, IDamageable, ISoundReceiver
             gameObject.SetActive(false);
             return;
         }
-        if (currentAction == Actions.Moving || currentAction == Actions.Observing) animator.SetTrigger("isHit");
+        if (playHitAnimation) animator.SetTrigger("isHit");
         OnDamageTaken(damage);
     }
     bool IDamageable.isDead()
@@ -146,7 +148,7 @@ public class EnemyMelee : IEnemy, IDamageable, ISoundReceiver
     }
     private void OnDamageTaken(Damage damage)
     {
-        if (currentState != AIBehaviour.Attacking)
+        if (currentStateEnum != AIBehaviour.Attacking)
         {
             if (onDamageTaken_Ref == null)
             {
@@ -159,9 +161,9 @@ public class EnemyMelee : IEnemy, IDamageable, ISoundReceiver
     {
 
         yield return new WaitForSeconds(0.25f);
-        if (currentState == AIBehaviour.Attacking || currentState == AIBehaviour.Searching) yield break;
+        if (currentStateEnum == AIBehaviour.Attacking || currentStateEnum == AIBehaviour.Searching) yield break;
         lastKnownPlayerPos = damage.originPoint;
-        ChangeCurrentAIBehaviour(AIBehaviour.Searching);
+        ChangeCurrentState(enemySearchingState);
         SetDetectionLevel(searchingStateBreakPoint);
         StopLookAround();
         onDamageTaken_Ref = null;
@@ -200,14 +202,14 @@ public class EnemyMelee : IEnemy, IDamageable, ISoundReceiver
         if (detectionLevel + increasePerTick >= 100)
         {
             detectionLevel = 100;
-            ChangeCurrentAIBehaviour(AIBehaviour.Attacking);
+            ChangeCurrentState(enemyAttackingState);
             return;
         }
         else detectionLevel += increasePerTick;
         //Se ele nao estiver acima de 100 mas estiver acima do nivel necessario para entrar em estado de procura
         if (detectionLevel > searchingStateBreakPoint)
         {
-            ChangeCurrentAIBehaviour(AIBehaviour.Searching);
+            ChangeCurrentState(enemySearchingState);
         }
     }
     public void ResetTickInterval()
@@ -225,7 +227,7 @@ public class EnemyMelee : IEnemy, IDamageable, ISoundReceiver
                 if (!heardPlayer)
                 {
                     heardPlayer = true;
-                    switch (meleeEnemyStateEnum)
+                    switch (currentStateEnum)
                     {
                         case AIBehaviour.Roaming:
                             ChangeCurrentState(enemyObservingState);
