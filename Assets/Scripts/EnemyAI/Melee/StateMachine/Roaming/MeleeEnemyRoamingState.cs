@@ -5,21 +5,8 @@ using static IEnemy;
 
 public class MeleeEnemyRoamingState : MeleeEnemyState
 {
-    public enum RoamingStates
-    {
-        Moving,
-        Stopped
-    }
-    public RoamingStates currentStateEnum;
-    private MeleeRoaming_SubState currentSubState;
-
-    private MeleeRoaming_MovingSubState movingSubState;
-    private MeleeRoaming_StoppedSubState stoppedSubState;
     public MeleeEnemyRoamingState(EnemyMelee enemyCtrl) : base(enemyCtrl)
     {
-        movingSubState = new MeleeRoaming_MovingSubState();
-        stoppedSubState = new MeleeRoaming_StoppedSubState();
-        stoppedSubState.FixedUpdate_Event = new UnityEngine.Events.UnityEvent<MeleeEnemyRoamingState>();
         iEnemy = enemyCtrl;
     }
     public override void OnVisibilityUpdate()
@@ -27,7 +14,7 @@ public class MeleeEnemyRoamingState : MeleeEnemyState
         if (iEnemy.CheckForPlayerLOS() > 0)
         {
             iEnemy.lastKnownPlayerPos = ArmadilloPlayerController.Instance.transform.position;
-            iEnemy.ChangeCurrentAIBehaviour(AIBehaviourEnums.AIBehaviour.Observing);
+            iEnemy.ChangeCurrentState(iEnemy.enemyObservingState);
         }
     }
 
@@ -38,45 +25,88 @@ public class MeleeEnemyRoamingState : MeleeEnemyState
 
     public override void OnEnterState()
     {
-        if (!iEnemy.isStatic)
+        iEnemy.currentStateEnum = AIBehaviourEnums.AIBehaviour.Roaming;
+        iEnemy.enemyBehaviourVisual.ChangeVisualState(AIBehaviourEnums.AIBehaviour.Roaming);
+        if (iEnemy.isStatic)
         {
-            ToggleMovement(true);
-            iEnemy.TrySetNextDestination(iEnemy.aiPathList[iEnemy.currentPathPoint].transformOfPathPoint.position);
+
         }
         else
         {
-            ToggleMovement(false);
+            if (loopRoamingPath_Ref != null)
+            {
+                iEnemy.StopCoroutine(loopRoamingPath_Ref);
+                loopRoamingPath_Ref = null;
+            }
+            loopRoamingPath_Ref = iEnemy.StartCoroutine(LoopRoamingPath_Coroutine());
         }
     }
 
     public override void OnExitState()
     {
-        iEnemy.StopWaitOnPoint();
+        if (loopRoamingPath_Ref != null)
+        {
+            iEnemy.StopCoroutine(loopRoamingPath_Ref);
+        }
     }
 
     public override void OnFixedUpdate()
     {
-        currentSubState.OnFixedUpdate(this);
+        
 
     }
-    public void ToggleMovement(bool state)
+    private Coroutine loopRoamingPath_Ref;
+    public IEnumerator LoopRoamingPath_Coroutine()
     {
-        iEnemy.currentAction = state ? EnemyMelee.Actions.Moving : EnemyMelee.Actions.Observing;
-        iEnemy.animator.SetBool("isWalking", state);
-        currentSubState = state ? movingSubState : stoppedSubState;
-        currentStateEnum = state ? RoamingStates.Moving : RoamingStates.Stopped;
-    }
-
-    public void StopMovement()
-    {
-        stoppedSubState.FixedUpdate_Event = new UnityEngine.Events.UnityEvent<MeleeEnemyRoamingState>();
-        stoppedSubState.FixedUpdate_Event.AddListener(stoppedSubState.CheckForEndOfWaitOnPointCoroutine);
-        ToggleMovement(false);
-    }
-    public void StopMovementAndLookAround()
-    {
-        stoppedSubState.FixedUpdate_Event = new UnityEngine.Events.UnityEvent<MeleeEnemyRoamingState>();
-        stoppedSubState.FixedUpdate_Event.AddListener(stoppedSubState.CheckForEndOfLookAroundCoroutine);
-        ToggleMovement(false);
+        if (iEnemy.TrySetNextDestination(iEnemy.aiPathList[iEnemy.currentPathPoint].transformOfPathPoint.position))
+        {
+            yield return iEnemy.RoamingWaitToReachNextPoint();
+            if (iEnemy.aiPathList[iEnemy.currentPathPoint].waitTimeOnPoint > 0)
+            {
+                if (iEnemy.aiPathList[iEnemy.currentPathPoint].lookAroundOnPoint)
+                {
+                    if (iEnemy.TryStartRandomLookAround(iEnemy.aiPathList[iEnemy.currentPathPoint].waitTimeOnPoint, out Coroutine lookAroundcoroutine))
+                    {
+                        yield return lookAroundcoroutine;
+                    }
+                }
+                else
+                {
+                    yield return new WaitForSeconds(iEnemy.aiPathList[iEnemy.currentPathPoint].waitTimeOnPoint);
+                }
+            }
+        }
+        while (true)
+        {
+            if (iEnemy.CheckNextPathPoint())
+            {
+                if (iEnemy.TrySetNextDestination(iEnemy.NextPathPoint()))
+                {
+                    iEnemy.animator.SetBool("isWalking", true);
+                    yield return iEnemy.RoamingWaitToReachNextPoint();
+                    if (iEnemy.aiPathList[iEnemy.currentPathPoint].waitTimeOnPoint > 0)
+                    {
+                        if (iEnemy.aiPathList[iEnemy.currentPathPoint].lookAroundOnPoint)
+                        {
+                            if (iEnemy.TryStartRandomLookAround(iEnemy.aiPathList[iEnemy.currentPathPoint].waitTimeOnPoint, out Coroutine lookAroundcoroutine))
+                            {
+                                yield return lookAroundcoroutine;
+                            }
+                        }
+                        else
+                        {
+                            yield return new WaitForSeconds(iEnemy.aiPathList[iEnemy.currentPathPoint].waitTimeOnPoint);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                loopRoamingPath_Ref = null;
+                iEnemy.isStatic = true;
+                yield break;
+            }
+            yield return new WaitForFixedUpdate();
+        }
     }
 }

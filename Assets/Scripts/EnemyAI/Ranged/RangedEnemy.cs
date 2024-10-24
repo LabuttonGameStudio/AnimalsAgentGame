@@ -64,7 +64,7 @@ public class RangedEnemy : IEnemy, IDamageable, ISoundReceiver
     #region Visibility Update Functions
     public override void OnVisibilityUpdate()
     {
-        currentState.OnVisibilityUpdate();
+        //currentState.OnVisibilityUpdate();
     }
     #endregion
 
@@ -118,6 +118,7 @@ public class RangedEnemy : IEnemy, IDamageable, ISoundReceiver
     protected override void OnFixedUpdate()
     {
         currentState.OnFixedUpdate();
+        currentState.OnVisibilityUpdate();
     }
     #endregion
 

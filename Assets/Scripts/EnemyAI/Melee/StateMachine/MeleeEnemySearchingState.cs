@@ -5,13 +5,6 @@ using UnityEngine.AI;
 
 public class MeleeEnemySearchingState : MeleeEnemyState
 {
-    private enum ObservingStates
-    {
-        Null,
-        Tracking,
-        LookingAround
-    }
-    private ObservingStates currentState;
     public MeleeEnemySearchingState(EnemyMelee enemyCtrl) : base(enemyCtrl)
     {
         iEnemy = enemyCtrl;
@@ -20,16 +13,33 @@ public class MeleeEnemySearchingState : MeleeEnemyState
     {
         if (iEnemy.CheckForPlayerLOS() > 0)
         {
-            OnPlayerInLOS();
-            iEnemy.IncreaseDetection();
             iEnemy.lastKnownPlayerPos = ArmadilloPlayerController.Instance.transform.position;
+            iEnemy.IncreaseDetection();
+
+            if (onPlayerEnterVision_Ref == null)
+            {
+                if (onPlayerLeaveVision_Ref != null)
+                {
+                    iEnemy.StopCoroutine(onPlayerLeaveVision_Ref);
+                    onPlayerLeaveVision_Ref = null;
+                }
+
+                onPlayerEnterVision_Ref = iEnemy.StartCoroutine(OnPlayerEnterVision_Coroutine());
+            }
         }
         else
         {
-            OnPlayerOutOfLOS();
-            iEnemy.ResetTickInterval();
-        }
+            if (onPlayerLeaveVision_Ref == null)
+            {
+                if (onPlayerEnterVision_Ref != null)
+                {
+                    iEnemy.StopCoroutine(onPlayerEnterVision_Ref);
+                    onPlayerEnterVision_Ref = null;
+                }
 
+                onPlayerLeaveVision_Ref = iEnemy.StartCoroutine(OnPlayerLeaveVision_Coroutine());
+            }
+        }
     }
 
     public override void OnActionUpdate()
@@ -38,40 +48,93 @@ public class MeleeEnemySearchingState : MeleeEnemyState
     }
     public override void OnEnterState()
     {
-        iEnemy.ToggleAlert(true);
-        iEnemy.navMeshAgent.isStopped = false;
+        iEnemy.currentStateEnum = AIBehaviourEnums.AIBehaviour.Searching;
+        iEnemy.enemyBehaviourVisual.ChangeVisualState(AIBehaviourEnums.AIBehaviour.Searching);
+        iEnemy.navMeshAgent.ResetPath();
+        iEnemy.animator.SetBool("isWalking", false);
+        if (onPlayerEnterVision_Ref != null)
+        {
+            iEnemy.StopCoroutine(onPlayerEnterVision_Ref);
+            onPlayerEnterVision_Ref = null;
+        }
+        onPlayerEnterVision_Ref = iEnemy.StartCoroutine(OnPlayerEnterVision_Coroutine());
     }
 
     public override void OnExitState()
     {
-        StopLookAround();
-        StopTracking();
-        iEnemy.heardPlayer = false;
+        if (onPlayerEnterVision_Ref != null)
+        {
+            iEnemy.StopCoroutine(onPlayerEnterVision_Ref);
+        }
+        if (onPlayerLeaveVision_Ref != null)
+        {
+            iEnemy.StopCoroutine(onPlayerLeaveVision_Ref);
+        }
     }
 
     public override void OnFixedUpdate()
     {
     }
-    private void OnPlayerInLOS()
-    {
-        if (currentState != ObservingStates.Tracking)
-        {
-            currentState = ObservingStates.Tracking;
-            StopLookAround();
-            tracking_Ref = iEnemy.StartCoroutine(Tracking_Coroutine());
-        }
-    }
 
-    private void OnPlayerOutOfLOS()
+    private Coroutine onPlayerEnterVision_Ref;
+    private IEnumerator OnPlayerEnterVision_Coroutine()
     {
-        if (currentState != ObservingStates.LookingAround)
+        while (true)
         {
-            currentState = ObservingStates.LookingAround;
-            StopTracking();
-            walkAround_Ref = iEnemy.StartCoroutine(WalkAround_Coroutine());
+            iEnemy.LerpLookAt(iEnemy.lastKnownPlayerPos, 1);
+            yield return new WaitForFixedUpdate();
         }
     }
-    #region Walk Around
+    private Coroutine onPlayerLeaveVision_Ref;
+    private IEnumerator OnPlayerLeaveVision_Coroutine()
+    {
+        iEnemy.navMeshAgent.ResetPath();
+        float timer = 0;
+        while (timer < 1)
+        {
+            iEnemy.LerpLookAt(iEnemy.lastKnownPlayerPos, 3);
+            timer += Time.deltaTime;
+            yield return null;
+        }
+        Vector3 startPos = iEnemy.lastKnownPlayerPos;
+
+        for (int i = 0; i <= 3; i++)
+        {
+            while (true)
+            {
+                if (TryRandomPatrol(startPos, Vector2.one * 5f))
+                {
+                    break;
+                }
+                yield return new WaitForFixedUpdate();
+            }
+            while (true)
+            {
+                if (!iEnemy.navMeshAgent.pathPending)
+                {
+                    break;
+                }
+                yield return new WaitForFixedUpdate();
+            }
+            iEnemy.animator.SetBool("isWalking", true);
+            while (true)
+            {
+                Vector3 movingDirection = iEnemy.navMeshAgent.velocity + iEnemy.transform.position;
+                iEnemy.LerpLookAt(movingDirection, 1f);
+                if (iEnemy.CheckForProximityOfPoint())
+                {
+                    break;
+                }
+                yield return new WaitForFixedUpdate();
+            }
+            iEnemy.animator.SetBool("isWalking", false);
+            yield return new WaitForSeconds(1);
+        }
+        yield return new WaitForSeconds(1);
+        iEnemy.detectionLevel = 0;
+        onPlayerLeaveVision_Ref = null;
+        iEnemy.ChangeCurrentState(iEnemy.enemyRoamingState);
+    }
     Vector2 lastRandomPos;
     private bool TryRandomPatrol(Vector3 startPos, Vector2 distance)
     {
@@ -94,96 +157,4 @@ public class MeleeEnemySearchingState : MeleeEnemyState
         }
         return false;
     }
-
-    private Coroutine walkAround_Ref;
-    private IEnumerator WalkAround_Coroutine()
-    {
-        iEnemy.currentAction = EnemyMelee.Actions.Observing;
-        iEnemy.navMeshAgent.ResetPath();
-        float timer = 0;
-        while(timer<1)
-        {
-            iEnemy.LerpLookAt(iEnemy.lastKnownPlayerPos, 3);
-            timer += Time.deltaTime;
-            yield return null;
-        }
-        Vector3 startPos = iEnemy.lastKnownPlayerPos;
-
-        for (int i = 0; i <= 3; i++)
-        {
-            while (true)
-            {
-                if (TryRandomPatrol(startPos, Vector2.one * 5f))
-                {
-                    break;
-                }
-                yield return null;
-            }
-            while (true)
-            {
-                if (!iEnemy.navMeshAgent.pathPending)
-                {
-                    break;
-                }
-                yield return null;
-            }
-            iEnemy.currentAction = EnemyMelee.Actions.Moving;
-            iEnemy.animator.SetBool("isWalking", true);
-            while (true)
-            {
-                Vector3 movingDirection = iEnemy.navMeshAgent.velocity + iEnemy.transform.position;
-                iEnemy.LerpLookAt(movingDirection, 1f);
-                if (iEnemy.CheckForProximityOfPoint())
-                {
-                    break;
-                }
-                yield return null;
-            }
-            iEnemy.currentAction = EnemyMelee.Actions.Observing;
-            iEnemy.animator.SetBool("isWalking", false);
-            Debug.Log("Finish Search" + i);
-            yield return new WaitForSeconds(1);
-        }
-        yield return new WaitForSeconds(1);
-        walkAround_Ref = null;
-        iEnemy.SetDetectionLevel(0);
-        iEnemy.ChangeCurrentAIBehaviour(AIBehaviourEnums.AIBehaviour.Roaming);
-    }
-    private void StopLookAround()
-    {
-        iEnemy.StopLookAround();
-        if (walkAround_Ref != null)
-        {
-            iEnemy.StopCoroutine(walkAround_Ref);
-            walkAround_Ref = null;
-        }
-    }
-    #endregion
-
-    #region Tracking
-    private Coroutine tracking_Ref;
-    private IEnumerator Tracking_Coroutine()
-    {
-        iEnemy.currentAction = EnemyMelee.Actions.Moving;
-        while (true)
-        {
-            Vector3 position = iEnemy.lastKnownPlayerPos;
-            iEnemy.LerpLookAt(position, 5);
-            Vector3 playerDirection = iEnemy.transform.position - position;
-            playerDirection.y = 0;
-            position = position + (playerDirection.normalized * 3f);
-            iEnemy.TrySetNextDestination(position);
-            iEnemy.animator.SetBool("isWalking", !iEnemy.CheckForProximityOfPoint());
-            yield return new WaitForFixedUpdate();
-        }
-    }
-    private void StopTracking()
-    {
-        if (tracking_Ref != null)
-        {
-            iEnemy.StopCoroutine(tracking_Ref);
-            tracking_Ref = null;
-        }
-    }
-    #endregion
 }

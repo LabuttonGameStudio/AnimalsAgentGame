@@ -17,14 +17,14 @@ public class EnemyMelee : IEnemy, IDamageable, ISoundReceiver
 
     [HideInInspector] public MeleeEnemyState currentState;
 
-    protected MeleeEnemyRoamingState enemyRoamingState;
-    protected MeleeEnemyObservingState enemyObservingState;
-    protected MeleeEnemySearchingState enemySearchingState;
-    protected MeleeEnemyAttackingState enemyAttackingState;
+    public MeleeEnemyRoamingState enemyRoamingState;
+    public MeleeEnemyObservingState enemyObservingState;
+    public MeleeEnemySearchingState enemySearchingState;
+    public MeleeEnemyAttackingState enemyAttackingState;
     [SerializeField, Tooltip("Nivel de detecção necessario para trocar para o estado de searching")] private readonly float searchingStateBreakPoint = 50;
 
 
-    [SerializeField] private AIBehaviour currentStateEnum;
+    [SerializeField] public AIBehaviour currentStateEnum;
     #endregion
 
     //Combat Variables
@@ -41,7 +41,7 @@ public class EnemyMelee : IEnemy, IDamageable, ISoundReceiver
     public EnemyMeleeAttackHitBox secondaryAttackHitbox;
     public float secondaryAttackCooldown;
 
-    private bool playHitAnimation;
+    [HideInInspector]public bool playHitAnimation;
     #endregion
 
     //Sfx Variables
@@ -62,12 +62,14 @@ public class EnemyMelee : IEnemy, IDamageable, ISoundReceiver
     #region Base Functions
     protected override void OnAwake()
     {
+        playHitAnimation = true;
         enemyRoamingState = new MeleeEnemyRoamingState(this);
         enemyObservingState = new MeleeEnemyObservingState(this);
         enemySearchingState = new MeleeEnemySearchingState(this);
         enemyAttackingState = new MeleeEnemyAttackingState(this);
         switch(currentStateEnum)
         {
+            case AIBehaviour.Static:
             case AIBehaviour.Roaming:
                 currentState = enemyRoamingState;
                 break;
@@ -99,6 +101,7 @@ public class EnemyMelee : IEnemy, IDamageable, ISoundReceiver
             walkingSoundEmitter.StopAudio();
         }
         currentState.OnFixedUpdate();
+        currentState.OnVisibilityUpdate();
     }
     #endregion
 
@@ -106,7 +109,7 @@ public class EnemyMelee : IEnemy, IDamageable, ISoundReceiver
     #region Visibility Functions
     public override void OnVisibilityUpdate()
     {
-        currentState.OnVisibilityUpdate();
+        //currentState.OnVisibilityUpdate();
     }
     #endregion
 
