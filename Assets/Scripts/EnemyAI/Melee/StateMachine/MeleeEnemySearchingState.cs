@@ -48,7 +48,7 @@ public class MeleeEnemySearchingState : MeleeEnemyState
     }
     public override void OnEnterState()
     {
-        iEnemy.currentStateEnum = AIBehaviourEnums.AIBehaviour.Searching;
+        iEnemy.currentAIBehaviour = AIBehaviourEnums.AIBehaviour.Searching;
         iEnemy.enemyBehaviourVisual.ChangeVisualState(AIBehaviourEnums.AIBehaviour.Searching);
         iEnemy.navMeshAgent.ResetPath();
         iEnemy.animator.SetBool("isWalking", false);

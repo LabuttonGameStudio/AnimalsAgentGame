@@ -7,16 +7,6 @@ public class RangedEnemy : IEnemy, IDamageable, ISoundReceiver
 {
     //-----Variables-----
     #region State Machine Variables
-
-    public enum CurrentStateEnum
-    {
-        roaming,
-        observing,
-        searching,
-        attacking
-    }
-
-    public CurrentStateEnum currentStateEnum;
     protected RangedEnemyState currentState;
 
     public RangedEnemyRoamingState enemyRoamingState;
@@ -83,10 +73,10 @@ public class RangedEnemy : IEnemy, IDamageable, ISoundReceiver
         }
         else if (damage.wasMadeByPlayer)
         {
-            switch (currentStateEnum)
+            switch (currentAIBehaviour)
             {
-                case CurrentStateEnum.roaming:
-                case CurrentStateEnum.observing:
+                case AIBehaviour.Roaming:
+                case AIBehaviour.Observing:
                     lastKnownPlayerPos = damage.originPoint;
                     ChangeCurrentState(enemySearchingState);
                     break;
@@ -109,11 +99,29 @@ public class RangedEnemy : IEnemy, IDamageable, ISoundReceiver
         enemySearchingState = new RangedEnemySearchingState(this);
         enemyAttackingState = new RangedEnemyAttackingState(this);
         currentState = enemyRoamingState;
-        currentState.OnEnterState();
+        switch (currentAIBehaviour)
+        {
+            case AIBehaviour.Static:
+                isStatic = true;
+                ChangeCurrentState(enemyRoamingState);
+                break;
+            case AIBehaviour.Roaming:
+                ChangeCurrentState(enemyRoamingState);
+                break;
+            case AIBehaviour.Observing:
+                ChangeCurrentState(enemyObservingState);
+                break;
+            case AIBehaviour.Searching:
+                ChangeCurrentState(enemySearchingState);
+                break;
+            case AIBehaviour.Attacking:
+                ChangeCurrentState(enemyAttackingState);
+                break;
+        }
     }
     protected override void OnStart()
     {
-
+        currentState.OnEnterState();
     }
     protected override void OnFixedUpdate()
     {

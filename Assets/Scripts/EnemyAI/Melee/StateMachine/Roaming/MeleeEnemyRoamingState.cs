@@ -25,7 +25,7 @@ public class MeleeEnemyRoamingState : MeleeEnemyState
 
     public override void OnEnterState()
     {
-        iEnemy.currentStateEnum = AIBehaviourEnums.AIBehaviour.Roaming;
+        iEnemy.currentAIBehaviour = AIBehaviourEnums.AIBehaviour.Roaming;
         iEnemy.enemyBehaviourVisual.ChangeVisualState(AIBehaviourEnums.AIBehaviour.Roaming);
         if (iEnemy.isStatic)
         {
@@ -60,7 +60,9 @@ public class MeleeEnemyRoamingState : MeleeEnemyState
     {
         if (iEnemy.TrySetNextDestination(iEnemy.aiPathList[iEnemy.currentPathPoint].transformOfPathPoint.position))
         {
+            iEnemy.animator.SetBool("isWalking", true);
             yield return iEnemy.RoamingWaitToReachNextPoint();
+            iEnemy.animator.SetBool("isWalking", false);
             if (iEnemy.aiPathList[iEnemy.currentPathPoint].waitTimeOnPoint > 0)
             {
                 if (iEnemy.aiPathList[iEnemy.currentPathPoint].lookAroundOnPoint)
@@ -86,6 +88,7 @@ public class MeleeEnemyRoamingState : MeleeEnemyState
                     yield return iEnemy.RoamingWaitToReachNextPoint();
                     if (iEnemy.aiPathList[iEnemy.currentPathPoint].waitTimeOnPoint > 0)
                     {
+                        iEnemy.animator.SetBool("isWalking", false);
                         if (iEnemy.aiPathList[iEnemy.currentPathPoint].lookAroundOnPoint)
                         {
                             if (iEnemy.TryStartRandomLookAround(iEnemy.aiPathList[iEnemy.currentPathPoint].waitTimeOnPoint, out Coroutine lookAroundcoroutine))
@@ -102,6 +105,7 @@ public class MeleeEnemyRoamingState : MeleeEnemyState
             }
             else
             {
+                iEnemy.animator.SetBool("isWalking", false);
                 loopRoamingPath_Ref = null;
                 iEnemy.isStatic = true;
                 yield break;

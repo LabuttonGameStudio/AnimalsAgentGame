@@ -44,7 +44,6 @@ public class SandProjectile : MonoBehaviour
         Vector3 hitPosition = transform.position;
         if (other.TryGetComponent(out IDamageable damageable))
         {
-            Debug.Log(other.gameObject.name);
             damageable.TakeDamage(new Damage(damageAmount, Damage.DamageType.Slash, false, Vector3.zero));
             DisableBullet();
         }

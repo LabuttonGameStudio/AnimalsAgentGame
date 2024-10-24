@@ -20,7 +20,7 @@ public class MeleeEnemyObservingState : MeleeEnemyState
     }
     public override void OnEnterState()
     {
-        iEnemy.currentStateEnum = AIBehaviourEnums.AIBehaviour.Observing;
+        iEnemy.currentAIBehaviour = AIBehaviourEnums.AIBehaviour.Observing;
         iEnemy.enemyBehaviourVisual.ChangeVisualState(AIBehaviourEnums.AIBehaviour.Observing);
         iEnemy.navMeshAgent.ResetPath();
         iEnemy.animator.SetBool("isWalking", false);

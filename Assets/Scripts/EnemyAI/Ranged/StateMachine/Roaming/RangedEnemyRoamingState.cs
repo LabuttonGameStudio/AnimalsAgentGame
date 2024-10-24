@@ -15,7 +15,7 @@ public class RangedEnemyRoamingState : RangedEnemyState
 
     public override void OnEnterState()
     {
-        iEnemy.currentStateEnum = RangedEnemy.CurrentStateEnum.roaming;
+        iEnemy.currentAIBehaviour = AIBehaviourEnums.AIBehaviour.Roaming;
         iEnemy.enemyBehaviourVisual.ChangeVisualState(AIBehaviourEnums.AIBehaviour.Roaming);
         if (iEnemy.isStatic)
         {

@@ -16,7 +16,7 @@ public class RangedEnemyAttackingState : RangedEnemyState
 
     public override void OnEnterState()
     {
-        iEnemy.currentStateEnum = RangedEnemy.CurrentStateEnum.attacking;
+        iEnemy.currentAIBehaviour = AIBehaviourEnums.AIBehaviour.Attacking;  
         iEnemy.enemyBehaviourVisual.ChangeVisualState(AIBehaviourEnums.AIBehaviour.Attacking);
         iEnemy.animator.SetBool("isWalking", false);
         iEnemy.navMeshAgent.ResetPath();

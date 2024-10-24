@@ -23,8 +23,6 @@ public class EnemyMelee : IEnemy, IDamageable, ISoundReceiver
     public MeleeEnemyAttackingState enemyAttackingState;
     [SerializeField, Tooltip("Nivel de detecção necessario para trocar para o estado de searching")] private readonly float searchingStateBreakPoint = 50;
 
-
-    [SerializeField] public AIBehaviour currentStateEnum;
     #endregion
 
     //Combat Variables
@@ -67,7 +65,7 @@ public class EnemyMelee : IEnemy, IDamageable, ISoundReceiver
         enemyObservingState = new MeleeEnemyObservingState(this);
         enemySearchingState = new MeleeEnemySearchingState(this);
         enemyAttackingState = new MeleeEnemyAttackingState(this);
-        switch(currentStateEnum)
+        switch(currentAIBehaviour)
         {
             case AIBehaviour.Static:
             case AIBehaviour.Roaming:
@@ -83,12 +81,12 @@ public class EnemyMelee : IEnemy, IDamageable, ISoundReceiver
                 currentState = enemyAttackingState;
                 break;
         }
-        currentState.OnEnterState();
     }
     protected override void OnStart()
     {
         primaryAttackHitbox.aiController = this;
         secondaryAttackHitbox.aiController = this;
+        currentState.OnEnterState();
     }
     protected override void OnFixedUpdate()
     {
@@ -151,7 +149,7 @@ public class EnemyMelee : IEnemy, IDamageable, ISoundReceiver
     }
     private void OnDamageTaken(Damage damage)
     {
-        if (currentStateEnum != AIBehaviour.Attacking)
+        if (currentAIBehaviour != AIBehaviour.Attacking)
         {
             if (onDamageTaken_Ref == null)
             {
@@ -164,7 +162,7 @@ public class EnemyMelee : IEnemy, IDamageable, ISoundReceiver
     {
 
         yield return new WaitForSeconds(0.25f);
-        if (currentStateEnum == AIBehaviour.Attacking || currentStateEnum == AIBehaviour.Searching) yield break;
+        if (currentAIBehaviour == AIBehaviour.Attacking || currentAIBehaviour == AIBehaviour.Searching) yield break;
         lastKnownPlayerPos = damage.originPoint;
         ChangeCurrentState(enemySearchingState);
         SetDetectionLevel(searchingStateBreakPoint);
@@ -230,7 +228,7 @@ public class EnemyMelee : IEnemy, IDamageable, ISoundReceiver
                 if (!heardPlayer)
                 {
                     heardPlayer = true;
-                    switch (currentStateEnum)
+                    switch (currentAIBehaviour)
                     {
                         case AIBehaviour.Roaming:
                             ChangeCurrentState(enemyObservingState);
