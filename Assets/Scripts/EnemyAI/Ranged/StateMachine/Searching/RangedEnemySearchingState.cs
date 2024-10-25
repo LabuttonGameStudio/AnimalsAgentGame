@@ -17,9 +17,9 @@ public class RangedEnemySearchingState : RangedEnemyState
 
     public override void OnEnterState()
     {
-        iEnemy.currentStateEnum = RangedEnemy.CurrentStateEnum.searching;
+        iEnemy.currentAIBehaviour = AIBehaviourEnums.AIBehaviour.Searching;
         iEnemy.enemyBehaviourVisual.ChangeVisualState(AIBehaviourEnums.AIBehaviour.Searching);
-        iEnemy.navMeshAgent.ResetPath();
+        if (iEnemy.navMeshAgent.isActiveAndEnabled) iEnemy.navMeshAgent.ResetPath();
         iEnemy.animator.SetBool("isWalking", false);
         if (onPlayerEnterVision_Ref != null)
         {
@@ -27,7 +27,6 @@ public class RangedEnemySearchingState : RangedEnemyState
             onPlayerEnterVision_Ref = null;
         }
         onPlayerEnterVision_Ref = iEnemy.StartCoroutine(OnPlayerEnterVision_Coroutine());
-        //Debug.Log("Searching Enter");
     }
 
     public override void OnExitState()
@@ -35,19 +34,16 @@ public class RangedEnemySearchingState : RangedEnemyState
         if (onPlayerEnterVision_Ref != null)
         {
             iEnemy.StopCoroutine(onPlayerEnterVision_Ref);
-            //onPlayerEnterVision_Ref = null;
         }
         if (onPlayerLeaveVision_Ref != null)
         {
             iEnemy.StopCoroutine(onPlayerLeaveVision_Ref);
-            //onPlayerLeaveVision_Ref = null;
         }
-        //Debug.Log("Searching Exit");
     }
 
     public override void OnFixedUpdate()
     {
-        //Debug.Log("Searching FixedUpdate");
+
     }
 
     public override void OnVisibilityUpdate()
@@ -82,8 +78,6 @@ public class RangedEnemySearchingState : RangedEnemyState
             }
         }
     }
-
-
 
     private Coroutine onPlayerEnterVision_Ref;
     private IEnumerator OnPlayerEnterVision_Coroutine()

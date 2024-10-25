@@ -28,19 +28,19 @@ public class FPCameraShake : MonoBehaviour
     private CinemachineVirtualCamera virtualCamera;
     private CinemachineBasicMultiChannelPerlin channelPerlin;
 
-    private CinemachineCameraOffset[] cinemachineCameraOffsetArray;
+    [SerializeField]private CinemachineCameraOffset[] cinemachineCameraOffsetArray;
     private void Awake()
     {
         currentOperatingOffset = new List<PivotOffsetStats>();
         virtualCamera = GetComponent<CinemachineVirtualCamera>();
         channelPerlin = virtualCamera.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
         Instance = this;
+        //cinemachineCameraOffsetArray = new CinemachineCameraOffset[2];
     }
     private void Start()
     {
-        cinemachineCameraOffsetArray = new CinemachineCameraOffset[2];
-        cinemachineCameraOffsetArray[0] = ArmadilloPlayerController.Instance.cameraControl.firstPersonCinemachine.GetComponent<CinemachineCameraOffset>();
-        cinemachineCameraOffsetArray[1] = ArmadilloPlayerController.Instance.cameraControl.thirdPersonCinemachine.GetComponent<CinemachineCameraOffset>();
+        //cinemachineCameraOffsetArray[0] = ArmadilloPlayerController.Instance.cameraControl.firstPersonCinemachine.GetComponent<CinemachineCameraOffset>();
+        //cinemachineCameraOffsetArray[1] = ArmadilloPlayerController.Instance.cameraControl.thirdPersonCinemachine.GetComponent<CinemachineCameraOffset>();
     }
     #region Shake
     public static ShakeStats StartShake(float duration, float amplitudeGain, float frequency)
@@ -308,7 +308,6 @@ public class FPCameraShake : MonoBehaviour
             currentOffset += currentOperatingOffset[i].currentOffset;
         }
         cinemachineCameraOffsetArray[0].m_Offset = currentOffset;
-        //cinemachineCameraOffsetArray[1].m_Offset = currentOffset;
     }
     private void CheckStopUpdateCurrentOffset()
     {

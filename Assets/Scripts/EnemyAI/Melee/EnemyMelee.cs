@@ -1,27 +1,32 @@
 using System.Collections;
 using UnityEngine;
-using static AIBehaviourEnums;
 using AudioType = SoundGeneralControl.AudioType;
 using UnityEngine.VFX;
 using static Damage;
+using static AIBehaviourEnums;
 public class EnemyMelee : IEnemy, IDamageable, ISoundReceiver
 {
-    #region Detection
+    //Detection Variables
+    #region Detection Variables
     [SerializeField] private float minimalHearValue;
     [Tooltip("Tempo necessario para ir ao estado mais alto de detecção")] readonly protected float timeToMaxDetect = 0.5f;
     #endregion
 
-    #region StateMachine
+    //State Machine Variables
+    #region StateMachine Variables
 
-    [HideInInspector] public MeleeEnemyState currentEnemyState;
+    [HideInInspector] public MeleeEnemyState currentState;
 
-    protected MeleeEnemyRoamingState enemyRoamingState;
-    protected MeleeEnemyObservingState enemyObservingState;
-    protected MeleeEnemySearchingState enemySearchingState;
-    protected MeleeEnemyAttackingState enemyAttackingState;
+    public MeleeEnemyRoamingState enemyRoamingState;
+    public MeleeEnemyObservingState enemyObservingState;
+    public MeleeEnemySearchingState enemySearchingState;
+    public MeleeEnemyAttackingState enemyAttackingState;
     [SerializeField, Tooltip("Nivel de detecção necessario para trocar para o estado de searching")] private readonly float searchingStateBreakPoint = 50;
+
     #endregion
 
+    //Combat Variables
+    #region Combat Variables
     [Header("Combat")]
     [Header("Primary Attack")]
     [SerializeField]
@@ -34,32 +39,54 @@ public class EnemyMelee : IEnemy, IDamageable, ISoundReceiver
     public EnemyMeleeAttackHitBox secondaryAttackHitbox;
     public float secondaryAttackCooldown;
 
+    [HideInInspector]public bool playHitAnimation;
+    #endregion
+
+    //Sfx Variables
+    #region SFX Variables
     [Header("SFX")]
     public SoundEmitter walkingSoundEmitter;
+    #endregion
 
-    public enum Actions
-    {
-        Moving,
-        Observing,
-        Attacking
-    }
-    [HideInInspector] public Actions currentAction;
-
+    //Vfx Variables
+    #region VFX Variables
     [SerializeField] private ParticleSystem onDeathByEletricParticle;
     [SerializeField] private VisualEffect deadLoopParticle;
+    #endregion
+
+    //-----
+
+    //Base Functions
+    #region Base Functions
     protected override void OnAwake()
     {
+        playHitAnimation = true;
         enemyRoamingState = new MeleeEnemyRoamingState(this);
         enemyObservingState = new MeleeEnemyObservingState(this);
         enemySearchingState = new MeleeEnemySearchingState(this);
         enemyAttackingState = new MeleeEnemyAttackingState(this);
-
-        ChangeCurrentAIBehaviour(AIBehaviour.Roaming);
+        switch(currentAIBehaviour)
+        {
+            case AIBehaviour.Static:
+            case AIBehaviour.Roaming:
+                currentState = enemyRoamingState;
+                break;
+            case AIBehaviour.Observing:
+                currentState = enemyObservingState;
+                break;  
+            case AIBehaviour.Searching:
+                currentState = enemySearchingState;
+                break;
+            case AIBehaviour.Attacking:
+                currentState = enemyAttackingState;
+                break;
+        }
     }
     protected override void OnStart()
     {
         primaryAttackHitbox.aiController = this;
         secondaryAttackHitbox.aiController = this;
+        currentState.OnEnterState();
     }
     protected override void OnFixedUpdate()
     {
@@ -71,20 +98,33 @@ public class EnemyMelee : IEnemy, IDamageable, ISoundReceiver
         {
             walkingSoundEmitter.StopAudio();
         }
-        currentEnemyState.OnFixedUpdate();
+        currentState.OnFixedUpdate();
+        currentState.OnVisibilityUpdate();
     }
+    #endregion
+
+    //Visibility Functions
+    #region Visibility Functions
     public override void OnVisibilityUpdate()
     {
-        currentEnemyState.OnVisibilityUpdate();
+        //currentState.OnVisibilityUpdate();
     }
+    #endregion
+
+    //Action Functions
+    #region Action Functions
     public override void OnActionUpdate()
     {
-        currentEnemyState.OnActionUpdate();
+        currentState.OnActionUpdate();
     }
+    #endregion
+
+    //Take Damage Functions
+    #region Take Damage Functions
     public void TakeDamage(Damage damage)
     {
         currentHp -= damage.damageAmount;
-        if (currentHp <= 0 && isDead==false)
+        if (currentHp <= 0 && isDead == false)
         {
             isDead = true;
             animator.transform.parent = animator.transform.parent.parent;
@@ -96,23 +136,16 @@ public class EnemyMelee : IEnemy, IDamageable, ISoundReceiver
                     break;
             }
             deadLoopParticle.Play();
-            EnemyMasterControl.Instance.StartCoroutine(DeSpawnCoroutine(animator.gameObject,deadLoopParticle));
+            EnemyMasterControl.Instance.StartCoroutine(DeSpawnCoroutine(animator.gameObject, deadLoopParticle));
             gameObject.SetActive(false);
             return;
         }
-        if (currentAction == Actions.Moving || currentAction == Actions.Observing) animator.SetTrigger("isHit");
+        if (playHitAnimation) animator.SetTrigger("isHit");
         OnDamageTaken(damage);
     }
     bool IDamageable.isDead()
     {
         return isDead;
-    }
-    private IEnumerator DeSpawnCoroutine(GameObject gameObject,VisualEffect visualEffect)
-    {
-        yield return new WaitForSeconds(5);
-        visualEffect.Stop();
-        yield return new WaitForSeconds(15);
-        gameObject.SetActive(false);
     }
     private void OnDamageTaken(Damage damage)
     {
@@ -131,46 +164,26 @@ public class EnemyMelee : IEnemy, IDamageable, ISoundReceiver
         yield return new WaitForSeconds(0.25f);
         if (currentAIBehaviour == AIBehaviour.Attacking || currentAIBehaviour == AIBehaviour.Searching) yield break;
         lastKnownPlayerPos = damage.originPoint;
-        ChangeCurrentAIBehaviour(AIBehaviour.Searching);
+        ChangeCurrentState(enemySearchingState);
         SetDetectionLevel(searchingStateBreakPoint);
         StopLookAround();
         onDamageTaken_Ref = null;
     }
-    protected override void OnRoamingPathEnd()
-    {
-        isStatic = true;
-        currentEnemyState.OnEnterState();
-        navMeshAgent.isStopped = true;
-    }
+    #endregion
 
-    public void ChangeCurrentAIBehaviour(AIBehaviour nextAIBehaviour)
+    //State Machine Functions
+    #region State Machine Functions
+    public void ChangeCurrentState(MeleeEnemyState newState)
     {
-        if (currentAIBehaviour == nextAIBehaviour) return;
-        if (currentEnemyState != null) currentEnemyState.OnExitState();
-        enemyBehaviourVisual.ChangeVisualState(nextAIBehaviour);
-        switch (nextAIBehaviour)
-        {
-            case AIBehaviour.Roaming:
-                currentEnemyState = enemyRoamingState;
-                currentEnemyState.OnEnterState();
-                break;
-            case AIBehaviour.Observing:
-            case AIBehaviour.Static:
-                currentEnemyState = enemyObservingState;
-                currentEnemyState.OnEnterState();
-                break;
-            case AIBehaviour.Searching:
-                currentEnemyState = enemySearchingState;
-                currentEnemyState.OnEnterState();
-                break;
-            case AIBehaviour.Attacking:
-                currentEnemyState = enemyAttackingState;
-                currentEnemyState.OnEnterState();
-                break;
-        }
-        currentAIBehaviour = nextAIBehaviour;
+        if (currentState == newState) return;
+        currentState.OnExitState();
+        newState.OnEnterState();
+        currentState = newState;
     }
+    #endregion
 
+    //Detection Functions
+    #region Detection Functions
     public void SetDetectionLevel(float detectionLevel)
     {
         this.detectionLevel = detectionLevel;
@@ -190,21 +203,20 @@ public class EnemyMelee : IEnemy, IDamageable, ISoundReceiver
         if (detectionLevel + increasePerTick >= 100)
         {
             detectionLevel = 100;
-            ChangeCurrentAIBehaviour(AIBehaviour.Attacking);
+            ChangeCurrentState(enemyAttackingState);
             return;
         }
         else detectionLevel += increasePerTick;
         //Se ele nao estiver acima de 100 mas estiver acima do nivel necessario para entrar em estado de procura
         if (detectionLevel > searchingStateBreakPoint)
         {
-            ChangeCurrentAIBehaviour(AIBehaviour.Searching);
+            ChangeCurrentState(enemySearchingState);
         }
     }
     public void ResetTickInterval()
     {
         detectionTickIntervalTime = 0;
     }
-
     public bool heardPlayer;
     public void OnSoundHear(SoundData soundData)
     {
@@ -219,17 +231,42 @@ public class EnemyMelee : IEnemy, IDamageable, ISoundReceiver
                     switch (currentAIBehaviour)
                     {
                         case AIBehaviour.Roaming:
-                            ChangeCurrentAIBehaviour(AIBehaviour.Observing);
+                            ChangeCurrentState(enemyObservingState);
                             break;
                         case AIBehaviour.Observing:
-                            ChangeCurrentAIBehaviour(AIBehaviour.Searching);
+                            ChangeCurrentState(enemySearchingState);
                             break;
                     }
                 }
             }
         }
     }
+    #endregion
 
+    //Pathfinding Functions
+    #region Pathfinding Functions
+    protected override void OnRoamingPathEnd()
+    {
+        isStatic = true;
+        currentState.OnEnterState();
+        navMeshAgent.isStopped = true;
+    }
+
+    #endregion
+
+    //DeSpawn Functions
+    #region DeSpawn Functions
+    private IEnumerator DeSpawnCoroutine(GameObject gameObject, VisualEffect visualEffect)
+    {
+        yield return new WaitForSeconds(5);
+        visualEffect.Stop();
+        yield return new WaitForSeconds(15);
+        gameObject.SetActive(false);
+    }
+    #endregion
+
+    //Ball Contact Functions
+    #region Ball Contact Function
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.collider.CompareTag("Player"))
@@ -239,8 +276,8 @@ public class EnemyMelee : IEnemy, IDamageable, ISoundReceiver
             {
                 if (collision.impulse.magnitude > 200)
                 {
-                    TakeDamage(new Damage(10,DamageType.Blunt,true,playerControler.transform.position));
-                    Vector3 direction = playerControler.transform.position -collision.GetContact(0).point;
+                    TakeDamage(new Damage(10, DamageType.Blunt, true, playerControler.transform.position));
+                    Vector3 direction = playerControler.transform.position - collision.GetContact(0).point;
                     direction.Normalize();
                     playerControler.movementControl.rb.AddForce(direction * 15, ForceMode.VelocityChange);
 
@@ -249,4 +286,5 @@ public class EnemyMelee : IEnemy, IDamageable, ISoundReceiver
             }
         }
     }
+    #endregion 
 }

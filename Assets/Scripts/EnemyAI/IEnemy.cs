@@ -580,6 +580,7 @@ public abstract class IEnemy : MonoBehaviour, IRaycastableInLOS
     {
         Vector3 direction = position - transform.position;
         direction.y = 0;
+        if (direction.Equals(Vector3.zero)) return;
         Quaternion lookAtRotation = Quaternion.LookRotation(direction);
         transform.rotation = Quaternion.Lerp(transform.rotation, lookAtRotation, velocity * 3 * Time.fixedDeltaTime);
     }

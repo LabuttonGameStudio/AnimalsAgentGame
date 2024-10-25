@@ -16,9 +16,9 @@ public class RangedEnemyObservingState : RangedEnemyState
 
     public override void OnEnterState()
     {
-        iEnemy.currentStateEnum = RangedEnemy.CurrentStateEnum.observing;
+        iEnemy.currentAIBehaviour = AIBehaviourEnums.AIBehaviour.Observing;
         iEnemy.enemyBehaviourVisual.ChangeVisualState(AIBehaviourEnums.AIBehaviour.Observing);
-        iEnemy.navMeshAgent.ResetPath();
+        if (iEnemy.navMeshAgent.isActiveAndEnabled) iEnemy.navMeshAgent.ResetPath();
         iEnemy.animator.SetBool("isWalking", false);
         if (onPlayerEnterVision_Ref != null)
         {
@@ -26,7 +26,6 @@ public class RangedEnemyObservingState : RangedEnemyState
             onPlayerEnterVision_Ref= null;
         }
         onPlayerEnterVision_Ref = iEnemy.StartCoroutine(OnPlayerEnterVision_Coroutine());
-        //Debug.Log("Observing Enter");
     }
 
     public override void OnExitState()
@@ -34,19 +33,16 @@ public class RangedEnemyObservingState : RangedEnemyState
         if (onPlayerEnterVision_Ref != null)
         {
             iEnemy.StopCoroutine(onPlayerEnterVision_Ref);
-            //onPlayerEnterVision_Ref = null;
         }
         if (onPlayerLeaveVision_Ref != null)
         {
             iEnemy.StopCoroutine(onPlayerLeaveVision_Ref);
-            //onPlayerLeaveVision_Ref = null;
         }
-        Debug.Log("Observing Exit");
     }
 
     public override void OnFixedUpdate()
     {
-        Debug.Log("Observing FixedUpdate");
+
     }
 
     public override void OnVisibilityUpdate()
