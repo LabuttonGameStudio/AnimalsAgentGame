@@ -18,7 +18,7 @@ public class RangedEnemyObservingState : RangedEnemyState
     {
         iEnemy.currentAIBehaviour = AIBehaviourEnums.AIBehaviour.Observing;
         iEnemy.enemyBehaviourVisual.ChangeVisualState(AIBehaviourEnums.AIBehaviour.Observing);
-        iEnemy.navMeshAgent.ResetPath();
+        if (iEnemy.navMeshAgent.isActiveAndEnabled) iEnemy.navMeshAgent.ResetPath();
         iEnemy.animator.SetBool("isWalking", false);
         if (onPlayerEnterVision_Ref != null)
         {

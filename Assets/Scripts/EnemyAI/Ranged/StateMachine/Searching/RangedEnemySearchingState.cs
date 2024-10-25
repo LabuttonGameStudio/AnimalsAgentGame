@@ -19,7 +19,7 @@ public class RangedEnemySearchingState : RangedEnemyState
     {
         iEnemy.currentAIBehaviour = AIBehaviourEnums.AIBehaviour.Searching;
         iEnemy.enemyBehaviourVisual.ChangeVisualState(AIBehaviourEnums.AIBehaviour.Searching);
-        iEnemy.navMeshAgent.ResetPath();
+        if (iEnemy.navMeshAgent.isActiveAndEnabled) iEnemy.navMeshAgent.ResetPath();
         iEnemy.animator.SetBool("isWalking", false);
         if (onPlayerEnterVision_Ref != null)
         {

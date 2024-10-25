@@ -19,7 +19,7 @@ public class RangedEnemyAttackingState : RangedEnemyState
         iEnemy.currentAIBehaviour = AIBehaviourEnums.AIBehaviour.Attacking;  
         iEnemy.enemyBehaviourVisual.ChangeVisualState(AIBehaviourEnums.AIBehaviour.Attacking);
         iEnemy.animator.SetBool("isWalking", false);
-        iEnemy.navMeshAgent.ResetPath();
+        if(iEnemy.navMeshAgent.isActiveAndEnabled)iEnemy.navMeshAgent.ResetPath();
         iEnemy.animator.SetBool("isTurret", true);
         attackLoop_Ref = iEnemy.StartCoroutine(AttackLoop_Coroutine());
         //Debug.Log("Attacking Enter");
