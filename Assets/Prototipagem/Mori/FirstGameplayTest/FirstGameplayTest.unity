@@ -1627,9 +1627,42 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   objectSize: 0.71
   pickUpObjectType: 2
-  objectName: Caixa
-  onGroundDescription: Pegar
-  pickedUpDescription: Largar
+  objectName:
+    m_TableReference:
+      m_TableCollectionName: 
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  onGroundDescription:
+    m_TableReference:
+      m_TableCollectionName: 
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  pickedUpDescription:
+    m_TableReference:
+      m_TableCollectionName: 
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  onPickUpEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  onDropEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  references:
+    version: 2
+    RefIds: []
 --- !u!54 &293701646
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -10448,9 +10481,42 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   objectSize: 0.71
   pickUpObjectType: 1
-  objectName: Caixa
-  onGroundDescription: Pegar
-  pickedUpDescription: Largar
+  objectName:
+    m_TableReference:
+      m_TableCollectionName: 
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  onGroundDescription:
+    m_TableReference:
+      m_TableCollectionName: 
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  pickedUpDescription:
+    m_TableReference:
+      m_TableCollectionName: 
+    m_TableEntryReference:
+      m_KeyId: 0
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  onPickUpEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  onDropEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  references:
+    version: 2
+    RefIds: []
 --- !u!1 &2145216141
 GameObject:
   m_ObjectHideFlags: 0
@@ -11615,7 +11681,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5657193980638182572, guid: 5e6fc123e444e7f45ab78b704561dbb1, type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7344351313258491148, guid: 5e6fc123e444e7f45ab78b704561dbb1, type: 3}
       propertyPath: m_Enabled
@@ -11627,7 +11693,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9044015245498109999, guid: 5e6fc123e444e7f45ab78b704561dbb1, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 0}

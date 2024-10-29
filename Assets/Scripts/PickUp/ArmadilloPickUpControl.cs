@@ -32,6 +32,7 @@ public class ArmadilloPickUpControl : MonoBehaviour
     private bool objectDefaultFreezeRotation;
     private RigidbodyInterpolation objectDefaultInterpolation;
     private CollisionDetectionMode objectDefaultCollisionDetectionMode;
+    
 
     private void Awake()
     {
@@ -142,6 +143,7 @@ public class ArmadilloPickUpControl : MonoBehaviour
             case PickUpObjectType.Small:
             case PickUpObjectType.Medium:
             case PickUpObjectType.Big:
+                grabbedObject.ToggleHold(true);
                 grabbedObject.isBeeingHeld = true;
                 UpdateInteractionHUD(grabbedObject);
                 connectedObject = grabbedObject;
@@ -184,7 +186,6 @@ public class ArmadilloPickUpControl : MonoBehaviour
     {
         if (connectedObject == null) return;
         ArmadilloPlayerController playerController = ArmadilloPlayerController.Instance;
-
         playerController.weaponControl.ToggleArms(true);
         playerController.weaponControl.ToggleWeapon(true, false);
 
@@ -210,7 +211,7 @@ public class ArmadilloPickUpControl : MonoBehaviour
             case PickUpObjectType.Medium:
             case PickUpObjectType.Big:
                 ArmadilloPlayerController.Instance.movementControl.speedMultiplier = 1f;
-
+                connectedObject.ToggleHold(false);
                 connectedObject.isBeeingHeld = false;
                 objectRb.useGravity = true;
 

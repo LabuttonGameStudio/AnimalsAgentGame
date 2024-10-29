@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.InputSystem;
+using UnityEngine.Localization;
 using static IPickUpObject;
 
 public class PickUpObject : MonoBehaviour, IPickUpObject
@@ -9,9 +11,10 @@ public class PickUpObject : MonoBehaviour, IPickUpObject
     private Rigidbody rb;
     public float objectSize;
     public PickUpObjectType pickUpObjectType;
-    public string objectName;
-    public string onGroundDescription;
-    public string pickedUpDescription;
+
+    public LocalizedString objectName;
+    public LocalizedString onGroundDescription;
+    public LocalizedString pickedUpDescription;
 
     private MeshRenderer meshRenderer;
     public bool isBeeingHeld { get; set; }
@@ -20,10 +23,24 @@ public class PickUpObject : MonoBehaviour, IPickUpObject
         get => pickUpObjectType;
         set => pickUpObjectType = value;
     }
-    public float m_objectSize 
+    public float m_objectSize
     {
         get => objectSize;
         set => objectSize = value;
+    }
+
+    public UnityEvent onPickUpEvent;
+    public UnityEvent m_OnPickUpEvent
+    {
+        get => onPickUpEvent;
+        set => onPickUpEvent = value;
+    }
+
+    public UnityEvent onDropEvent;
+    public UnityEvent m_OnDropEvent
+    {
+        get => onPickUpEvent;
+        set => onPickUpEvent = value;
     }
 
     private void OnDrawGizmosSelected()
@@ -40,15 +57,15 @@ public class PickUpObject : MonoBehaviour, IPickUpObject
         isBeeingHeld = false;
     }
 
-    public string GetObjectName() { return objectName; }
+    public string GetObjectName() { return objectName.GetLocalizedString(); }
 
     public string GetObjectDescription()
     {
-        return isBeeingHeld ? pickedUpDescription : onGroundDescription;
+        return isBeeingHeld ? pickedUpDescription.GetLocalizedString() : onGroundDescription.GetLocalizedString();
     }
 
     public Vector3 GetObjectDeltaCenter()
     {
-        return meshRenderer.bounds.center-rb.position;
+        return meshRenderer.bounds.center - rb.position;
     }
 }

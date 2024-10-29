@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Events;
 
 public interface IPickUpObject : IRaycastableInLOS
 {
@@ -29,4 +30,12 @@ public interface IPickUpObject : IRaycastableInLOS
 
     public abstract string GetObjectDescription();
     public abstract Vector3 GetObjectDeltaCenter();
+    UnityEvent m_OnPickUpEvent { get; set; }
+    UnityEvent m_OnDropEvent { get; set; }
+
+    public void ToggleHold(bool state)
+    {
+        if (state) m_OnPickUpEvent.Invoke();
+        else m_OnDropEvent.Invoke();
+    }
 }
