@@ -583,15 +583,27 @@ MonoBehaviour:
   colorOfFovMesh: {r: 0.9780209, g: 1, b: 0, a: 0.4392157}
   currentAIBehaviour: 0
   enemyBehaviourVisual: {fileID: 6122268351488517015}
+  detectionLevel: 0
   minimalHearValue: 0
-  primaryAttackDamage: 30
+  meshRenderer: {fileID: 215708393971217566}
+  damageableHitboxes:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  primaryAttackDamage: 40
   primaryAttackHitbox: {fileID: 8403874808052605346}
   primaryAttackCooldown: 1
-  secondaryAttackDamage: 44
+  secondaryAttackDamage: 50
   secondaryAttackHitbox: {fileID: 3610291169604335906}
   secondaryAttackCooldown: 2
+  playHitAnimation: 0
   walkingSoundEmitter: {fileID: 7670162704467452419}
-  currentAction: 0
   onDeathByEletricParticle: {fileID: 0}
   deadLoopParticle: {fileID: 0}
   heardPlayer: 0
@@ -914,6 +926,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a469111881164e14b8fd993cda8200f4, type: 3}
+--- !u!137 &215708393971217566 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 917308250047113844, guid: a469111881164e14b8fd993cda8200f4, type: 3}
+  m_PrefabInstance: {fileID: 1028148214205685482}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &706517752253511937 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: a469111881164e14b8fd993cda8200f4, type: 3}

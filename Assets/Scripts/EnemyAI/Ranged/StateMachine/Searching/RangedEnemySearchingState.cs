@@ -91,7 +91,7 @@ public class RangedEnemySearchingState : RangedEnemyState
     private Coroutine onPlayerLeaveVision_Ref;
     private IEnumerator OnPlayerLeaveVision_Coroutine()
     {
-        iEnemy.navMeshAgent.ResetPath();
+        if (iEnemy.navMeshAgent.isActiveAndEnabled) iEnemy.navMeshAgent.ResetPath();
         float timer = 0;
         while (timer < 1)
         {

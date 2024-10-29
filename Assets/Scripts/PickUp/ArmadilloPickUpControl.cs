@@ -335,10 +335,12 @@ public class ArmadilloPickUpControl : MonoBehaviour
             case PickUpObjectType.Small:
                 Drop();
                 throwForce = camera.transform.forward * mediumObjectThrowForce;
+                throwForce.y *= 0.5f;
                 break;
             case PickUpObjectType.Medium:
                 Drop();
                 throwForce = camera.transform.forward * mediumObjectThrowForce;
+                throwForce.y *= 0.5f;
                 break;
             case PickUpObjectType.Big:
                 Drop();

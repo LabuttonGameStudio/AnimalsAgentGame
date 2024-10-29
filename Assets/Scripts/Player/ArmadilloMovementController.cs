@@ -5,6 +5,11 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 
+public class SpeedMultipler
+{
+    public float value;
+}
+
 [Serializable]
 public class MovementFormStats
 {
@@ -103,6 +108,8 @@ public class ArmadilloMovementController : MonoBehaviour
     [Header("Speed Modifiers")]
     [HideInInspector] public float speedMultiplier = 1;
 
+    public List<SpeedMultipler> speedMultiplerList;
+
     private bool isSprintButtonHeld;
 
     public void OnDrawGizmos()
@@ -117,6 +124,7 @@ public class ArmadilloMovementController : MonoBehaviour
 
     private void Awake()
     {
+        speedMultiplerList = new List<SpeedMultipler>();
         sprintLurkSpeedMultiplier = 1;
         speedMultiplier = 1;
         readyToJump = true;

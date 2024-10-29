@@ -24,6 +24,9 @@ public class EletricPistol : Weapon
         ammoSlider = armadilloWeaponControl.Weaponammoslider;
         weaponType = WeaponType.Zapgun;
         LoadVisual();
+
+        onFireSlow = new SpeedMultipler { value = 0.5f };
+        onReloadSlow = new SpeedMultipler { value = 0.75f };
     }
 
     //----- Stats -----
@@ -43,6 +46,11 @@ public class EletricPistol : Weapon
     private EletricPistolVisual visualHandler;
 
     private bool isReloading;
+
+    //-----Slowness -----
+    private SpeedMultipler onFireSlow;
+
+    private SpeedMultipler onReloadSlow;
 
     //Visual
     #region
@@ -91,7 +99,9 @@ public class EletricPistol : Weapon
     public Coroutine fireCooldown_Ref;
     public IEnumerator FireCooldown_Coroutine()
     {
+        ArmadilloPlayerController.Instance.movementControl.speedMultiplerList.Add(onFireSlow);
         yield return new WaitForSeconds(fireDelay);
+        ArmadilloPlayerController.Instance.movementControl.speedMultiplerList.Remove(onFireSlow);
         isOnCooldown = false;
         fireCooldown_Ref = null;
     }
@@ -136,7 +146,7 @@ public class EletricPistol : Weapon
         foreach (RaycastHit raycastHit in targetsHit)
         {
             //Debug.Log(raycastHit.transform.name);
-            if (raycastHit.transform.TryGetComponent(out IDamageable idamageable))
+            if (raycastHit.collider.TryGetComponent(out IDamageable idamageable))
             {
                 Damage damage = new Damage(unchargedHitDamage, Damage.DamageType.Eletric, true, weaponControl.transform.position);
                 if (raycastHit.distance > damageFallOffStartRange)
@@ -189,9 +199,11 @@ public class EletricPistol : Weapon
     private Coroutine reload_Ref;
     private IEnumerator Reload_Coroutine()
     {
+        ArmadilloPlayerController.Instance.movementControl.speedMultiplerList.Add(onReloadSlow);
         ArmadilloPlayerController.Instance.visualControl.ToggleEletricPistolOverheat(true);
         visualHandler.ToggleReload(true);
         yield return new WaitForSeconds(reloadDuration);
+        ArmadilloPlayerController.Instance.movementControl.speedMultiplerList.Remove(onReloadSlow);
         ArmadilloPlayerController.Instance.visualControl.ToggleEletricPistolOverheat(false);
         visualHandler.ToggleReload(false);
         ReplenishAmmo();
@@ -227,6 +239,7 @@ public class EletricPistol : Weapon
         if(reload_Ref != null)
         {
             weaponControl.StopCoroutine(reload_Ref);
+            ArmadilloPlayerController.Instance.movementControl.speedMultiplerList.Remove(onReloadSlow);
             ArmadilloPlayerController.Instance.visualControl.ToggleEletricPistolOverheat(false);
             visualHandler.ToggleReload(false);
             isReloading = false;

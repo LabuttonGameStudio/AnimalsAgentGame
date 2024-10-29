@@ -48,6 +48,11 @@ public class MeleeEnemyRoamingState : MeleeEnemyState
         {
             iEnemy.StopCoroutine(loopRoamingPath_Ref);
         }
+        if(lookAround_Ref !=null)
+        {
+            iEnemy.StopCoroutine(lookAround_Ref);
+            lookAround_Ref = null;
+        }
     }
 
     public override void OnFixedUpdate()
@@ -55,6 +60,7 @@ public class MeleeEnemyRoamingState : MeleeEnemyState
         
 
     }
+    private Coroutine lookAround_Ref;
     private Coroutine loopRoamingPath_Ref;
     public IEnumerator LoopRoamingPath_Coroutine()
     {
@@ -69,7 +75,9 @@ public class MeleeEnemyRoamingState : MeleeEnemyState
                 {
                     if (iEnemy.TryStartRandomLookAround(iEnemy.aiPathList[iEnemy.currentPathPoint].waitTimeOnPoint, out Coroutine lookAroundcoroutine))
                     {
+                        lookAround_Ref = lookAroundcoroutine;
                         yield return lookAroundcoroutine;
+                        lookAround_Ref = null;
                     }
                 }
                 else
@@ -93,7 +101,9 @@ public class MeleeEnemyRoamingState : MeleeEnemyState
                         {
                             if (iEnemy.TryStartRandomLookAround(iEnemy.aiPathList[iEnemy.currentPathPoint].waitTimeOnPoint, out Coroutine lookAroundcoroutine))
                             {
+                                lookAround_Ref = lookAroundcoroutine;
                                 yield return lookAroundcoroutine;
+                                lookAround_Ref = null;
                             }
                         }
                         else

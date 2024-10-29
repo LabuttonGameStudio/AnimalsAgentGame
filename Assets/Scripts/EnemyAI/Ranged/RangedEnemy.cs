@@ -24,6 +24,8 @@ public class RangedEnemy : IEnemy, IDamageable, ISoundReceiver
     public SandBomb strongAttackProjectile;
 
     public Transform firePivot;
+
+    public DamageableHitbox[] damageableHitboxes;
     #endregion
 
     #region Detection Variables
@@ -32,7 +34,54 @@ public class RangedEnemy : IEnemy, IDamageable, ISoundReceiver
 
     #endregion
 
-    //------
+    #region Visual Variables
+    [Header("Visual")]
+    [SerializeField] private SkinnedMeshRenderer meshRenderer;
+    #endregion
+
+    //-----Base Functions-----
+    #region Base Functions
+    protected override void OnAwake()
+    {
+        enemyRoamingState = new RangedEnemyRoamingState(this);
+        enemyObservingState = new RangedEnemyObservingState(this);
+        enemySearchingState = new RangedEnemySearchingState(this);
+        enemyAttackingState = new RangedEnemyAttackingState(this);
+        currentState = enemyRoamingState;
+        switch (currentAIBehaviour)
+        {
+            case AIBehaviour.Static:
+                isStatic = true;
+                ChangeCurrentState(enemyRoamingState);
+                break;
+            case AIBehaviour.Roaming:
+                ChangeCurrentState(enemyRoamingState);
+                break;
+            case AIBehaviour.Observing:
+                ChangeCurrentState(enemyObservingState);
+                break;
+            case AIBehaviour.Searching:
+                ChangeCurrentState(enemySearchingState);
+                break;
+            case AIBehaviour.Attacking:
+                ChangeCurrentState(enemyAttackingState);
+                break;
+        }
+    }
+    protected override void OnStart()
+    {
+        foreach (DamageableHitbox hitbox in damageableHitboxes)
+        {
+            hitbox.OnTakeDamage.AddListener(TakeDamage);
+        }
+        currentState.OnEnterState();
+    }
+    protected override void OnFixedUpdate()
+    {
+        currentState.OnFixedUpdate();
+        currentState.OnVisibilityUpdate();
+    }
+    #endregion
 
     //-----Action Update-----
     #region Action Update Functions
@@ -69,6 +118,11 @@ public class RangedEnemy : IEnemy, IDamageable, ISoundReceiver
             animator.transform.parent = animator.transform.parent.parent;
             animator.SetBool("isWalking",false);
             animator.SetTrigger("isDefeated");
+            foreach(DamageableHitbox hitbox in damageableHitboxes)
+            {
+                hitbox._Collider.enabled = false;
+                hitbox._IsDead = true;
+            }
             gameObject.SetActive(false);
         }
         else if (damage.wasMadeByPlayer)
@@ -82,51 +136,22 @@ public class RangedEnemy : IEnemy, IDamageable, ISoundReceiver
                     break;
             }
         }
+        if(onTakeDamageVisual_Ref != null)StopCoroutine(onTakeDamageVisual_Ref);
+        onTakeDamageVisual_Ref = EnemyMasterControl.Instance.StartCoroutine(OnTakeDamageVisual_Coroutine());
     }
 
     bool IDamageable.isDead()
     {
         return isDead;
     }
-    #endregion
 
-    //-----Base Functions-----
-    #region Base Functions
-    protected override void OnAwake()
+    private Coroutine onTakeDamageVisual_Ref;
+    private IEnumerator OnTakeDamageVisual_Coroutine()
     {
-        enemyRoamingState = new RangedEnemyRoamingState(this);
-        enemyObservingState = new RangedEnemyObservingState(this);
-        enemySearchingState = new RangedEnemySearchingState(this);
-        enemyAttackingState = new RangedEnemyAttackingState(this);
-        currentState = enemyRoamingState;
-        switch (currentAIBehaviour)
-        {
-            case AIBehaviour.Static:
-                isStatic = true;
-                ChangeCurrentState(enemyRoamingState);
-                break;
-            case AIBehaviour.Roaming:
-                ChangeCurrentState(enemyRoamingState);
-                break;
-            case AIBehaviour.Observing:
-                ChangeCurrentState(enemyObservingState);
-                break;
-            case AIBehaviour.Searching:
-                ChangeCurrentState(enemySearchingState);
-                break;
-            case AIBehaviour.Attacking:
-                ChangeCurrentState(enemyAttackingState);
-                break;
-        }
-    }
-    protected override void OnStart()
-    {
-        currentState.OnEnterState();
-    }
-    protected override void OnFixedUpdate()
-    {
-        currentState.OnFixedUpdate();
-        currentState.OnVisibilityUpdate();
+        meshRenderer.sharedMaterial = EnemyMasterControl.Instance.onHitRangedEnemyMat;
+        yield return new WaitForSeconds(0.1f);
+        meshRenderer.sharedMaterial = EnemyMasterControl.Instance.defaultRangedEnemyMat;
+        onTakeDamageVisual_Ref = null;
     }
     #endregion
 

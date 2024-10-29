@@ -14,6 +14,7 @@ public class MeleeEnemyAttackingState : MeleeEnemyState
 
     public override void OnEnterState()
     {
+
         iEnemy.enemyBehaviourVisual.ChangeVisualState(AIBehaviourEnums.AIBehaviour.Attacking);
         iEnemy.navMeshAgent.isStopped = false;
         iEnemy.navMeshAgent.autoBraking = false;
@@ -51,7 +52,7 @@ public class MeleeEnemyAttackingState : MeleeEnemyState
             iEnemy.playHitAnimation = true;
             iEnemy.animator.SetBool("isWalking", true);
             Move(desiredDistanceFromPlayer);
-            if (GetDistanceFromPlayer() < desiredDistanceFromPlayer+0.25f)
+            if (GetDistanceFromPlayer() < desiredDistanceFromPlayer + 0.25f)
             {
                 StopMovingToPlayer();
                 StartAttack();
@@ -69,16 +70,16 @@ public class MeleeEnemyAttackingState : MeleeEnemyState
         target = target.normalized;
         target = target * distanceFromPlayer;
         target += ArmadilloPlayerController.Instance.transform.position;
-        if (NavMesh.SamplePosition(target, out NavMeshHit navMeshHit, 2f, NavMesh.AllAreas))
+        NavMeshHit navMeshHit;
+        if (NavMesh.SamplePosition(target, out navMeshHit,1f, NavMesh.AllAreas) && iEnemy.TrySetNextDestination(navMeshHit.position))
         {
-            iEnemy.TrySetNextDestination(navMeshHit.position);
+            iEnemy.animator.SetBool("isWalking", true);
+            iEnemy.ToggleShield(false);
         }
         else
         {
-            if (NavMesh.SamplePosition(target, out NavMeshHit navMeshHit2, 5f, NavMesh.AllAreas))
-            {
-                iEnemy.TrySetNextDestination(navMeshHit2.position);
-            }
+            iEnemy.animator.SetBool("isWalking", false);
+            iEnemy.ToggleShield(true);
         }
     }
     private float GetDistanceFromPlayer()
@@ -127,11 +128,12 @@ public class MeleeEnemyAttackingState : MeleeEnemyState
             default:
             case 0:
             case 1:
-                return 2;
+                return 3;
             case 2:
                 return 5;
         }
     }
+
     private Coroutine attack_Coroutine;
     private IEnumerator PrimaryAttack_Coroutine()
     {
@@ -165,15 +167,15 @@ public class MeleeEnemyAttackingState : MeleeEnemyState
         attackDirection.y = 0;
         attackDirection.Normalize();
         iEnemy.secondaryAttackHitbox.EnableHitBox();
-        yield return new WaitForSeconds(0.125f);
         iEnemy.rb.isKinematic = false;
+        yield return new WaitForSeconds(0.125f);
         iEnemy.rb.AddForce(attackDirection * 30f, ForceMode.VelocityChange);
         Damage damage = new Damage(iEnemy.secondaryAttackDamage, Damage.DamageType.Blunt, false, iEnemy.transform.position);
         timer = 0;
         while (timer < 1f)
         {
             iEnemy.secondaryAttackHitbox.DealDamageToThingsInside(damage);
-            timer += Time.fixedDeltaTime;   
+            timer += Time.fixedDeltaTime;
             yield return new WaitForFixedUpdate();
         }
         iEnemy.secondaryAttackHitbox.DisableHitBox();
@@ -191,20 +193,20 @@ public class MeleeEnemyAttackingState : MeleeEnemyState
     private Coroutine movingAwayFromPlayer_Ref;
     private IEnumerator MovingAwayFromPlayer_Coroutine()
     {
-        float timer=0;
-        float duration=0;
+        float timer = 0;
+        float duration = 0;
         switch (attackCycle)
         {
             case 0:
             case 1:
-                duration = iEnemy.primaryAttackCooldown;
+                duration = iEnemy.primaryAttackCooldown + Random.Range(0f,3f);
                 break;
             case 2:
-                duration = iEnemy.secondaryAttackCooldown;
+                duration = iEnemy.secondaryAttackCooldown + Random.Range(0f, 3f);
                 break;
         }
         iEnemy.playHitAnimation = true;
-        while (timer<duration)
+        while (timer < duration)
         {
             Move(7.5f);
             iEnemy.animator.SetBool("isWalking", !iEnemy.CheckForProximityOfPoint());

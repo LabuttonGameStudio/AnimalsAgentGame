@@ -23,6 +23,9 @@ public class WaterGun : Weapon
         ammoSlider = armadilloWeaponControl.Weaponammoslider;
         weaponType = WeaponType.Watergun;
         LoadVisual();
+
+        onFireSlow = new SpeedMultipler { value = 0.5f };
+        onReloadSlow = new SpeedMultipler { value = 0.75f };
     }
 
 
@@ -40,6 +43,10 @@ public class WaterGun : Weapon
     //----- Visual -----
     private WaterGunVisual visualHandler;
 
+    //-----Slowness -----
+    private SpeedMultipler onFireSlow;
+
+    private SpeedMultipler onReloadSlow;
     //Visual
     #region
     private void LoadVisual()
@@ -122,6 +129,7 @@ public class WaterGun : Weapon
         {
             if (fire_Ref == null)
             {
+                ArmadilloPlayerController.Instance.movementControl.speedMultiplerList.Add(onFireSlow);
                 fire_Ref = weaponControl.StartCoroutine(Fire_Coroutine());
             }
         }
@@ -129,6 +137,7 @@ public class WaterGun : Weapon
         {
             if (fire_Ref != null)
             {
+                ArmadilloPlayerController.Instance.movementControl.speedMultiplerList.Remove(onFireSlow);
                 weaponControl.StopCoroutine(fire_Ref);
                 fire_Ref = null;
             }
@@ -214,9 +223,12 @@ public class WaterGun : Weapon
     public Coroutine reloadTimer_Ref;
     public IEnumerator ReloadTimer_Coroutine()
     {
+        ToggleFire(false);
+        ArmadilloPlayerController.Instance.movementControl.speedMultiplerList.Add(onReloadSlow);
         ArmadilloPlayerController.Instance.visualControl.ReloadWaterGun();
         visualHandler.OnReload();
         yield return new WaitForSeconds(3.563f + 0.25f);
+        ArmadilloPlayerController.Instance.movementControl.speedMultiplerList.Remove(onReloadSlow);
         if (ammoReserveAmount >= maxAmmoAmount)
         {
             int ammoDif = maxAmmoAmount - currentAmmoAmount;
@@ -242,6 +254,7 @@ public class WaterGun : Weapon
         visualHandler.ResetVisuals();
         if (reloadTimer_Ref != null)
         {
+            ArmadilloPlayerController.Instance.movementControl.speedMultiplerList.Remove(onReloadSlow);
             weaponControl.StopCoroutine(reloadTimer_Ref);
             reloadTimer_Ref = null;
         }

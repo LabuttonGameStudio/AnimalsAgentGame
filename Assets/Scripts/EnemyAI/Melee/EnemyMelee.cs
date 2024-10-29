@@ -12,6 +12,12 @@ public class EnemyMelee : IEnemy, IDamageable, ISoundReceiver
     [Tooltip("Tempo necessario para ir ao estado mais alto de detecção")] readonly protected float timeToMaxDetect = 0.5f;
     #endregion
 
+    //Visual Variables
+    #region Visual Variables
+    [Header("Visual")]
+    [SerializeField] private SkinnedMeshRenderer meshRenderer;
+    #endregion
+
     //State Machine Variables
     #region StateMachine Variables
 
@@ -28,18 +34,27 @@ public class EnemyMelee : IEnemy, IDamageable, ISoundReceiver
     //Combat Variables
     #region Combat Variables
     [Header("Combat")]
+
+    [Header("Shield")]
+    public GameObject shieldGameObject;
+    [HideInInspector] public bool isShieldActive;
+
+    [Header("Hitbox")]
+    public DamageableHitbox[] damageableHitboxes;
+
     [Header("Primary Attack")]
     [SerializeField]
     public float primaryAttackDamage;
     public EnemyMeleeAttackHitBox primaryAttackHitbox;
     public float primaryAttackCooldown;
+
     [Header("Secondary Attack")]
     [SerializeField]
     public float secondaryAttackDamage;
     public EnemyMeleeAttackHitBox secondaryAttackHitbox;
     public float secondaryAttackCooldown;
 
-    [HideInInspector]public bool playHitAnimation;
+    [HideInInspector] public bool playHitAnimation;
     #endregion
 
     //Sfx Variables
@@ -65,7 +80,7 @@ public class EnemyMelee : IEnemy, IDamageable, ISoundReceiver
         enemyObservingState = new MeleeEnemyObservingState(this);
         enemySearchingState = new MeleeEnemySearchingState(this);
         enemyAttackingState = new MeleeEnemyAttackingState(this);
-        switch(currentAIBehaviour)
+        switch (currentAIBehaviour)
         {
             case AIBehaviour.Static:
             case AIBehaviour.Roaming:
@@ -73,7 +88,7 @@ public class EnemyMelee : IEnemy, IDamageable, ISoundReceiver
                 break;
             case AIBehaviour.Observing:
                 currentState = enemyObservingState;
-                break;  
+                break;
             case AIBehaviour.Searching:
                 currentState = enemySearchingState;
                 break;
@@ -84,6 +99,11 @@ public class EnemyMelee : IEnemy, IDamageable, ISoundReceiver
     }
     protected override void OnStart()
     {
+        foreach (DamageableHitbox hitbox in damageableHitboxes)
+        {
+            hitbox.OnTakeDamage.AddListener(TakeDamage);
+        }
+        meshRenderer.sharedMaterial = EnemyMasterControl.Instance.defaultMeleeEnemyMat;
         primaryAttackHitbox.aiController = this;
         secondaryAttackHitbox.aiController = this;
         currentState.OnEnterState();
@@ -123,9 +143,15 @@ public class EnemyMelee : IEnemy, IDamageable, ISoundReceiver
     #region Take Damage Functions
     public void TakeDamage(Damage damage)
     {
+        if (isShieldActive) return;
         currentHp -= damage.damageAmount;
         if (currentHp <= 0 && isDead == false)
         {
+            foreach (DamageableHitbox hitbox in damageableHitboxes)
+            {
+                hitbox._Collider.enabled = false;
+                hitbox._IsDead = true;
+            }
             isDead = true;
             animator.transform.parent = animator.transform.parent.parent;
             animator.SetTrigger("isDead");
@@ -137,30 +163,29 @@ public class EnemyMelee : IEnemy, IDamageable, ISoundReceiver
             }
             deadLoopParticle.Play();
             EnemyMasterControl.Instance.StartCoroutine(DeSpawnCoroutine(animator.gameObject, deadLoopParticle));
+            shieldGameObject.SetActive(false);
+            if (onDamageTakenVisual_Ref != null) StopCoroutine(onDamageTakenVisual_Ref);
+            onDamageTakenVisual_Ref = EnemyMasterControl.Instance.StartCoroutine(OnDamageTakenVisual_Coroutine());
             gameObject.SetActive(false);
-            return;
         }
-        if (playHitAnimation) animator.SetTrigger("isHit");
-        OnDamageTaken(damage);
+        else
+        {
+            if (playHitAnimation) animator.SetTrigger("isHit");
+            if (onDamageTaken_Ref == null)
+            {
+                onDamageTaken_Ref = StartCoroutine(OnDamageTaken_Coroutine(damage));
+            }
+            if (onDamageTakenVisual_Ref != null) StopCoroutine(onDamageTakenVisual_Ref);
+            onDamageTakenVisual_Ref = EnemyMasterControl.Instance.StartCoroutine(OnDamageTakenVisual_Coroutine());
+        }
     }
     bool IDamageable.isDead()
     {
         return isDead;
     }
-    private void OnDamageTaken(Damage damage)
-    {
-        if (currentAIBehaviour != AIBehaviour.Attacking)
-        {
-            if (onDamageTaken_Ref == null)
-            {
-                onDamageTaken_Ref = StartCoroutine(OnDamageTaken_Coroutine(damage));
-            }
-        }
-    }
     private Coroutine onDamageTaken_Ref;
     private IEnumerator OnDamageTaken_Coroutine(Damage damage)
     {
-
         yield return new WaitForSeconds(0.25f);
         if (currentAIBehaviour == AIBehaviour.Attacking || currentAIBehaviour == AIBehaviour.Searching) yield break;
         lastKnownPlayerPos = damage.originPoint;
@@ -168,6 +193,13 @@ public class EnemyMelee : IEnemy, IDamageable, ISoundReceiver
         SetDetectionLevel(searchingStateBreakPoint);
         StopLookAround();
         onDamageTaken_Ref = null;
+    }
+    private Coroutine onDamageTakenVisual_Ref;
+    private IEnumerator OnDamageTakenVisual_Coroutine()
+    {
+        meshRenderer.sharedMaterial = EnemyMasterControl.Instance.onHitMeleeEnemyMat;
+        yield return new WaitForSeconds(0.1f);
+        meshRenderer.sharedMaterial = EnemyMasterControl.Instance.defaultMeleeEnemyMat;
     }
     #endregion
 
@@ -286,5 +318,14 @@ public class EnemyMelee : IEnemy, IDamageable, ISoundReceiver
             }
         }
     }
-    #endregion 
+    #endregion
+
+    //Shield Functions
+    #region Shield Functions
+    public void ToggleShield(bool toggle)
+    {
+        isShieldActive = toggle;
+        shieldGameObject.SetActive(toggle);
+    }
+    #endregion
 }

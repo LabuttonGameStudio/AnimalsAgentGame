@@ -65,6 +65,11 @@ public class ArmadilloDefaultState : MovementState
 
             movementApplied = movementApplied * movementCtrl.speedMultiplier;
 
+            foreach(SpeedMultipler speedMultipler in movementCtrl.speedMultiplerList)
+            {
+                movementApplied *= speedMultipler.value;
+            }
+
             //movementApplied = Vector3.Scale(sprintMult,movementApplied);
             movementCtrl.rb.AddForce(movementApplied, ForceMode.Acceleration);
         }

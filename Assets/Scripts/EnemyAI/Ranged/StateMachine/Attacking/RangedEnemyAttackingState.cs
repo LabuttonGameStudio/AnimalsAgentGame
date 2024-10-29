@@ -47,10 +47,10 @@ public class RangedEnemyAttackingState : RangedEnemyState
             for (int i = 0; i < 2; i++)
             {
                 yield return WeakAttack_Coroutine();
-                yield return iEnemy.LerpLookAt_Coroutine(ArmadilloPlayerController.Instance.transform, 2, 6 - 2.375f / 2);
+                yield return iEnemy.LerpLookAt_Coroutine(ArmadilloPlayerController.Instance.transform, 2, Random.Range(0f, 3f) + 6 - 2.375f / 2);
             }
             yield return StrongAttack_Coroutine();
-            yield return iEnemy.LerpLookAt_Coroutine(ArmadilloPlayerController.Instance.transform, 2, 1);
+            yield return iEnemy.LerpLookAt_Coroutine(ArmadilloPlayerController.Instance.transform, 2, Random.Range(0f, 2f) + 1);
         }
     }
 
@@ -60,7 +60,7 @@ public class RangedEnemyAttackingState : RangedEnemyState
         yield return new WaitForSeconds(2.375f / 2);
         iEnemy.weakAttackLaser.enabled = true;
         float timer = 0;
-        float trackDuration = 3f;
+        float trackDuration = 1.75f;
         Rigidbody playerRb = ArmadilloPlayerController.Instance.movementControl.rb;
         iEnemy.weakAttackLaser.ResetLaser();
         iEnemy.weakAttackLaser.gameObject.SetActive(true);

@@ -20,6 +20,17 @@ public class EnemyMasterControl : MonoBehaviour
     private float m_actionTickInterval = 0f;
 
     private Queue<NextNavmeshPointCallParameters> SetNextNavmeshPointCall_Queue = new Queue<NextNavmeshPointCallParameters>();
+    [Header("Melee Enemy")]
+    [SerializeField] public Material defaultMeleeEnemyMat;
+    [SerializeField] public Material onHitMeleeEnemyMat;
+
+    [Header("Ranged Enemy")]
+    [SerializeField] public Material defaultRangedEnemyMat;
+    [SerializeField] public Material onHitRangedEnemyMat;
+
+    [Header("Bomber Enemy")]
+    [SerializeField] public Material defaultBomberEnemyMat;
+    [SerializeField] public Material onHitBomberEnemyMat;
 
     private void Awake()
     {

@@ -7,6 +7,6 @@ public class RotateOverTime : MonoBehaviour
     [SerializeField] private Vector3 rotation;
     private void Update()
     {
-        transform.Rotate(transform.rotation.eulerAngles+rotation*Time.deltaTime);
+        transform.Rotate(rotation*Time.deltaTime);
     }
 }
