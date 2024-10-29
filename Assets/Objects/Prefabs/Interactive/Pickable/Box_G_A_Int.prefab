@@ -162,6 +162,39 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   objectSize: 0.94
   pickUpObjectType: 1
-  objectName: Caixa
-  onGroundDescription: Pegar
-  pickedUpDescription: Soltar
+  objectName:
+    m_TableReference:
+      m_TableCollectionName: GUID:924d69f0ede24814f90ae60e5f58592f
+    m_TableEntryReference:
+      m_KeyId: 18082766848
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  onGroundDescription:
+    m_TableReference:
+      m_TableCollectionName: GUID:956f2ae202025314e84aa6cc9a64e86b
+    m_TableEntryReference:
+      m_KeyId: 8909824000
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  pickedUpDescription:
+    m_TableReference:
+      m_TableCollectionName: GUID:956f2ae202025314e84aa6cc9a64e86b
+    m_TableEntryReference:
+      m_KeyId: 623908036608
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  onPickUpEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  onDropEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  references:
+    version: 2
+    RefIds: []
