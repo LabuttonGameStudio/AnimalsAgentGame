@@ -401,8 +401,11 @@ public class ArmadilloWeaponControl : MonoBehaviour
         Weapon weapon;
         switch (weaponType)
         {
-            case WeaponType.Watergun:
             default:
+            case WeaponType.Zapgun:
+                weapon = eletricPistol;
+                break;
+            case WeaponType.Watergun:
                 weapon = waterGun;
                 break;
             case WeaponType.Pendrivegun:

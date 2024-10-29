@@ -99,8 +99,13 @@ public class EletricPistol : Weapon
     public Coroutine fireCooldown_Ref;
     public IEnumerator FireCooldown_Coroutine()
     {
-        ArmadilloPlayerController.Instance.movementControl.speedMultiplerList.Add(onFireSlow);
+        ArmadilloMovementController movementControl = ArmadilloPlayerController.Instance.movementControl;
+        movementControl.speedMultiplerList.Add(onFireSlow);
+        movementControl.isFiring = true;
+        movementControl.isSprintButtonHeld = false;
+        movementControl.CancelSprint();
         yield return new WaitForSeconds(fireDelay);
+        movementControl.isFiring = false;
         ArmadilloPlayerController.Instance.movementControl.speedMultiplerList.Remove(onFireSlow);
         isOnCooldown = false;
         fireCooldown_Ref = null;
@@ -235,8 +240,10 @@ public class EletricPistol : Weapon
         isOnCooldown = false;
         fireCooldown_Ref = null;
         ArmadilloPlayerController.Instance.visualControl.ToggleEletricPistolCharge(false);
+        ArmadilloPlayerController.Instance.movementControl.isFiring = false;
+        ArmadilloPlayerController.Instance.movementControl.SprintCheck();
 
-        if(reload_Ref != null)
+        if (reload_Ref != null)
         {
             weaponControl.StopCoroutine(reload_Ref);
             ArmadilloPlayerController.Instance.movementControl.speedMultiplerList.Remove(onReloadSlow);

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using static UnityEngine.Rendering.DebugUI;
 
 
 public class SpeedMultipler
@@ -110,8 +111,8 @@ public class ArmadilloMovementController : MonoBehaviour
 
     public List<SpeedMultipler> speedMultiplerList;
 
-    private bool isSprintButtonHeld;
-
+    [HideInInspector] public bool isSprintButtonHeld;
+    [HideInInspector]public bool isFiring;
     public void OnDrawGizmos()
     {
         //Check for grounded
@@ -232,10 +233,16 @@ public class ArmadilloMovementController : MonoBehaviour
         SprintCheck();
         CheckOnUpdateOfMovementType(currentMovementType);
     }
-
-    private void SprintCheck()
+    public void CancelSprint()
     {
-        if (movementInputVector.y >= 0.25 && isSprintButtonHeld)
+        MovementType currentMovementType = this.currentMovementType;
+        isSprintButtonHeld = false;
+        SprintCheck();
+        CheckOnUpdateOfMovementType(currentMovementType);
+    }
+    public void SprintCheck()
+    {
+        if (movementInputVector.y >= 0.25 && isSprintButtonHeld && !isFiring)
         {
             ArmadilloPlayerController.Instance.audioControl.ChangeCurrentMovingForm(MovementType.Sprinting);
             sprintLurkSpeedMultiplier = GetCurrentFormStats().sprintSpeedMultiplier;
@@ -246,6 +253,7 @@ public class ArmadilloMovementController : MonoBehaviour
         {
             if (currentMovementType == MovementType.Sprinting)
             {
+                Debug.Log("CancelSprint");
                 sprintLurkSpeedMultiplier = 1;
                 ArmadilloPlayerController.Instance.audioControl.ChangeCurrentMovingForm(MovementType.Default);
                 currentMovementType = MovementType.Default;

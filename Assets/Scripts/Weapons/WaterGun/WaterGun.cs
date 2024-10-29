@@ -129,7 +129,11 @@ public class WaterGun : Weapon
         {
             if (fire_Ref == null)
             {
-                ArmadilloPlayerController.Instance.movementControl.speedMultiplerList.Add(onFireSlow);
+                ArmadilloMovementController movementControl = ArmadilloPlayerController.Instance.movementControl;
+                movementControl.speedMultiplerList.Add(onFireSlow);
+                movementControl.isFiring = true;
+                movementControl.isSprintButtonHeld = false;
+                movementControl.CancelSprint();
                 fire_Ref = weaponControl.StartCoroutine(Fire_Coroutine());
             }
         }
@@ -137,7 +141,9 @@ public class WaterGun : Weapon
         {
             if (fire_Ref != null)
             {
-                ArmadilloPlayerController.Instance.movementControl.speedMultiplerList.Remove(onFireSlow);
+                ArmadilloMovementController movementControl = ArmadilloPlayerController.Instance.movementControl;
+                movementControl.speedMultiplerList.Remove(onFireSlow);
+                movementControl.isFiring = false;
                 weaponControl.StopCoroutine(fire_Ref);
                 fire_Ref = null;
             }
@@ -252,6 +258,8 @@ public class WaterGun : Weapon
     {
         ToggleFire(false);
         visualHandler.ResetVisuals();
+        ArmadilloPlayerController.Instance.movementControl.isFiring = false;
+        ArmadilloPlayerController.Instance.movementControl.SprintCheck();
         if (reloadTimer_Ref != null)
         {
             ArmadilloPlayerController.Instance.movementControl.speedMultiplerList.Remove(onReloadSlow);

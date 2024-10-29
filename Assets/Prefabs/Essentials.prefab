@@ -18461,6 +18461,13 @@ MonoBehaviour:
   onHitRangedEnemyMat: {fileID: 2100000, guid: 782fdfc553174114cb9e131b2f0a081b, type: 2}
   defaultBomberEnemyMat: {fileID: 2100000, guid: abe3bfcb2f5be5446aad80ec915974fc, type: 2}
   onHitBomberEnemyMat: {fileID: 2100000, guid: 8a7d864580217644e9dd08b8db2dc98e, type: 2}
+  eletricPistol_CollectablePrefab: {fileID: 5470285983991631634, guid: 739b43ba8c7b7d04691ebb20e05a4509, type: 3}
+  minEletricPistolDropCollectable: 4
+  maxEletricPistolDropCollectable: 8
+  waterGun_CollectablePrefab: {fileID: 1724013657822890875, guid: c12a88b0c31a1fa4ca759db6867314e4, type: 3}
+  minWaterGunDropCollectable: 20
+  maxWaterGunDropCollectable: 30
+  Hp_CollectablePrefab: {fileID: -3442446552082645918, guid: 29667ba2aaf576545b4e9998221af85a, type: 3}
 --- !u!1 &3860130320773771220
 GameObject:
   m_ObjectHideFlags: 0
@@ -22338,6 +22345,8 @@ MonoBehaviour:
   isOnSlope: 0
   ladderSpeed: 3
   speedMultiplier: 1
+  isSprintButtonHeld: 0
+  isFiring: 0
 --- !u!114 &5827398360590622979
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22466,9 +22475,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   holdObjectPhysicMaterial: {fileID: 13400000, guid: 326b4fdde1b9213449204c2a41f44c99, type: 2}
   mediumObjectPickUpForce: 3000
-  smallObjectThrowForce: 2500
-  mediumObjectThrowForce: 2500
-  bigObjectThrowForce: 2500
+  smallObjectThrowForce: 2000
+  mediumObjectThrowForce: 2000
+  bigObjectThrowForce: 2000
 --- !u!114 &3242636103172020492
 MonoBehaviour:
   m_ObjectHideFlags: 0

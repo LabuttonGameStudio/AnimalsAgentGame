@@ -32,6 +32,21 @@ public class EnemyMasterControl : MonoBehaviour
     [SerializeField] public Material defaultBomberEnemyMat;
     [SerializeField] public Material onHitBomberEnemyMat;
 
+    [Header("Drops")]
+    [Header("Eletric Pistol")]
+    [SerializeField] public EletricPistol_Collectable eletricPistol_CollectablePrefab;
+    [SerializeField] private int minEletricPistolDropCollectable;
+    [SerializeField] private int maxEletricPistolDropCollectable;
+
+    [Header("Water Gun")]
+    [SerializeField] public WaterGun_Collectable waterGun_CollectablePrefab;
+
+    [SerializeField] private int minWaterGunDropCollectable;
+    [SerializeField] private int maxWaterGunDropCollectable;
+
+    [Header("Water Gun")]
+    [SerializeField] public HP_Collectable Hp_CollectablePrefab;
+
     private void Awake()
     {
         Instance = this;
