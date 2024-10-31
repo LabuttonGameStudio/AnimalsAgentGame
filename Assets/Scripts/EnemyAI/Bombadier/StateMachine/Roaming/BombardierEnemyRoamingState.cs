@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class BombardierEnemyRoamingState : BombardierEnemyState
@@ -63,20 +62,13 @@ public class BombardierEnemyRoamingState : BombardierEnemyState
     {
         if (iEnemy.TrySetNextDestination(iEnemy.aiPathList[iEnemy.currentPathPoint].transformOfPathPoint.position))
         {
+            iEnemy.animator.SetBool("isWalking", true);
             yield return iEnemy.RoamingWaitToReachNextPoint();
+            iEnemy.animator.SetBool("isWalking", false);
             if (iEnemy.aiPathList[iEnemy.currentPathPoint].waitTimeOnPoint > 0)
             {
-                if (iEnemy.aiPathList[iEnemy.currentPathPoint].lookAroundOnPoint)
-                {
-                    if (iEnemy.TryStartRandomLookAround(iEnemy.aiPathList[iEnemy.currentPathPoint].waitTimeOnPoint, out Coroutine lookAroundcoroutine))
-                    {
-                        yield return lookAroundcoroutine;
-                    }
-                }
-                else
-                {
-                    yield return new WaitForSeconds(iEnemy.aiPathList[iEnemy.currentPathPoint].waitTimeOnPoint);
-                }
+                yield return new WaitForSeconds(iEnemy.aiPathList[iEnemy.currentPathPoint].waitTimeOnPoint);
+
             }
         }
         while (true)
@@ -87,24 +79,16 @@ public class BombardierEnemyRoamingState : BombardierEnemyState
                 {
                     iEnemy.animator.SetBool("isWalking", true);
                     yield return iEnemy.RoamingWaitToReachNextPoint();
+                    iEnemy.animator.SetBool("isWalking", false);
                     if (iEnemy.aiPathList[iEnemy.currentPathPoint].waitTimeOnPoint > 0)
                     {
-                        if (iEnemy.aiPathList[iEnemy.currentPathPoint].lookAroundOnPoint)
-                        {
-                            if (iEnemy.TryStartRandomLookAround(iEnemy.aiPathList[iEnemy.currentPathPoint].waitTimeOnPoint, out Coroutine lookAroundcoroutine))
-                            {
-                                yield return lookAroundcoroutine;
-                            }
-                        }
-                        else
-                        {
-                            yield return new WaitForSeconds(iEnemy.aiPathList[iEnemy.currentPathPoint].waitTimeOnPoint);
-                        }
+                        yield return new WaitForSeconds(iEnemy.aiPathList[iEnemy.currentPathPoint].waitTimeOnPoint);
                     }
                 }
             }
             else
             {
+                iEnemy.animator.SetBool("isWalking", false);
                 loopRoamingPath_Ref = null;
                 iEnemy.isStatic = true;
                 yield break;

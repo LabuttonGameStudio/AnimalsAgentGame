@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -84,7 +83,7 @@ public class BombardierEnemySearchingState : BombardierEnemyState
     {
         while (true)
         {
-            iEnemy.LerpLookAt(iEnemy.lastKnownPlayerPos, 1);
+            iEnemy.TrySetNextDestination(new Vector3(iEnemy.lastKnownPlayerPos.x, iEnemy.transform.position.y, iEnemy.lastKnownPlayerPos.z));
             yield return new WaitForFixedUpdate();
         }
     }
@@ -100,6 +99,7 @@ public class BombardierEnemySearchingState : BombardierEnemyState
             yield return null;
         }
         Vector3 startPos = iEnemy.lastKnownPlayerPos;
+        startPos.y = iEnemy.transform.position.y;
 
         for (int i = 0; i <= 3; i++)
         {

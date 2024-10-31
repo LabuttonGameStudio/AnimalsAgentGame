@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class BombardierEnemyObservingState : BombardierEnemyState
@@ -19,7 +18,7 @@ public class BombardierEnemyObservingState : BombardierEnemyState
         iEnemy.currentAIBehaviour = AIBehaviourEnums.AIBehaviour.Observing;
         iEnemy.enemyBehaviourVisual.ChangeVisualState(AIBehaviourEnums.AIBehaviour.Observing);
         if (iEnemy.navMeshAgent.isActiveAndEnabled) iEnemy.navMeshAgent.ResetPath();
-        iEnemy.animator.SetBool("isWalking", false);
+        iEnemy.animator.SetBool("isWalking", true);
         if (onPlayerEnterVision_Ref != null)
         {
             iEnemy.StopCoroutine(onPlayerEnterVision_Ref);
@@ -82,18 +81,19 @@ public class BombardierEnemyObservingState : BombardierEnemyState
     {
         while (true)
         {
-            iEnemy.LerpLookAt(iEnemy.lastKnownPlayerPos, 1);
+            iEnemy.TrySetNextDestination(new Vector3(iEnemy.lastKnownPlayerPos.x,iEnemy.transform.position.y, iEnemy.lastKnownPlayerPos.z));
             yield return new WaitForFixedUpdate();
         }
     }
     private Coroutine onPlayerLeaveVision_Ref;
     private IEnumerator OnPlayerLeaveVision_Coroutine()
     {
-        yield return new WaitForSeconds(2);
-        if (iEnemy.TryStartRandomLookAround(3, out Coroutine lookAroundCoroutine))
+        if(iEnemy.TrySetNextDestination(new Vector3(iEnemy.lastKnownPlayerPos.x, iEnemy.transform.position.y, iEnemy.lastKnownPlayerPos.z)))
         {
-            yield return lookAroundCoroutine;
+            yield return iEnemy.RoamingWaitToReachNextPoint();
         }
+        iEnemy.animator.SetBool("isWalking", false);
+        yield return new WaitForSeconds(2);
         onPlayerLeaveVision_Ref = null;
         iEnemy.detectionLevel = 0;
         iEnemy.ChangeCurrentState(iEnemy.enemyRoamingState);

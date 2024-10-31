@@ -192,4 +192,38 @@ public class EnemyBombardier  : IEnemy, IDamageable
         }
     }
     #endregion
+
+    //----- Check For Los Unique For Flying -----
+    #region Check for Los
+    public new float CheckForPlayerLOS()
+    {
+        if (CheckForLOS(ArmadilloPlayerController.Instance.gameObject)) return 1;
+        else return 0;
+    }
+    public new bool CheckForLOS(GameObject objectLooked)
+    {
+        Vector3 origin = eyeTransform.position;
+        Vector3 destination = objectLooked.transform.position;
+        Vector3 direction = destination - origin;
+
+        if (Vector3.Distance(origin, destination) > viewDistance) return false;
+        float deltaAngle = Vector3.Angle(direction, eyeTransform.forward);
+        if (deltaAngle > fieldOfView) return false;
+
+        if (Physics.Linecast(origin, destination, out RaycastHit hitInfo, visionBlockLayers, QueryTriggerInteraction.Ignore))
+        {
+            if (hitInfo.collider.gameObject != objectLooked) return false;
+        }
+        return true;
+    }
+
+    public new IEnumerator RoamingWaitToReachNextPoint()
+    {
+        while (true)
+        {
+            if (CheckForProximityOfPoint()) yield break;
+            yield return new WaitForFixedUpdate();
+        }
+    }
+    #endregion
 }
