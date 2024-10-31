@@ -21,8 +21,8 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: MM_BossWorm_Body
-  m_Shader: {fileID: -6465566751694194690, guid: 7402d82cadd6e7049ad60db0e7452fee, type: 3}
-  m_Parent: {fileID: 2100000, guid: bc4be503dc9ef1647ad5e4456dba189c, type: 2}
+  m_Shader: {fileID: -6465566751694194690, guid: b6312a07b780c054f91dbbbfa76a9f7f, type: 3}
+  m_Parent: {fileID: 2100000, guid: 1706e097d9538404ea2b67de8e36a0e1, type: 2}
   m_ModifiedSerializedProperties: 2
   m_ValidKeywords: []
   m_InvalidKeywords: []
@@ -45,6 +45,10 @@ Material:
         m_Texture: {fileID: 2800000, guid: a4b57210abaa7b643bfd67887b1698c7, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _Emissive_Tex:
+        m_Texture: {fileID: 2800000, guid: a4b57210abaa7b643bfd67887b1698c7, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _MaskMap:
         m_Texture: {fileID: 2800000, guid: 9cf99555937dfb345a3362575111ecdc, type: 3}
         m_Scale: {x: 1, y: 1}
@@ -56,7 +60,10 @@ Material:
     m_Ints: []
     m_Floats:
     - _Emission_BaseColor: 0.35
-    - _Light_Strenght: 50
-    m_Colors: []
+    - _Emissive: 1
+    - _Light_Strenght: 31.4
+    - _Light_on_off: 0
+    m_Colors:
+    - _Emissive_Color: {r: 1, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
