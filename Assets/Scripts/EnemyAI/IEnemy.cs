@@ -30,9 +30,8 @@ public abstract class IEnemy : MonoBehaviour, IRaycastableInLOS
     #region Variables
     #region Path Finding|NavMesh Variables
     [HideInInspector] public NavMeshAgent navMeshAgent;
-
-    [Header("Path Finding | Navmesh")]
-    [SerializeField, Tooltip("Static = O inimigo não se move")] public bool isStatic;
+    [Foldout("Path Finding | Navmesh", styled = true)]
+    [HideInInspector, Tooltip("Static = O inimigo não se move")] public bool isStatic;
     protected enum PathLoopTypes
     {
         DontLoop,
@@ -50,7 +49,7 @@ public abstract class IEnemy : MonoBehaviour, IRaycastableInLOS
     private bool isBoomerangForward;
 
     //Etapa do caminho onde o inimigo esta atualmente
-    public int currentPathPoint = 0;
+    [HideInInspector] public int currentPathPoint = 0;
 
     //Na proximo update do Enemy Master Control ele ira calcular a proxima rota desse inimigo
     [HideInInspector] public bool enqueued;
@@ -61,7 +60,7 @@ public abstract class IEnemy : MonoBehaviour, IRaycastableInLOS
 
     #region EnemyStats Variables
     //HP Control
-    [Header("HP")]
+    [Foldout("HP", styled = true)]
     [SerializeField] protected float currentHp = 50;
     [SerializeField] protected float maxHp = 50;
 
@@ -77,7 +76,7 @@ public abstract class IEnemy : MonoBehaviour, IRaycastableInLOS
 
     #region EnemyComponents
     [HideInInspector] public Rigidbody rb;
-    [Header("Components")]
+    [Foldout("Components", styled = true)]
     public Animator animator;
     #endregion
 
@@ -87,8 +86,7 @@ public abstract class IEnemy : MonoBehaviour, IRaycastableInLOS
 
     //Ultima posicao conhecida do jogador
     [HideInInspector] public Vector3 lastKnownPlayerPos;
-
-    [Header("Visibility Variables")]
+    [Foldout("Visibility Variables", styled = true)]
     //Material do cone de visibilidade 
     [SerializeField] protected Material visibilityConeMaterial;
     [SerializeField] protected Material visibilityConeOnViewMaterial;
@@ -97,7 +95,7 @@ public abstract class IEnemy : MonoBehaviour, IRaycastableInLOS
     [SerializeField] protected MeshFilter visibilityMeshFilter;
     [SerializeField] protected MeshRenderer visibilityMeshRenderer;
 
-    [Header("Field Of View")]
+    [Foldout("Field Of View", styled = true)]
     //Ponto do olho do inimigo
     [SerializeField] protected Transform eyeTransform;
 
@@ -112,17 +110,13 @@ public abstract class IEnemy : MonoBehaviour, IRaycastableInLOS
 
     //Camadas que bloqueiam a visibilidade do inimigo 
     [SerializeField] protected LayerMask visionBlockLayers;
-
-    [Header("Testing")]
-    //Cor que o gizmos usa para renderizar o campo de visao do inimigo
-    [SerializeField] protected Color colorOfFovMesh;
     //Mesh temporaria criada para mostrar nos gizmos
     protected Mesh fovWedgeMesh;
 
     #endregion
 
     #region AI Enemy States  
-    [Header("AI Behaviour")]
+    [Foldout("AI Behaviour", styled = true)]
     //Estado principal atual de behaviour
     [SerializeField] public AIBehaviour currentAIBehaviour;
     //Visual Referente ao estado atual do inimigo
@@ -133,7 +127,7 @@ public abstract class IEnemy : MonoBehaviour, IRaycastableInLOS
     //1-50 Observing
     //51-100 Searching
     //100+ Attacking
-    [Tooltip("De 0 a 100"), Range(0, 100),HideInInspector] public float detectionLevel;
+    [Tooltip("De 0 a 100"), Range(0, 100), HideInInspector] public float detectionLevel;
     protected float detectionLevelDecreased;
     #endregion
     #endregion
@@ -145,20 +139,23 @@ public abstract class IEnemy : MonoBehaviour, IRaycastableInLOS
     {
         //Desenha o gizmos da area onde o inimigo ira ver
         //Visibility Mesh
-        if (!fovWedgeMesh) return;
-        if (ArmadilloPlayerController.Instance != null)
+        Color colorOfFovMesh = Color.yellow;
+        colorOfFovMesh.a = 0.25f;
+        if (fovWedgeMesh)
         {
-            if (CheckForLOS(ArmadilloPlayerController.Instance.gameObject))
+            if (ArmadilloPlayerController.Instance != null)
             {
-                Color red = Color.red;
-                red.a = colorOfFovMesh.a;
-                Gizmos.color = red;
+                if (CheckForLOS(ArmadilloPlayerController.Instance.gameObject))
+                {
+                    Color red = Color.red;
+                    red.a = colorOfFovMesh.a;
+                    Gizmos.color = red;
+                }
+                else Gizmos.color = colorOfFovMesh;
             }
             else Gizmos.color = colorOfFovMesh;
+            if (eyeTransform != null) Gizmos.DrawMesh(fovWedgeMesh, eyeTransform.position, eyeTransform.rotation);
         }
-        else Gizmos.color = colorOfFovMesh;
-        if (eyeTransform == null) return;
-        Gizmos.DrawMesh(fovWedgeMesh, eyeTransform.position, eyeTransform.rotation);
 
         //See navmesh point
         if (aiPathList != null && aiPathList.Length > 0)
@@ -301,7 +298,7 @@ public abstract class IEnemy : MonoBehaviour, IRaycastableInLOS
     protected abstract void OnFixedUpdate();
     private void OnDisable()
     {
-       StopCoroutine(fixedUpdate_Ref); 
+        StopCoroutine(fixedUpdate_Ref);
     }
     #endregion
 
@@ -554,10 +551,10 @@ public abstract class IEnemy : MonoBehaviour, IRaycastableInLOS
             }
         }
     }
-    public IEnumerator LerpLookAt_Coroutine(Transform lookAtTransform, float velocity,float duration)
+    public IEnumerator LerpLookAt_Coroutine(Transform lookAtTransform, float velocity, float duration)
     {
         float timer = 0;
-        while(timer<duration)
+        while (timer < duration)
         {
             LerpLookAt(lookAtTransform.position, velocity);
             timer += Time.fixedDeltaTime;
@@ -671,7 +668,7 @@ public abstract class IEnemy : MonoBehaviour, IRaycastableInLOS
     }
     public abstract void OnActionUpdate();
     #endregion
-    
+
     //----- Navmesh Functions-----
     #region NavMesh
     /// <summary>
@@ -774,15 +771,15 @@ public abstract class IEnemy : MonoBehaviour, IRaycastableInLOS
         while (true)
         {
             if (CheckForProximityOfPoint()) yield break;
-            LerpLookAt(rb.position + navMeshAgent.velocity*10,1);
+            LerpLookAt(rb.position + navMeshAgent.velocity * 10, 1);
             yield return new WaitForFixedUpdate();
         }
     }
     public IEnumerator WaitToReachNextPoint_Coroutine()
     {
-        while(true)
+        while (true)
         {
-            if(CheckForProximityOfPoint())yield break;
+            if (CheckForProximityOfPoint()) yield break;
             yield return new WaitForFixedUpdate();
         }
     }
@@ -831,6 +828,11 @@ public abstract class IEnemy : MonoBehaviour, IRaycastableInLOS
     }
     #endregion
 
+    //----- On Death -----
+    #region On Death
+    [Foldout("On Death", styled = true, foldEverything = false)] public UnityEvent onDeathEvent;
+    #endregion
+
     //-----Toggle Alert-----
     #region Alert
     public void ToggleAlert(bool state)
@@ -839,6 +841,7 @@ public abstract class IEnemy : MonoBehaviour, IRaycastableInLOS
         enemyBehaviourVisual.ToggleAlert(state);
     }
     #endregion
+
 
     void IRaycastableInLOS.OnEnterLOS()
     {

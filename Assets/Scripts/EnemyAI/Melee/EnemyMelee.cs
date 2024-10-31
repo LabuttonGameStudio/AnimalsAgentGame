@@ -8,13 +8,14 @@ public class EnemyMelee : IEnemy, IDamageable, ISoundReceiver
 {
     //Detection Variables
     #region Detection Variables
-    [SerializeField] private float minimalHearValue;
+    [HideInInspector]public bool heardPlayer;
+    [HideInInspector] private float minimalHearValue;
     [Tooltip("Tempo necessario para ir ao estado mais alto de detecção")] readonly protected float timeToMaxDetect = 0.5f;
     #endregion
 
     //Visual Variables
     #region Visual Variables
-    [Header("Visual")]
+    [Foldout("Visual", styled = true)]
     [SerializeField] private SkinnedMeshRenderer meshRenderer;
     #endregion
 
@@ -33,7 +34,7 @@ public class EnemyMelee : IEnemy, IDamageable, ISoundReceiver
 
     //Combat Variables
     #region Combat Variables
-    [Header("Combat")]
+    [Foldout("Combat", styled = true)]
 
     [Header("Shield")]
     public GameObject shieldGameObject;
@@ -59,12 +60,13 @@ public class EnemyMelee : IEnemy, IDamageable, ISoundReceiver
 
     //Sfx Variables
     #region SFX Variables
-    [Header("SFX")]
+    [Foldout("SFX", styled = true)]
     public SoundEmitter walkingSoundEmitter;
     #endregion
 
     //Vfx Variables
     #region VFX Variables
+    [Foldout("VFX", styled = true)]
     [SerializeField] private ParticleSystem onDeathByEletricParticle;
     [SerializeField] private VisualEffect deadLoopParticle;
     #endregion
@@ -83,6 +85,9 @@ public class EnemyMelee : IEnemy, IDamageable, ISoundReceiver
         switch (currentAIBehaviour)
         {
             case AIBehaviour.Static:
+                isStatic = true;
+                currentState = enemyRoamingState;
+                break;
             case AIBehaviour.Roaming:
                 currentState = enemyRoamingState;
                 break;
@@ -149,7 +154,7 @@ public class EnemyMelee : IEnemy, IDamageable, ISoundReceiver
         {
             foreach (DamageableHitbox hitbox in damageableHitboxes)
             {
-                hitbox._Collider.enabled = false;
+                foreach (Collider collider in hitbox._Collider) collider.enabled = false;
                 hitbox._IsDead = true;
             }
             isDead = true;
@@ -164,8 +169,13 @@ public class EnemyMelee : IEnemy, IDamageable, ISoundReceiver
             deadLoopParticle.Play();
             EnemyMasterControl.Instance.StartCoroutine(DeSpawnCoroutine(animator.gameObject, deadLoopParticle));
             shieldGameObject.SetActive(false);
+            if (Random.Range(0f,1f) >= 0.5f)
+            {
+                EnemyMasterControl.Instance.SpawnRandomCollectable(transform.position - Vector3.up);
+            }
             if (onDamageTakenVisual_Ref != null) StopCoroutine(onDamageTakenVisual_Ref);
             onDamageTakenVisual_Ref = EnemyMasterControl.Instance.StartCoroutine(OnDamageTakenVisual_Coroutine());
+            onDeathEvent.Invoke();
             gameObject.SetActive(false);
         }
         else
@@ -249,7 +259,6 @@ public class EnemyMelee : IEnemy, IDamageable, ISoundReceiver
     {
         detectionTickIntervalTime = 0;
     }
-    public bool heardPlayer;
     public void OnSoundHear(SoundData soundData)
     {
         if (soundData.audioType == AudioType.Suspicious)

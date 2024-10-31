@@ -9,6 +9,7 @@ public class WaterGunProjectile : MonoBehaviour
     [HideInInspector] public float duration;
     [HideInInspector] public float timer;
     [HideInInspector] public float bulletDamage;
+    [HideInInspector] public float minbulletDamage;
     private void FixedUpdate()
     {
         timer += Time.fixedDeltaTime;

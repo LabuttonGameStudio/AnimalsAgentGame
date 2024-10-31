@@ -253,7 +253,6 @@ public class ArmadilloMovementController : MonoBehaviour
         {
             if (currentMovementType == MovementType.Sprinting)
             {
-                Debug.Log("CancelSprint");
                 sprintLurkSpeedMultiplier = 1;
                 ArmadilloPlayerController.Instance.audioControl.ChangeCurrentMovingForm(MovementType.Default);
                 currentMovementType = MovementType.Default;

@@ -25,7 +25,7 @@ public class EletricPistol : Weapon
         weaponType = WeaponType.Zapgun;
         LoadVisual();
 
-        onFireSlow = new SpeedMultipler { value = 0.5f };
+        onFireSlow = new SpeedMultipler { value = 0.75f };
         onReloadSlow = new SpeedMultipler { value = 0.75f };
     }
 
@@ -35,6 +35,7 @@ public class EletricPistol : Weapon
     private bool isOnCooldown;
 
     readonly private int unchargedHitDamage = 15;
+    readonly private int minUnchargedHitDamage = 5;
 
     readonly private float damageFallOffStartRange = 5;
     readonly private float damageFallOffEndRange = 20;
@@ -156,7 +157,7 @@ public class EletricPistol : Weapon
                 Damage damage = new Damage(unchargedHitDamage, Damage.DamageType.Eletric, true, weaponControl.transform.position);
                 if (raycastHit.distance > damageFallOffStartRange)
                 {
-                    damage.damageAmount = Mathf.Lerp(damage.damageAmount, 0.1f, (raycastHit.distance - damageFallOffStartRange) / (damageFallOffEndRange - damageFallOffStartRange));
+                    damage.damageAmount = Mathf.Lerp(damage.damageAmount, minUnchargedHitDamage, (raycastHit.distance - damageFallOffStartRange) / (damageFallOffEndRange - damageFallOffStartRange));
                     idamageable.TakeDamage(damage);
                 }
                 else idamageable.TakeDamage(damage);

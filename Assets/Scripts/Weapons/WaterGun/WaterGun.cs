@@ -35,6 +35,7 @@ public class WaterGun : Weapon
 
     //Tiro normal
     private float bulletDamage = 10;
+    private float minbulletDamage =5;
     private Vector3 bodyVelocity;
     readonly private float fireDelay = 0.33f;
     private bool isOnCooldown;
@@ -174,6 +175,7 @@ public class WaterGun : Weapon
         waterGunProjectile.transform.position = position;
         waterGunProjectile.duration = 1.25f;
         waterGunProjectile.bulletDamage = bulletDamage;
+        waterGunProjectile.minbulletDamage = minbulletDamage;
         waterGunProjectile.playerPos = weaponControl.transform.position;
         waterGunProjectile.gameObject.SetActive(true);
         waterGunProjectile.rb.velocity = direction * manager.velocity + bodyVelocity;

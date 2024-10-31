@@ -14,13 +14,12 @@ public class MeleeEnemyAttackingState : MeleeEnemyState
 
     public override void OnEnterState()
     {
-
         iEnemy.enemyBehaviourVisual.ChangeVisualState(AIBehaviourEnums.AIBehaviour.Attacking);
         iEnemy.navMeshAgent.isStopped = false;
         iEnemy.navMeshAgent.autoBraking = false;
         iEnemy.navMeshAgent.acceleration *= 1.25f;
         iEnemy.navMeshAgent.speed *= 1.25f;
-        StartMovingToPlayer();
+        enemyRoutine_Ref = iEnemy.StartCoroutine(EnemyRoutine_Coroutine());
     }
     public override void OnExitState()
     {
@@ -37,31 +36,72 @@ public class MeleeEnemyAttackingState : MeleeEnemyState
     public override void OnActionUpdate()
     {
     }
-
-    //Move Player
-    #region Move Player
-    private void StartMovingToPlayer()
-    {
-        movingToPlayer_Ref = iEnemy.StartCoroutine(MovingToPlayer_Coroutine(GetCurrentAttackRange()));
-    }
-    private Coroutine movingToPlayer_Ref;
-    private IEnumerator MovingToPlayer_Coroutine(float desiredDistanceFromPlayer)
+    #region Routine
+    private Coroutine enemyRoutine_Ref;
+    private IEnumerator EnemyRoutine_Coroutine()
     {
         while (true)
         {
+            //Move into player
+            float desiredDistanceFromPlayer = GetCurrentAttackRange();
             iEnemy.playHitAnimation = true;
-            iEnemy.animator.SetBool("isWalking", true);
-            Move(desiredDistanceFromPlayer);
-            if (GetDistanceFromPlayer() < desiredDistanceFromPlayer + 0.25f)
+            while (GetDistanceFromPlayer() >= desiredDistanceFromPlayer + 0.25f)
             {
-                StopMovingToPlayer();
-                StartAttack();
-                yield break;
+                if (!NeedShield())
+                {
+                    Move(desiredDistanceFromPlayer);
+                }
+                else
+                {
+                    iEnemy.animator.SetBool("isWalking", false);
+                    iEnemy.navMeshAgent.isStopped = true;
+                }
+                yield return new WaitForFixedUpdate();
             }
-            yield return new WaitForFixedUpdate();
+
+            //Attack
+            iEnemy.animator.SetBool("isWalking", false);
+            yield return StartAttack();
+
+            //Move away from player
+            float timer = 0;
+            float duration;
+            switch (attackCycle)
+            {
+                default:
+                case 0:
+                case 1:
+                    duration = iEnemy.primaryAttackCooldown + Random.Range(0f, 1f);
+                    break;
+                case 2:
+                    duration = iEnemy.secondaryAttackCooldown + Random.Range(0f, 1f);
+                    break;
+            }
+            iEnemy.playHitAnimation = true;
+            while (timer < duration)
+            {
+                if (!NeedShield())
+                {
+                    Move(7.5f);
+                    iEnemy.animator.SetBool("isWalking", !iEnemy.CheckForProximityOfPoint());
+                    timer += Time.fixedDeltaTime;
+                }
+                else
+                {
+                    iEnemy.animator.SetBool("isWalking", false);
+                    iEnemy.navMeshAgent.isStopped = true;
+                }
+                yield return new WaitForFixedUpdate();
+            }
+            NextAttackCycle();
+            iEnemy.animator.SetBool("isWalking", false);
         }
+
     }
 
+    #endregion
+
+    #region Move
     private void Move(float distanceFromPlayer)
     {
         iEnemy.LerpLookAt(iEnemy.lastKnownPlayerPos, 2f);
@@ -71,15 +111,21 @@ public class MeleeEnemyAttackingState : MeleeEnemyState
         target = target * distanceFromPlayer;
         target += ArmadilloPlayerController.Instance.transform.position;
         NavMeshHit navMeshHit;
-        if (NavMesh.SamplePosition(target, out navMeshHit,1f, NavMesh.AllAreas) && iEnemy.TrySetNextDestination(navMeshHit.position))
+        NavMeshPath navMeshPath = new NavMeshPath();
+        if (NavMesh.SamplePosition(target, out navMeshHit, 2f, NavMesh.GetAreaFromName("Lobster")))
         {
+            iEnemy.navMeshAgent.CalculatePath(navMeshHit.position, navMeshPath);
+        }
+        if (navMeshPath.status == NavMeshPathStatus.PathComplete)
+        {
+            iEnemy.navMeshAgent.SetPath(navMeshPath);
             iEnemy.animator.SetBool("isWalking", true);
-            iEnemy.ToggleShield(false);
+            iEnemy.navMeshAgent.isStopped = false;
         }
         else
         {
+            iEnemy.navMeshAgent.isStopped = true;
             iEnemy.animator.SetBool("isWalking", false);
-            iEnemy.ToggleShield(true);
         }
     }
     private float GetDistanceFromPlayer()
@@ -88,19 +134,26 @@ public class MeleeEnemyAttackingState : MeleeEnemyState
         distance.y = 0;
         return distance.magnitude;
     }
-    private void StopMovingToPlayer()
+    #endregion
+
+    #region Shield
+    private bool NeedShield()
     {
-        if (movingToPlayer_Ref != null)
+        Vector3 target = ArmadilloPlayerController.Instance.movementControl.rb.position;
+        NavMeshHit navMeshHit;
+        NavMeshPath navMeshPath = new NavMeshPath();
+        if (NavMesh.SamplePosition(target, out navMeshHit, 2f, NavMesh.GetAreaFromName("Lobster")))
         {
-            iEnemy.animator.SetBool("isWalking", false);
-            iEnemy.StopCoroutine(movingToPlayer_Ref);
-            movingToPlayer_Ref = null;
+            iEnemy.navMeshAgent.CalculatePath(navMeshHit.position, navMeshPath);
         }
+        iEnemy.ToggleShield(navMeshPath.status != NavMeshPathStatus.PathComplete);
+        return navMeshPath.status != NavMeshPathStatus.PathComplete;
     }
     #endregion
 
+    #region Attacks
     private int attackCycle;
-    private void StartAttack()
+    private Coroutine StartAttack()
     {
         switch (attackCycle)
         {
@@ -112,6 +165,7 @@ public class MeleeEnemyAttackingState : MeleeEnemyState
                 attack_Coroutine = iEnemy.StartCoroutine(SecondaryAttack_Coroutine());
                 break;
         }
+        return attack_Coroutine;
     }
     private void NextAttackCycle()
     {
@@ -147,7 +201,6 @@ public class MeleeEnemyAttackingState : MeleeEnemyState
         iEnemy.primaryAttackHitbox.DisableHitBox();
 
         attack_Coroutine = null;
-        StartMovingAwayFromPlayer();
     }
     private IEnumerator SecondaryAttack_Coroutine()
     {
@@ -183,47 +236,6 @@ public class MeleeEnemyAttackingState : MeleeEnemyState
         iEnemy.rb.isKinematic = true;
 
         attack_Coroutine = null;
-        StartMovingAwayFromPlayer();
     }
-
-    private void StartMovingAwayFromPlayer()
-    {
-        movingAwayFromPlayer_Ref = iEnemy.StartCoroutine(MovingAwayFromPlayer_Coroutine());
-    }
-    private Coroutine movingAwayFromPlayer_Ref;
-    private IEnumerator MovingAwayFromPlayer_Coroutine()
-    {
-        float timer = 0;
-        float duration = 0;
-        switch (attackCycle)
-        {
-            case 0:
-            case 1:
-                duration = iEnemy.primaryAttackCooldown + Random.Range(0f,3f);
-                break;
-            case 2:
-                duration = iEnemy.secondaryAttackCooldown + Random.Range(0f, 3f);
-                break;
-        }
-        iEnemy.playHitAnimation = true;
-        while (timer < duration)
-        {
-            Move(7.5f);
-            iEnemy.animator.SetBool("isWalking", !iEnemy.CheckForProximityOfPoint());
-            timer += Time.fixedDeltaTime;
-            yield return new WaitForFixedUpdate();
-        }
-        NextAttackCycle();
-        StartMovingToPlayer();
-        StopMovingAwayFromPlayer();
-    }
-    private void StopMovingAwayFromPlayer()
-    {
-        if (movingAwayFromPlayer_Ref != null)
-        {
-            iEnemy.animator.SetBool("isWalking", false);
-            iEnemy.StopCoroutine(movingAwayFromPlayer_Ref);
-            movingAwayFromPlayer_Ref = null;
-        }
-    }
+    #endregion
 }

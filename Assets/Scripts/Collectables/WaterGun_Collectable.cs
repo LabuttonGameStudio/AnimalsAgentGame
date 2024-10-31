@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class WaterGun_Collectable : MonoBehaviour
 {
-    [SerializeField] private int ammoAmount;
+    [SerializeField] public int ammoAmount;
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))

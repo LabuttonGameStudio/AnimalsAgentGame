@@ -3,28 +3,22 @@ using System.Collections.Generic;
 using UnityEngine;
 using static AIBehaviourEnums;
 
-public class RangedEnemy : IEnemy, IDamageable, ISoundReceiver
+public class EnemyBombardier  : IEnemy, IDamageable
 {
     //-----Variables-----
     #region State Machine Variables
-    protected RangedEnemyState currentState;
+    protected BombardierEnemyState currentState;
 
-    public RangedEnemyRoamingState enemyRoamingState;
-    public RangedEnemyObservingState enemyObservingState;
-    public RangedEnemySearchingState enemySearchingState;
-    public RangedEnemyAttackingState enemyAttackingState;
+    public BombardierEnemyRoamingState enemyRoamingState;
+    public BombardierEnemyObservingState enemyObservingState;
+    public BombardierEnemySearchingState enemySearchingState;
+    public BombardierEnemyAttackingState enemyAttackingState;
     #endregion
 
     #region Combat Variables
     [Foldout("Combat Variables", styled = true)]
 
     [Header("Attacks")]
-    public LaserTrackPlayer weakAttackLaser;
-
-    public SandProjectile weakAttackProjectile;
-
-    public SandBomb strongAttackProjectile;
-
     public Transform firePivot;
 
     [Header("HitBox")]
@@ -46,10 +40,10 @@ public class RangedEnemy : IEnemy, IDamageable, ISoundReceiver
     #region Base Functions
     protected override void OnAwake()
     {
-        enemyRoamingState = new RangedEnemyRoamingState(this);
-        enemyObservingState = new RangedEnemyObservingState(this);
-        enemySearchingState = new RangedEnemySearchingState(this);
-        enemyAttackingState = new RangedEnemyAttackingState(this);
+        enemyRoamingState = new BombardierEnemyRoamingState(this);
+        enemyObservingState = new BombardierEnemyObservingState(this);
+        enemySearchingState = new BombardierEnemySearchingState(this);
+        enemyAttackingState = new BombardierEnemyAttackingState(this);
         currentState = enemyRoamingState;
         switch (currentAIBehaviour)
         {
@@ -114,14 +108,14 @@ public class RangedEnemy : IEnemy, IDamageable, ISoundReceiver
     #region Take Damage Functions
     public void TakeDamage(Damage damage)
     {
-        currentHp = currentHp- damage.damageAmount;
+        currentHp = currentHp - damage.damageAmount;
         if (currentHp <= 0)
         {
             isDead = true;
             animator.transform.parent = animator.transform.parent.parent;
-            animator.SetBool("isWalking",false);
+            animator.SetBool("isWalking", false);
             animator.SetTrigger("isDefeated");
-            foreach(DamageableHitbox hitbox in damageableHitboxes)
+            foreach (DamageableHitbox hitbox in damageableHitboxes)
             {
                 foreach (Collider collider in hitbox._Collider) collider.enabled = false;
                 hitbox._IsDead = true;
@@ -140,7 +134,7 @@ public class RangedEnemy : IEnemy, IDamageable, ISoundReceiver
                     break;
             }
         }
-        if(onTakeDamageVisual_Ref != null)StopCoroutine(onTakeDamageVisual_Ref);
+        if (onTakeDamageVisual_Ref != null) StopCoroutine(onTakeDamageVisual_Ref);
         onTakeDamageVisual_Ref = EnemyMasterControl.Instance.StartCoroutine(OnTakeDamageVisual_Coroutine());
     }
 
@@ -161,7 +155,7 @@ public class RangedEnemy : IEnemy, IDamageable, ISoundReceiver
 
     //-----State Machine Functions-----
     #region State Machine
-    public void ChangeCurrentState(RangedEnemyState newState)
+    public void ChangeCurrentState(BombardierEnemyState newState)
     {
         if (currentState == newState) return;
         currentState.OnExitState();

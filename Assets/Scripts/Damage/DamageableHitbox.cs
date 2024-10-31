@@ -5,14 +5,14 @@ using UnityEngine.Events;
 
 public class DamageableHitbox : MonoBehaviour,IDamageable
 {
-    public Collider _Collider;
+    [HideInInspector]public Collider[] _Collider;
     [SerializeField] private float damageMultiplier = 1f;
     [HideInInspector]public UnityEvent<Damage> OnTakeDamage;
     [HideInInspector] public bool _IsDead;
 
     private void Awake()
     {
-        _Collider = GetComponent<Collider>();
+        _Collider = GetComponents<Collider>();
     }
     public bool isDead()
     {

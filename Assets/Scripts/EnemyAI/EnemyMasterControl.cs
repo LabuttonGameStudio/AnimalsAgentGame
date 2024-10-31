@@ -96,7 +96,7 @@ public class EnemyMasterControl : MonoBehaviour
 
             float interval = visibilityTickInterval / allEnemiesList.Count;
             m_actionTickInterval = Time.time - lastTickTime;
-            float tickInterval= interval-Mathf.Max(m_actionTickInterval-interval,0);
+            float tickInterval = interval - Mathf.Max(m_actionTickInterval - interval, 0);
             lastTickTime = Time.time;
             yield return new WaitForSeconds(tickInterval);
         }
@@ -159,5 +159,24 @@ public class EnemyMasterControl : MonoBehaviour
         }
     }
 
+    #endregion
+
+    #region Collectable
+    public GameObject SpawnRandomCollectable(Vector3 position)
+    {
+        GameObject collectable;
+        switch (Random.Range(0, 2))
+        {
+            default:
+            case 0:
+                eletricPistol_CollectablePrefab.ammoAmount = Random.Range(minEletricPistolDropCollectable, maxEletricPistolDropCollectable + 1);
+                collectable = Instantiate(eletricPistol_CollectablePrefab, position, Quaternion.identity).gameObject;
+                return collectable;
+            case 1:
+                waterGun_CollectablePrefab.ammoAmount = Random.Range(minWaterGunDropCollectable, maxWaterGunDropCollectable + 1);
+                collectable = Instantiate(waterGun_CollectablePrefab, position, Quaternion.identity).gameObject;
+                return collectable;
+        }
+    }
     #endregion
 }
