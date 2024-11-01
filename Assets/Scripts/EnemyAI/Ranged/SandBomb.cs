@@ -76,6 +76,7 @@ public class SandBomb : MonoBehaviour
     }
     private void OnCollisionEnter(Collision collision)
     {
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Enemies")) return;
         if (launchParable_Ref != null)
         {
             StopCoroutine(launchParable_Ref);

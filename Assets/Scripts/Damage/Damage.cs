@@ -25,6 +25,8 @@ public class Damage
         Slash,
         Eletric,
         Water,
-        Hacking
+        Hacking,
+        Explosive,
+        Poison
     }
 }

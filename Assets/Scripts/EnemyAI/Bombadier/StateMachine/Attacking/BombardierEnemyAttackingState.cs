@@ -16,6 +16,8 @@ public class BombardierEnemyAttackingState : BombardierEnemyState
 
     public override void OnEnterState()
     {
+        iEnemy.navMeshAgent.acceleration *= 2f;
+        iEnemy.navMeshAgent.speed *= 2f;
         iEnemy.currentAIBehaviour = AIBehaviourEnums.AIBehaviour.Attacking;
         iEnemy.enemyBehaviourVisual.ChangeVisualState(AIBehaviourEnums.AIBehaviour.Attacking);
         iEnemy.animator.SetBool("isWalking", false);
@@ -32,6 +34,7 @@ public class BombardierEnemyAttackingState : BombardierEnemyState
 
     public override void OnFixedUpdate()
     {
+        iEnemy.lastKnownPlayerPos = ArmadilloPlayerController.Instance.transform.position;
         //Debug.Log("Attacking FixedUpdate");
     }
 
@@ -42,14 +45,41 @@ public class BombardierEnemyAttackingState : BombardierEnemyState
     private Coroutine attackRoutine_Ref;
     private IEnumerator AttackRoutine_Coroutine()
     {
-        //Move to player 
-        iEnemy.animator.SetBool("isWalking", true);
-        if (iEnemy.TrySetNextDestination(new Vector3(iEnemy.lastKnownPlayerPos.x, iEnemy.transform.position.y, iEnemy.lastKnownPlayerPos.z)))
+        while (true)
         {
-            yield return iEnemy.CheckForProximityOfPoint();
-            //Drop bomb
+            //Move to player 
+            iEnemy.animator.SetBool("isWalking", true);
+            while (GetDistanceFromPlayer() > 1f)
+            {
+                Move(ArmadilloPlayerController.Instance.transform.position);
+                yield return new WaitForFixedUpdate();
+            }
 
+            //Drop bomb
+            iEnemy.navMeshAgent.isStopped = true;
+            iEnemy.animator.SetBool("isAlerted", true);
+            iEnemy.bombardierBomb.transform.position = iEnemy.firePivot.transform.position;
+            iEnemy.bombardierBomb.Enable();
+
+            yield return new WaitForSeconds(1);
+            iEnemy.animator.SetBool("isAlerted", false);
+            iEnemy.navMeshAgent.isStopped = false;
+
+            yield return new WaitForSeconds(4);
         }
-        yield return new WaitForFixedUpdate();
+    }
+    private void Move(Vector3 target)
+    {
+        target.y = iEnemy.transform.position.y;
+
+        NavMeshPath navMeshPath = new NavMeshPath();
+        iEnemy.navMeshAgent.CalculatePath(target, navMeshPath);
+        iEnemy.navMeshAgent.SetPath(navMeshPath);
+    }
+    private float GetDistanceFromPlayer()
+    {
+        Vector3 distance = iEnemy.transform.position - iEnemy.lastKnownPlayerPos;
+        distance.y = 0;
+        return distance.magnitude;
     }
 }

@@ -13,15 +13,7 @@ public class InteractiveButtonOpenDoor : MonoBehaviour, InteractiveObject
 
     public void Interact(InputAction.CallbackContext value)
     {
-        if (isDoorOpen)
-        {
-            doorTransform.position -= Vector3.up * 6;
-        }
-        else
-        {
-            doorTransform.position += Vector3.up * 6;
-        }
-        isDoorOpen = !isDoorOpen;
+        ArmadilloPlayerController.Instance.hpControl.TakeDamage(new Damage(100000, Damage.DamageType.Blunt, false, transform.position));
     }
 
     public string GetObjectName() { return objectName; }

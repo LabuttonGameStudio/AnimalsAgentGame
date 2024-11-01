@@ -13,11 +13,11 @@ public class WaterGun : Weapon
     {
         weaponControl = armadilloWeaponControl;
         ammoType = AmmoType.Ammo;
-        currentAmmoAmount = 50;
-        maxAmmoAmount = 50;
+        currentAmmoAmount = 20;
+        maxAmmoAmount = 20;
 
-        ammoReserveAmount = 100;
-        maxAmmoReserveAmount = 250;
+        ammoReserveAmount = 80;
+        maxAmmoReserveAmount = 120;
         name = "Arma de Agua";
         description = "Atire nos inimigos para infringir dano e no chão para criar poças";
         ammoSlider = armadilloWeaponControl.Weaponammoslider;
@@ -121,7 +121,7 @@ public class WaterGun : Weapon
     }
     public void ToggleFire(bool value)
     {
-        if (currentAmmoAmount <= 0)
+        if (currentAmmoAmount <= 0 && value)
         {
             Reload();
             return;
@@ -162,6 +162,8 @@ public class WaterGun : Weapon
             visualHandler.UpdateUI(currentAmmoAmount, maxAmmoAmount);
             yield return new WaitForSeconds(0.25f);
         }
+        ArmadilloMovementController movementControl = ArmadilloPlayerController.Instance.movementControl;
+        movementControl.speedMultiplerList.Remove(onFireSlow);
         visualHandler.ToggleOnFire(false);
         ArmadilloPlayerController.Instance.visualControl.ToggleOnFireWaterGun(false);
         fire_Ref = null;
@@ -232,11 +234,11 @@ public class WaterGun : Weapon
     public IEnumerator ReloadTimer_Coroutine()
     {
         ToggleFire(false);
-        ArmadilloPlayerController.Instance.movementControl.speedMultiplerList.Add(onReloadSlow);
+        //ArmadilloPlayerController.Instance.movementControl.speedMultiplerList.Add(onReloadSlow);
         ArmadilloPlayerController.Instance.visualControl.ReloadWaterGun();
         visualHandler.OnReload();
         yield return new WaitForSeconds(3.563f + 0.25f);
-        ArmadilloPlayerController.Instance.movementControl.speedMultiplerList.Remove(onReloadSlow);
+        //ArmadilloPlayerController.Instance.movementControl.speedMultiplerList.Remove(onReloadSlow);
         if (ammoReserveAmount >= maxAmmoAmount)
         {
             int ammoDif = maxAmmoAmount - currentAmmoAmount;

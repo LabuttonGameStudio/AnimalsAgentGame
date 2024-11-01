@@ -19,6 +19,7 @@ public class EnemyBombardier  : IEnemy, IDamageable
     [Foldout("Combat Variables", styled = true)]
 
     [Header("Attacks")]
+    public BombardierBomb bombardierBomb;
     public Transform firePivot;
 
     [Header("HitBox")]
@@ -40,6 +41,7 @@ public class EnemyBombardier  : IEnemy, IDamageable
     #region Base Functions
     protected override void OnAwake()
     {
+        navMeshAgent.updateRotation = true;
         enemyRoamingState = new BombardierEnemyRoamingState(this);
         enemyObservingState = new BombardierEnemyObservingState(this);
         enemySearchingState = new BombardierEnemySearchingState(this);
@@ -169,6 +171,11 @@ public class EnemyBombardier  : IEnemy, IDamageable
     protected override void OnRoamingPathEnd()
     {
 
+    }
+
+    public new bool CheckForProximityOfPoint()
+    {
+        return navMeshAgent.remainingDistance < navMeshAgent.height / 2 + 0.25f;
     }
     #endregion
 

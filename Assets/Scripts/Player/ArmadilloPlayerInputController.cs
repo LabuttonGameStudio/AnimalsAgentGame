@@ -20,6 +20,10 @@ public class ArmadilloPlayerInputController : MonoBehaviour
         inputAction.Armadillo.Debug_Reset.Enable();
         inputAction.Armadillo.Debug_Reset.performed += ResetLevel;
     }
+    private void OnDisable()
+    {
+        inputAction.Disable();
+    }
     private void ResetLevel(InputAction.CallbackContext value)
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);

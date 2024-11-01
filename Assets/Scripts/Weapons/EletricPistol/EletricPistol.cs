@@ -18,7 +18,7 @@ public class EletricPistol : Weapon
         maxAmmoAmount = 12;
 
         ammoReserveAmount = 24;
-        maxAmmoReserveAmount = 36;
+        maxAmmoReserveAmount = 72;
         name = "Pistola Eletrica";
         description = "Pressione pra atirar, segure para carregar ";
         ammoSlider = armadilloWeaponControl.Weaponammoslider;
