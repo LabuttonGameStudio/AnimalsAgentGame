@@ -28,6 +28,10 @@ Material:
         m_Texture: {fileID: 2800000, guid: cc003fbedc0760643922ecb828761213, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _EmissionMask:
+        m_Texture: {fileID: 2800000, guid: 2e269f2c9619f6b4cb4f1fdb10c757f5, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _Emission_Texture:
         m_Texture: {fileID: 2800000, guid: dd0f141555255ba409d929e82ef0d78c, type: 3}
         m_Scale: {x: 1, y: 1}
@@ -46,13 +50,19 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _ColorMaskIntensity: 3
+    - _ColorVariationBool: 1
     - _Emission: 0
-    - _EmissionStrenght: 3
-    - _Metalic_Controler: 1
+    - _EmissionStrenght: 1.75
+    - _IntensityCOlorVar: 1
+    - _Metalic_Controler: 0.17
     - _Normal_Intensity: 1
     - _Saturation: 1
-    - _Value: 1
+    - _Value: 1.1
     m_Colors:
+    - _ColorMask: {r: 1, g: 0.48710766, b: 0.0047169924, a: 0}
+    - _ColorVar: {r: 1, g: 1, b: 1, a: 0}
+    - _EmissionColor: {r: 0.43769228, g: 0.6901961, b: 0.11372547, a: 1}
     - _UV: {r: 1, g: 1, b: 0, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
