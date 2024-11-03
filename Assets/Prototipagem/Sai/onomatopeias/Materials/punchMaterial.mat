@@ -20,13 +20,12 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: SwishMateriall
+  m_Name: punchMaterial
   m_Shader: {fileID: -6465566751694194690, guid: e0564793d3d19a348ae720c363c2b11f, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
   m_InvalidKeywords:
-  - _COLORCOLOR_ON
   - _EMISSION
   - _FLIPBOOKBLENDING_OFF
   - _SURFACE_TYPE_TRANSPARENT
@@ -54,7 +53,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BaseMap:
-        m_Texture: {fileID: 2800000, guid: ccc5022ee41940f48b523c27a14c8f25, type: 3}
+        m_Texture: {fileID: 2800000, guid: 9e43dac067c3e494c81096a2af6243d7, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BentNormalMap:
@@ -130,7 +129,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Texture2D:
-        m_Texture: {fileID: 2800000, guid: 22d3032ab4dad45439fefcacd45e8545, type: 3}
+        m_Texture: {fileID: 2800000, guid: ccdfda596a7f4d4488b69d222ec5f148, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Texture2DAsset_c9b815d8803a477e9b1f81e0d1b6ef37_Out_0_Texture2D:
@@ -187,7 +186,7 @@ Material:
     - _CameraFarFadeDistance: 2
     - _CameraNearFadeDistance: 1
     - _CoatMask: 0
-    - _ColorMode: 4
+    - _ColorMode: 0
     - _Cull: 2
     - _CullMode: 2
     - _CullModeForward: 2
@@ -220,7 +219,7 @@ Material:
     - _EnergyConservingSpecularColor: 1
     - _FlipbookBlending: 0
     - _FlipbookMode: 0
-    - _Glitch_Strength: 0
+    - _Glitch_Strength: 0.2
     - _HeightAmplitude: 0.02
     - _HeightCenter: 0.5
     - _HeightMapParametrization: 0
@@ -301,14 +300,14 @@ Material:
     - _ZTestTransparent: 4
     - _ZWrite: 0
     m_Colors:
-    - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
-    - _BaseColorAddSubDiff: {r: 1, g: 0, b: 0, a: 0}
+    - _BaseColor: {r: 0.4433962, g: 0, b: 0, a: 1}
+    - _BaseColorAddSubDiff: {r: 0, g: 0, b: 0, a: 0}
     - _BaseColorMap_MipInfo: {r: 0, g: 0, b: 0, a: 0}
     - _CameraFadeParams: {r: 0, g: Infinity, b: 0, a: 0}
-    - _Color: {r: 56.801476, g: 56.801476, b: 56.801476, a: 1}
+    - _Color: {r: 14.754423, g: 1.0915793, b: 0, a: 1}
     - _DiffusionProfileAsset: {r: 0, g: 0, b: 0, a: 0}
     - _DoubleSidedConstants: {r: 1, g: 1, b: -1, a: 0}
-    - _EmissionColor: {r: 0.07179365, g: 0.04880948, b: 0.0037251427, a: 1}
+    - _EmissionColor: {r: 1.4980392, g: 0, b: 0, a: 1}
     - _EmissiveColor: {r: 10, g: 7.7216005, b: 0.03346533, a: 10}
     - _EmissiveColorLDR: {r: 1, g: 0.8922483, b: 0.043137252, a: 0}
     - _InvPrimScale: {r: 1, g: 1, b: 0, a: 0}

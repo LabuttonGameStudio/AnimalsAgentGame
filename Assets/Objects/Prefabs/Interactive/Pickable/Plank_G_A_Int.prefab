@@ -70,7 +70,10 @@ PrefabInstance:
       objectReference: {fileID: 13400000, guid: 3781907efaa397d459f08c22ac7f8014, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 3525440352663857038, guid: 3039f4f59c490af40aa1ad1ac06834b4, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1667075979427774449}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 4298459340163726644, guid: 3039f4f59c490af40aa1ad1ac06834b4, type: 3}
       insertIndex: -1
@@ -127,7 +130,19 @@ MonoBehaviour:
     m_LocalVariables: []
   onPickUpEvent:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 3346281560745257756}
+        m_TargetAssemblyTypeName: UnityEngine.ParticleSystem, UnityEngine
+        m_MethodName: Play
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   onDropEvent:
     m_PersistentCalls:
       m_Calls: []
@@ -161,3 +176,75 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 1
+--- !u!4 &3226179531717498493 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3525440352663857038, guid: 3039f4f59c490af40aa1ad1ac06834b4, type: 3}
+  m_PrefabInstance: {fileID: 2029241491375993331}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &3647390658352876542
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 3226179531717498493}
+    m_Modifications:
+    - target: {fileID: 2719196433869927439, guid: ded22ed1026b75045bdb451d738ff6ed, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.111
+      objectReference: {fileID: 0}
+    - target: {fileID: 2719196433869927439, guid: ded22ed1026b75045bdb451d738ff6ed, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.462
+      objectReference: {fileID: 0}
+    - target: {fileID: 2719196433869927439, guid: ded22ed1026b75045bdb451d738ff6ed, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2719196433869927439, guid: ded22ed1026b75045bdb451d738ff6ed, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2719196433869927439, guid: ded22ed1026b75045bdb451d738ff6ed, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2719196433869927439, guid: ded22ed1026b75045bdb451d738ff6ed, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2719196433869927439, guid: ded22ed1026b75045bdb451d738ff6ed, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2719196433869927439, guid: ded22ed1026b75045bdb451d738ff6ed, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2719196433869927439, guid: ded22ed1026b75045bdb451d738ff6ed, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2719196433869927439, guid: ded22ed1026b75045bdb451d738ff6ed, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3299819279785402066, guid: ded22ed1026b75045bdb451d738ff6ed, type: 3}
+      propertyPath: m_Name
+      value: CreekOnomatopeia
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: ded22ed1026b75045bdb451d738ff6ed, type: 3}
+--- !u!4 &1667075979427774449 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2719196433869927439, guid: ded22ed1026b75045bdb451d738ff6ed, type: 3}
+  m_PrefabInstance: {fileID: 3647390658352876542}
+  m_PrefabAsset: {fileID: 0}
+--- !u!198 &3346281560745257756 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 2084677495232831714, guid: ded22ed1026b75045bdb451d738ff6ed, type: 3}
+  m_PrefabInstance: {fileID: 3647390658352876542}
+  m_PrefabAsset: {fileID: 0}

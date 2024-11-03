@@ -33,6 +33,8 @@ public class ArmadilloVisualControl : MonoBehaviour
     [Header("VFX")]
     [SerializeField] private ParticleSystem transformationSmoke;
     [SerializeField] private ParticleSystem TreckOnomatopeia;
+    [SerializeField] private ParticleSystem TapOnomatopeia;
+    [SerializeField] private ParticleSystem WoonOnomatopeia;
     [SerializeField] private ParticleSystem onBallHitParticle;
 
     private void Awake()
@@ -182,6 +184,7 @@ public class ArmadilloVisualControl : MonoBehaviour
     #region LedgeGrab & Climb
     public void OnLedgeGrab()
     {
+        TapOnomatopeia.Play();
         ArmadilloPlayerController.Instance.ChangeCurrentActionLayer(2, (int)FPModeLayer2.LedgeGrab);
         if (ledgeGrabTimer_Ref != null) StopCoroutine(ledgeGrabTimer_Ref);
         ledgeGrabTimer_Ref = StartCoroutine(LedgeGrabTimer_Coroutine());
@@ -203,6 +206,7 @@ public class ArmadilloVisualControl : MonoBehaviour
     public void OnStartClimbing()
     {
         isClimbing = true;
+        
         ArmadilloPlayerController.Instance.ChangeCurrentActionLayer(2, (int)FPModeLayer2.Climb);
         fpAnimator.SetBool("isSneaking", false);
         fpAnimator.SetBool("isRunning", false);
@@ -218,6 +222,7 @@ public class ArmadilloVisualControl : MonoBehaviour
     {
         if (!isClimbing) return;
         isClimbing = false;
+        TapOnomatopeia.Play();
         ArmadilloPlayerController.Instance.weaponControl.ToggleArms(true);
         ArmadilloPlayerController.Instance.weaponControl.ToggleWeapon(true, false);
         ArmadilloPlayerController.Instance.ChangeCurrentActionLayer(2, (int)FPModeLayer2.Null);
@@ -395,6 +400,7 @@ public class ArmadilloVisualControl : MonoBehaviour
     public void OnSonar()
     {
         fpAnimator.CrossFade("TatuSkillSonar", crossFadeTime);
+        WoonOnomatopeia.Play();
         StartCoroutine(OnSonarAnimEnd_Coroutine(crossFadeTime * 2 + 0.75f));
     }
     private IEnumerator OnSonarAnimEnd_Coroutine(float duration)
@@ -410,11 +416,13 @@ public class ArmadilloVisualControl : MonoBehaviour
 
     #region Pause
     public void OnPause()
+
     {
         if (m_CameraMode == CameraMode.FP)
         {
             ArmadilloPlayerController.Instance.ChangeCurrentActionLayer(4, (int)FPModeLayer4.Pause);
             fpAnimator.CrossFade("TatuPauseIdle", crossFadeTime);
+        
         }
     }
 

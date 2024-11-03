@@ -9,6 +9,8 @@ public class MeleeAnimator : MonoBehaviour
     SkinnedMeshRenderer skinnedMeshRenderer;
     [SerializeField] private TrailRenderer[] trailRenderersLeft;
     [SerializeField] private TrailRenderer[] trailRenderersRight;
+    [SerializeField] private ParticleSystem SwishOnomatopeia;
+    [SerializeField] private ParticleSystem PunchOnomatopeia;
     private void Awake()
     {
         animator = GetComponent<Animator>();
@@ -33,7 +35,9 @@ public class MeleeAnimator : MonoBehaviour
             return;
         }
 
+        SwishOnomatopeia.Play();
         string meleeAnimation= "Melee";
+        var forceOverLifetime = SwishOnomatopeia.forceOverLifetime;
 
         int currentAnimation;
         currentAnimation = Random.Range(0, 3);
@@ -55,6 +59,7 @@ public class MeleeAnimator : MonoBehaviour
         skinnedMeshRenderer.enabled = true;
         if (currentDirection)
         {
+            forceOverLifetime.x = new ParticleSystem.MinMaxCurve(10f);
             foreach (TrailRenderer trailRenderer in trailRenderersLeft)
             {
                 trailRenderer.enabled = true;
@@ -62,12 +67,14 @@ public class MeleeAnimator : MonoBehaviour
         }
         else
         {
+            forceOverLifetime.x = new ParticleSystem.MinMaxCurve(-10f);
             foreach (TrailRenderer trailRenderer in trailRenderersRight)
             {
                 trailRenderer.enabled = true;
             }
         }
         animator.CrossFade(meleeAnimation, 0.2f);
+        
 
         disableVisual_Ref = StartCoroutine(DisableVisual_Coroutine(0.469f));
     }
@@ -96,16 +103,20 @@ public class MeleeAnimator : MonoBehaviour
         {
             return;
         }
+
         string takedownAnimation = "Takedown_0";
         bool currentDirection;
+        var forceOverLifetime = PunchOnomatopeia.forceOverLifetime;
+
         currentDirection = 1 == Random.Range(0, 2);
         if (lastTakedownDirection == currentDirection)
         {
+            forceOverLifetime.x = new ParticleSystem.MinMaxCurve(-1f);
             currentDirection = !currentDirection;
         }
         lastTakedownDirection = currentDirection;
         takedownAnimation += currentDirection ? "L" : "R";
-
+        PunchOnomatopeia.Play();
         skinnedMeshRenderer.enabled = true;
         animator.CrossFade(takedownAnimation, 0.2f);
         disableVisual_Ref = StartCoroutine(DisableVisual_Coroutine(1.406f));
