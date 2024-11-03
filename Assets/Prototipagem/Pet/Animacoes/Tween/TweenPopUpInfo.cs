@@ -9,6 +9,9 @@ public class TweenPopUpInfo : MonoBehaviour
     public float TimeForStart = 0f;
     public Tween.LerpType lerpType = Tween.LerpType.Lerp;
 
+    private Vector3 FinalScaleUp = new Vector3(0.8f, 0.8f, 0.8f);
+    private Vector3 FinalScaleDown = Vector3.zero;
+
     void Start()
     {
         objectToScale.localScale = Vector3.zero;
@@ -17,8 +20,8 @@ public class TweenPopUpInfo : MonoBehaviour
 
     void Update()
     {
-        // Verifica se o objeto está escalado em Vector3.one e se o jogador pressiona Esc
-        if (objectToScale.localScale == Vector3.one && Input.GetKeyDown(KeyCode.Escape))
+        // Verifica se o objeto está escalado em Vector3.one e se o jogador pressiona E
+        if (objectToScale.localScale == FinalScaleUp && Input.GetKeyDown(KeyCode.E))
         {
             StartScaleDown();
         }
@@ -26,7 +29,11 @@ public class TweenPopUpInfo : MonoBehaviour
 
     public void StartScaleDown()
     {
-        StartCoroutine(ScaleDown());
+        if (objectToScale.localScale != FinalScaleDown)
+        {
+            StartCoroutine(ScaleDown());
+        }
+        
     }
 
     public void StartScaleUP()
@@ -40,7 +47,7 @@ public class TweenPopUpInfo : MonoBehaviour
 
         Vector3 initialScale = Vector3.zero;
         Vector3 midScale = new Vector3(1.2f, 1.2f, 1.2f);
-        Vector3 finalScale = new Vector3(0.8f, 0.8f, 0.8f);
+        Vector3 finalScale = FinalScaleUp;
 
         //Aumenta de 0 atea1.2
         yield return Tween.ScaleTransform(this, objectToScale, midScale, scaleDuration / 2, lerpType);
@@ -53,7 +60,7 @@ public class TweenPopUpInfo : MonoBehaviour
     {
         Vector3 initialScale = Vector3.one;
         Vector3 midScale = new Vector3(1.2f, 1.2f, 1.2f);
-        Vector3 finalScale = Vector3.zero;
+        Vector3 finalScale = FinalScaleDown;
 
         // Aumenta de 0 atas 1.2
         yield return Tween.ScaleTransform(this, objectToScale, midScale, scaleDuration / 2, lerpType);

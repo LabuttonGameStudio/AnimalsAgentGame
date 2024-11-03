@@ -12569,7 +12569,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2488422623650733358}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.044928513, y: -0, z: -0, w: 0.99899024}
+  m_LocalRotation: {x: 0.015858822, y: -0.80239546, z: 0.021343583, w: 0.5962001}
   m_LocalPosition: {x: 0, y: 1.64, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -20600,7 +20600,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5570221528459450666}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.044928513, y: -0, z: -0, w: 0.99899024}
+  m_LocalRotation: {x: 0.015858592, y: -0.80239546, z: 0.021343274, w: 0.59620005}
   m_LocalPosition: {x: -15.92, y: 8.17, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -21392,7 +21392,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_RecenterTarget: 0
   m_VerticalAxis:
-    Value: 5.1501617
+    Value: 3.0473535
     m_SpeedMode: 1
     m_MaxSpeed: 0.1
     m_AccelTime: 0
@@ -21416,7 +21416,7 @@ MonoBehaviour:
     m_LegacyHeadingDefinition: -1
     m_LegacyVelocityFilterStrength: -1
   m_HorizontalAxis:
-    Value: 0
+    Value: -106.77344
     m_SpeedMode: 1
     m_MaxSpeed: 0.1
     m_AccelTime: 0
@@ -21829,16 +21829,16 @@ RectTransform:
   - {fileID: 9210205929919953273}
   - {fileID: 2262530582304950637}
   - {fileID: 511876327040646040}
-  - {fileID: 3822936234068472969}
   - {fileID: 3280090401392838124}
   - {fileID: 79799275564375201}
   - {fileID: 2262554543488730805}
-  - {fileID: 1975729740184435397}
   - {fileID: 6119205460047209676}
   - {fileID: 1437037195427704684}
   - {fileID: 5309394354908727055}
   - {fileID: 8196119432996400519}
   - {fileID: 8471781526171613205}
+  - {fileID: 3822936234068472969}
+  - {fileID: 1975729740184435397}
   m_Father: {fileID: 2478500455967649313}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -26454,6 +26454,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2888905029226936989}
     m_Modifications:
+    - target: {fileID: 351151440456692862, guid: 451d04997ce06fa48bf29020ad69cfda, type: 3}
+      propertyPath: sceneInicial
+      value: TelaInicialSceneV2
+      objectReference: {fileID: 0}
     - target: {fileID: 1097444943076743904, guid: 451d04997ce06fa48bf29020ad69cfda, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -26549,6 +26553,10 @@ PrefabInstance:
     - target: {fileID: 5877413818067752315, guid: 451d04997ce06fa48bf29020ad69cfda, type: 3}
       propertyPath: m_Name
       value: DeathScreen
+      objectReference: {fileID: 0}
+    - target: {fileID: 5877413818067752315, guid: 451d04997ce06fa48bf29020ad69cfda, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -27462,6 +27470,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4146403356239808259, guid: 64840a7248d35654f9929fe821f05e1f, type: 3}
       propertyPath: m_Interactable
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4146403356239808259, guid: 64840a7248d35654f9929fe821f05e1f, type: 3}
+      propertyPath: m_BlocksRaycasts
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4205519562480712151, guid: 64840a7248d35654f9929fe821f05e1f, type: 3}
