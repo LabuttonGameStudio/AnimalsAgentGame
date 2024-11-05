@@ -1,22 +1,29 @@
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Localization;
 
 public class LadderObject : MonoBehaviour, InteractiveObject
 {
+    [Header("Localization")]
+    [SerializeField]private LocalizedString objectName;
+    [SerializeField]private LocalizedString objectDescriptionGrab;
+    [SerializeField]private LocalizedString objectDescriptionRelease;
+
     [SerializeField] private float pipeSize;
     [SerializeField] private Transform minTransform;
     [SerializeField] private Transform maxTransform;
     public string GetObjectDescription()
     {
         ArmadilloMovementController movementController = ArmadilloPlayerController.Instance.movementControl;
-        return movementController.CheckMatchOfCurrentLadder(transform) ? "Release" : "Grab";
+        return movementController.CheckMatchOfCurrentLadder(transform) ? objectDescriptionRelease.GetLocalizedString() : objectDescriptionGrab.GetLocalizedString();
     }
 
     public string GetObjectName()
     {
-        return "Pipe";
+        return objectName.GetLocalizedString();
     }
     private void OnDrawGizmos()
     {

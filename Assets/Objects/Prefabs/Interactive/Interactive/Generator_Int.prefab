@@ -131,6 +131,33 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ceb12fc1d452dcf4ea572bfb342fa47f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  objectName:
+    m_TableReference:
+      m_TableCollectionName: GUID:fdf1a70fd70f0d94c9c8a8e98ab4796a
+    m_TableEntryReference:
+      m_KeyId: 3033988669440
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  objectDescriptionTurnedOff:
+    m_TableReference:
+      m_TableCollectionName: GUID:015096ef047ac0442b7f4129775f2047
+    m_TableEntryReference:
+      m_KeyId: 808230920192
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  objectDescriptionTurnedOn:
+    m_TableReference:
+      m_TableCollectionName: GUID:015096ef047ac0442b7f4129775f2047
+    m_TableEntryReference:
+      m_KeyId: 875083931648
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
   _requirements: []
   charged: 0
   consequences:
@@ -150,6 +177,9 @@ MonoBehaviour:
         m_CallState: 2
   bodyMeshRenderer: {fileID: 171399436667598736}
   leverTransform: {fileID: 4975850874634998663}
+  references:
+    version: 2
+    RefIds: []
 --- !u!65 &4060615101296228528
 BoxCollider:
   m_ObjectHideFlags: 0
