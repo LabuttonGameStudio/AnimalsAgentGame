@@ -8,7 +8,7 @@ public class EnemyMelee : IEnemy, IDamageable, ISoundReceiver
 {
     //Detection Variables
     #region Detection Variables
-    [HideInInspector]public bool heardPlayer;
+    [HideInInspector] public bool heardPlayer;
     [HideInInspector] private float minimalHearValue;
     [Tooltip("Tempo necessario para ir ao estado mais alto de detecção")] readonly protected float timeToMaxDetect = 0.5f;
     #endregion
@@ -67,6 +67,9 @@ public class EnemyMelee : IEnemy, IDamageable, ISoundReceiver
     //Vfx Variables
     #region VFX Variables
     [Foldout("VFX", styled = true)]
+    [SerializeField] private ParticleSystem onHitParticleScrewAndBolts;
+    [SerializeField] private ParticleSystem onHitParticleSparkDefault;
+    [SerializeField] private ParticleSystem onHitParticleSparkCritical;
     [SerializeField] private ParticleSystem onDeathByEletricParticle;
     [SerializeField] private VisualEffect deadLoopParticle;
     #endregion
@@ -77,6 +80,8 @@ public class EnemyMelee : IEnemy, IDamageable, ISoundReceiver
     #region Base Functions
     protected override void OnAwake()
     {
+        navMeshAgent.speed *= Random.Range(0.5f, 1f);
+        navMeshAgent.acceleration *= Random.Range(0.5f, 1f);
         playHitAnimation = true;
         enemyRoamingState = new MeleeEnemyRoamingState(this);
         enemyObservingState = new MeleeEnemyObservingState(this);
@@ -169,7 +174,7 @@ public class EnemyMelee : IEnemy, IDamageable, ISoundReceiver
             deadLoopParticle.Play();
             EnemyMasterControl.Instance.StartCoroutine(DeSpawnCoroutine(animator.gameObject, deadLoopParticle));
             shieldGameObject.SetActive(false);
-            if (Random.Range(0f,1f) >= 0.5f)
+            if (Random.Range(0f, 1f) >= 0.5f)
             {
                 EnemyMasterControl.Instance.SpawnRandomCollectable(transform.position - Vector3.up);
             }
@@ -188,6 +193,8 @@ public class EnemyMelee : IEnemy, IDamageable, ISoundReceiver
             if (onDamageTakenVisual_Ref != null) StopCoroutine(onDamageTakenVisual_Ref);
             onDamageTakenVisual_Ref = EnemyMasterControl.Instance.StartCoroutine(OnDamageTakenVisual_Coroutine());
         }
+        if (damage.wasCritical) onHitParticleSparkDefault.Play();
+        onHitParticleScrewAndBolts.Play();
     }
     bool IDamageable.isDead()
     {
@@ -221,6 +228,12 @@ public class EnemyMelee : IEnemy, IDamageable, ISoundReceiver
         currentState.OnExitState();
         newState.OnEnterState();
         currentState = newState;
+    }
+
+    public override void TurnAgressive()
+    {
+        if (currentState == enemyAttackingState) return;
+        ChangeCurrentState(enemyAttackingState);
     }
     #endregion
 

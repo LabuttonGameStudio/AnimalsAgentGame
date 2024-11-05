@@ -842,6 +842,13 @@ public abstract class IEnemy : MonoBehaviour, IRaycastableInLOS
     }
     #endregion
 
+    //-----Turn Agressive----
+    #region Turn Agressive
+
+    public abstract void TurnAgressive();
+
+    #endregion
+
 
     void IRaycastableInLOS.OnEnterLOS()
     {

@@ -16,6 +16,8 @@ public class Damage
 
     public bool wasMadeByPlayer;
 
+    public bool wasCritical;
+
     public Vector3 originPoint;
 
     public DamageType damageType;

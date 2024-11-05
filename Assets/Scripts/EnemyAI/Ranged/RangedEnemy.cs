@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.VFX;
 using static AIBehaviourEnums;
 
 public class RangedEnemy : IEnemy, IDamageable, ISoundReceiver
@@ -39,7 +40,13 @@ public class RangedEnemy : IEnemy, IDamageable, ISoundReceiver
 
     #region Visual Variables
     [Foldout("Visual", styled = true)]
+    [Header("Mesh")]
     [SerializeField] private SkinnedMeshRenderer meshRenderer;
+    [Header("VFX")]
+    [SerializeField] private VisualEffect onDeathVFX;
+    [SerializeField] private ParticleSystem onDeathByElectricityVFX;
+    [SerializeField] private ParticleSystem onHitVFX;
+    [SerializeField] private ParticleSystem onHitCriticalVFX;
     #endregion
 
     //-----Base Functions-----
@@ -126,6 +133,17 @@ public class RangedEnemy : IEnemy, IDamageable, ISoundReceiver
                 foreach (Collider collider in hitbox._Collider) collider.enabled = false;
                 hitbox._IsDead = true;
             }
+            //VFX
+            onDeathVFX.Play();
+            EnemyMasterControl.Instance.StartCoroutine(DeSpawnCoroutine(animator.gameObject, onDeathVFX));
+
+            switch(damage.damageType)
+            {
+                case Damage.DamageType.Eletric:
+                    onDeathByElectricityVFX.Play();
+                    break;
+            }
+
             onDeathEvent.Invoke();
             gameObject.SetActive(false);
         }
@@ -140,6 +158,11 @@ public class RangedEnemy : IEnemy, IDamageable, ISoundReceiver
                     break;
             }
         }
+
+        //VFX
+        if(damage.wasCritical)onHitCriticalVFX.Play();
+        onHitVFX.Play();
+
         if(onTakeDamageVisual_Ref != null)StopCoroutine(onTakeDamageVisual_Ref);
         onTakeDamageVisual_Ref = EnemyMasterControl.Instance.StartCoroutine(OnTakeDamageVisual_Coroutine());
     }
@@ -157,6 +180,14 @@ public class RangedEnemy : IEnemy, IDamageable, ISoundReceiver
         meshRenderer.sharedMaterial = EnemyMasterControl.Instance.defaultRangedEnemyMat;
         onTakeDamageVisual_Ref = null;
     }
+
+    private IEnumerator DeSpawnCoroutine(GameObject gameObject, VisualEffect visualEffect)
+    {
+        yield return new WaitForSeconds(5);
+        visualEffect.Stop();
+        yield return new WaitForSeconds(15);
+        gameObject.SetActive(false);
+    }
     #endregion
 
     //-----State Machine Functions-----
@@ -167,6 +198,12 @@ public class RangedEnemy : IEnemy, IDamageable, ISoundReceiver
         currentState.OnExitState();
         newState.OnEnterState();
         currentState = newState;
+    }
+
+    public override void TurnAgressive()
+    {
+        if (currentState == enemyAttackingState) return;
+        ChangeCurrentState(enemyAttackingState);
     }
     #endregion
 
@@ -198,4 +235,5 @@ public class RangedEnemy : IEnemy, IDamageable, ISoundReceiver
         }
     }
     #endregion
+
 }

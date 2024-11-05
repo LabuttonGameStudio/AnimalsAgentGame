@@ -1,8 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Rendering.Universal;
 using UnityEngine.UI;
 using static WeaponData;
 
@@ -148,7 +150,10 @@ public class EletricPistol : Weapon
         RaycastHit[] targetsHit;
         Transform camera = ArmadilloPlayerController.Instance.cameraControl.mainCamera.transform;
         targetsHit = Physics.RaycastAll(camera.position, camera.forward, 20f, Physics.AllLayers, QueryTriggerInteraction.Collide);
+        targetsHit = targetsHit.OrderBy(x => x.distance).ToArray();
         Vector3 hitPoint = camera.position + camera.forward * 20f;
+        bool hitSomething = false;
+        bool hitEnemy = false;
         foreach (RaycastHit raycastHit in targetsHit)
         {
             //Debug.Log(raycastHit.transform.name);
@@ -162,11 +167,25 @@ public class EletricPistol : Weapon
                 }
                 else idamageable.TakeDamage(damage);
                 ArmadilloUIControl.Instance.StartHitMarker();
-                hitPoint = raycastHit.point;
-                if (!raycastHit.collider.isTrigger) break;
+                if (!raycastHit.collider.isTrigger)
+                {
+                    hitEnemy = true;
+                    hitSomething = true;
+                    hitPoint = raycastHit.point;
+                    break;
+                }
+            }
+            else
+            {
+                if (!raycastHit.collider.isTrigger)
+                {
+                    hitSomething = true;
+                    hitPoint = raycastHit.point;
+                    break;
+                }
             }
         }
-        visualHandler.OnUnchargedFire(hitPoint);
+        visualHandler.OnUnchargedFire(hitPoint, camera.forward, hitSomething, !hitEnemy);
     }
 
     #endregion
@@ -196,7 +215,7 @@ public class EletricPistol : Weapon
 
     private void Reload()
     {
-        if (reload_Ref == null && !isReloading && currentAmmoAmount<maxAmmoAmount && ammoReserveAmount>0)
+        if (reload_Ref == null && !isReloading && currentAmmoAmount < maxAmmoAmount && ammoReserveAmount > 0)
         {
             isReloading = true;
             reload_Ref = weaponControl.StartCoroutine(Reload_Coroutine());
@@ -220,9 +239,9 @@ public class EletricPistol : Weapon
 
     private void ReplenishAmmo()
     {
-        if(currentAmmoAmount+ammoReserveAmount>=maxAmmoAmount)
+        if (currentAmmoAmount + ammoReserveAmount >= maxAmmoAmount)
         {
-            ammoReserveAmount -= maxAmmoAmount-currentAmmoAmount;
+            ammoReserveAmount -= maxAmmoAmount - currentAmmoAmount;
             currentAmmoAmount = maxAmmoAmount;
         }
         else

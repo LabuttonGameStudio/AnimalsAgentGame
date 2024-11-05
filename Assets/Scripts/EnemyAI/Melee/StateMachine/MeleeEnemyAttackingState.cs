@@ -71,10 +71,10 @@ public class MeleeEnemyAttackingState : MeleeEnemyState
                 default:
                 case 0:
                 case 1:
-                    duration = iEnemy.primaryAttackCooldown + Random.Range(0f, 1f);
+                    duration = iEnemy.primaryAttackCooldown + Random.Range(0f, 3f);
                     break;
                 case 2:
-                    duration = iEnemy.secondaryAttackCooldown + Random.Range(0f, 1f);
+                    duration = iEnemy.secondaryAttackCooldown + Random.Range(0f, 3f);
                     break;
             }
             iEnemy.playHitAnimation = true;

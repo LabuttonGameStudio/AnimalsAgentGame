@@ -22,6 +22,7 @@ public class DamageableHitbox : MonoBehaviour,IDamageable
     public void TakeDamage(Damage damage)
     {
         if (_IsDead) return;
+        if(damageMultiplier>1) damage.wasCritical = true;
         damage.damageAmount *= damageMultiplier;
         OnTakeDamage.Invoke(damage);
     }

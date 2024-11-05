@@ -16,10 +16,10 @@ public class RangedEnemyAttackingState : RangedEnemyState
 
     public override void OnEnterState()
     {
-        iEnemy.currentAIBehaviour = AIBehaviourEnums.AIBehaviour.Attacking;  
+        iEnemy.currentAIBehaviour = AIBehaviourEnums.AIBehaviour.Attacking;
         iEnemy.enemyBehaviourVisual.ChangeVisualState(AIBehaviourEnums.AIBehaviour.Attacking);
         iEnemy.animator.SetBool("isWalking", false);
-        if(iEnemy.navMeshAgent.isActiveAndEnabled)iEnemy.navMeshAgent.ResetPath();
+        if (iEnemy.navMeshAgent.isActiveAndEnabled) iEnemy.navMeshAgent.ResetPath();
         iEnemy.animator.SetBool("isTurret", true);
         attackLoop_Ref = iEnemy.StartCoroutine(AttackLoop_Coroutine());
         //Debug.Log("Attacking Enter");
@@ -108,17 +108,39 @@ public class RangedEnemyAttackingState : RangedEnemyState
         {
             iEnemy.LerpLookAt(ArmadilloPlayerController.Instance.transform.position, 2);
             iEnemy.strongAttackProjectile.transform.position = iEnemy.firePivot.position;
-            timer += Time.fixedDeltaTime;
+            Vector3 raycastDelta = (ArmadilloPlayerController.Instance.transform.position - iEnemy.firePivot.position);
+            Physics.Raycast(iEnemy.firePivot.position, raycastDelta.normalized, out RaycastHit hitInfo, raycastDelta.magnitude, Physics.AllLayers, QueryTriggerInteraction.Ignore);
+            if (hitInfo.collider.CompareTag("Player"))
+            {
+                timer += Time.fixedDeltaTime;
+            }
+            else
+            {
+                {
+                    timer = 0;
+                }
+            }
             yield return new WaitForFixedUpdate();
         }
         timer = 0;
         iEnemy.strongAttackProjectile.StopSpawnVFX();
         iEnemy.strongAttackProjectile.ToggleVisual(true);
-        while (timer<0.5f)
+        while (timer < 0.5f)
         {
             iEnemy.LerpLookAt(ArmadilloPlayerController.Instance.transform.position, 2);
             iEnemy.strongAttackProjectile.transform.position = iEnemy.firePivot.position;
-            timer += Time.fixedDeltaTime;
+            Vector3 raycastDelta = (ArmadilloPlayerController.Instance.transform.position - iEnemy.firePivot.position);
+            Physics.Raycast(iEnemy.firePivot.position, raycastDelta.normalized, out RaycastHit hitInfo, raycastDelta.magnitude, Physics.AllLayers, QueryTriggerInteraction.Ignore);
+            if (hitInfo.collider.CompareTag("Player"))
+            {
+                timer += Time.fixedDeltaTime;
+            }
+            else
+            {
+                {
+                    timer = 0;
+                }
+            }
             yield return new WaitForFixedUpdate();
         }
         timer = 0;

@@ -8,6 +8,8 @@ public class LayerManager : MonoBehaviour
     [SerializeField] public LayerMask groundMask;
 
     [SerializeField] public LayerMask playerMask;
+
+    [SerializeField] public LayerMask enemyAttackMask;
     private void Awake()
     {
         Instance = this;

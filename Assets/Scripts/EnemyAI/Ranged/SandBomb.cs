@@ -8,7 +8,7 @@ public class SandBomb : MonoBehaviour
     SphereCollider sphereCollider;
     [SerializeField] private ParticleSystem explosionParticle;
     private MeshRenderer meshRenderer;
-    [HideInInspector] public float explosionRange=3;
+    [HideInInspector] public float explosionRange = 3;
     [HideInInspector] public float damage;
     [SerializeField] SandSlowArea sandSlowArea;
 
@@ -45,7 +45,7 @@ public class SandBomb : MonoBehaviour
     public void StartSpawnVFX()
     {
         buildUpParticle.Play();
-        buildUpParticleForceField.enabled= true;
+        buildUpParticleForceField.enabled = true;
     }
     public void StopSpawnVFX()
     {
@@ -90,12 +90,12 @@ public class SandBomb : MonoBehaviour
     {
         explosionParticle.transform.position = transform.position;
         explosionParticle.Play();
-        if(Physics.Raycast(transform.position,Vector3.down,out RaycastHit groundCast,10, LayerManager.Instance.groundMask,QueryTriggerInteraction.Ignore))
+        if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit groundCast, 10, LayerManager.Instance.groundMask, QueryTriggerInteraction.Ignore))
         {
             sandSlowArea.transform.position = groundCast.point;
             sandSlowArea.gameObject.SetActive(true);
         }
-        RaycastHit[] hitArray = Physics.SphereCastAll(transform.position, explosionRange, Vector3.up);
+        RaycastHit[] hitArray = Physics.SphereCastAll(transform.position, explosionRange, Vector3.up, LayerManager.Instance.enemyAttackMask);
         foreach (RaycastHit hit in hitArray)
         {
             if (hit.collider.TryGetComponent(out IDamageable damageable))

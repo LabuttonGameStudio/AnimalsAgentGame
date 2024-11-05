@@ -100,6 +100,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 6687050787311423354, guid: aaf31ea5a4db4d24e9652eb3be22c7aa, type: 3}
       insertIndex: -1
       addedObject: {fileID: 5932629455280820842}
+    - targetCorrespondingSourceObject: {fileID: 6687050787311423354, guid: aaf31ea5a4db4d24e9652eb3be22c7aa, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7903374825686176789}
   m_SourcePrefab: {fileID: 100100000, guid: aaf31ea5a4db4d24e9652eb3be22c7aa, type: 3}
 --- !u!1 &4896541330819599196 stripped
 GameObject:
@@ -119,6 +122,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   openDoor: {fileID: 1400767037398857929}
+--- !u!208 &7903374825686176789
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4896541330819599196}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 0.29700002, y: 2, z: 2}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: -0.07, y: 2, z: -2}
+  m_TimeToStationary: 0.5
 --- !u!4 &5242140252569932262 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6307007528668616128, guid: aaf31ea5a4db4d24e9652eb3be22c7aa, type: 3}

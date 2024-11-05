@@ -46,7 +46,7 @@ public class BombardierBomb : MonoBehaviour
         explosionArea.SetActive(true);
         yield return new WaitForSeconds(1.5f);
 
-        Collider[] objectsHit = Physics.OverlapSphere(transform.position, 4,Physics.AllLayers,QueryTriggerInteraction.Ignore);
+        Collider[] objectsHit = Physics.OverlapSphere(transform.position, 4,LayerManager.Instance.enemyAttackMask,QueryTriggerInteraction.Ignore);
 
         foreach(Collider collider in objectsHit)
         {

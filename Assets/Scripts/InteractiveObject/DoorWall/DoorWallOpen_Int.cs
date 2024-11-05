@@ -17,6 +17,10 @@ public class DoorWallOpen_Int : MonoBehaviour, InteractiveObject
     }
     public void Interact(InputAction.CallbackContext value)
     {
+        CloseDoor();
+    }
+    public void CloseDoor()
+    {
         gameObject.SetActive(false);
         closedDoor.gameObject.SetActive(true);
     }

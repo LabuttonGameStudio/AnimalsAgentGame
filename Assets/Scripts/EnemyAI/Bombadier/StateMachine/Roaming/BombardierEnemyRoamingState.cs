@@ -28,7 +28,7 @@ public class BombardierEnemyRoamingState : BombardierEnemyState
                 iEnemy.StopCoroutine(loopRoamingPath_Ref);
                 loopRoamingPath_Ref = null;
             }
-            loopRoamingPath_Ref = iEnemy.StartCoroutine(LoopRoamingPath_Coroutine());
+            loopRoamingPath_Ref = iEnemy.StartCoroutine(LoopRoamingPath_Coroutine()); 
         }
         //Debug.Log("Roaming Enter");
     }

@@ -164,6 +164,12 @@ public class EnemyBombardier  : IEnemy, IDamageable
         newState.OnEnterState();
         currentState = newState;
     }
+
+    public override void TurnAgressive()
+    {
+        if (currentState == enemyAttackingState) return;
+        ChangeCurrentState(enemyAttackingState);
+    }
     #endregion
 
     //-----Pathfinding-----
