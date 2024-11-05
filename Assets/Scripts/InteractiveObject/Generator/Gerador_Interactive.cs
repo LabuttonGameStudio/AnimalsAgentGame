@@ -3,13 +3,19 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.InputSystem;
+using UnityEngine.Localization;
 
 public class Gerador_Interactive : MonoBehaviour, IRequirements, InteractiveObject, INeedRequirements
 {
+    [Foldout("Translations",styled = true)]
+    [SerializeField] private LocalizedString objectName;
+    [SerializeField] private LocalizedString objectDescriptionTurnedOff;
+    [SerializeField] private LocalizedString objectDescriptionTurnedOn;
     public bool isTurnedOn { get; set; }
 
     //----- Requirements -----
     private bool needRequeriments;
+    [Foldout("Functionality", styled = true)]
     [SerializeField] private GameObject[] _requirements;
     public IRequirements[] requirements { get; set; }
     public INeedRequirements connectedObject { get; set; }
@@ -52,7 +58,7 @@ public class Gerador_Interactive : MonoBehaviour, IRequirements, InteractiveObje
             }
         }
         requirements = new IRequirements[totalRequirements];
-        int currentRequerimentsIndexPos=0;
+        int currentRequerimentsIndexPos = 0;
         //Transfer from _requeriments to requirements
         for (int i = 0; i < _requirements.Length; i++)
         {
@@ -86,7 +92,7 @@ public class Gerador_Interactive : MonoBehaviour, IRequirements, InteractiveObje
     }
     public string GetObjectDescription()
     {
-        if (isTurnedOn) return "";
+        if (isTurnedOn) return objectDescriptionTurnedOn.GetLocalizedString();
         else
         {
             if (needRequeriments)
@@ -94,11 +100,12 @@ public class Gerador_Interactive : MonoBehaviour, IRequirements, InteractiveObje
                 Vector2 requirementsString = GetCurrentRequirementsMet();
                 return charged ? "Ligar" : "(" + requirementsString.x + "|" + requirementsString.y + ")";
             }
-            else return "Ligar";
+            else  return objectDescriptionTurnedOff.GetLocalizedString();
         }
     }
     public string GetObjectName()
     {
+        return objectName.GetLocalizedString();
         if (isTurnedOn) return "Gerador Ligado";
         if (needRequeriments)
         {

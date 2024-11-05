@@ -62,7 +62,32 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: c11684b5b7fc3234d85761357707b873, type: 3}
       insertIndex: -1
       addedObject: {fileID: 4515042154528731704}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: c11684b5b7fc3234d85761357707b873, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2699829328978318256}
+    - targetCorrespondingSourceObject: {fileID: -6196122241001798834, guid: c11684b5b7fc3234d85761357707b873, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2125390140014581330}
   m_SourcePrefab: {fileID: 100100000, guid: c11684b5b7fc3234d85761357707b873, type: 3}
+--- !u!1 &144062005267983858 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -6196122241001798834, guid: c11684b5b7fc3234d85761357707b873, type: 3}
+  m_PrefabInstance: {fileID: 3169755713795796668}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2125390140014581330
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 144062005267983858}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36ff10aa0341bb94b88b58f96268bd91, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rotateAmount: {x: 170, y: 0, z: 0}
+  rotationDuration: 0.5
 --- !u!1 &2827229047813903341 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: c11684b5b7fc3234d85761357707b873, type: 3}
@@ -110,3 +135,63 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.05, y: 0.23, z: 0.1}
   m_Center: {x: -0.004, y: 0.3, z: 0.18}
+--- !u!114 &2699829328978318256
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2827229047813903341}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa7634bdf11ae9e4bb6b8b00b8ef3ddf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  objectName:
+    m_TableReference:
+      m_TableCollectionName: GUID:924d69f0ede24814f90ae60e5f58592f
+    m_TableEntryReference:
+      m_KeyId: 194419695616
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  objectDescription:
+    m_TableReference:
+      m_TableCollectionName: GUID:562d57b78152ed145a4209bfc7e207e3
+    m_TableEntryReference:
+      m_KeyId: 40111251456
+      m_Key: 
+    m_FallbackState: 0
+    m_WaitForCompletion: 0
+    m_LocalVariables: []
+  onUseEvent:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: DoorWallClosed_Int, Assembly-CSharp
+        m_MethodName: OpenDoor
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 2125390140014581330}
+        m_TargetAssemblyTypeName: RotateLerp, Assembly-CSharp
+        m_MethodName: Rotate
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  references:
+    version: 2
+    RefIds: []
