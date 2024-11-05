@@ -19,12 +19,13 @@ public class RotateLerp : MonoBehaviour
     private IEnumerator Rotate_Coroutine()
     {
         float timer = 0;
+        Quaternion finalRotation = Quaternion.Euler(startRotation.eulerAngles + rotateAmount);
         while(timer<rotationDuration)
         {
-            transform.localRotation = Quaternion.Lerp(startRotation, Quaternion.Euler(startRotation.eulerAngles + rotateAmount), timer / rotationDuration);
+            transform.localRotation = Quaternion.Lerp(startRotation, finalRotation, timer / rotationDuration);
             timer += Time.deltaTime;
             yield return null;
         }
-        transform.rotation = Quaternion.Euler(startRotation.eulerAngles + rotateAmount);
+        transform.localRotation = finalRotation;
     }
 }
