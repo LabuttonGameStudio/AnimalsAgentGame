@@ -134,6 +134,7 @@ public class RangedEnemy : IEnemy, IDamageable, ISoundReceiver
                 hitbox._IsDead = true;
             }
             //VFX
+            strongAttackProjectile.StopSpawnVFX();
             onDeathVFX.Play();
             EnemyMasterControl.Instance.StartCoroutine(DeSpawnCoroutine(animator.gameObject, onDeathVFX));
 

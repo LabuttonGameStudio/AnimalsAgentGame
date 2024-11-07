@@ -9926,7 +9926,7 @@ MonoBehaviour:
   visibilityMeshRenderer: {fileID: 2362844365242838205}
   eyeTransform: {fileID: 7932170124433146437}
   fieldOfView: 60
-  viewDistance: 15
+  viewDistance: 20
   viewHeight: 0.81
   visionBlockLayers:
     serializedVersion: 2
@@ -30877,7 +30877,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lifeSpanDuration: 0
-  bulletDecalProjector: {fileID: 5436986270510256070}
+  onHitVFX: {fileID: 0}
+  preparationVFX: {fileID: 0}
 --- !u!54 &5540222003898591357
 Rigidbody:
   m_ObjectHideFlags: 0

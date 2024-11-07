@@ -9,7 +9,10 @@ public class SandProjectile : MonoBehaviour
     [HideInInspector]public float lifeSpanDuration;
     private Rigidbody rb;
     public static float damageAmount;
-    [SerializeField] private DecalProjector bulletDecalProjector;
+    [SerializeField] private ParticleSystem onHitVFX;
+    [SerializeField] public ParticleSystem preparationVFX;
+
+    private Vector3 originPoint;
     private Vector3 direction;
     private void Awake()
     {
@@ -32,7 +35,7 @@ public class SandProjectile : MonoBehaviour
     }
     public void Fire(Vector3 origin, Vector3 direction)
     {
-        ResetDecal();
+        originPoint = origin;
         transform.position = origin;
         transform.LookAt(transform.position + direction);
         this.direction = direction;
@@ -41,28 +44,19 @@ public class SandProjectile : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.layer == LayerMask.NameToLayer("Enemies")) return;
-        Vector3 hitPosition = transform.position;
         if (other.TryGetComponent(out IDamageable damageable))
         {
+            onHitVFX.transform.position = other.bounds.ClosestPoint(transform.position - direction * 3);
+            onHitVFX.Play();
             damageable.TakeDamage(new Damage(damageAmount, Damage.DamageType.Slash, false, Vector3.zero));
             DisableBullet();
         }
         else if (!other.isTrigger)
         {
-            SetDecal(hitPosition);
+            onHitVFX.transform.position = other.bounds.ClosestPoint(transform.position-direction*3);
+            onHitVFX.Play();
             DisableBullet();
         }
-    }
-    private void SetDecal(Vector3 position)
-    {
-        bulletDecalProjector.transform.parent = null;
-        bulletDecalProjector.enabled = true;
-    }
-    private void ResetDecal()
-    {
-        bulletDecalProjector.transform.parent = transform;
-        bulletDecalProjector.transform.localPosition = Vector3.zero;
-        bulletDecalProjector.enabled = false;
     }
     private void DisableBullet()
     {

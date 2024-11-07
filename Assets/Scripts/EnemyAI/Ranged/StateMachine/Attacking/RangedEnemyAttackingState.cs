@@ -42,15 +42,38 @@ public class RangedEnemyAttackingState : RangedEnemyState
     private Coroutine attackLoop_Ref;
     private IEnumerator AttackLoop_Coroutine()
     {
+        bool chargedStrongAttack = false;
         while (true)
         {
             for (int i = 0; i < 2; i++)
             {
+                if (chargedStrongAttack)
+                {
+                    Rigidbody playerRb = ArmadilloPlayerController.Instance.movementControl.rb;
+                    Physics.Raycast(iEnemy.firePivot.position, playerRb.position - iEnemy.firePivot.position, out RaycastHit hitInfo, 50, Physics.AllLayers, QueryTriggerInteraction.Ignore);
+                    if (!hitInfo.collider.CompareTag("Player"))
+                    {
+                        yield return StrongAttack_Coroutine();
+                        yield return iEnemy.LerpLookAt_Coroutine(ArmadilloPlayerController.Instance.transform, 2, Random.Range(0f, 2f) + 1);
+                        chargedStrongAttack = false;
+                        i = 0;
+                    }
+                }
                 yield return WeakAttack_Coroutine();
                 yield return iEnemy.LerpLookAt_Coroutine(ArmadilloPlayerController.Instance.transform, 2, Random.Range(0f, 3f) + 6 - 2.375f / 2);
             }
-            yield return StrongAttack_Coroutine();
-            yield return iEnemy.LerpLookAt_Coroutine(ArmadilloPlayerController.Instance.transform, 2, Random.Range(0f, 2f) + 1);
+            chargedStrongAttack = true;
+            if (chargedStrongAttack)
+            {
+                Rigidbody playerRb = ArmadilloPlayerController.Instance.movementControl.rb;
+                Physics.Raycast(iEnemy.firePivot.position, playerRb.position - iEnemy.firePivot.position, out RaycastHit hitInfo, 50, Physics.AllLayers, QueryTriggerInteraction.Ignore);
+                if (!hitInfo.collider.CompareTag("Player"))
+                {
+                    yield return StrongAttack_Coroutine();
+                    yield return iEnemy.LerpLookAt_Coroutine(ArmadilloPlayerController.Instance.transform, 2, Random.Range(0f, 2f) + 1);
+                }
+                chargedStrongAttack = false;
+            }
         }
     }
 
@@ -79,10 +102,6 @@ public class RangedEnemyAttackingState : RangedEnemyState
                 }
                 iEnemy.LerpLookAt(iEnemy.weakAttackLaser.target, 20);
             }
-            else
-            {
-                yield return new WaitForFixedUpdate();
-            }
             timer += Time.fixedDeltaTime;
             yield return new WaitForFixedUpdate();
         }
@@ -93,7 +112,7 @@ public class RangedEnemyAttackingState : RangedEnemyState
         direction.Normalize();
         iEnemy.animator.SetTrigger("sniperFire");
         iEnemy.animator.SetBool("isLoadingSniper", false);
-        yield return new WaitForSeconds(0.25f + 1.2f / 2);
+        yield return new WaitForSeconds(1.2f / 2f + 0.25f);
         iEnemy.weakAttackProjectile.Fire(iEnemy.firePivot.position, direction * 2);
         yield return new WaitForSeconds(0.33f);
     }
@@ -109,17 +128,8 @@ public class RangedEnemyAttackingState : RangedEnemyState
             iEnemy.LerpLookAt(ArmadilloPlayerController.Instance.transform.position, 2);
             iEnemy.strongAttackProjectile.transform.position = iEnemy.firePivot.position;
             Vector3 raycastDelta = (ArmadilloPlayerController.Instance.transform.position - iEnemy.firePivot.position);
-            Physics.Raycast(iEnemy.firePivot.position, raycastDelta.normalized, out RaycastHit hitInfo, raycastDelta.magnitude, Physics.AllLayers, QueryTriggerInteraction.Ignore);
-            if (hitInfo.collider.CompareTag("Player"))
-            {
-                timer += Time.fixedDeltaTime;
-            }
-            else
-            {
-                {
-                    timer = 0;
-                }
-            }
+            //Physics.Raycast(iEnemy.firePivot.position, raycastDelta.normalized, out RaycastHit hitInfo, raycastDelta.magnitude, Physics.AllLayers, QueryTriggerInteraction.Ignore);
+            timer += Time.fixedDeltaTime;
             yield return new WaitForFixedUpdate();
         }
         timer = 0;
@@ -130,17 +140,8 @@ public class RangedEnemyAttackingState : RangedEnemyState
             iEnemy.LerpLookAt(ArmadilloPlayerController.Instance.transform.position, 2);
             iEnemy.strongAttackProjectile.transform.position = iEnemy.firePivot.position;
             Vector3 raycastDelta = (ArmadilloPlayerController.Instance.transform.position - iEnemy.firePivot.position);
-            Physics.Raycast(iEnemy.firePivot.position, raycastDelta.normalized, out RaycastHit hitInfo, raycastDelta.magnitude, Physics.AllLayers, QueryTriggerInteraction.Ignore);
-            if (hitInfo.collider.CompareTag("Player"))
-            {
-                timer += Time.fixedDeltaTime;
-            }
-            else
-            {
-                {
-                    timer = 0;
-                }
-            }
+            //Physics.Raycast(iEnemy.firePivot.position, raycastDelta.normalized, out RaycastHit hitInfo, raycastDelta.magnitude, Physics.AllLayers, QueryTriggerInteraction.Ignore);
+            timer += Time.fixedDeltaTime;
             yield return new WaitForFixedUpdate();
         }
         timer = 0;
