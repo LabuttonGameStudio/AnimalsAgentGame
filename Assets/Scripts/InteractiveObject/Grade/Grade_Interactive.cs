@@ -50,6 +50,10 @@ public class Grade_Interactive : MonoBehaviour,INeedRequirements
     }
     private Coroutine toggleGate_Ref;
 
+    public void Open()
+    {
+        StartCoroutine(ToggleGate_Coroutine(true));
+    }
 
     private IEnumerator ToggleGate_Coroutine(bool state)
     {
