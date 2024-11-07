@@ -95,13 +95,18 @@ public class SandBomb : MonoBehaviour
             sandSlowArea.transform.position = groundCast.point;
             sandSlowArea.gameObject.SetActive(true);
         }
-        RaycastHit[] hitArray = Physics.SphereCastAll(transform.position, explosionRange, Vector3.one,explosionRange*2 ,LayerManager.Instance.enemyAttackMask,QueryTriggerInteraction.Ignore);
-        foreach (RaycastHit hit in hitArray)
+        Collider[] collidersInside = Physics.OverlapSphere(transform.position, explosionRange, LayerManager.Instance.enemyAttackMask, QueryTriggerInteraction.Ignore);
+        foreach (Collider collider in collidersInside)
         {
-            if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Enemies")) return;
-            if (hit.collider.TryGetComponent(out IDamageable damageable))
+            if (collider.gameObject.layer == LayerMask.NameToLayer("Enemies")) return;
+            if (collider.TryGetComponent(out IDamageable damageable))
             {
-                damageable.TakeDamage(new Damage(damage, Damage.DamageType.Blunt, false, transform.position));
+                Vector3 direction = collider.transform.position - transform.position;
+                Physics.Raycast(transform.position, direction.normalized, out RaycastHit raycastHit, direction.magnitude, Physics.AllLayers, QueryTriggerInteraction.Ignore);
+                if (raycastHit.collider == collider)
+                {
+                    damageable.TakeDamage(new Damage(damage, Damage.DamageType.Blunt, false, transform.position));
+                }
             }
         }
     }
