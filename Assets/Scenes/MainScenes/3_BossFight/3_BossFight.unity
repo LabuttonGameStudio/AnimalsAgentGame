@@ -10025,7 +10025,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_IsGlobal: 1
-  priority: 2
+  priority: 0
   blendDistance: 0
   weight: 1
   sharedProfile: {fileID: 11400000, guid: 2bf9c2da543a82a48b11c863f5289140, type: 2}
@@ -12474,6 +12474,10 @@ PrefabInstance:
     - target: {fileID: 5627174916926076884, guid: eb11bd31773d7a64aa560b99e8e3727a, type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5859044287967524625, guid: eb11bd31773d7a64aa560b99e8e3727a, type: 3}
+      propertyPath: m_ClearFlags
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 6112989399156946717, guid: eb11bd31773d7a64aa560b99e8e3727a, type: 3}
       propertyPath: startWithSonarAbility
@@ -17895,7 +17899,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9082903924819551473, guid: d14702f3028838049828238a7e4aa94d, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -2
       objectReference: {fileID: 0}
     - target: {fileID: 9082903924819551473, guid: d14702f3028838049828238a7e4aa94d, type: 3}
       propertyPath: m_LocalPosition.z

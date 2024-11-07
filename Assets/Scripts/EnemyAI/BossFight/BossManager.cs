@@ -22,7 +22,7 @@ public class BossManager : MonoBehaviour
     private IEnumerator ChangeToSecondPhase_Coroutine()
     {
         float timer = 0;
-        float duration = 1.25f;
+        float duration = 3.25f;
         
         Vector3 startPos = cageCapsule.position;
         while (timer < duration)
@@ -31,7 +31,7 @@ public class BossManager : MonoBehaviour
             timer += Time.deltaTime;
             yield return null;
         }
-        cageCapsule.transform.localPosition = startPos - Vector3.up * 9;
+        cageCapsule.transform.localPosition = startPos - Vector3.up * 7;
         timer = 0;
 
         onEnterSecondPhaseEvent.Invoke();
@@ -46,7 +46,9 @@ public class BossManager : MonoBehaviour
         secondPhaseVolume.weight = 1;
         timer = 0;
 
-        duration = 1.25f;
+        onEndSecondPhaseEvent.Invoke();
+
+        duration = 3.25f;
         startPos = bossTransform.localPosition;
         while (timer < duration)
         {
@@ -57,6 +59,5 @@ public class BossManager : MonoBehaviour
         bossTransform.localPosition = startPos + Vector3.up * 9;
 
 
-        onEndSecondPhaseEvent.Invoke();
     }
 }
