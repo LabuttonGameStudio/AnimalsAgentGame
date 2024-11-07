@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: MM_MouseBolinha_Computador
+  m_Name: MM_Teclado_Computador
   m_Shader: {fileID: -6465566751694194690, guid: b6312a07b780c054f91dbbbfa76a9f7f, type: 3}
   m_Parent: {fileID: 2100000, guid: 1706e097d9538404ea2b67de8e36a0e1, type: 2}
   m_ModifiedSerializedProperties: 2
@@ -25,7 +25,7 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _BaseMap:
-        m_Texture: {fileID: 2800000, guid: c9a4b9589d75e7946979f60b346a4b1c, type: 3}
+        m_Texture: {fileID: 2800000, guid: 73b228196b8fcc34dbd92885654458c1, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Emissive_Tex:
@@ -33,16 +33,17 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MaskMap:
-        m_Texture: {fileID: 2800000, guid: ac5a9bc3ecaac5248bdbc8d5bc721ed9, type: 3}
+        m_Texture: {fileID: 2800000, guid: 65934eab1b7e71341b2083afae80ef98, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _NormalMap:
-        m_Texture: {fileID: 2800000, guid: 3ee24dfab2fff064f98724f7f0661497, type: 3}
+        m_Texture: {fileID: 2800000, guid: ef99957b72c30b346ac887f90773673b, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
     - _Emissive: 0
+    - _Emissive_intensity: 0.2
     - _Random_Color_Opacity: 0
     m_Colors: []
   m_BuildTextureStacks: []

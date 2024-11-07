@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: MM_Tela1_Computador
+  m_Name: MM_Tela1_Locked_Computador
   m_Shader: {fileID: -6465566751694194690, guid: b6312a07b780c054f91dbbbfa76a9f7f, type: 3}
   m_Parent: {fileID: 2100000, guid: 1706e097d9538404ea2b67de8e36a0e1, type: 2}
   m_ModifiedSerializedProperties: 2
@@ -25,7 +25,11 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _BaseMap:
-        m_Texture: {fileID: 2800000, guid: 9c3d1d6cca103d548ab7edd4c191c7ee, type: 3}
+        m_Texture: {fileID: 2800000, guid: 2290961027cbc31469ec5f9fe454be3f, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Emissive_Tex:
+        m_Texture: {fileID: 2800000, guid: 2290961027cbc31469ec5f9fe454be3f, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MaskMap:
@@ -38,6 +42,8 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _Emissive: 1
+    - _Emissive_intensity: 0.2
     - _Random_Color_Opacity: 0
     m_Colors: []
   m_BuildTextureStacks: []
