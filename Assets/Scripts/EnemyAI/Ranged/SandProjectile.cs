@@ -10,14 +10,13 @@ public class SandProjectile : MonoBehaviour
     private Rigidbody rb;
     public static float damageAmount;
     [SerializeField] private ParticleSystem onHitVFX;
-    [SerializeField] public ParticleSystem preparationVFX;
 
     private Vector3 originPoint;
     private Vector3 direction;
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
-        damageAmount = 30;
+        damageAmount = 15;
         lifeSpanDuration = 5;
     }
     private void Start()

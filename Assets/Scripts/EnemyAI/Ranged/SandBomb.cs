@@ -21,7 +21,7 @@ public class SandBomb : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         sphereCollider = GetComponent<SphereCollider>();
         explosionRange = 3;
-        damage = 30;
+        damage = 10;
     }
     private void OnDrawGizmosSelected()
     {
