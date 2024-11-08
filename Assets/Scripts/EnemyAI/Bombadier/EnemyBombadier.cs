@@ -1,4 +1,5 @@
 using System.Collections;
+using Pixeye.Unity;
 using System.Collections.Generic;
 using UnityEngine;
 using static AIBehaviourEnums;
@@ -16,7 +17,7 @@ public class EnemyBombardier  : IEnemy, IDamageable
     #endregion
 
     #region Combat Variables
-    [Foldout("Combat Variables", styled = true)]
+    [Foldout("Combat Variables", true)]
 
     [Header("Attacks")]
     public BombardierBomb bombardierBomb;
@@ -27,13 +28,13 @@ public class EnemyBombardier  : IEnemy, IDamageable
     #endregion
 
     #region Detection Variables
-    [Foldout("Detection", styled = true)]
+    [Foldout("Detection", true)]
     public float timeToMaxDetect;
 
     #endregion
 
     #region Visual Variables
-    [Foldout("Visual", styled = true)]
+    [Foldout("Visual", true)]
     [SerializeField] private SkinnedMeshRenderer meshRenderer;
     #endregion
 

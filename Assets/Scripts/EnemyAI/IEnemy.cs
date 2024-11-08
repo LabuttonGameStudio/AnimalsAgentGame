@@ -1,3 +1,4 @@
+using Pixeye.Unity;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -30,7 +31,7 @@ public abstract class IEnemy : MonoBehaviour, IRaycastableInLOS
     #region Variables
     #region Path Finding|NavMesh Variables
     [HideInInspector] public NavMeshAgent navMeshAgent;
-    [Foldout("Path Finding | Navmesh", styled = true)]
+    [Foldout("Path Finding | Navmesh",true)]
     [HideInInspector, Tooltip("Static = O inimigo não se move")] public bool isStatic;
     protected enum PathLoopTypes
     {
@@ -60,7 +61,7 @@ public abstract class IEnemy : MonoBehaviour, IRaycastableInLOS
 
     #region EnemyStats Variables
     //HP Control
-    [Foldout("HP", styled = true)]
+    [Foldout("HP", true)]
     [SerializeField] protected float currentHp = 50;
     [SerializeField] protected float maxHp = 50;
 
@@ -76,7 +77,7 @@ public abstract class IEnemy : MonoBehaviour, IRaycastableInLOS
 
     #region EnemyComponents
     [HideInInspector] public Rigidbody rb;
-    [Foldout("Components", styled = true)]
+    [Foldout("Components", true)]
     public Animator animator;
     #endregion
 
@@ -86,7 +87,7 @@ public abstract class IEnemy : MonoBehaviour, IRaycastableInLOS
 
     //Ultima posicao conhecida do jogador
     [HideInInspector] public Vector3 lastKnownPlayerPos;
-    [Foldout("Visibility Variables", styled = true)]
+    [Foldout("Visibility Variables", true)]
     //Material do cone de visibilidade 
     [SerializeField] protected Material visibilityConeMaterial;
     [SerializeField] protected Material visibilityConeOnViewMaterial;
@@ -95,7 +96,7 @@ public abstract class IEnemy : MonoBehaviour, IRaycastableInLOS
     [SerializeField] protected MeshFilter visibilityMeshFilter;
     [SerializeField] protected MeshRenderer visibilityMeshRenderer;
 
-    [Foldout("Field Of View", styled = true)]
+    [Foldout("Field Of View", true)]
     //Ponto do olho do inimigo
     [SerializeField] protected Transform eyeTransform;
 
@@ -116,7 +117,7 @@ public abstract class IEnemy : MonoBehaviour, IRaycastableInLOS
     #endregion
 
     #region AI Enemy States  
-    [Foldout("AI Behaviour", styled = true)]
+    [Foldout("AI Behaviour", true)]
     //Estado principal atual de behaviour
     [SerializeField] public AIBehaviour currentAIBehaviour;
     //Visual Referente ao estado atual do inimigo
@@ -830,7 +831,7 @@ public abstract class IEnemy : MonoBehaviour, IRaycastableInLOS
 
     //----- On Death -----
     #region On Death
-    [Foldout("On Death", styled = true, foldEverything = false)] public UnityEvent onDeathEvent;
+    [Foldout("On Death", true, foldEverything = false)] public UnityEvent onDeathEvent;
     #endregion
 
     //-----Toggle Alert-----

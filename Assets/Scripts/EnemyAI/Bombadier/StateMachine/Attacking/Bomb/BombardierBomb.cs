@@ -1,13 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using Pixeye.Unity;
 public class BombardierBomb : MonoBehaviour
 {
     private Rigidbody rb;
-    [Foldout("Explosion Mechanic",styled = true)]
+    [Foldout("Explosion Mechanic",true)]
     [SerializeField] private GameObject explosionArea;
-    [Foldout("VFX", styled = true)]
+    [Foldout("VFX", true)]
     [Header("-----Blast Wave-----")]
     public int pointsCount;
     public float maxRadius;

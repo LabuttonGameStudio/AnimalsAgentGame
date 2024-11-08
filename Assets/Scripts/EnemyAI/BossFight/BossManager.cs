@@ -1,3 +1,4 @@
+using Pixeye.Unity;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,12 +7,12 @@ using UnityEngine.Rendering;
 
 public class BossManager : MonoBehaviour
 {
-    [Foldout("Components", styled = true)]
+    [Foldout("Components",true)]
     [SerializeField]private Transform cageCapsule;
     [SerializeField]private Transform bossTransform;
     [SerializeField]private Animator bossAnimator;
     [SerializeField]private Volume secondPhaseVolume;
-    [Foldout("Second Phase",styled = true)]
+    [Foldout("Second Phase",true)]
 
     [SerializeField] private UnityEvent onEnterSecondPhaseEvent;
     [SerializeField] private UnityEvent onEndSecondPhaseEvent;

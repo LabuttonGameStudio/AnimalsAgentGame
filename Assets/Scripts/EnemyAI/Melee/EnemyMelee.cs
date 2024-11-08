@@ -1,4 +1,5 @@
 using System.Collections;
+using Pixeye.Unity;
 using UnityEngine;
 using AudioType = SoundGeneralControl.AudioType;
 using UnityEngine.VFX;
@@ -15,7 +16,7 @@ public class EnemyMelee : IEnemy, IDamageable, ISoundReceiver
 
     //Visual Variables
     #region Visual Variables
-    [Foldout("Visual", styled = true)]
+    [Foldout("Visual", true)]
     [SerializeField] private SkinnedMeshRenderer meshRenderer;
     #endregion
 
@@ -34,7 +35,7 @@ public class EnemyMelee : IEnemy, IDamageable, ISoundReceiver
 
     //Combat Variables
     #region Combat Variables
-    [Foldout("Combat", styled = true)]
+    [Foldout("Combat", true)]
 
     [Header("Shield")]
     public GameObject shieldGameObject;
@@ -60,13 +61,13 @@ public class EnemyMelee : IEnemy, IDamageable, ISoundReceiver
 
     //Sfx Variables
     #region SFX Variables
-    [Foldout("SFX", styled = true)]
+    [Foldout("SFX", true)]
     public SoundEmitter walkingSoundEmitter;
     #endregion
 
     //Vfx Variables
     #region VFX Variables
-    [Foldout("VFX", styled = true)]
+    [Foldout("VFX", true)]
     [SerializeField] private ParticleSystem onHitParticleScrewAndBolts;
     [SerializeField] private ParticleSystem onHitParticleSparkDefault;
     [SerializeField] private ParticleSystem onHitParticleSparkCritical;

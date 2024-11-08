@@ -1,4 +1,5 @@
 using System.Collections;
+using Pixeye.Unity;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -7,7 +8,7 @@ using UnityEngine.Localization;
 
 public class Gerador_Interactive : MonoBehaviour, IRequirements, InteractiveObject, INeedRequirements
 {
-    [Foldout("Translations",styled = true)]
+    [Foldout("Translations",true)]
     [SerializeField] private LocalizedString objectName;
     [SerializeField] private LocalizedString objectDescriptionTurnedOff;
     [SerializeField] private LocalizedString objectDescriptionTurnedOn;
@@ -15,7 +16,7 @@ public class Gerador_Interactive : MonoBehaviour, IRequirements, InteractiveObje
 
     //----- Requirements -----
     private bool needRequeriments;
-    [Foldout("Functionality", styled = true)]
+    [Foldout("Functionality", true)]
     [SerializeField] private GameObject[] _requirements;
     public IRequirements[] requirements { get; set; }
     public INeedRequirements connectedObject { get; set; }

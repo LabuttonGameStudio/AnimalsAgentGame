@@ -76,7 +76,7 @@ public class ArmadilloWeaponControl : MonoBehaviour
     public void Melee(InputAction.CallbackContext performed)
     {
         if (meleeIsOnCooldown || !ArmadilloPlayerController.Instance.visualControl.isArmVisible) return;
-        if(pressOrHoldHit_Ref == null && hit_Ref ==null)
+        if (pressOrHoldHit_Ref == null && hit_Ref == null)
         {
             ToggleArms(false);
             ToggleWeapon(false, false);
@@ -104,7 +104,7 @@ public class ArmadilloWeaponControl : MonoBehaviour
     private IEnumerator PressOrHoldHit_Coroutine()
     {
         meleeHoldDuration = 0;
-        while(meleeHoldDuration<heavyMeleeHoldDuration)
+        while (meleeHoldDuration < heavyMeleeHoldDuration)
         {
             meleeHoldDuration += Time.deltaTime;
             yield return null;
@@ -423,6 +423,15 @@ public class ArmadilloWeaponControl : MonoBehaviour
             ammoReserves += ammoAmount;
             ammoReserves = Mathf.Min(ammoReserves, weapon.maxAmmoReserveAmount);
             weapon.ammoReserveAmount = ammoReserves;
+            switch (weaponType)
+            {
+                case WeaponType.Zapgun:
+                    eletricPistol.OnGainAmmo();
+                    break;
+                case WeaponType.Watergun:
+                    waterGun.OnGainAmmo();
+                    break;
+            }
             return true;
         }
     }

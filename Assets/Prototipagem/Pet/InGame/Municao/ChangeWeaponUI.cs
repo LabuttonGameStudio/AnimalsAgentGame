@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,13 +14,16 @@ public class WeaponUIElements
     [Header("Crosshair")]
     public RectTransform crosshairRect;
     public CanvasGroup crosshairCanvasGroup;
+    [Header("AmmoIcon")]
+    public Slider ammoReserveSlider;
+    public TextMeshProUGUI ammoReserveText;
 }
 public class ChangeWeaponUI : MonoBehaviour
 {
     public static ChangeWeaponUI Instance;
 
     [Header("WEAPONS")]
-    [SerializeField] private WeaponUIElements[] weaponUIElements;
+    [SerializeField] public WeaponUIElements[] weaponUIElements;
 
     [Header("CROSSHAIR")]
     [SerializeField] private CanvasGroup SliderAmmunition; // slider da mira

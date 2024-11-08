@@ -1,4 +1,4 @@
-using System;
+using Pixeye.Unity;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
@@ -9,7 +9,7 @@ public class EletricPistolVisual : MonoBehaviour
     public static EletricPistolVisual Instance;
 
     [SerializeField] private GameObject model;
-    [Foldout("VFX", styled = true)]
+    [Foldout("VFX", true)]
     [SerializeField] private ParticleSystem onFireParticle;
     [SerializeField] private ParticleSystem onFireTrail;
     [SerializeField] private ParticleSystem onReloadParticle;
@@ -26,7 +26,7 @@ public class EletricPistolVisual : MonoBehaviour
     [SerializeField] private Light[] onFireLight;
     private float[] onFireLightDefaultValue;
 
-    [Foldout("SFX", styled = true)]
+    [Foldout("SFX", true)]
     [SerializeField] public Transform audioEmitterTransform;
     [SerializeField] private SoundEmitter onUnchargedFireSoundEmitter;
     private int currentDecalIndex;
@@ -156,12 +156,16 @@ public class EletricPistolVisual : MonoBehaviour
         projectileLineRenderer.endColor = new Color(projectileLineRenderer.endColor.r, projectileLineRenderer.endColor.g, projectileLineRenderer.endColor.b, projectileLineRendererEndAlphaValue);
     }
 
-    public void UpdateUI(int currentAmount, int totalAmount)
+    public void UpdateUI(int currentAmount, int totalAmount, int reserveAmount,int reserveTotal)
     {
         Slider ammoSlider = ArmadilloPlayerController.Instance.weaponControl.Weaponammoslider;
         ammoSlider.value = (float)currentAmount / (float)totalAmount;
         ammoSlider.fillRect.GetComponent<Image>().color = Color.Lerp(Color.red, Color.white, ammoSlider.value);
         ArmadilloPlayerController.Instance.weaponControl.currentWeaponUI.text = " x" + Mathf.Round(ammoSlider.value * 100).ToString() + "%";
+
+        ChangeWeaponUI.Instance.weaponUIElements[0].ammoReserveSlider.value = (float)reserveAmount / (float)reserveTotal;
+        ChangeWeaponUI.Instance.weaponUIElements[0].ammoReserveText.text = Mathf.Round((float)reserveAmount / (float)reserveTotal * 100).ToString() + "%";
+
     }
 
     public void ToggleReload(bool toggle)

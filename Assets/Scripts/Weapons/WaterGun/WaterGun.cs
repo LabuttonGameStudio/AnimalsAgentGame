@@ -70,7 +70,7 @@ public class WaterGun : Weapon
         }
         if (playAnimation) ArmadilloPlayerController.Instance.visualControl.EquipWaterGunAnim();
         else ArmadilloPlayerController.Instance.visualControl.EquipWaterGun();
-        visualHandler.UpdateUI(currentAmmoAmount, maxAmmoAmount);
+        visualHandler.UpdateUI(currentAmmoAmount, maxAmmoAmount, ammoReserveAmount, maxAmmoReserveAmount);
 
 
     }
@@ -159,7 +159,7 @@ public class WaterGun : Weapon
         {
             Fire(firePivot.position, firePivot.forward);
             currentAmmoAmount--;
-            visualHandler.UpdateUI(currentAmmoAmount, maxAmmoAmount);
+            visualHandler.UpdateUI(currentAmmoAmount, maxAmmoAmount, ammoReserveAmount, maxAmmoReserveAmount);
             yield return new WaitForSeconds(0.25f);
         }
         ArmadilloMovementController movementControl = ArmadilloPlayerController.Instance.movementControl;
@@ -252,7 +252,7 @@ public class WaterGun : Weapon
             ammoReserveAmount = 0;
         }
         reloadTimer_Ref = null;
-        visualHandler.UpdateUI(currentAmmoAmount, maxAmmoAmount);
+        visualHandler.UpdateUI(currentAmmoAmount, maxAmmoAmount, ammoReserveAmount, maxAmmoReserveAmount);
     }
     #endregion
 
@@ -278,6 +278,14 @@ public class WaterGun : Weapon
     public override void ToggleOnRun(bool state)
     {
         visualHandler.ToggleOnRun(state);
+    }
+    #endregion
+
+    //OnGainAmmo
+    #region OnGainAmmo
+    public void OnGainAmmo()
+    {
+        visualHandler.UpdateUI(currentAmmoAmount, maxAmmoAmount, ammoReserveAmount, maxAmmoReserveAmount);
     }
     #endregion
 }

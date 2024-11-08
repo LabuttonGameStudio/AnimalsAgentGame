@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.VFX;
+using Pixeye.Unity;
 using static AIBehaviourEnums;
 
 public class RangedEnemy : IEnemy, IDamageable, ISoundReceiver
@@ -17,7 +18,7 @@ public class RangedEnemy : IEnemy, IDamageable, ISoundReceiver
     #endregion
 
     #region Combat Variables
-    [Foldout("Combat Variables", styled = true)]
+    [Foldout("Combat Variables", true)]
 
     [Header("Attacks")]
     public LaserTrackPlayer weakAttackLaser;
@@ -33,13 +34,13 @@ public class RangedEnemy : IEnemy, IDamageable, ISoundReceiver
     #endregion
 
     #region Detection Variables
-    [Foldout("Detection", styled = true)]
+    [Foldout("Detection", true)]
     public float timeToMaxDetect;
 
     #endregion
 
     #region Visual Variables
-    [Foldout("Visual", styled = true)]
+    [Foldout("Visual", true)]
     [Header("Mesh")]
     [SerializeField] private SkinnedMeshRenderer meshRenderer;
     [Header("VFX")]

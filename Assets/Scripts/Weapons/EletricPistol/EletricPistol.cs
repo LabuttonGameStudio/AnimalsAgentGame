@@ -71,7 +71,7 @@ public class EletricPistol : Weapon
     {
         if (playAnimation) ArmadilloPlayerController.Instance.visualControl.EquipEletricPistolAnim();
         else ArmadilloPlayerController.Instance.visualControl.EquipEletricPistol();
-        visualHandler.UpdateUI(currentAmmoAmount, maxAmmoAmount);
+        visualHandler.UpdateUI(currentAmmoAmount, maxAmmoAmount, ammoReserveAmount,maxAmmoReserveAmount);
 
     }
     public override void OnUnequip()
@@ -137,7 +137,7 @@ public class EletricPistol : Weapon
             ArmadilloPlayerController.Instance.visualControl.OnEletricGunFire();
             currentAmmoAmount -= 1;
             currentAmmoAmount = Mathf.Max(currentAmmoAmount, 0);
-            visualHandler.UpdateUI(currentAmmoAmount, maxAmmoAmount);
+            visualHandler.UpdateUI(currentAmmoAmount, maxAmmoAmount, ammoReserveAmount, maxAmmoReserveAmount);
             StartFireCooldownTimer();
         }
         else
@@ -232,7 +232,7 @@ public class EletricPistol : Weapon
         ArmadilloPlayerController.Instance.visualControl.ToggleEletricPistolOverheat(false);
         visualHandler.ToggleReload(false);
         ReplenishAmmo();
-        visualHandler.UpdateUI(currentAmmoAmount, maxAmmoAmount);
+        visualHandler.UpdateUI(currentAmmoAmount, maxAmmoAmount, ammoReserveAmount, maxAmmoReserveAmount);
         isReloading = false;
         reload_Ref = null;
     }
@@ -280,6 +280,14 @@ public class EletricPistol : Weapon
     public override void ToggleOnRun(bool state)
     {
 
+    }
+    #endregion
+
+    //OnGainAmmo
+    #region
+    public void OnGainAmmo()
+    {
+        visualHandler.UpdateUI(currentAmmoAmount, maxAmmoAmount, ammoReserveAmount, maxAmmoReserveAmount);
     }
     #endregion
 }
