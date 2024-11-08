@@ -80,8 +80,8 @@ public class EnemyMelee : IEnemy, IDamageable, ISoundReceiver
     #region Base Functions
     protected override void OnAwake()
     {
-        navMeshAgent.speed *= Random.Range(0.5f, 1f);
-        navMeshAgent.acceleration *= Random.Range(0.5f, 1f);
+        navMeshAgent.speed *= Random.Range(0.5f, 0.75f);
+        navMeshAgent.acceleration *= Random.Range(0.5f, 0.75f);
         playHitAnimation = true;
         enemyRoamingState = new MeleeEnemyRoamingState(this);
         enemyObservingState = new MeleeEnemyObservingState(this);
