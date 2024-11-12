@@ -5,6 +5,7 @@ using UnityEngine.InputSystem;
 
 public class ContainerDoor : MonoBehaviour, InteractiveObject
 {
+    public bool isEnabled { get; set; }
     [SerializeField] private ContainerDoor twinDoor;
     private bool isOpen;
     [SerializeField] private float openAngle;
@@ -17,6 +18,11 @@ public class ContainerDoor : MonoBehaviour, InteractiveObject
     public string GetObjectName()
     {
         return "Porta Container";
+    }
+
+    private void Awake()
+    {
+        isEnabled = true;
     }
 
     public void Interact(InputAction.CallbackContext value)

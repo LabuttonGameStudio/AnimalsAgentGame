@@ -14,11 +14,11 @@ public class MeleeEnemyAttackingState : MeleeEnemyState
 
     public override void OnEnterState()
     {
+        attackCycle = 0;
         iEnemy.enemyBehaviourVisual.ChangeVisualState(AIBehaviourEnums.AIBehaviour.Attacking);
         iEnemy.navMeshAgent.isStopped = false;
         iEnemy.navMeshAgent.autoBraking = false;
-        iEnemy.navMeshAgent.acceleration *= 1.25f;
-        iEnemy.navMeshAgent.speed *= 1.25f;
+        iEnemy.SetVelocity(AIBehaviourEnums.AIBehaviour.Attacking);
         enemyRoutine_Ref = iEnemy.StartCoroutine(EnemyRoutine_Coroutine());
     }
     public override void OnExitState()

@@ -128,16 +128,14 @@ public class RangedEnemy : IEnemy, IDamageable, ISoundReceiver
             isDead = true;
             animator.transform.parent = animator.transform.parent.parent;
             animator.SetBool("isWalking",false);
-            animator.SetTrigger("isDefeated");
+            animator.SetBool("isDead",true);
             foreach(DamageableHitbox hitbox in damageableHitboxes)
             {
                 foreach (Collider collider in hitbox._Collider) collider.enabled = false;
                 hitbox._IsDead = true;
             }
             //VFX
-            strongAttackProjectile.StopSpawnVFX();
-            onDeathVFX.Play();
-            EnemyMasterControl.Instance.StartCoroutine(DeSpawnCoroutine(animator.gameObject, onDeathVFX));
+            deSpawn_Ref = EnemyMasterControl.Instance.StartCoroutine(DeSpawnCoroutine(animator.gameObject, onDeathVFX));
 
             switch(damage.damageType)
             {
@@ -145,7 +143,6 @@ public class RangedEnemy : IEnemy, IDamageable, ISoundReceiver
                     onDeathByElectricityVFX.Play();
                     break;
             }
-
             onDeathEvent.Invoke();
             gameObject.SetActive(false);
         }
@@ -182,7 +179,7 @@ public class RangedEnemy : IEnemy, IDamageable, ISoundReceiver
         meshRenderer.sharedMaterial = EnemyMasterControl.Instance.defaultRangedEnemyMat;
         onTakeDamageVisual_Ref = null;
     }
-
+    private Coroutine deSpawn_Ref;
     private IEnumerator DeSpawnCoroutine(GameObject gameObject, VisualEffect visualEffect)
     {
         yield return new WaitForSeconds(5);
@@ -235,6 +232,59 @@ public class RangedEnemy : IEnemy, IDamageable, ISoundReceiver
         {
             ChangeCurrentState(enemySearchingState);
         }
+    }
+    #endregion
+
+    //Revive Function
+    #region Revive Function
+    public override void Revive(Vector3 respawnPos, Quaternion respawnRot)
+    {
+        isDead = false;
+        animator.transform.parent = transform;
+        animator.SetBool("isDead",false);
+
+        gameObject.transform.position = respawnPos;
+        gameObject.transform.rotation = respawnRot;
+        animator.gameObject.SetActive(true);
+
+        foreach (DamageableHitbox hitbox in damageableHitboxes)
+        {
+            foreach (Collider collider in hitbox._Collider) collider.enabled = true;
+            hitbox._IsDead = false;
+        }
+        if(deSpawn_Ref != null)
+        {
+            EnemyMasterControl.Instance.StopCoroutine(deSpawn_Ref);
+            deSpawn_Ref = null;
+        }
+        onDeathVFX.Stop();
+        currentHp = maxHp;
+        gameObject.SetActive(true);
+        fixedUpdate_Ref = StartCoroutine(FixedUpdate_Coroutine());
+        currentState.OnEnterState();
+    }
+    public override void Revive()
+    {
+        isDead = false;
+        animator.transform.parent = transform;
+        animator.SetBool("isDead", false);
+        animator.gameObject.SetActive(true);
+
+        foreach (DamageableHitbox hitbox in damageableHitboxes)
+        {
+            foreach (Collider collider in hitbox._Collider) collider.enabled = true;
+            hitbox._IsDead = false;
+        }
+        if (deSpawn_Ref != null)
+        {
+            EnemyMasterControl.Instance.StopCoroutine(deSpawn_Ref);
+            deSpawn_Ref = null;
+        }
+        onDeathVFX.Stop();
+        currentHp = maxHp;
+        gameObject.SetActive(true);
+        fixedUpdate_Ref = StartCoroutine(FixedUpdate_Coroutine());
+        currentState.OnEnterState();
     }
     #endregion
 

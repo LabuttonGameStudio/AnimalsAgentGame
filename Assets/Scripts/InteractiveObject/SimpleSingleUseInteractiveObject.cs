@@ -16,6 +16,8 @@ public class SimpleSingleUseInteractiveObject : MonoBehaviour, InteractiveObject
     [SerializeField]private UnityEvent onUseEvent;
     private bool wasUsed;
 
+    public bool isEnabled { get; set; }
+
     public string GetObjectName()
     {
         return objectName.GetLocalizedString();
@@ -25,10 +27,17 @@ public class SimpleSingleUseInteractiveObject : MonoBehaviour, InteractiveObject
         return objectDescription.GetLocalizedString();
     }
 
+    private void Awake()
+    {
+        isEnabled = true;
+    }
     public void Interact(InputAction.CallbackContext value)
     {
         if (wasUsed) return;
         wasUsed = true;
         onUseEvent.Invoke();
+        isEnabled = false;
+        ArmadilloInteractController.Instance.ClearInteractButtonAction();
+        gameObject.layer = LayerMask.NameToLayer("Default");
     }
 }

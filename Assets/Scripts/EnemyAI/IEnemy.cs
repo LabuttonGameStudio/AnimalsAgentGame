@@ -287,8 +287,8 @@ public abstract class IEnemy : MonoBehaviour, IRaycastableInLOS
         fixedUpdate_Ref = StartCoroutine(FixedUpdate_Coroutine());
     }
     protected abstract void OnStart();
-    private Coroutine fixedUpdate_Ref;
-    private IEnumerator FixedUpdate_Coroutine()
+    protected Coroutine fixedUpdate_Ref;
+    protected IEnumerator FixedUpdate_Coroutine()
     {
         while (true)
         {
@@ -848,6 +848,12 @@ public abstract class IEnemy : MonoBehaviour, IRaycastableInLOS
 
     public abstract void TurnAgressive();
 
+    #endregion
+
+    //-----Revive Enemy----
+    #region
+    public abstract void Revive(Vector3 respawnPos,Quaternion respawnRot);
+    public abstract void Revive();
     #endregion
 
 

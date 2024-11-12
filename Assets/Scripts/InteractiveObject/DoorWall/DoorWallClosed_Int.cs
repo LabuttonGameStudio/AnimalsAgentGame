@@ -5,6 +5,7 @@ using UnityEngine.InputSystem;
 
 public class DoorWallClosed_Int : MonoBehaviour,InteractiveObject
 {
+    public bool isEnabled { get; set; }
     [SerializeField]private DoorWallOpen_Int openDoor;
 
     public string GetObjectName()
@@ -14,6 +15,11 @@ public class DoorWallClosed_Int : MonoBehaviour,InteractiveObject
     public string GetObjectDescription()
     {
         return "Abrir";
+    }
+
+    private void Awake()
+    {
+        isEnabled = true;
     }
     public void Interact(InputAction.CallbackContext value)
     {

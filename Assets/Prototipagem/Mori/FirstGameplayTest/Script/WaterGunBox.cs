@@ -5,6 +5,7 @@ using UnityEngine.InputSystem;
 
 public class WaterGunBox : MonoBehaviour, InteractiveObject
 {
+    public bool isEnabled { get; set; }
     bool singleUse;
     public string GetObjectDescription()
     {
@@ -14,6 +15,11 @@ public class WaterGunBox : MonoBehaviour, InteractiveObject
     public string GetObjectName()
     {
         return "Caixa";
+    }
+
+    private void Awake()
+    {
+        isEnabled = true;
     }
 
     public void Interact(InputAction.CallbackContext value)

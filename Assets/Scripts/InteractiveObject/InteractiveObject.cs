@@ -5,12 +5,13 @@ using UnityEngine.InputSystem;
 
 public interface InteractiveObject: IRaycastableInLOS
 {
+    public bool isEnabled { get; set; }
     public void Interact(InputAction.CallbackContext value);
     public string GetObjectName();
     public string GetObjectDescription();
     void IRaycastableInLOS.OnEnterLOS()
     {
-        ArmadilloInteractController.Instance.AddToInteractButtonAction(this);
+        if(isEnabled)ArmadilloInteractController.Instance.AddToInteractButtonAction(this);
     }
 
     void IRaycastableInLOS.OnLeaveLOS()

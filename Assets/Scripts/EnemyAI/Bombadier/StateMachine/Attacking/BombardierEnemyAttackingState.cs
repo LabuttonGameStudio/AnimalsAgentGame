@@ -16,8 +16,7 @@ public class BombardierEnemyAttackingState : BombardierEnemyState
 
     public override void OnEnterState()
     {
-        iEnemy.navMeshAgent.acceleration *= 2f;
-        iEnemy.navMeshAgent.speed *= 2f;
+        iEnemy.SetVelocity(AIBehaviourEnums.AIBehaviour.Attacking);
         iEnemy.currentAIBehaviour = AIBehaviourEnums.AIBehaviour.Attacking;
         iEnemy.enemyBehaviourVisual.ChangeVisualState(AIBehaviourEnums.AIBehaviour.Attacking);
         iEnemy.animator.SetBool("isWalking", false);

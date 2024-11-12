@@ -7,6 +7,7 @@ using UnityEngine.Localization;
 
 public class LadderObject : MonoBehaviour, InteractiveObject
 {
+    public bool isEnabled { get; set; }
     [Header("Localization")]
     [SerializeField]private LocalizedString objectName;
     [SerializeField]private LocalizedString objectDescriptionGrab;
@@ -15,6 +16,11 @@ public class LadderObject : MonoBehaviour, InteractiveObject
     [SerializeField] private float pipeSize;
     [SerializeField] private Transform minTransform;
     [SerializeField] private Transform maxTransform;
+
+    private void Awake()
+    {
+        isEnabled = true;
+    }
     public string GetObjectDescription()
     {
         ArmadilloMovementController movementController = ArmadilloPlayerController.Instance.movementControl;

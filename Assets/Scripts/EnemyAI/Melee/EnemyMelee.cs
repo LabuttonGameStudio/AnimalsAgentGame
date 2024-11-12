@@ -22,7 +22,8 @@ public class EnemyMelee : IEnemy, IDamageable, ISoundReceiver
 
     //State Machine Variables
     #region StateMachine Variables
-
+    private float defaultSpeed;
+    private float defaultAcceleration;
     [HideInInspector] public MeleeEnemyState currentState;
 
     public MeleeEnemyRoamingState enemyRoamingState;
@@ -83,6 +84,8 @@ public class EnemyMelee : IEnemy, IDamageable, ISoundReceiver
     {
         navMeshAgent.speed *= Random.Range(0.5f, 0.75f);
         navMeshAgent.acceleration *= Random.Range(0.5f, 0.75f);
+        defaultSpeed = navMeshAgent.speed;
+        defaultAcceleration = navMeshAgent.acceleration;
         playHitAnimation = true;
         enemyRoamingState = new MeleeEnemyRoamingState(this);
         enemyObservingState = new MeleeEnemyObservingState(this);
@@ -165,7 +168,7 @@ public class EnemyMelee : IEnemy, IDamageable, ISoundReceiver
             }
             isDead = true;
             animator.transform.parent = animator.transform.parent.parent;
-            animator.SetTrigger("isDead");
+            animator.SetBool("isDead", true);
             switch (damage.damageType)
             {
                 case DamageType.Eletric:
@@ -173,7 +176,7 @@ public class EnemyMelee : IEnemy, IDamageable, ISoundReceiver
                     break;
             }
             deadLoopParticle.Play();
-            EnemyMasterControl.Instance.StartCoroutine(DeSpawnCoroutine(animator.gameObject, deadLoopParticle));
+            deSpawn_Ref = EnemyMasterControl.Instance.StartCoroutine(DeSpawnCoroutine(animator.gameObject, deadLoopParticle));
             shieldGameObject.SetActive(false);
             if (Random.Range(0f, 1f) >= 0.5f)
             {
@@ -311,6 +314,7 @@ public class EnemyMelee : IEnemy, IDamageable, ISoundReceiver
 
     //DeSpawn Functions
     #region DeSpawn Functions
+    private Coroutine deSpawn_Ref;
     private IEnumerator DeSpawnCoroutine(GameObject gameObject, VisualEffect visualEffect)
     {
         yield return new WaitForSeconds(5);
@@ -349,6 +353,75 @@ public class EnemyMelee : IEnemy, IDamageable, ISoundReceiver
     {
         isShieldActive = toggle;
         shieldGameObject.SetActive(toggle);
+    }
+    #endregion
+
+    //Revive Function
+    #region Revive Function
+    public override void Revive(Vector3 respawnPos, Quaternion respawnRot)
+    {
+        foreach (DamageableHitbox hitbox in damageableHitboxes)
+        {
+            foreach (Collider collider in hitbox._Collider) collider.enabled = true;
+            hitbox._IsDead = false;
+        }
+        isDead = false;
+        animator.transform.parent = gameObject.transform;
+        gameObject.transform.position = respawnPos;
+        gameObject.transform.rotation = respawnRot;
+        animator.gameObject.SetActive(true);
+        animator.SetBool("isDead",false);
+        currentHp = maxHp;
+        if (deSpawn_Ref != null)
+        {
+            EnemyMasterControl.Instance.StopCoroutine(deSpawn_Ref);
+            deSpawn_Ref = null;
+        }
+        deadLoopParticle.Stop();
+        gameObject.SetActive(true);
+        fixedUpdate_Ref = StartCoroutine(FixedUpdate_Coroutine());
+        currentState.OnEnterState();
+    }
+    public override void Revive()
+    {
+        foreach (DamageableHitbox hitbox in damageableHitboxes)
+        {
+            foreach (Collider collider in hitbox._Collider) collider.enabled = true;
+            hitbox._IsDead = false;
+        }
+        isDead = false;
+        animator.transform.parent = gameObject.transform;
+        animator.gameObject.SetActive(true);
+        animator.SetBool("isDead", false);
+        currentHp = maxHp;
+        if (deSpawn_Ref != null)
+        {
+            StopCoroutine(deSpawn_Ref);
+            deSpawn_Ref = null;
+        }
+        deadLoopParticle.Stop();
+        gameObject.SetActive(true);
+        fixedUpdate_Ref = StartCoroutine(FixedUpdate_Coroutine());
+        currentState.OnEnterState();
+    }
+    #endregion
+
+    #region Set Velocity
+    public void SetVelocity(AIBehaviour behaviour)
+    {
+        switch(behaviour)
+        {
+            case AIBehaviour.Roaming:
+            case AIBehaviour.Observing:
+            case AIBehaviour.Searching:
+                navMeshAgent.speed = defaultSpeed;
+                navMeshAgent.acceleration = defaultAcceleration;
+                break;
+            case AIBehaviour.Attacking:
+                navMeshAgent.speed = defaultSpeed*1.25f;
+                navMeshAgent.acceleration = defaultAcceleration * 1.25f;
+                break;
+        }
     }
     #endregion
 }

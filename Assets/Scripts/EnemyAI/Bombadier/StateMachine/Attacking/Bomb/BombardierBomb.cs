@@ -33,7 +33,6 @@ public class BombardierBomb : MonoBehaviour
     }
     private void OnCollisionEnter(Collision collision)
     {
-        Debug.Log(collision.gameObject.name);
         if (collision.rigidbody == null)
         {
             if (explosion_Ref == null) explosion_Ref = StartCoroutine(Explosion_Coroutine());

@@ -8,6 +8,7 @@ using UnityEngine.Localization;
 
 public class Gerador_Interactive : MonoBehaviour, IRequirements, InteractiveObject, INeedRequirements
 {
+    public bool isEnabled { get; set; }
     [Foldout("Translations",true)]
     [SerializeField] private LocalizedString objectName;
     [SerializeField] private LocalizedString objectDescriptionTurnedOff;
@@ -31,6 +32,7 @@ public class Gerador_Interactive : MonoBehaviour, IRequirements, InteractiveObje
 
     void Awake()
     {
+        isEnabled = true;
         bodyMeshRenderer.material = new Material(bodyMeshRenderer.material);
     }
     private void OnValidate()
