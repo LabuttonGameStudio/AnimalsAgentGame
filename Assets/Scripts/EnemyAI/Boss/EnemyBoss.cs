@@ -5,5 +5,9 @@ using UnityEngine;
 public class EnemyBoss : MonoBehaviour
 {
     private float currentHp;
-    private float maxHp;
+    [SerializeField]private float maxHp;
+    private void Awake()
+    {
+        currentHp = maxHp;
+    }
 }
