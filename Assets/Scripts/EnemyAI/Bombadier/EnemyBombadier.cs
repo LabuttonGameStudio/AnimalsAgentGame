@@ -192,7 +192,7 @@ public class EnemyBombardier : IEnemy, IDamageable
     private Coroutine deSpawn_Ref;
     private IEnumerator DeSpawn_Coroutine()
     {
-        Physics.Raycast(animator.transform.position+Vector3.down*2, Vector3.down*50f, out RaycastHit hitInfo, 50, Physics.AllLayers, QueryTriggerInteraction.Ignore);
+        Physics.Raycast(animator.transform.position+Vector3.down*2, Vector3.down*50f, out RaycastHit hitInfo, 50, LayerManager.Instance.activeColliders, QueryTriggerInteraction.Ignore);
         Debug.Log(hitInfo.point);
         float timer = 0;
         yield return new WaitForSeconds(0.2f);

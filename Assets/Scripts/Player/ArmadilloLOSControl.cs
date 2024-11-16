@@ -59,7 +59,7 @@ public class ArmadilloLOSControl : MonoBehaviour
         while (true)
         {
             RaycastHit newRaycastHit;
-            if (Physics.Raycast(camera.transform.position, camera.transform.forward, out newRaycastHit, distanceOfChecking, Physics.AllLayers, QueryTriggerInteraction.Ignore))
+            if (Physics.Raycast(camera.transform.position, camera.transform.forward, out newRaycastHit, distanceOfChecking, LayerManager.Instance.activeColliders, QueryTriggerInteraction.Ignore))
             {
                 if (!(newRaycastHit.collider.gameObject.layer == enemyLayer || newRaycastHit.collider.gameObject.layer == pickableLayer || newRaycastHit.collider.gameObject.layer == interactiveLayer))
                 {

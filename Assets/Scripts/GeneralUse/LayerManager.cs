@@ -10,6 +10,8 @@ public class LayerManager : MonoBehaviour
     [SerializeField] public LayerMask playerMask;
 
     [SerializeField] public LayerMask enemyAttackMask;
+
+    [SerializeField] public LayerMask activeColliders;
     private void Awake()
     {
         Instance = this;

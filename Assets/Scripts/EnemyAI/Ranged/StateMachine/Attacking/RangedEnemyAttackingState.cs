@@ -50,7 +50,7 @@ public class RangedEnemyAttackingState : RangedEnemyState
                 if (chargedStrongAttack)
                 {
                     Rigidbody playerRb = ArmadilloPlayerController.Instance.movementControl.rb;
-                    Physics.Raycast(iEnemy.firePivot.position, playerRb.position - iEnemy.firePivot.position, out RaycastHit hitInfo, 50, Physics.AllLayers, QueryTriggerInteraction.Ignore);
+                    Physics.Raycast(iEnemy.firePivot.position, playerRb.position - iEnemy.firePivot.position, out RaycastHit hitInfo, 50, LayerManager.Instance.activeColliders, QueryTriggerInteraction.Ignore);
                     if (!hitInfo.collider.CompareTag("Player"))
                     {
                         yield return StrongAttack_Coroutine();
@@ -66,7 +66,7 @@ public class RangedEnemyAttackingState : RangedEnemyState
             if (chargedStrongAttack)
             {
                 Rigidbody playerRb = ArmadilloPlayerController.Instance.movementControl.rb;
-                Physics.Raycast(iEnemy.firePivot.position, playerRb.position - iEnemy.firePivot.position, out RaycastHit hitInfo, 50, Physics.AllLayers, QueryTriggerInteraction.Ignore);
+                Physics.Raycast(iEnemy.firePivot.position, playerRb.position - iEnemy.firePivot.position, out RaycastHit hitInfo, 50, LayerManager.Instance.activeColliders, QueryTriggerInteraction.Ignore);
                 if (!hitInfo.collider.CompareTag("Player"))
                 {
                     yield return StrongAttack_Coroutine();
@@ -90,7 +90,7 @@ public class RangedEnemyAttackingState : RangedEnemyState
         iEnemy.weakAttackLaser.target = Vector3.zero;
         while (timer < trackDuration)
         {
-            if (Physics.Raycast(iEnemy.firePivot.position, playerRb.position - iEnemy.firePivot.position, out RaycastHit hitInfo, 50, Physics.AllLayers, QueryTriggerInteraction.Ignore))
+            if (Physics.Raycast(iEnemy.firePivot.position, playerRb.position - iEnemy.firePivot.position, out RaycastHit hitInfo, 50, LayerManager.Instance.activeColliders, QueryTriggerInteraction.Ignore))
             {
                 if (hitInfo.collider.CompareTag("Player"))
                 {

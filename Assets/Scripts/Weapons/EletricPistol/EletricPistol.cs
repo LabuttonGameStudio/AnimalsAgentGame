@@ -149,7 +149,7 @@ public class EletricPistol : Weapon
     {
         RaycastHit[] targetsHit;
         Transform camera = ArmadilloPlayerController.Instance.cameraControl.mainCamera.transform;
-        targetsHit = Physics.RaycastAll(camera.position, camera.forward, 20f, Physics.AllLayers, QueryTriggerInteraction.Collide);
+        targetsHit = Physics.RaycastAll(camera.position, camera.forward, 20f, LayerManager.Instance.activeColliders, QueryTriggerInteraction.Collide);
         targetsHit = targetsHit.OrderBy(x => x.distance).ToArray();
         Vector3 hitPoint = camera.position + camera.forward * 20f;
         bool hitSomething = false;

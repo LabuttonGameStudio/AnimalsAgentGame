@@ -22,8 +22,6 @@ public class TweenRotate : MonoBehaviour
 
     IEnumerator RotateIcon()
     {
-        Debug.Log("rotacionando");
-
         while (true) 
         {
             float anglePerFrame = rotationSpeed * Time.deltaTime;

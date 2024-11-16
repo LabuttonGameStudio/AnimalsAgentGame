@@ -102,7 +102,7 @@ public class SandBomb : MonoBehaviour
             if (collider.TryGetComponent(out IDamageable damageable))
             {
                 Vector3 direction = collider.transform.position - transform.position;
-                Physics.Raycast(transform.position, direction.normalized, out RaycastHit raycastHit, direction.magnitude, Physics.AllLayers, QueryTriggerInteraction.Ignore);
+                Physics.Raycast(transform.position, direction.normalized, out RaycastHit raycastHit, direction.magnitude, LayerManager.Instance.activeColliders, QueryTriggerInteraction.Ignore);
                 if (raycastHit.collider == collider)
                 {
                     damageable.TakeDamage(new Damage(damage, Damage.DamageType.Blunt, false, transform.position));
