@@ -13,6 +13,9 @@ public class WaterGunVisual : MonoBehaviour
 
     [SerializeField] private Animator weaponAnimator;
     [SerializeField] private VisualEffect waterSpray;
+    [SerializeField] private ParticleSystem sploshOnomatopeia;
+    [SerializeField] private ParticleSystem chkOnomatopeia;
+    [SerializeField] private ParticleSystem plopOnomatopeia;
     [HideInInspector]public  Vector3 waterSpayVelocity;
     private void Awake()
     {
@@ -52,16 +55,19 @@ public class WaterGunVisual : MonoBehaviour
         if (state)
         {
             waterSpray.Play();
+            sploshOnomatopeia.Play();
         }
         else
         {
             waterSpray.Stop();
-            
+            sploshOnomatopeia.Stop();
         }
     }
     public void OnReload()
     {
         weaponAnimator.SetTrigger("waterGunReload");
+        chkOnomatopeia.Play();
+        plopOnomatopeia.Play();
     }
     public void ToggleOnRun(bool state)
     {

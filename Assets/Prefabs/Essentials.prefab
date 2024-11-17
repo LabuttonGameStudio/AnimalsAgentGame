@@ -25527,7 +25527,7 @@ Transform:
   m_GameObject: {fileID: 5570221528459450666}
   serializedVersion: 2
   m_LocalRotation: {x: 0.015858592, y: -0.80239546, z: 0.021343274, w: 0.59620005}
-  m_LocalPosition: {x: -5.06, y: 1.64, z: 20.68}
+  m_LocalPosition: {x: -15.92, y: 8.17, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -26557,7 +26557,6 @@ GameObject:
   - component: {fileID: 6332575974295845193}
   - component: {fileID: 8444955679099386071}
   - component: {fileID: 4447308736774089908}
-  - component: {fileID: 467664785093597633}
   - component: {fileID: 705869973497550609}
   m_Layer: 5
   m_Name: Cross-WaterGun
@@ -26623,20 +26622,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &467664785093597633
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6036636463879046646}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5855ba84edd50a642bdd25792d5a9655, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  objectToMove: {fileID: 6332575974295845193}
-  rotationSpeed: 90
 --- !u!225 &705869973497550609
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -28467,10 +28452,10 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 4995186651170118361}
   - {fileID: 748071269133303060}
   - {fileID: 6001149056826400112}
   - {fileID: 6332575974295845193}
+  - {fileID: 4995186651170118361}
   m_Father: {fileID: 2888905029226936989}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
