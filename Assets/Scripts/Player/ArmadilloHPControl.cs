@@ -17,12 +17,17 @@ public class ArmadilloHPControl : MonoBehaviour, IDamageable
     public Slider currentHpSlider;
     public Slider currentGreyHpSlider;
     public Slider currentShieldSlider;
+    public Material DamageMaterial;
     public CanvasGroup DamageScreen;
     public CanvasGroup DeathScreen;
 
     [Space, Header("Invulnerabiliy Time")]
     [System.NonSerialized] public bool isInvulnerable;
     public float invulnerabilityDuration;
+
+    private float DamageStrength;
+    private float DamageAmount;
+    private Color DamageColor;
 
     private void Start()
     {
@@ -125,42 +130,62 @@ public class ArmadilloHPControl : MonoBehaviour, IDamageable
     }
     private IEnumerator DamageScreenFade_Coroutine(float targetAlpha, float fadeDuration)
     {
-        float startAlpha = DamageScreen.alpha;
+        DamageStrength = 0f;
+        DamageAmount = 0f;
+        DamageColor = Color.white;
+        DamageMaterial.SetFloat("_DamageStrength", DamageStrength);
+        DamageMaterial.SetFloat("_DamageAmount", DamageAmount);
+        DamageMaterial.SetColor("_DamageColor", DamageColor);
+
         float elapsedTime = 0.0f;
 
-        // Faz a tela de dano aumentar o alpha
+        // aumenta valores e muda cor para vermelho
         while (elapsedTime < fadeDuration)
         {
-            float newAlpha = Mathf.Lerp(startAlpha, targetAlpha, elapsedTime / fadeDuration);
-            DamageScreen.alpha = newAlpha;
+            DamageStrength = Mathf.Lerp(0f, 1f, elapsedTime / fadeDuration);
+            DamageAmount = Mathf.Lerp(0f, 50f, elapsedTime / fadeDuration);
+            DamageColor = Color.Lerp(Color.white, Color.red, elapsedTime / fadeDuration);
+
+            DamageMaterial.SetFloat("_DamageStrength", DamageStrength);
+            DamageMaterial.SetFloat("_DamageAmount", DamageAmount);
+            DamageMaterial.SetColor("_DamageColor", DamageColor);
 
             elapsedTime += Time.deltaTime;
-
             yield return null;
         }
 
-        DamageScreen.alpha = targetAlpha;
-
-        // Espera um tempo antes de começar a diminuir o alpha
         yield return new WaitForSeconds(0.5f);
-
         elapsedTime = 0.0f;
 
-        // Faz a tela de dano diminuir o alpha
+        // Diminui e troca cor pra branco
         while (elapsedTime < fadeDuration)
         {
-            float newAlpha = Mathf.Lerp(targetAlpha, 0f, elapsedTime / fadeDuration);
-            DamageScreen.alpha = newAlpha;
+            DamageStrength = Mathf.Lerp(1f, 0f, elapsedTime / fadeDuration);
+            DamageAmount = Mathf.Lerp(50f, 0f, elapsedTime / fadeDuration);
+            DamageColor = Color.Lerp(Color.red, Color.white, elapsedTime / fadeDuration);
+
+            DamageMaterial.SetFloat("_DamageStrength", DamageStrength);
+            DamageMaterial.SetFloat("_DamageAmount", DamageAmount);
+            DamageMaterial.SetColor("_DamageColor", DamageColor);
 
             elapsedTime += Time.deltaTime;
 
             yield return null;
         }
-        damageScreenFade_Ref = null;
-        DamageScreen.alpha = 0f;
-    }
 
-    IEnumerator DeathScreenFade(float targetAlpha, float fadeDuration)
+        // Reseta os valores ao final
+        DamageStrength = 0f;
+        DamageAmount = 0f;
+        DamageColor = Color.white;
+        DamageMaterial.SetFloat("_DamageStrength", DamageStrength);
+        DamageMaterial.SetFloat("_DamageAmount", DamageAmount);
+        DamageMaterial.SetColor("_DamageColor", DamageColor);
+
+        damageScreenFade_Ref = null;
+}
+
+
+IEnumerator DeathScreenFade(float targetAlpha, float fadeDuration)
     {
         float startAlpha = DeathScreen.alpha;
         float elapsedTime = 0.0f;

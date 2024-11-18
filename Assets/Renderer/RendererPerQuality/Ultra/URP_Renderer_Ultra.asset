@@ -65,7 +65,8 @@ MonoBehaviour:
   - {fileID: -8274148711984908577}
   - {fileID: 5536787693590427500}
   - {fileID: -8548817164241060650}
-  m_RendererFeatureMap: df3662b395512c8d6c373679129fd64cd63ca62b15805c89
+  - {fileID: 4241642907677727108}
+  m_RendererFeatureMap: df3662b395512c8d6c373679129fd64cd63ca62b15805c8984992f58c057dd3a
   m_UseNativeRenderPass: 0
   postProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}
   xrSystemData: {fileID: 11400000, guid: 60e1133243b97e347b653163a8c01b64, type: 2}
@@ -104,6 +105,23 @@ MonoBehaviour:
   m_CopyDepthMode: 1
   m_AccurateGbufferNormals: 0
   m_IntermediateTextureMode: 1
+--- !u!114 &4241642907677727108
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b00045f12942b46c698459096c89274e, type: 3}
+  m_Name: FullScreenPassRendererFeature
+  m_EditorClassIdentifier: 
+  m_Active: 1
+  passMaterial: {fileID: 2100000, guid: 1634b64a4369bad4ea1575ef077907e6, type: 2}
+  injectionPoint: 600
+  requirements: 4
+  passIndex: 1
 --- !u!114 &5536787693590427500
 MonoBehaviour:
   m_ObjectHideFlags: 0
