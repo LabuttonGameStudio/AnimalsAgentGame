@@ -26,12 +26,12 @@ public class SoundGeneralControl : MonoBehaviour
 
     public void Start()
     {
-#if UNITY_EDITOR
+    #if UNITY_EDITOR
         AudioSource[] audioSource = FindObjectsByType<AudioSource>(FindObjectsSortMode.None);
         foreach (AudioSource audio in audioSource)
         {
             audio.AddComponent<AudioDebugger>();
         }
-#endif
+    #endif
     }
 }

@@ -5,6 +5,7 @@ using UnityEngine;
 public class InfiniteSpawner : MonoBehaviour
 {
     [SerializeField] private bool startOnPlay;
+    [SerializeField] private bool spawnOnStart;
 
     [SerializeField]private IEnemy[] enemyPool;
 
@@ -29,29 +30,46 @@ public class InfiniteSpawner : MonoBehaviour
             spawn_Ref = null;
         }
     }
+    public void StopSpawningAndKillAll()
+    {
+        if (spawn_Ref != null)
+        {
+            StopCoroutine(spawn_Ref);
+            spawn_Ref = null;
+        }
+        foreach(IEnemy enemy in enemyPool)
+        {
+            if (enemy.isDead || !enemy.gameObject.activeInHierarchy) continue;
+            ((IDamageable)enemy).TakeDamage(new Damage(1000, Damage.DamageType.Blunt, false, Vector3.zero));
+        }
+    }
 
     private Coroutine spawn_Ref;
     private IEnumerator Spawn_Coroutine()
     {
         float timer = 0;
+        bool firstSpawn = true;
         while(true)
         {
             if(CurrentActiveEnemies()<maxEnemiesAtOnce)
             {
                 timer += 1;
-                if (timer > 60/enemiesPerMinute)
+                if (timer > 60/enemiesPerMinute || (spawnOnStart&& firstSpawn))
                 {
+                    firstSpawn = false;
                     IEnemy enemy = GetDisabledEnemy();
                     if(enemy != null)
                     {
                         if (enemy.isDead)
                         {
+                            enemy.currentAIBehaviour = AIBehaviourEnums.AIBehaviour.Attacking;
                             enemy.Revive(transform.position, transform.rotation);
                         }
                         else
                         {
                             enemy.transform.position = transform.position;
                             enemy.transform.rotation = transform.rotation;
+                            enemy.currentAIBehaviour = AIBehaviourEnums.AIBehaviour.Attacking;
                             enemy.gameObject.SetActive(true);
                         }
                         timer = 0;

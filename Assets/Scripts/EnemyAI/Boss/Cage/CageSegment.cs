@@ -12,5 +12,6 @@ public class CodeSymbol
 }
 public class CageSegment : MonoBehaviour
 {
-    [SerializeField] private CodeSymbol[] segmentPassword;
+    [HideInInspector]public bool isUnlocked;
+    public CodeSymbol[] segmentPassword;
 }
