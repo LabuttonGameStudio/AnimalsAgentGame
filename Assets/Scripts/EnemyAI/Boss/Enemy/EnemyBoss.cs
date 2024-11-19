@@ -43,8 +43,6 @@ public class EnemyBoss : MonoBehaviour
             attack_Ref = StartCoroutine(SprayAttack_Coroutine());
         }
     }
-
-
     private void Awake()
     {
         Instance = this;
@@ -80,7 +78,7 @@ public class EnemyBoss : MonoBehaviour
         followPlayer = false;
         animator.SetTrigger("enterSwingMode");
         float timer = 0;
-        float duration = 1f;
+        float duration = 0.8332f;
         Vector3 startPos = transform.parent.position;
         Vector3 finalPos = startPos - Vector3.up * 3.5f;
         while (timer < duration)
@@ -131,17 +129,17 @@ public class EnemyBoss : MonoBehaviour
         actionEnum = ActionsEnum.Poison;
         animator.SetTrigger("enterSprayMode");
         yield return new WaitForSeconds(1.875f);
-        yield return new WaitForSeconds(0.25f);
+        yield return new WaitForSeconds(0.2f+Random.Range(0f,0.05f));
         //Spray
         poisonOrb[0].transform.position = firePivot.transform.position;
         poisonOrb[0].gameObject.SetActive(true);
         poisonOrb[0].rb.AddForce(firePivot.transform.forward * throwForce, ForceMode.VelocityChange);
-        yield return new WaitForSeconds(0.25f);
+        yield return new WaitForSeconds(0.2f+ Random.Range(0f, 0.05f));
         //Spray
         poisonOrb[1].transform.position = firePivot.transform.position;
         poisonOrb[1].gameObject.SetActive(true);
         poisonOrb[1].rb.AddForce(firePivot.transform.forward * throwForce, ForceMode.VelocityChange);
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(0.45f+ Random.Range(0f, 0.05f));
         //Spray
         poisonOrb[2].transform.position = firePivot.transform.position;
         poisonOrb[2].gameObject.SetActive(true);

@@ -26,6 +26,7 @@ public class BossDamageableHitbox : MonoBehaviour,IDamageable
         currentHp -= damage.damageAmount;
         if(currentHp <=0)
         {
+            isBroken = true;
             EnemyBoss.Instance.OnBatteryDestroyed();
             FPCameraShake.StartShake(0.75f, 2f, 1f);
             onExplosionVFX.Play();
