@@ -1,6 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.Data.Common;
+using Unity.VisualScripting;
 using UnityEngine;
 using static SoundGeneralControl;
 using AudioType = SoundGeneralControl.AudioType;
@@ -21,8 +19,19 @@ public class SoundGeneralControl : MonoBehaviour
     private void Awake()
     {
         Instance = this;
-       
+
     }
     public LayerMask soundOcclusion_LayerMask;
     public LayerMask soundReceivers_LayerMask;
+
+    public void Start()
+    {
+#if UNITY_EDITOR
+        AudioSource[] audioSource = FindObjectsByType<AudioSource>(FindObjectsSortMode.None);
+        foreach (AudioSource audio in audioSource)
+        {
+            audio.AddComponent<AudioDebugger>();
+        }
+#endif
+    }
 }
