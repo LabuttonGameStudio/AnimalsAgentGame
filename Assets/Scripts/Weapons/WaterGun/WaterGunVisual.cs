@@ -84,4 +84,17 @@ public class WaterGunVisual : MonoBehaviour
         ChangeWeaponUI.Instance.weaponUIElements[1].ammoReserveSlider.value = (float)reserveAmount / (float)reserveTotal;
         ChangeWeaponUI.Instance.weaponUIElements[1].ammoReserveText.text = Mathf.Round((float)reserveAmount / (float)reserveTotal * 100).ToString() + "%";
     }
+
+    public void OnBodyShot()
+    {
+        Debug.Log("BodyShot");
+    }
+    public void OnHeadshotShot()
+    {
+        Debug.Log("HeadShot");
+    }
+    public void OnLetalShot()
+    {
+        Debug.Log("LetalShot");
+    }
 }

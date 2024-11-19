@@ -33,8 +33,18 @@ public class WaterGunProjectile : MonoBehaviour
         }
         else if (other.TryGetComponent(out IDamageable damageable) && !other.CompareTag("Player"))
         {
-            float damage = (bulletDamage * 0.5f) + ((1 - timer / duration) * (bulletDamage * 0.5f));
-            damageable.TakeDamage(new Damage(damage, DamageType.Water, true, playerPos));
+            float damageAmount = (bulletDamage * 0.5f) + ((1 - timer / duration) * (bulletDamage * 0.5f));
+            Damage damage = new Damage(damageAmount, DamageType.Water, true, playerPos);
+            damageable.TakeDamage(damage);
+            if(damageable.isDead())
+            {
+                WaterGunVisual.Instance.OnLetalShot();
+            }
+            else
+            {
+                if(damage.wasCritical) WaterGunVisual.Instance.OnHeadshotShot();
+                else WaterGunVisual.Instance.OnBodyShot();
+            }
             DisableProjectile();
         }
     }

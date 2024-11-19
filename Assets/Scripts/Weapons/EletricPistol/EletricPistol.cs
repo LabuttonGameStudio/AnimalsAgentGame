@@ -166,7 +166,21 @@ public class EletricPistol : Weapon
                     idamageable.TakeDamage(damage);
                 }
                 else idamageable.TakeDamage(damage);
-                ArmadilloUIControl.Instance.StartHitMarker();
+                if(idamageable.isDead())
+                {
+                    visualHandler.OnLetalShot();
+                }
+                else
+                {
+                    if (damage.wasCritical)
+                    {
+                        visualHandler.OnHeadshotShot();
+                    }
+                    else
+                    {
+                        visualHandler.OnBodyShot();
+                    }
+                }
                 if (!raycastHit.collider.isTrigger)
                 {
                     hitEnemy = true;

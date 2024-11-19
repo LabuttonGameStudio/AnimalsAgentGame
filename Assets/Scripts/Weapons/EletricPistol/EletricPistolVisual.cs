@@ -178,4 +178,17 @@ public class EletricPistolVisual : MonoBehaviour
     {
 
     }
+
+    public void OnBodyShot()
+    {
+        Debug.Log("BodyShot");
+    }
+    public void OnHeadshotShot()
+    {
+        Debug.Log("HeadShot");
+    }
+    public void OnLetalShot()
+    {
+        Debug.Log("LetalShot");
+    }
 }

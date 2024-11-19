@@ -32,8 +32,16 @@ public class ArmadilloHPControl : MonoBehaviour, IDamageable
     private void Start()
     {
         UpdateHealthBar();
+        DamageMaterial.SetFloat("_DamageStrength", 0);
+        DamageMaterial.SetFloat("_DamageAmount", 0);
+        DamageMaterial.SetColor("_DamageColor", Color.white);
     }
-
+    private void OnDisable()
+    {
+        DamageMaterial.SetFloat("_DamageStrength", 0);
+        DamageMaterial.SetFloat("_DamageAmount", 0);
+        DamageMaterial.SetColor("_DamageColor", Color.white);
+    }
     public void TakeDamage(Damage damage)
     {
         if (!isInvulnerable)
