@@ -138,13 +138,14 @@ public class ArmadilloHPControl : MonoBehaviour, IDamageable
         DamageMaterial.SetColor("_DamageColor", DamageColor);
 
         float elapsedTime = 0.0f;
+        fadeDuration /= 3f;
 
         // aumenta valores e muda cor para vermelho
         while (elapsedTime < fadeDuration)
         {
-            DamageStrength = Mathf.Lerp(0f, 1f, elapsedTime / fadeDuration);
+            DamageStrength = Mathf.Lerp(0f, 0.2f, elapsedTime / fadeDuration);
             DamageAmount = Mathf.Lerp(0f, 50f, elapsedTime / fadeDuration);
-            DamageColor = Color.Lerp(Color.white, Color.red, elapsedTime / fadeDuration);
+            DamageColor = Color.Lerp(Color.white, new Color(1f, 0.7f, 0.7f), elapsedTime / fadeDuration);
 
             DamageMaterial.SetFloat("_DamageStrength", DamageStrength);
             DamageMaterial.SetFloat("_DamageAmount", DamageAmount);
@@ -154,15 +155,15 @@ public class ArmadilloHPControl : MonoBehaviour, IDamageable
             yield return null;
         }
 
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(fadeDuration);
         elapsedTime = 0.0f;
 
         // Diminui e troca cor pra branco
         while (elapsedTime < fadeDuration)
         {
-            DamageStrength = Mathf.Lerp(1f, 0f, elapsedTime / fadeDuration);
+            DamageStrength = Mathf.Lerp(0.2f, 0f, elapsedTime / fadeDuration);
             DamageAmount = Mathf.Lerp(50f, 0f, elapsedTime / fadeDuration);
-            DamageColor = Color.Lerp(Color.red, Color.white, elapsedTime / fadeDuration);
+            DamageColor = Color.Lerp(new Color(1f, 0.7f, 0.7f), Color.white, elapsedTime / fadeDuration);
 
             DamageMaterial.SetFloat("_DamageStrength", DamageStrength);
             DamageMaterial.SetFloat("_DamageAmount", DamageAmount);
