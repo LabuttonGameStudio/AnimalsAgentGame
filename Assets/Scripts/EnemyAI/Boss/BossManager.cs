@@ -15,10 +15,12 @@ public class BossManager : MonoBehaviour
     [SerializeField] private EnemyBoss bossScript;
     [SerializeField] private Animator bossAnimator;
     [SerializeField] private Volume secondPhaseVolume;
-    [Foldout("Second Phase Events", true)]
+    [Foldout("Events", true)]
     [SerializeField] private UnityEvent onCapsuleComplete;
     [SerializeField] private UnityEvent onCapsuleNoLongerVisible;
-    [SerializeField] private UnityEvent onEndSecondPhaseEvent;
+    [SerializeField] private UnityEvent onBossReveal;
+    [SerializeField] private UnityEvent onAfterBossScream;
+    public UnityEvent onBossDeath;
 
     private void Awake()
     {
@@ -61,7 +63,7 @@ public class BossManager : MonoBehaviour
         secondPhaseVolume.weight = 1;
         timer = 0;
 
-        onEndSecondPhaseEvent.Invoke();
+        onBossReveal.Invoke();
         yield return new WaitForSeconds(1f);
         bossScript.actionEnum = EnemyBoss.ActionsEnum.Enter;
         bossScript.transform.parent.gameObject.SetActive(true);
@@ -83,5 +85,6 @@ public class BossManager : MonoBehaviour
         FPCameraShake.StartShake(1.2f, 0.2f, 8);
         yield return new WaitForSeconds(1.2f);
         bossScript.actionEnum = EnemyBoss.ActionsEnum.Idle;
+        onAfterBossScream.Invoke();
     }
 }

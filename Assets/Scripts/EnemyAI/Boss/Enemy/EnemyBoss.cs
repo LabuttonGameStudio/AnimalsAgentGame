@@ -12,8 +12,8 @@ public class EnemyBoss : MonoBehaviour
     private Animator animator;
 
     [Foldout("Variables", true)]
-    [SerializeField] private float maxHp;
-    private float currentHp;
+    [SerializeField] private int totalBatteries;
+    private int currentBatteries;
 
     private bool followPlayer;
 
@@ -21,11 +21,15 @@ public class EnemyBoss : MonoBehaviour
     [SerializeField] private float rangeActivation;
     [SerializeField] private float attackKnockback;
     [SerializeField] private float attackDamage;
+    private Vector3 circleAttackStartPos;
+    private Vector3 circleAttackFinalPos;
 
-    [Header("Swing/Circle Attack")]
+    [Header("Poison/Spray Attack")]
     [SerializeField] private BossPoisonOrb[] poisonOrb;
-    [SerializeField] private float throwForce;
+    [SerializeField] private float minThrowForce;
+    [SerializeField] private float maxThrowForce;
     [SerializeField] private Transform firePivot;
+    [SerializeField] private RotateOverTime rotateOnAttack;
     public enum ActionsEnum
     {
         Idle,
@@ -38,16 +42,39 @@ public class EnemyBoss : MonoBehaviour
 
     public void OnBatteryDestroyed()
     {
-        if (actionEnum == ActionsEnum.Idle && attack_Ref == null)
+        currentBatteries--;
+        if (currentBatteries <= 0)
         {
-            attack_Ref = StartCoroutine(SprayAttack_Coroutine());
+            Die();
         }
+        else
+        {
+            if (actionEnum == ActionsEnum.Idle && attack_Ref == null)
+            {
+                attack_Ref = StartCoroutine(SprayAttack_Coroutine());
+            }
+            else
+            {
+                switch (actionEnum)
+                {
+                    case ActionsEnum.Swing:
+                        StartCoroutine(CircleAttackToSprayAttack_Coroutine());
+                        break;
+                }
+            }
+        }
+    }
+    private void Die()
+    {
+        StopAllCoroutines();
+        animator.SetTrigger("isDefeated");
+        BossManager.Instance.onBossDeath.Invoke();
     }
     private void Awake()
     {
         Instance = this;
         animator = GetComponent<Animator>();
-        currentHp = maxHp;
+        currentBatteries = totalBatteries;
         followPlayer = true;
     }
     public void FixedUpdate()
@@ -79,6 +106,8 @@ public class EnemyBoss : MonoBehaviour
         animator.SetTrigger("enterSwingMode");
         float timer = 0;
         float duration = 0.8332f;
+        circleAttackStartPos = transform.parent.position;
+        circleAttackFinalPos = circleAttackStartPos - Vector3.up * 3.5f;
         Vector3 startPos = transform.parent.position;
         Vector3 finalPos = startPos - Vector3.up * 3.5f;
         while (timer < duration)
@@ -123,32 +152,92 @@ public class EnemyBoss : MonoBehaviour
         attack_Ref = null;
     }
 
+    public IEnumerator CircleAttackToSprayAttack_Coroutine()
+    {
+        StopCoroutine(attack_Ref);
+        float timer = 0;
+        float duration = 0.2f;
+        Vector3 startPos = transform.parent.position;
+        Vector3 finalPos = circleAttackStartPos;
+        attack_Ref = StartCoroutine(SprayAttack_Coroutine());
+        while (timer < duration)
+        {
+            transform.parent.position = Vector3.Slerp(startPos, finalPos, timer / duration);
+            transform.localPosition = Vector3.zero;
+            timer += Time.deltaTime;
+            yield return null;
+        }
+        transform.parent.position = finalPos;
+        transform.localPosition = Vector3.zero;
+    }
     public IEnumerator SprayAttack_Coroutine()
     {
         followPlayer = false;
         actionEnum = ActionsEnum.Poison;
         animator.SetTrigger("enterSprayMode");
-        yield return new WaitForSeconds(1.875f);
-        yield return new WaitForSeconds(0.2f+Random.Range(0f,0.05f));
+        rotateOnAttack.enabled = true;
+        float addedTime = 0f;
+        float randomTime = Random.Range(0f, 0.05f);
+        addedTime += randomTime;
+        yield return new WaitForSeconds(0.2f+ randomTime);
+        //Time 0.2-0.25f
         //Spray
         poisonOrb[0].transform.position = firePivot.transform.position;
+        poisonOrb[0].OnFire();
         poisonOrb[0].gameObject.SetActive(true);
-        poisonOrb[0].rb.AddForce(firePivot.transform.forward * throwForce, ForceMode.VelocityChange);
-        yield return new WaitForSeconds(0.2f+ Random.Range(0f, 0.05f));
+        poisonOrb[0].rb.AddForce(firePivot.transform.forward * Random.Range(minThrowForce,maxThrowForce), ForceMode.VelocityChange);
+
+
+        randomTime = Random.Range(0f, 0.05f);
+        yield return new WaitForSeconds(0.2f+ randomTime - addedTime);
+        addedTime += randomTime;
+        //Time 0.4-0.5f
         //Spray
         poisonOrb[1].transform.position = firePivot.transform.position;
+        poisonOrb[1].OnFire();
         poisonOrb[1].gameObject.SetActive(true);
-        poisonOrb[1].rb.AddForce(firePivot.transform.forward * throwForce, ForceMode.VelocityChange);
-        yield return new WaitForSeconds(0.45f+ Random.Range(0f, 0.05f));
+        poisonOrb[1].rb.AddForce(firePivot.transform.forward * Random.Range(minThrowForce, maxThrowForce), ForceMode.VelocityChange);
+
+
+        randomTime = Random.Range(0f, 0.05f);
+        yield return new WaitForSeconds(0.45f+ randomTime - addedTime);
+        addedTime += randomTime;
+        //Time 0.85-1.0f
         //Spray
         poisonOrb[2].transform.position = firePivot.transform.position;
+        poisonOrb[2].OnFire();
         poisonOrb[2].gameObject.SetActive(true);
-        poisonOrb[2].rb.AddForce(firePivot.transform.forward * throwForce, ForceMode.VelocityChange);
+        poisonOrb[2].rb.AddForce(firePivot.transform.forward * Random.Range(minThrowForce, maxThrowForce), ForceMode.VelocityChange);
+
+
+        randomTime = Random.Range(0f, 0.1f);
+        yield return new WaitForSeconds(0.8f + randomTime - addedTime);
+        addedTime += randomTime;
+        //Time 1.65-1.75f
+        //Spray
+        poisonOrb[3].transform.position = firePivot.transform.position;
+        poisonOrb[3].OnFire();
+        poisonOrb[3].gameObject.SetActive(true);
+        poisonOrb[3].rb.AddForce(firePivot.transform.forward * Random.Range(minThrowForce, maxThrowForce), ForceMode.VelocityChange);
+
+
+        randomTime = Random.Range(0f, 0.125f);
+        yield return new WaitForSeconds(0.225f + randomTime - addedTime);
+        addedTime += randomTime;
+        //Time 1.875-2f
+        //Spray
+        poisonOrb[4].transform.position = firePivot.transform.position;
+        poisonOrb[4].OnFire();
+        poisonOrb[4].gameObject.SetActive(true);
+        poisonOrb[4].rb.AddForce(firePivot.transform.forward * Random.Range(minThrowForce, maxThrowForce), ForceMode.VelocityChange);
+
         yield return null;
+        rotateOnAttack.enabled = false;
         animator.SetTrigger("exitSprayMode");
         yield return new WaitForSeconds(2f);
         actionEnum = ActionsEnum.Idle;
         attack_Ref = null;
+        followPlayer = true;
     }
     private void OnCollisionEnter(Collision collision)
     {
