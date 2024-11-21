@@ -181,17 +181,14 @@ public class EletricPistolVisual : MonoBehaviour
 
     public void OnBodyShot()
     {
-        Debug.Log("BodyShot");
         ArmadilloUIControl.Instance.StartHitMarkerDamage();
     }
     public void OnHeadshotShot()
     {
-        Debug.Log("HeadShot");
         ArmadilloUIControl.Instance.StartHitMarkerCrit();
     }
     public void OnLetalShot()
     {
-        Debug.Log("LethalShot");
         ArmadilloUIControl.Instance.StartHitMarkerLethal();
     }
 }

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Tween
 {
@@ -39,7 +40,7 @@ public class Tween
                     transform.position = Vector3.Slerp(startPosition, finalPosition, timer / duration);
                     break;
             }
-                    timer += Time.deltaTime;
+            timer += Time.deltaTime;
             yield return null;
         }
         transform.position = finalPosition;
@@ -125,7 +126,7 @@ public class Tween
                     transform.rotation = Quaternion.Slerp(startRotation, finalRotation, timer / duration);
                     break;
             }
-                    timer += Time.deltaTime;
+            timer += Time.deltaTime;
             yield return null;
         }
         transform.rotation = finalRotation;
@@ -227,5 +228,24 @@ public class Tween
     }
 
 
+    #endregion
+
+    #region Fade Color
+    public static Coroutine LerpColor(MonoBehaviour monoBehaviour,Image image, Color finalColor, float duration)
+    {
+        return monoBehaviour.StartCoroutine(LerpColor_Coroutine(image, finalColor, duration));
+    }
+    public static IEnumerator LerpColor_Coroutine(Image image, Color finalColor, float duration)
+    {
+        float timer = 0;
+        Color startColor = image.color;
+        while (timer < duration)
+        {
+            image.color = Color.Lerp(startColor, finalColor, timer / duration);
+            timer += Time.deltaTime;
+            yield return null;
+        }
+        image.color = finalColor;
+    }
     #endregion
 }

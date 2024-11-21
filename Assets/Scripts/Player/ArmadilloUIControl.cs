@@ -30,6 +30,14 @@ public class ArmadilloUIControl : MonoBehaviour
         if (toggleHitMarkerDamage_Ref != null)
         {
             StopCoroutine(toggleHitMarkerDamage_Ref);
+            if(scaleLerp_Ref != null)
+            {
+                StopCoroutine(scaleLerp_Ref);
+            }
+            if(colorLerp_Ref != null)
+            {
+                StopCoroutine(scaleLerp_Ref);
+            }
         }
         toggleHitMarkerDamage_Ref = StartCoroutine(ToggleHitMarkerDamage_Coroutine());
     }
@@ -52,28 +60,23 @@ public class ArmadilloUIControl : MonoBehaviour
         toggleHitMarkerLethal_Ref = StartCoroutine(ToggleHitMarkerLethal_Coroutine());
     }
 
-    public Coroutine toggleHitMarkerDamage_Ref;
+    private Coroutine scaleLerp_Ref;
+    private Coroutine colorLerp_Ref;
+
+    private Coroutine toggleHitMarkerDamage_Ref;
     private IEnumerator ToggleHitMarkerDamage_Coroutine()
     {
         RectTransform hitMarkerRect = hitMarkerDamage.rectTransform;
         hitMarkerRect.localScale = Vector3.one;
         hitMarkerDamage.color = new Color(hitMarkerDamage.color.r, hitMarkerDamage.color.g, hitMarkerDamage.color.b, 1);
-
-        yield return new WaitForSeconds(0.1f);
-        yield return Tween.ScaleTransform(this, hitMarkerRect, new Vector3(0.1f, 0.1f, 0.1f), 0.3f / 2, Tween.LerpType.Lerp);
-        yield return Tween.ScaleTransform(this, hitMarkerRect, Vector3.zero, 0.2f / 2, Tween.LerpType.Lerp);
-
-        float timer = 0;
-        float duration = 0.3f;
-        while (timer < duration)
-        {
-            hitMarkerDamage.color = new Color(hitMarkerDamage.color.r, hitMarkerDamage.color.g, hitMarkerDamage.color.b, 1 - timer / duration);
-            timer += Time.deltaTime;
-            yield return null;
-        }
-        hitMarkerRect.localScale = Vector3.one;
-        hitMarkerDamage.color = new Color(hitMarkerDamage.color.r, hitMarkerDamage.color.g, hitMarkerDamage.color.b, 0);
-      
+        float duration = 0.5f;
+        float fadeInDuration = 0.1f;
+        scaleLerp_Ref = Tween.ScaleTransform(this, hitMarkerRect, new Vector3(0.5f, 0.5f, 0.5f), fadeInDuration, Tween.LerpType.Lerp);
+        yield return scaleLerp_Ref;
+        colorLerp_Ref = Tween.LerpColor(this, hitMarkerDamage, new Color(hitMarkerDamage.color.r, hitMarkerDamage.color.g, hitMarkerDamage.color.b, 0), duration - fadeInDuration);
+        scaleLerp_Ref = Tween.ScaleTransform(this, hitMarkerRect, Vector3.zero, duration - fadeInDuration, Tween.LerpType.Lerp);
+        yield return scaleLerp_Ref;
+        toggleHitMarkerDamage_Ref = null;
     }
 
     public Coroutine toggleHitMarkerCrit_Ref;
@@ -137,6 +140,7 @@ public class ArmadilloUIControl : MonoBehaviour
         MarkersLethal.color = new Color(hitMarkerLethal.color.r, hitMarkerLethal.color.g, hitMarkerLethal.color.b, 0);
         crossHair.color = Color.white;
     }
+
     #endregion
 
     #region Interaction
