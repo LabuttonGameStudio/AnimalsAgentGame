@@ -12,35 +12,130 @@ public class ArmadilloUIControl : MonoBehaviour
         Instance = this;
     }
     [SerializeField] private Image crossHair;
-    [SerializeField] private Image hitMarker;
+    [SerializeField] private Image hitMarkerDamage;
+    [SerializeField] private Image hitMarkerCrit;
+    [SerializeField] private Image hitMarkerLethal;
+    [SerializeField] private Image MarkersLethal;
+
     private void Start()
     {
-        hitMarker.color = new Color(hitMarker.color.r, hitMarker.color.g, hitMarker.color.b, 0);
+        hitMarkerDamage.color = new Color(hitMarkerDamage.color.r, hitMarkerDamage.color.g, hitMarkerDamage.color.b, 0);
+        hitMarkerCrit.color = new Color(hitMarkerCrit.color.r, hitMarkerCrit.color.g, hitMarkerCrit.color.b, 0);
+        hitMarkerLethal.color = new Color(hitMarkerLethal.color.r, hitMarkerLethal.color.g, hitMarkerLethal.color.b, 0);
+        MarkersLethal.color = new Color(MarkersLethal.color.r, MarkersLethal.color.g, MarkersLethal.color.b, 0);
     }
-    #region
-    public void StartHitMarker()
+    #region EletricPistol
+    public void StartHitMarkerDamage()
     {
-        if (toggleHitMarker_Ref != null)
+        if (toggleHitMarkerDamage_Ref != null)
         {
-            StopCoroutine(toggleHitMarker_Ref);
+            StopCoroutine(toggleHitMarkerDamage_Ref);
         }
-        toggleHitMarker_Ref = StartCoroutine(ToggleHitMarker_Coroutine());
+        toggleHitMarkerDamage_Ref = StartCoroutine(ToggleHitMarkerDamage_Coroutine());
     }
 
-    public Coroutine toggleHitMarker_Ref;
-    private IEnumerator ToggleHitMarker_Coroutine()
+    public void StartHitMarkerCrit()
     {
-        hitMarker.color = new Color(hitMarker.color.r, hitMarker.color.g, hitMarker.color.b, 1);
+        if (toggleHitMarkerCrit_Ref != null)
+        {
+            StopCoroutine(toggleHitMarkerCrit_Ref);
+        }
+        toggleHitMarkerCrit_Ref = StartCoroutine(ToggleHitMarkerCrit_Coroutine());
+    }
+
+    public void StartHitMarkerLethal()
+    {
+        if (toggleHitMarkerLethal_Ref != null)
+        {
+            StopCoroutine(toggleHitMarkerLethal_Ref);
+        }
+        toggleHitMarkerLethal_Ref = StartCoroutine(ToggleHitMarkerLethal_Coroutine());
+    }
+
+    public Coroutine toggleHitMarkerDamage_Ref;
+    private IEnumerator ToggleHitMarkerDamage_Coroutine()
+    {
+        RectTransform hitMarkerRect = hitMarkerDamage.rectTransform;
+        hitMarkerRect.localScale = Vector3.one;
+        hitMarkerDamage.color = new Color(hitMarkerDamage.color.r, hitMarkerDamage.color.g, hitMarkerDamage.color.b, 1);
+
         yield return new WaitForSeconds(0.1f);
+        yield return Tween.ScaleTransform(this, hitMarkerRect, new Vector3(0.1f, 0.1f, 0.1f), 0.3f / 2, Tween.LerpType.Lerp);
+        yield return Tween.ScaleTransform(this, hitMarkerRect, Vector3.zero, 0.2f / 2, Tween.LerpType.Lerp);
+
         float timer = 0;
-        float duration = 0.15f;
+        float duration = 0.3f;
         while (timer < duration)
         {
-            hitMarker.color = new Color(hitMarker.color.r, hitMarker.color.g, hitMarker.color.b, 1 - timer / duration);
+            hitMarkerDamage.color = new Color(hitMarkerDamage.color.r, hitMarkerDamage.color.g, hitMarkerDamage.color.b, 1 - timer / duration);
             timer += Time.deltaTime;
             yield return null;
         }
-        hitMarker.color = new Color(hitMarker.color.r, hitMarker.color.g, hitMarker.color.b, 0);
+        hitMarkerRect.localScale = Vector3.one;
+        hitMarkerDamage.color = new Color(hitMarkerDamage.color.r, hitMarkerDamage.color.g, hitMarkerDamage.color.b, 0);
+      
+    }
+
+    public Coroutine toggleHitMarkerCrit_Ref;
+    private IEnumerator ToggleHitMarkerCrit_Coroutine()
+    {
+        RectTransform hitMarkerRect = hitMarkerCrit.rectTransform;
+        hitMarkerCrit.color = new Color(hitMarkerCrit.color.r, hitMarkerCrit.color.g, hitMarkerCrit.color.b, 1);
+        crossHair.color = new Color(1.0f, 0.5f, 0.0f);
+
+        hitMarkerRect.localScale = Vector3.zero;
+
+        yield return new WaitForSeconds(0.1f);
+        float timer = 0;
+        float duration = 0.15f;
+
+        while (timer < duration)
+        { 
+            yield return Tween.ScaleTransform(this, hitMarkerRect, new Vector3(1.3f, 1.3f, 1.3f), 0.05f / 2, Tween.LerpType.Lerp);
+            yield return Tween.ScaleTransform(this, hitMarkerRect, Vector3.one, 0.05f / 2, Tween.LerpType.Lerp);
+
+            hitMarkerCrit.color = new Color(hitMarkerCrit.color.r, hitMarkerCrit.color.g, hitMarkerCrit.color.b, 1 - timer / duration);
+
+            timer += Time.deltaTime;
+            yield return null;
+        }
+        hitMarkerRect.localScale = Vector3.zero;
+        hitMarkerCrit.color = new Color(hitMarkerCrit.color.r, hitMarkerCrit.color.g, hitMarkerCrit.color.b, 0);
+        crossHair.color = Color.white;
+    }
+
+    public Coroutine toggleHitMarkerLethal_Ref;
+    private IEnumerator ToggleHitMarkerLethal_Coroutine()
+    {
+        RectTransform hitMarkerRect = hitMarkerLethal.rectTransform;
+        RectTransform MarkerRect = MarkersLethal.rectTransform;
+        Quaternion targetRotation = Quaternion.Euler(0, 0, 180);
+        hitMarkerRect.localScale = Vector3.zero;
+
+        hitMarkerLethal.color = new Color(hitMarkerLethal.color.r, hitMarkerLethal.color.g, hitMarkerLethal.color.b, 1);
+        MarkersLethal.color = new Color(MarkersLethal.color.r, MarkersLethal.color.g, MarkersLethal.color.b, 1);
+
+        yield return new WaitForSeconds(0.1f);
+        float timer = 0;
+        float duration = 0.25f;
+
+        yield return Tween.ScaleTransform(this, hitMarkerRect, new Vector3(1.3f, 1.3f, 1.3f), 0.3f / 2, Tween.LerpType.Lerp);
+        yield return Tween.ScaleTransform(this, hitMarkerRect, Vector3.one, 0.3f / 2, Tween.LerpType.Lerp);
+        yield return Tween.RotateTransform(this, MarkerRect, targetRotation, duration, Tween.LerpType.Lerp);
+        crossHair.color = Color.magenta;
+
+        while (timer < duration)
+        {
+            hitMarkerLethal.color = new Color(hitMarkerLethal.color.r, hitMarkerLethal.color.g, hitMarkerLethal.color.b, 1 - timer / duration);
+            timer += Time.deltaTime;
+            yield return null;
+        }
+
+        hitMarkerRect.localScale = Vector3.zero;
+        MarkerRect.localRotation = Quaternion.Euler(0, 0, 0);
+        hitMarkerLethal.color = new Color(hitMarkerLethal.color.r, hitMarkerLethal.color.g, hitMarkerLethal.color.b, 0);
+        MarkersLethal.color = new Color(hitMarkerLethal.color.r, hitMarkerLethal.color.g, hitMarkerLethal.color.b, 0);
+        crossHair.color = Color.white;
     }
     #endregion
 
