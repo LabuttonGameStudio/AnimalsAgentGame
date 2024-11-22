@@ -17,7 +17,7 @@ public class SkyboxPrint : MonoBehaviour
             //AssetDatabase.CreateAsset(cubeMap, "Assets\\Screenshots\\SkyboxPrint.asset");
             m_print = false;
         }
-    }
 #endif
+    }
 }
 
