@@ -1,3 +1,4 @@
+using Pixeye.Unity;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
@@ -27,6 +28,9 @@ public class WaterGunProjectileManager : MonoBehaviour
 
     private GameObject projectilePuddleParent;
     [SerializeField] private float waterPuddleMinimalSize;
+
+    [Foldout("VFX", true)]
+    [SerializeField] private ParticleSystem splashParticle;
 
     private void Awake()
     {
@@ -88,6 +92,11 @@ public class WaterGunProjectileManager : MonoBehaviour
 
         waterPuddle.transform.position = position;
         waterPuddle.gameObject.SetActive(true);
+    }
+    public void OnHit(Vector3 hitPos)
+    {
+        splashParticle.transform.position = hitPos;
+        splashParticle.Play();
     }
     public void TryMergePuddle(WaterPuddle puddle1, GameObject puddle2)
     {

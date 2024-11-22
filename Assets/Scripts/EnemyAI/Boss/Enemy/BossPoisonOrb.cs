@@ -4,6 +4,7 @@ public class BossPoisonOrb : MonoBehaviour
 {
     [HideInInspector]public Rigidbody rb;
     [SerializeField] private PoisonPuddle poisonPuddle;
+    [SerializeField] private Transform meshTransform;
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
@@ -17,6 +18,10 @@ public class BossPoisonOrb : MonoBehaviour
         poisonPuddle.gameObject.SetActive(false);
         poisonPuddle.transform.parent = transform;
         poisonPuddle.transform.localPosition = Vector3.zero;
+    }
+    private void FixedUpdate()
+    {
+        meshTransform.LookAt(rb.position + rb.velocity);
     }
     private void OnCollisionEnter(Collision collision)
     {

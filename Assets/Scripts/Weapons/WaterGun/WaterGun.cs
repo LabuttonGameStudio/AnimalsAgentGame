@@ -34,8 +34,8 @@ public class WaterGun : Weapon
     private Transform firePivot;
 
     //Tiro normal
-    private float bulletDamage = 10;
-    private float minbulletDamage =5;
+    private float bulletDamage = 15;
+    private float minbulletDamage = 7.5f;
     private Vector3 bodyVelocity;
     readonly private float fireDelay = 0.33f;
     private bool isOnCooldown;
@@ -92,25 +92,6 @@ public class WaterGun : Weapon
 
     //Fire
     #region
-    public void StartFireCooldownTimer()
-    {
-        if (fireCooldown_Ref == null && !isOnCooldown)
-        {
-            fireCooldown_Ref = weaponControl.StartCoroutine(FireCooldown_Coroutine());
-        }
-    }
-    public bool IsFireOnCooldown()
-    {
-        return (fireCooldown_Ref != null);
-    }
-    public Coroutine fireCooldown_Ref;
-    public IEnumerator FireCooldown_Coroutine()
-    {
-        yield return new WaitForSeconds(fireDelay);
-        isOnCooldown = false;
-        fireCooldown_Ref = null;
-    }
-
     public override void OnFireButtonPerformed(InputAction.CallbackContext performed)
     {
         ToggleFire(true);
@@ -234,6 +215,7 @@ public class WaterGun : Weapon
     public IEnumerator ReloadTimer_Coroutine()
     {
         ToggleFire(false);
+        isOnCooldown = true;
         //ArmadilloPlayerController.Instance.movementControl.speedMultiplerList.Add(onReloadSlow);
         ArmadilloPlayerController.Instance.visualControl.ReloadWaterGun();
         visualHandler.OnReload();
@@ -252,6 +234,7 @@ public class WaterGun : Weapon
             ammoReserveAmount = 0;
         }
         reloadTimer_Ref = null;
+        isOnCooldown = false;
         visualHandler.UpdateUI(currentAmmoAmount, maxAmmoAmount, ammoReserveAmount, maxAmmoReserveAmount);
     }
     #endregion
@@ -262,6 +245,7 @@ public class WaterGun : Weapon
     {
         ToggleFire(false);
         visualHandler.ResetVisuals();
+        isOnCooldown = false;
         ArmadilloPlayerController.Instance.movementControl.isFiring = false;
         ArmadilloPlayerController.Instance.movementControl.SprintCheck();
         if (reloadTimer_Ref != null)

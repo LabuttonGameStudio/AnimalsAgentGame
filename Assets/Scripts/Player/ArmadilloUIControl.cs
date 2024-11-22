@@ -114,7 +114,7 @@ public class ArmadilloUIControl : MonoBehaviour
 
         hitMarkerLethal.color = new Color(hitMarkerLethal.color.r, hitMarkerLethal.color.g, hitMarkerLethal.color.b, 1);
         MarkersLethal.color = new Color(MarkersLethal.color.r, MarkersLethal.color.g, MarkersLethal.color.b, 1);
-        crossHair.color = Color.magenta;
+        crossHair.color = Color.red;
 
         float duration = 0.6f;
         float stayDuration = 0.3f;
@@ -127,7 +127,7 @@ public class ArmadilloUIControl : MonoBehaviour
 
         MarkerRect.rotation = Quaternion.Euler(0, 0, 0);
         hitMarkerLethal.color = new Color(hitMarkerLethal.color.r, hitMarkerLethal.color.g, hitMarkerLethal.color.b, 0);
-        MarkersLethal.color = new Color(hitMarkerLethal.color.r, hitMarkerLethal.color.g, hitMarkerLethal.color.b, 0);
+        MarkersLethal.color = new Color(MarkersLethal.color.r, MarkersLethal.color.g, MarkersLethal.color.b, 0);
         crossHair.color = Color.white;
     }
 

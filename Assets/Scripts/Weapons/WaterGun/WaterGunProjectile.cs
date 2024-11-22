@@ -24,6 +24,7 @@ public class WaterGunProjectile : MonoBehaviour
         if (layerInt == LayerMask.NameToLayer("Ground"))
         {
             WaterGunProjectileManager.Instance.SpawnPuddle(rb.position);
+            WaterGunProjectileManager.Instance.OnHit(rb.position);
             DisableProjectile();
         }
         else if (other.CompareTag("Puddle"))
@@ -33,7 +34,8 @@ public class WaterGunProjectile : MonoBehaviour
         }
         else if (other.TryGetComponent(out IDamageable damageable) && !other.CompareTag("Player"))
         {
-            float damageAmount = (bulletDamage * 0.5f) + ((1 - timer / duration) * (bulletDamage * 0.5f));
+            float damageAmount = (1 - timer / duration) * bulletDamage;
+            damageAmount = Mathf.Max(damageAmount, minbulletDamage);
             Damage damage = new Damage(damageAmount, DamageType.Water, true, playerPos);
             damageable.TakeDamage(damage);
             if(damageable.isDead())
