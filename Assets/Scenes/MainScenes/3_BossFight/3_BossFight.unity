@@ -865,7 +865,7 @@ MonoBehaviour:
   m_DecalLayerMask: 1
   m_ScaleMode: 0
   m_Offset: {x: 0, y: 0, z: 0.1}
-  m_Size: {x: 0.25, y: 0.25, z: 0.2}
+  m_Size: {x: 0.2, y: 0.2, z: 0.2}
   m_FadeFactor: 1
 --- !u!1001 &32329060
 PrefabInstance:
@@ -15901,8 +15901,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 388087919}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: 0.007014516, y: 0.7070688, z: -0.0051933, w: 0.707091}
+  m_LocalPosition: {x: 14.716, y: 1.769, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -15910,7 +15910,7 @@ Transform:
   - {fileID: 13571127}
   - {fileID: 748624618}
   - {fileID: 1829843486}
-  m_Father: {fileID: 1371361031}
+  m_Father: {fileID: 637168128}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &391144411
 PrefabInstance:
@@ -25278,6 +25278,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2098673891}
+  - {fileID: 388087920}
   - {fileID: 1371361031}
   m_Father: {fileID: 2095767083}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -35802,7 +35803,7 @@ MonoBehaviour:
   m_DecalLayerMask: 1
   m_ScaleMode: 0
   m_Offset: {x: 0, y: 0, z: 0.1}
-  m_Size: {x: 0.25, y: 0.25, z: 0.2}
+  m_Size: {x: 0.2, y: 0.2, z: 0.2}
   m_FadeFactor: 1
 --- !u!1001 &902042964
 PrefabInstance:
@@ -39109,7 +39110,7 @@ MonoBehaviour:
   m_DecalLayerMask: 1
   m_ScaleMode: 0
   m_Offset: {x: 0, y: 0, z: 0.1}
-  m_Size: {x: 0.25, y: 0.25, z: 0.2}
+  m_Size: {x: 0.2, y: 0.2, z: 0.2}
   m_FadeFactor: 1
 --- !u!1001 &997069714
 PrefabInstance:
@@ -51342,16 +51343,28 @@ PrefabInstance:
     m_TransformParent: {fileID: 637168128}
     m_Modifications:
     - target: {fileID: 4016080783103422239, guid: a97355f1c65eeaa41a9ec380f1e5163b, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.75
+      objectReference: {fileID: 0}
+    - target: {fileID: 4016080783103422239, guid: a97355f1c65eeaa41a9ec380f1e5163b, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.75
+      objectReference: {fileID: 0}
+    - target: {fileID: 4016080783103422239, guid: a97355f1c65eeaa41a9ec380f1e5163b, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.75
+      objectReference: {fileID: 0}
+    - target: {fileID: 4016080783103422239, guid: a97355f1c65eeaa41a9ec380f1e5163b, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 14.716
+      value: 14.712
       objectReference: {fileID: 0}
     - target: {fileID: 4016080783103422239, guid: a97355f1c65eeaa41a9ec380f1e5163b, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.769
+      value: 1.543
       objectReference: {fileID: 0}
     - target: {fileID: 4016080783103422239, guid: a97355f1c65eeaa41a9ec380f1e5163b, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 4016080783103422239, guid: a97355f1c65eeaa41a9ec380f1e5163b, type: 3}
       propertyPath: m_LocalRotation.w
@@ -51391,9 +51404,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 4016080783103422239, guid: a97355f1c65eeaa41a9ec380f1e5163b, type: 3}
       insertIndex: -1
       addedObject: {fileID: 383966964}
-    - targetCorrespondingSourceObject: {fileID: 4016080783103422239, guid: a97355f1c65eeaa41a9ec380f1e5163b, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 388087920}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 4391058690188686757, guid: a97355f1c65eeaa41a9ec380f1e5163b, type: 3}
       insertIndex: -1
@@ -73077,7 +73087,7 @@ MonoBehaviour:
   m_DecalLayerMask: 1
   m_ScaleMode: 0
   m_Offset: {x: 0, y: 0, z: 0.1}
-  m_Size: {x: 0.25, y: 0.25, z: 0.2}
+  m_Size: {x: 0.2, y: 0.2, z: 0.2}
   m_FadeFactor: 1
 --- !u!1001 &2009115369
 PrefabInstance:
