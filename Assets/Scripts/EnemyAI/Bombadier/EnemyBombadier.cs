@@ -320,6 +320,7 @@ public class EnemyBombardier : IEnemy, IDamageable
         animator.transform.localRotation = defaultAnimatorRot;
         transform.position = respawnPos;
         transform.rotation = respawnRot;
+        animator.gameObject.SetActive(true);
         animator.SetBool("isWalking", false);
         animator.SetBool("isDead", false);
         if(deSpawn_Ref != null)
@@ -345,6 +346,7 @@ public class EnemyBombardier : IEnemy, IDamageable
         animator.transform.localRotation = defaultAnimatorRot;
         transform.position = transform.position;
         transform.rotation = transform.rotation;
+        animator.gameObject.SetActive(true);
         animator.SetBool("isWalking", false);
         animator.SetBool("isDead", false);
         if (deSpawn_Ref != null)

@@ -1,15 +1,20 @@
+using Pixeye.Unity;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using static ArmadilloMovementController;
 public class ArmadilloAudioControl : MonoBehaviour
 {
+    [Foldout("Movement",true)]
     [SerializeField] private SoundEmitter walkingSound;
     [SerializeField] private SoundEmitter sprintSound;
     [SerializeField] private SoundEmitter lurkingSound;
     public SoundEmitter onFallSound;
     public SoundEmitter onTransformSound;
     public SoundEmitter currentMovingSound { get; private set; }
+    [Foldout("Guns",true)]
+    public AudioSource onDamageOnly;
+    public AudioSource onCritical;
     private void Awake()
     {
         currentMovingSound = walkingSound;

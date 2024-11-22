@@ -182,13 +182,16 @@ public class EletricPistolVisual : MonoBehaviour
     public void OnBodyShot()
     {
         ArmadilloUIControl.Instance.StartHitMarkerDamage();
+        ArmadilloPlayerController.Instance.audioControl.onDamageOnly.PlayOneShot(ArmadilloPlayerController.Instance.audioControl.onDamageOnly.clip);
     }
     public void OnHeadshotShot()
     {
         ArmadilloUIControl.Instance.StartHitMarkerCrit();
+        ArmadilloPlayerController.Instance.audioControl.onCritical.PlayOneShot(ArmadilloPlayerController.Instance.audioControl.onCritical.clip);
     }
     public void OnLetalShot()
     {
         ArmadilloUIControl.Instance.StartHitMarkerLethal();
+        ArmadilloPlayerController.Instance.audioControl.onCritical.PlayOneShot(ArmadilloPlayerController.Instance.audioControl.onCritical.clip);
     }
 }
