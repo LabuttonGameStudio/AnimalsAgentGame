@@ -28286,6 +28286,7 @@ MonoBehaviour:
   DamageScreen: {fileID: 1115559457392231777}
   DeathScreen: {fileID: 1582681320864239613}
   invulnerabilityDuration: 1
+  canReceiveDamage: 0
 --- !u!114 &4746948372959407542
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -35338,6 +35339,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2035100160625017374}
   - component: {fileID: 9080277895781317387}
+  - component: {fileID: 8734186886445362205}
   m_Layer: 0
   m_Name: Manager
   m_TagString: Untagged
@@ -35385,6 +35387,18 @@ MonoBehaviour:
   activeColliders:
     serializedVersion: 2
     m_Bits: 4939
+--- !u!114 &8734186886445362205
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7361854656394001958}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cc501e43644ebac459129210d998573c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7570212525422560583
 GameObject:
   m_ObjectHideFlags: 0
