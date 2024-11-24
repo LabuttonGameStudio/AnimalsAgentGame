@@ -97,10 +97,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rb: {fileID: 0}
+  m_collider: {fileID: 0}
   playerPos: {x: 0, y: 0, z: 0}
   duration: 0
   timer: 0
   bulletDamage: 0
+  minbulletDamage: 0
 --- !u!33 &2733497922220404145
 MeshFilter:
   m_ObjectHideFlags: 0

@@ -49,6 +49,7 @@ public class WaterGunProjectileManager : MonoBehaviour
         {
             watergunProjectilePool.Add(Instantiate(watergunProjectilePrefab,projectilePoolParent.transform).GetComponent<WaterGunProjectile>());
             watergunProjectilePool[i].rb = watergunProjectilePool[i].GetComponent<Rigidbody>();
+            watergunProjectilePool[i].m_collider = watergunProjectilePool[i].GetComponent<Collider>();
             watergunProjectilePool[i].gameObject.SetActive(false);
         }
 

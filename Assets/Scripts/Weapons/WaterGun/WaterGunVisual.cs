@@ -1,3 +1,4 @@
+using Pixeye.Unity;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -16,7 +17,15 @@ public class WaterGunVisual : MonoBehaviour
     [SerializeField] private ParticleSystem sploshOnomatopeia;
     [SerializeField] private ParticleSystem chkOnomatopeia;
     [SerializeField] private ParticleSystem plopOnomatopeia;
+    [SerializeField] private ParticleSystem onFireMuzzleFlash;
     [HideInInspector]public  Vector3 waterSpayVelocity;
+
+    private ShakeStats onFireShake;
+
+    [Foldout("SFX", true)]
+    [SerializeField] private AudioSource onEquipAudio; 
+    [SerializeField] private AudioSource onReloadAudio; 
+    [SerializeField] private AudioSource onFireAudio; 
     private void Awake()
     {
         Instance = this;
@@ -37,6 +46,7 @@ public class WaterGunVisual : MonoBehaviour
     {
         if (playAnimation)
         {
+            onEquipAudio.Play();
             weaponAnimator.CrossFade("WaterGunEquip", crossFadeTime);
         }
         else
@@ -54,13 +64,27 @@ public class WaterGunVisual : MonoBehaviour
         weaponAnimator.SetBool("waterGunIsFiring", state);
         if (state)
         {
+            if (onFireShake != null)
+            {
+                FPCameraShake.StopShake(onFireShake);
+            }
+            onFireShake = FPCameraShake.StartShake(0.15f, 1);
+            onFireMuzzleFlash.Play();
             waterSpray.Play();
             sploshOnomatopeia.Play();
+            onFireAudio.Play();
         }
         else
         {
+            if(onFireShake != null)
+            {
+                FPCameraShake.StopShake(onFireShake);
+                onFireShake = null;
+            }
+            onFireMuzzleFlash.Stop();
             waterSpray.Stop();
             sploshOnomatopeia.Stop();
+            onFireAudio.Stop();
         }
     }
     public void OnReload()
@@ -68,6 +92,7 @@ public class WaterGunVisual : MonoBehaviour
         weaponAnimator.SetTrigger("waterGunReload");
         chkOnomatopeia.Play();
         plopOnomatopeia.Play();
+        onReloadAudio.Play();
     }
     public void ToggleOnRun(bool state)
     {

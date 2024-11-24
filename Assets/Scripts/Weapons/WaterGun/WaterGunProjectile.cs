@@ -5,6 +5,7 @@ using static Damage;
 public class WaterGunProjectile : MonoBehaviour
 {
     [HideInInspector] public Rigidbody rb;
+    [HideInInspector] public Collider m_collider;
     [HideInInspector] public Vector3 playerPos;
     [HideInInspector] public float duration;
     [HideInInspector] public float timer;
@@ -24,7 +25,9 @@ public class WaterGunProjectile : MonoBehaviour
         if (layerInt == LayerMask.NameToLayer("Ground"))
         {
             WaterGunProjectileManager.Instance.SpawnPuddle(rb.position);
-            WaterGunProjectileManager.Instance.OnHit(rb.position);
+
+            Vector3 insidePoint = other.ClosestPointOnBounds(rb.position-rb.velocity*0.025f);
+            WaterGunProjectileManager.Instance.OnHit(insidePoint);
             DisableProjectile();
         }
         else if (other.CompareTag("Puddle"))
@@ -38,7 +41,8 @@ public class WaterGunProjectile : MonoBehaviour
             damageAmount = Mathf.Max(damageAmount, minbulletDamage);
             Damage damage = new Damage(damageAmount, DamageType.Water, true, playerPos);
             damageable.TakeDamage(damage);
-            if(damageable.isDead())
+            WaterGunProjectileManager.Instance.OnHit(rb.position);
+            if (damageable.isDead())
             {
                 WaterGunVisual.Instance.OnLetalShot();
             }

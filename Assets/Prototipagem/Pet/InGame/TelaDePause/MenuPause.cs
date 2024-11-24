@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using TMPro;
 using UnityEngine.InputSystem;
+using UnityEngine.Localization.Settings;
 
 public class MenuPause : MonoBehaviour
 {
@@ -26,6 +27,7 @@ public class MenuPause : MonoBehaviour
     public Slider sensitivitySlider;
 
     private bool isMenuOpen;
+
 
     private Resolution[] resolutions = new Resolution[]
      {
@@ -336,6 +338,14 @@ public class MenuPause : MonoBehaviour
     #endregion
 
 
+    #region Language
+
+    public void OnLanguageSelected(int languageIndex)
+    {
+        if (LocalizationSettings.AvailableLocales.Locales.Count <= 0 || languageIndex> LocalizationSettings.AvailableLocales.Locales.Count) return;
+        LocalizationSettings.SelectedLocale = LocalizationSettings.AvailableLocales.Locales[(int)languageIndex];
+    }
+    #endregion
     public void Exit()
     {
         Application.Quit();
