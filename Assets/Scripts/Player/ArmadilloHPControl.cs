@@ -29,6 +29,11 @@ public class ArmadilloHPControl : MonoBehaviour, IDamageable
     private float DamageAmount;
     private Color DamageColor;
 
+    [HideInInspector]public bool canReceiveDamage;
+    private void Awake()
+    {
+        canReceiveDamage = true;
+    }
     private void Start()
     {
         UpdateHealthBar();
@@ -44,6 +49,7 @@ public class ArmadilloHPControl : MonoBehaviour, IDamageable
     }
     public void TakeDamage(Damage damage)
     {
+        if (!canReceiveDamage) return;
         if (!isInvulnerable)
         {
             if (currentShield > 0)
