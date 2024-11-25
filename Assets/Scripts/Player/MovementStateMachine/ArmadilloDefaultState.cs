@@ -121,6 +121,7 @@ public class ArmadilloDefaultState : MovementState
             movementCtrl.timeSinceTouchedGround = 0;
             Jump();
             ArmadilloPlayerController.Instance.visualControl.OnLedgeGrab();
+            ArmadilloPlayerController.Instance.audioControl.onLedgeGrab.Play();
             //}
         }
     }

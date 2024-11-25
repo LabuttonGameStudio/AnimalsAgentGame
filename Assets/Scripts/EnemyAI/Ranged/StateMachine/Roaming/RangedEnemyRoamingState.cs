@@ -28,6 +28,7 @@ public class RangedEnemyRoamingState : RangedEnemyState
                 iEnemy.StopCoroutine(loopRoamingPath_Ref);
                 loopRoamingPath_Ref = null;
             }
+            iEnemy.navMeshAgent.isStopped= false;
             loopRoamingPath_Ref = iEnemy.StartCoroutine(LoopRoamingPath_Coroutine());
         }
         //Debug.Log("Roaming Enter");

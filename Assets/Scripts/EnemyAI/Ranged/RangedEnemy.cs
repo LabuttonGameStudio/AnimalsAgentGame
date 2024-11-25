@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.VFX;
 using Pixeye.Unity;
 using static AIBehaviourEnums;
+using UnityEngine.UIElements;
+using UnityEngine.InputSystem.LowLevel;
 
 public class RangedEnemy : IEnemy, IDamageable, ISoundReceiver
 {
@@ -50,6 +52,11 @@ public class RangedEnemy : IEnemy, IDamageable, ISoundReceiver
     [SerializeField] private ParticleSystem onHitCriticalVFX;
     #endregion
 
+    #region Audios Variables
+    [Foldout("Audio Variables")]
+    [SerializeField] private AudioSource walkingAudio;
+    #endregion
+
     //-----Base Functions-----
     #region Base Functions
     protected override void OnAwake()
@@ -58,24 +65,29 @@ public class RangedEnemy : IEnemy, IDamageable, ISoundReceiver
         enemyObservingState = new RangedEnemyObservingState(this);
         enemySearchingState = new RangedEnemySearchingState(this);
         enemyAttackingState = new RangedEnemyAttackingState(this);
-        currentState = enemyRoamingState;
         switch (currentAIBehaviour)
         {
             case AIBehaviour.Static:
                 isStatic = true;
-                ChangeCurrentState(enemyRoamingState);
+                enemyRoamingState.OnEnterState();
+                currentState = enemyRoamingState;
                 break;
             case AIBehaviour.Roaming:
-                ChangeCurrentState(enemyRoamingState);
+                isStatic = false;
+                enemyRoamingState.OnEnterState();
+                currentState = enemyRoamingState;
                 break;
             case AIBehaviour.Observing:
-                ChangeCurrentState(enemyObservingState);
+                enemyObservingState.OnEnterState();
+                currentState = enemyObservingState;
                 break;
             case AIBehaviour.Searching:
-                ChangeCurrentState(enemySearchingState);
+                enemySearchingState.OnEnterState();
+                currentState = enemySearchingState;
                 break;
             case AIBehaviour.Attacking:
-                ChangeCurrentState(enemyAttackingState);
+                enemyAttackingState.OnEnterState();
+                currentState = enemyAttackingState;
                 break;
         }
     }
@@ -91,6 +103,20 @@ public class RangedEnemy : IEnemy, IDamageable, ISoundReceiver
     {
         currentState.OnFixedUpdate();
         currentState.OnVisibilityUpdate();
+        if (navMeshAgent.velocity.magnitude > 0.5f)
+        {
+            if (!walkingAudio.isPlaying)
+            {
+                walkingAudio.Play();
+            }
+        }
+        else
+        {
+            if (walkingAudio.isPlaying)
+            {
+                walkingAudio.Stop();
+            }
+        }
     }
     #endregion
 
@@ -122,14 +148,14 @@ public class RangedEnemy : IEnemy, IDamageable, ISoundReceiver
     #region Take Damage Functions
     public void TakeDamage(Damage damage)
     {
-        currentHp = currentHp- damage.damageAmount;
+        currentHp = currentHp - damage.damageAmount;
         if (currentHp <= 0)
         {
             isDead = true;
             animator.transform.parent = animator.transform.parent.parent;
-            animator.SetBool("isWalking",false);
-            animator.SetBool("isDead",true);
-            foreach(DamageableHitbox hitbox in damageableHitboxes)
+            animator.SetBool("isWalking", false);
+            animator.SetBool("isDead", true);
+            foreach (DamageableHitbox hitbox in damageableHitboxes)
             {
                 foreach (Collider collider in hitbox._Collider) collider.enabled = false;
                 hitbox._IsDead = true;
@@ -137,7 +163,7 @@ public class RangedEnemy : IEnemy, IDamageable, ISoundReceiver
             //VFX
             deSpawn_Ref = EnemyMasterControl.Instance.StartCoroutine(DeSpawnCoroutine(animator.gameObject, onDeathVFX));
 
-            switch(damage.damageType)
+            switch (damage.damageType)
             {
                 case Damage.DamageType.Eletric:
                     onDeathByElectricityVFX.Play();
@@ -159,10 +185,10 @@ public class RangedEnemy : IEnemy, IDamageable, ISoundReceiver
         }
 
         //VFX
-        if(damage.wasCritical)onHitCriticalVFX.Play();
+        if (damage.wasCritical) onHitCriticalVFX.Play();
         onHitVFX.Play();
 
-        if(onTakeDamageVisual_Ref != null)StopCoroutine(onTakeDamageVisual_Ref);
+        if (onTakeDamageVisual_Ref != null) StopCoroutine(onTakeDamageVisual_Ref);
         onTakeDamageVisual_Ref = EnemyMasterControl.Instance.StartCoroutine(OnTakeDamageVisual_Coroutine());
     }
 
@@ -241,7 +267,7 @@ public class RangedEnemy : IEnemy, IDamageable, ISoundReceiver
     {
         isDead = false;
         animator.transform.parent = transform;
-        animator.SetBool("isDead",false);
+        animator.SetBool("isDead", false);
 
         gameObject.transform.position = respawnPos;
         gameObject.transform.rotation = respawnRot;
@@ -252,7 +278,7 @@ public class RangedEnemy : IEnemy, IDamageable, ISoundReceiver
             foreach (Collider collider in hitbox._Collider) collider.enabled = true;
             hitbox._IsDead = false;
         }
-        if(deSpawn_Ref != null)
+        if (deSpawn_Ref != null)
         {
             EnemyMasterControl.Instance.StopCoroutine(deSpawn_Ref);
             deSpawn_Ref = null;

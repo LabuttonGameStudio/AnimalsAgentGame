@@ -278,6 +278,7 @@ public class ArmadilloPlayerController : MonoBehaviour
     private IEnumerator SonarAbilityVFX_Coroutine(float duration)
     {
         yield return new WaitForSeconds(0.55f);
+        audioControl.onSonar.Play();
         float timer = 0f;
         while (timer <= duration)
         {

@@ -75,6 +75,7 @@ public class ArmadilloHPControl : MonoBehaviour, IDamageable
                 return;
             }
             StartInvulnerabilityTimer();
+            ArmadilloPlayerController.Instance.audioControl.OnTakeDamage();
             if (damageScreenFade_Ref != null) StopCoroutine(damageScreenFade_Ref);
             damageScreenFade_Ref = StartCoroutine(DamageScreenFade_Coroutine(1f, 0.25f));
             currentHp -= damage.damageAmount;

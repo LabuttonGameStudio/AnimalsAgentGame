@@ -118,6 +118,7 @@ public class ArmadilloWeaponControl : MonoBehaviour
     {
         meleeHitbox.CheckListIntegrity();
         //Do damage for all entities
+        ArmadilloPlayerController.Instance.audioControl.onWeakMelee.Play();
         MeleeAnimator.Instance.PlayRandomMeleeAnimation();
         ArmadilloPlayerController.Instance.movementControl.speedMultiplerList.Add(weakMeleeSpeedMultipler);
         yield return new WaitForSeconds(0.2f);
@@ -137,6 +138,7 @@ public class ArmadilloWeaponControl : MonoBehaviour
     {
         meleeHitbox.CheckListIntegrity();
         //Do damage for all entities
+        ArmadilloPlayerController.Instance.audioControl.onStrongMelee.Play();
         MeleeAnimator.Instance.PlayTakedownAnimation();
         ArmadilloPlayerController.Instance.movementControl.speedMultiplerList.Add(HeavyMeleeSpeedMultipler);
         yield return new WaitForSeconds(0.42f);

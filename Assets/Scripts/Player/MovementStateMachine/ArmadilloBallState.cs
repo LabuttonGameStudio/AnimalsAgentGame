@@ -13,6 +13,8 @@ public class ArmadilloBallState : MovementState
     private Vector3 currentVelocity = Vector3.zero;
 
     private Transform playerVisual;
+
+    private bool isPlayerRollingAudio;
     public override void EnterState(ArmadilloMovementController movementControl)
     {
         stats = movementControl.ballFormStats;
@@ -47,6 +49,8 @@ public class ArmadilloBallState : MovementState
         }
         previousVelocityInput = Vector3.zero;
         velocity = Vector3.zero;
+        isPlayerRollingAudio = false;
+        ArmadilloPlayerController.Instance.audioControl.onBallRoll.Stop();
     }
     public void OnBreakObject()
     {
@@ -94,16 +98,23 @@ public class ArmadilloBallState : MovementState
         movementCtrl.readyToJump = false;
         movementCtrl.rb.velocity = new Vector3(movementCtrl.rb.velocity.x, 0, movementCtrl.rb.velocity.z);
         movementCtrl.rb.AddForce(Vector3.up * stats.jumpForce, ForceMode.VelocityChange);
+        ArmadilloPlayerController.Instance.audioControl.onBallJump.Play();
     }
     private void SpeedControl()
     {
-        //Vector3 flatVel = new Vector3(movementCtrl.rb.velocity.x, 0, movementCtrl.rb.velocity.z);
-
-        //if (flatVel.magnitude > movementCtrl.maxMoveSpeed_Ball)
-        //{
-        //    Vector3 limitedVel = flatVel.normalized * movementCtrl.maxMoveSpeed_Ball;
-        //    movementCtrl.rb.velocity = new Vector3(limitedVel.x, movementCtrl.rb.velocity.y, limitedVel.z);
-        //}
+        if (new Vector2(movementCtrl.rb.velocity.x, movementCtrl.rb.velocity.z).magnitude > 0.5f)
+        {
+            if (!isPlayerRollingAudio)
+            {
+                isPlayerRollingAudio = true;
+                ArmadilloPlayerController.Instance.audioControl.onBallRoll.Play();
+            }
+        }
+        else if (isPlayerRollingAudio)
+        {
+            isPlayerRollingAudio = false;
+            ArmadilloPlayerController.Instance.audioControl.onBallRoll.Stop();
+        }
     }
 
     private Coroutine shieldCheck_Ref;
