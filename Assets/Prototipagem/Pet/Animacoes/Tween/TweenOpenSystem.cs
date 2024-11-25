@@ -27,14 +27,14 @@ public class TweenOpenSystem : MonoBehaviour
     public void ClosePanel()
     {
         StartCoroutine(ClosePanelAnimation());
-        
+
     }
 
-        private IEnumerator ClosePanelAnimation()
+    private IEnumerator ClosePanelAnimation()
     {
         yield return new WaitForSeconds(TimeForStart);
 
-        
+
         Vector3 startScale = new Vector3(panelToOpen.localScale.x, 1f, panelToOpen.localScale.z); // Começa com Y = 0
         Vector3 finalScale = new Vector3(panelToOpen.localScale.x, 0f, panelToOpen.localScale.z); // Depois ajusta para Y = 1 (tamanho final)
 
@@ -42,7 +42,7 @@ public class TweenOpenSystem : MonoBehaviour
         yield return Tween.ScaleTransform(this, panelToOpen, finalScale, openDuration / 2, lerpType);
     }
 
-        private IEnumerator OpenPanelAnimation()
+    private IEnumerator OpenPanelAnimation()
     {
         yield return new WaitForSeconds(TimeForStart);
 

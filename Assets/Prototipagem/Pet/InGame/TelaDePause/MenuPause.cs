@@ -325,7 +325,7 @@ public class MenuPause : MonoBehaviour
 
     private void ApplyMouseSensitivity(float sensitivity)
     {
-        PlayerCamera.Instance.ChangeSensibility(new Vector2(sensitivity, sensitivity));
+        if(PlayerCamera.Instance != null)PlayerCamera.Instance.ChangeSensibility(new Vector2(sensitivity, sensitivity));
     }
 
     private void SaveSensitivitySettings(float sensitivity)

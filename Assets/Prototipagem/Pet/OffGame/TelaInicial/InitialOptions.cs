@@ -13,7 +13,7 @@ public class InitialOptions : MonoBehaviour
     public string loadingScreenScene;
     public string actuallevel;
     private bool levelLoaded = false;
-    public float delayBeforeLoading = 10f; // para o tutorial ir carregando
+    public float delayBeforeLoading = 2f; // para o tutorial ir carregando
 
     [Header("MOUSE")]
     public Texture2D cursorTexture;
@@ -31,7 +31,7 @@ public class InitialOptions : MonoBehaviour
 
         if (!levelLoaded) //  level nao carregado
         {
-            StartCoroutine(LoadLevelAsync());
+            SceneController.Instance.StartCoroutine(LoadLevelAsync());
             Debug.Log("Iniciando");
             levelLoaded = true;
         }
@@ -45,8 +45,9 @@ public class InitialOptions : MonoBehaviour
         yield return new WaitForSeconds(2f);
 
         // Carrega a cena da tela de carregamento
+        Scene currentScene = SceneManager.GetActiveScene();
         yield return SceneManager.LoadSceneAsync(loadingScreenScene, LoadSceneMode.Additive);
-        SceneManager.UnloadSceneAsync(actuallevel);
+        SceneManager.UnloadSceneAsync(currentScene);
 
         // carrega de forma assin o tutorial
         AsyncOperation levelLoadOperation = SceneManager.LoadSceneAsync(levelToLoad, LoadSceneMode.Additive);

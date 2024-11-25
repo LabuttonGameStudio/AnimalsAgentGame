@@ -23,9 +23,9 @@ public class EnemyBehaviourVisual : MonoBehaviour
     [SerializeField] private SpriteRenderer alertSpriteRender;
     public void Start()
     {
-        if(mainCamera == null) mainCamera = Camera.main;
+        if (mainCamera == null) mainCamera = ArmadilloPlayerController.Instance.cameraControl.mainCamera;
     }
-    private void Update()
+    private void FixedUpdate()
     {
         transform.LookAt(mainCamera.transform);
     }
