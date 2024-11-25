@@ -42,7 +42,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Emissive_Tex:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: d782931af8f32b343a3c49b66d0d0922, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MaskMap:
@@ -55,10 +55,12 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - _Color_Opacity: 0
     - _Emissive: 0
-    - _Emissive_intensity: 0
+    - _Emissive_intensity: 10000
     - _Random_Color_Opacity: 0
+    - _Value: 1.5
     m_Colors:
-    - _Emissive_Color: {r: 1, g: 1, b: 1, a: 0}
+    - _Emissive_Color: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

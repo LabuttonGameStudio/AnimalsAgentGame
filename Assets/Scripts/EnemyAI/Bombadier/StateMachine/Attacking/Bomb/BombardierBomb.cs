@@ -4,9 +4,14 @@ using UnityEngine;
 using Pixeye.Unity;
 public class BombardierBomb : MonoBehaviour
 {
+    static private Material turnOffMat;
+    static private Material turnOnMat;
+
     private Rigidbody rb;
-    [Foldout("Explosion Mechanic",true)]
+    [SerializeField] private MeshRenderer meshRenderer;
+    [Foldout("Explosion Mechanic", true)]
     [SerializeField] private GameObject explosionArea;
+
     [Foldout("VFX", true)]
     [Header("-----Blast Wave-----")]
     public int pointsCount;
@@ -20,6 +25,17 @@ public class BombardierBomb : MonoBehaviour
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
+        if (turnOffMat == null)
+        {
+            turnOffMat = new Material(meshRenderer.material);
+            turnOffMat.SetInt("_Emissive", 0);
+        }
+        meshRenderer.sharedMaterial = turnOffMat;
+        if (turnOnMat == null)
+        {
+            turnOnMat = new Material(meshRenderer.material);
+            turnOnMat.SetInt("_Emissive", 1);
+        }
     }
     private void Start()
     {
@@ -29,6 +45,8 @@ public class BombardierBomb : MonoBehaviour
     }
     public void Enable()
     {
+        meshRenderer.sharedMaterial = turnOffMat;
+        meshRenderer.transform.localScale = Vector3.one;
         gameObject.SetActive(true);
     }
     private void OnCollisionEnter(Collision collision)
@@ -43,13 +61,38 @@ public class BombardierBomb : MonoBehaviour
     {
         rb.isKinematic = true;
         explosionArea.SetActive(true);
-        yield return new WaitForSeconds(1.5f);
-
-        Collider[] objectsHit = Physics.OverlapSphere(transform.position, 4,LayerManager.Instance.enemyAttackMask,QueryTriggerInteraction.Ignore);
-
-        foreach(Collider collider in objectsHit)
+        float timer = 0;
+        float duration = 1.5f;
+        float interval = 0.35f;
+        while (timer < duration)
         {
-            if(collider.TryGetComponent(out IDamageable damageable))
+            meshRenderer.sharedMaterial = turnOnMat;
+            yield return new WaitForSeconds(interval);
+            timer += interval;
+            interval -= 0.05f;
+            interval = Mathf.Max(interval, 0.05f);
+
+            meshRenderer.sharedMaterial = turnOffMat;
+            yield return new WaitForSeconds(interval);
+            timer += interval;
+            interval -= 0.05f;
+            interval = Mathf.Max(interval, 0.05f);
+        }
+        meshRenderer.sharedMaterial = turnOnMat;
+        timer = 0;
+        duration = 0.25f;
+        while (timer < duration)
+        {
+            meshRenderer.transform.localScale = Vector3.Lerp(Vector3.one, Vector3.one * 1.25f, timer / duration);
+            timer += Time.deltaTime;
+            yield return null;
+        }
+        meshRenderer.transform.localScale = Vector3.one * 1.25f;
+        Collider[] objectsHit = Physics.OverlapSphere(transform.position, 4, LayerManager.Instance.enemyAttackMask, QueryTriggerInteraction.Ignore);
+
+        foreach (Collider collider in objectsHit)
+        {
+            if (collider.TryGetComponent(out IDamageable damageable))
             {
                 damageable.TakeDamage(new Damage(40, Damage.DamageType.Explosive, false, transform.position));
             }
