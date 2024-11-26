@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.SocialPlatforms;
@@ -9,13 +10,12 @@ using static CageCodeManager;
 public class CageMonitor : MonoBehaviour
 {
     [Header("PC")]
-    [SerializeField] private Material lockedPcMat;
-    [SerializeField] private Material unlockedPcMat;
+    [SerializeField] private Material[] pcMatsInOrder;
 
-    private MeshRenderer meshRenderer;
+    [HideInInspector] private MeshRenderer meshRenderer;
 
     [Header("Decals")]
-    [SerializeField]private DecalProjector[] decals;
+    [SerializeField] private DecalProjector[] decals;
 
     [SerializeField] private Material triangleDecalMat;
     [SerializeField] private Material squareDecalMat;
@@ -55,29 +55,26 @@ public class CageMonitor : MonoBehaviour
     }
     public void ResetDigits()
     {
-        foreach(DecalProjector decal in decals)
+        foreach (DecalProjector decal in decals)
         {
             decal.fadeFactor = 0;
         }
     }
-    public void UnlockScreen()
-    {
-        meshRenderer.sharedMaterial = unlockedPcMat;
-    }
-    public void LockScreen()
-    {
-        meshRenderer.sharedMaterial = lockedPcMat;
-    }
-    private IEnumerator DigitFade_Coroutine(DecalProjector decal,float startValue,float endValue)
+    private IEnumerator DigitFade_Coroutine(DecalProjector decal, float startValue, float endValue)
     {
         float timer = 0f;
-        float duration=0.25f;
-        while (timer<duration)
+        float duration = 0.25f;
+        while (timer < duration)
         {
-            decal.fadeFactor = Mathf.Lerp(startValue, endValue, timer/duration);
+            decal.fadeFactor = Mathf.Lerp(startValue, endValue, timer / duration);
             timer += Time.deltaTime;
             yield return null;
         }
         decal.fadeFactor = endValue;
+    }
+
+    public void UnlockScreen(int stage)
+    {
+        meshRenderer.sharedMaterial = pcMatsInOrder[stage];
     }
 }

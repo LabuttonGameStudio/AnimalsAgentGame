@@ -125,15 +125,19 @@ public class CageCodeManager : MonoBehaviour
         {
             case 0:
                 onFirstSegmentCleared.Invoke();
+                monitor.UnlockScreen(1);
                 break;
             case 1:
                 onSecondSegmentCleared.Invoke();
+                monitor.UnlockScreen(2);
                 break;
             case 2:
                 onThirdSegmentCleared.Invoke();
+                monitor.UnlockScreen(3);
                 break;
             case 3:
                 onFourthSegmentCleared.Invoke();
+                monitor.UnlockScreen(4);
                 break;
         }
         cageAnimator.SetBool("hook" + (segmentIndex + 1).ToString() + "IsOpen", true);
@@ -146,10 +150,8 @@ public class CageCodeManager : MonoBehaviour
     private IEnumerator UnlockScreen_Coroutine()
     {
         isUnlockingSegment = true;
-        monitor.UnlockScreen();
         FPCameraShake.StartShake(3, 0.2f, 8);
         yield return new WaitForSeconds(3f);
-        monitor.LockScreen();
         isUnlockingSegment = false;
         unlockScreen_Ref = null;
     }
