@@ -113,7 +113,6 @@ public class RangedEnemyAttackingState : RangedEnemyState
         iEnemy.animator.SetTrigger("sniperFire");
         iEnemy.animator.SetBool("isLoadingSniper", false);
         yield return new WaitForSeconds(1.2f / 2f + 0.25f);
-        iEnemy.onFireAudio.Play();
         iEnemy.weakAttackProjectile.Fire(iEnemy.firePivot.position, direction * 2);
         yield return new WaitForSeconds(0.33f);
     }
