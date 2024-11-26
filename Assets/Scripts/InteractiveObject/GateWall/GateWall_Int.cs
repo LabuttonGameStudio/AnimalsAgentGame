@@ -3,9 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class GateWall_Int : MonoBehaviour
 {
+    [SerializeField] private UnityEvent onGateOpen;
     [SerializeField] private CinemachineVirtualCamera virtualCamera;
     [Header("Doors")]
     [SerializeField]private Transform leftDoor;
@@ -87,5 +89,6 @@ public class GateWall_Int : MonoBehaviour
         }
         leftDoor.localRotation = leftDoorFinalRot;
         rightDoor.localRotation = rightDoorFinalRot;
+        onGateOpen.Invoke();
     }
 }

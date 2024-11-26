@@ -9913,13 +9913,7 @@ MonoBehaviour:
   pathLoopType: 1
   currentPathPoint: 0
   enqueued: 0
-  aiPathList:
-  - transformOfPathPoint: {fileID: 0}
-    waitTimeOnPoint: 0
-    lookAroundOnPoint: 0
-  - transformOfPathPoint: {fileID: 0}
-    waitTimeOnPoint: 0
-    lookAroundOnPoint: 0
+  aiPathList: []
   currentHp: 30
   maxHp: 30
   isDead: 0
@@ -9938,7 +9932,7 @@ MonoBehaviour:
   visionBlockLayers:
     serializedVersion: 2
     m_Bits: 383
-  currentAIBehaviour: 1
+  currentAIBehaviour: 0
   enemyBehaviourVisual: {fileID: 5048280621991121672}
   detectionLevel: 0
   onDeathEvent:

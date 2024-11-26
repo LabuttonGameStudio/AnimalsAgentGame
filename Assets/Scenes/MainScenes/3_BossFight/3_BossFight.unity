@@ -161,9 +161,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 1516770}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0e0f02a3bca1ac47a063ff04067c943, type: 3}
+  m_Script: {fileID: 11500000, guid: 42d72b2a475a9e5438de2d68c025d034, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  startSpawnPos: {fileID: 0}
+  endSpawnPos: {fileID: 1516771}
+  openDoor: {fileID: 1659929003}
+  closedDoor: {fileID: 1659929002}
   startOnPlay: 0
   spawnOnStart: 1
   enemyPool:
@@ -4273,7 +4277,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 130606703}
-  - component: {fileID: 130606704}
   - component: {fileID: 130606705}
   m_Layer: 0
   m_Name: MeleeSpawn_F
@@ -4300,26 +4303,6 @@ Transform:
   - {fileID: 639533021}
   m_Father: {fileID: 1111163153}
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
---- !u!114 &130606704
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 130606702}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0e0f02a3bca1ac47a063ff04067c943, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  startOnPlay: 0
-  spawnOnStart: 1
-  enemyPool:
-  - {fileID: 451632810}
-  - {fileID: 804861783}
-  - {fileID: 639533022}
-  maxEnemiesAtOnce: 2
-  enemiesPerMinute: 1.5
 --- !u!114 &130606705
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9747,6 +9730,50 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1441585710534193286, guid: da9ab30566397dc4ba51bffd073e84cd, type: 3}
   m_PrefabInstance: {fileID: 267875387}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &270704093
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 270704095}
+  - component: {fileID: 270704094}
+  m_Layer: 0
+  m_Name: SceneManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &270704094
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 270704093}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3f943d37f4b0ba84687b59b9e0efe02f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &270704095
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 270704093}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &271092747
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -13302,7 +13329,7 @@ Transform:
   m_GameObject: {fileID: 333052480}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0.92387956, z: 0, w: 0.38268343}
-  m_LocalPosition: {x: -16.45, y: 0, z: 16.45}
+  m_LocalPosition: {x: -18, y: 0, z: 18}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -19827,56 +19854,8 @@ MonoBehaviour:
   onCapsuleComplete:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: InfiniteSpawner, Assembly-CSharp
-        m_MethodName: StopSpawningAndKillAll
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: InfiniteSpawner, Assembly-CSharp
-        m_MethodName: StopSpawningAndKillAll
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 130606704}
-        m_TargetAssemblyTypeName: InfiniteSpawner, Assembly-CSharp
-        m_MethodName: StopSpawningAndKillAll
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: InfiniteSpawner, Assembly-CSharp
-        m_MethodName: StopSpawningAndKillAll
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
       - m_Target: {fileID: 1516772}
-        m_TargetAssemblyTypeName: InfiniteSpawner, Assembly-CSharp
+        m_TargetAssemblyTypeName: GateInfiniteSpawner, Assembly-CSharp
         m_MethodName: StopSpawningAndKillAll
         m_Mode: 1
         m_Arguments:
@@ -19887,8 +19866,8 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 2075574663}
-        m_TargetAssemblyTypeName: InfiniteSpawner, Assembly-CSharp
+      - m_Target: {fileID: 2075574664}
+        m_TargetAssemblyTypeName: GateInfiniteSpawner, Assembly-CSharp
         m_MethodName: StopSpawningAndKillAll
         m_Mode: 1
         m_Arguments:
@@ -19900,7 +19879,43 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
       - m_Target: {fileID: 1423695582}
-        m_TargetAssemblyTypeName: InfiniteSpawner, Assembly-CSharp
+        m_TargetAssemblyTypeName: GateInfiniteSpawner, Assembly-CSharp
+        m_MethodName: StopSpawningAndKillAll
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 908730213}
+        m_TargetAssemblyTypeName: GateInfiniteSpawner, Assembly-CSharp
+        m_MethodName: StopSpawningAndKillAll
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1183887583}
+        m_TargetAssemblyTypeName: GateInfiniteSpawner, Assembly-CSharp
+        m_MethodName: StopSpawningAndKillAll
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 130606705}
+        m_TargetAssemblyTypeName: GateInfiniteSpawner, Assembly-CSharp
         m_MethodName: StopSpawningAndKillAll
         m_Mode: 1
         m_Arguments:
@@ -19968,8 +19983,8 @@ MonoBehaviour:
   onAfterBossScream:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: InfiniteSpawner, Assembly-CSharp
+      - m_Target: {fileID: 908730213}
+        m_TargetAssemblyTypeName: GateInfiniteSpawner, Assembly-CSharp
         m_MethodName: StartSpawning
         m_Mode: 1
         m_Arguments:
@@ -19980,8 +19995,8 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: InfiniteSpawner, Assembly-CSharp
+      - m_Target: {fileID: 1183887583}
+        m_TargetAssemblyTypeName: GateInfiniteSpawner, Assembly-CSharp
         m_MethodName: StartSpawning
         m_Mode: 1
         m_Arguments:
@@ -19992,20 +20007,8 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 130606704}
-        m_TargetAssemblyTypeName: InfiniteSpawner, Assembly-CSharp
-        m_MethodName: StartSpawning
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: InfiniteSpawner, Assembly-CSharp
+      - m_Target: {fileID: 130606705}
+        m_TargetAssemblyTypeName: GateInfiniteSpawner, Assembly-CSharp
         m_MethodName: StartSpawning
         m_Mode: 1
         m_Arguments:
@@ -20017,7 +20020,7 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
       - m_Target: {fileID: 1516772}
-        m_TargetAssemblyTypeName: InfiniteSpawner, Assembly-CSharp
+        m_TargetAssemblyTypeName: GateInfiniteSpawner, Assembly-CSharp
         m_MethodName: StartSpawning
         m_Mode: 1
         m_Arguments:
@@ -20028,8 +20031,8 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 2075574663}
-        m_TargetAssemblyTypeName: InfiniteSpawner, Assembly-CSharp
+      - m_Target: {fileID: 2075574664}
+        m_TargetAssemblyTypeName: GateInfiniteSpawner, Assembly-CSharp
         m_MethodName: StartSpawning
         m_Mode: 1
         m_Arguments:
@@ -20041,7 +20044,7 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
       - m_Target: {fileID: 1423695582}
-        m_TargetAssemblyTypeName: InfiniteSpawner, Assembly-CSharp
+        m_TargetAssemblyTypeName: GateInfiniteSpawner, Assembly-CSharp
         m_MethodName: StartSpawning
         m_Mode: 1
         m_Arguments:
@@ -20079,8 +20082,8 @@ MonoBehaviour:
   onBossDeath:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: InfiniteSpawner, Assembly-CSharp
+      - m_Target: {fileID: 908730213}
+        m_TargetAssemblyTypeName: GateInfiniteSpawner, Assembly-CSharp
         m_MethodName: StopSpawningAndKillAll
         m_Mode: 1
         m_Arguments:
@@ -20091,8 +20094,8 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: InfiniteSpawner, Assembly-CSharp
+      - m_Target: {fileID: 1183887583}
+        m_TargetAssemblyTypeName: GateInfiniteSpawner, Assembly-CSharp
         m_MethodName: StopSpawningAndKillAll
         m_Mode: 1
         m_Arguments:
@@ -20103,20 +20106,8 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 130606704}
-        m_TargetAssemblyTypeName: InfiniteSpawner, Assembly-CSharp
-        m_MethodName: StopSpawningAndKillAll
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: InfiniteSpawner, Assembly-CSharp
+      - m_Target: {fileID: 130606705}
+        m_TargetAssemblyTypeName: GateInfiniteSpawner, Assembly-CSharp
         m_MethodName: StopSpawningAndKillAll
         m_Mode: 1
         m_Arguments:
@@ -20128,7 +20119,7 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
       - m_Target: {fileID: 1516772}
-        m_TargetAssemblyTypeName: InfiniteSpawner, Assembly-CSharp
+        m_TargetAssemblyTypeName: GateInfiniteSpawner, Assembly-CSharp
         m_MethodName: StopSpawningAndKillAll
         m_Mode: 1
         m_Arguments:
@@ -20139,8 +20130,8 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 2075574663}
-        m_TargetAssemblyTypeName: InfiniteSpawner, Assembly-CSharp
+      - m_Target: {fileID: 2075574664}
+        m_TargetAssemblyTypeName: GateInfiniteSpawner, Assembly-CSharp
         m_MethodName: StopSpawningAndKillAll
         m_Mode: 1
         m_Arguments:
@@ -20152,7 +20143,7 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
       - m_Target: {fileID: 1423695582}
-        m_TargetAssemblyTypeName: InfiniteSpawner, Assembly-CSharp
+        m_TargetAssemblyTypeName: GateInfiniteSpawner, Assembly-CSharp
         m_MethodName: StopSpawningAndKillAll
         m_Mode: 1
         m_Arguments:
@@ -20208,8 +20199,8 @@ MonoBehaviour:
   onFirstSegmentCleared:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: InfiniteSpawner, Assembly-CSharp
+      - m_Target: {fileID: 908730213}
+        m_TargetAssemblyTypeName: GateInfiniteSpawner, Assembly-CSharp
         m_MethodName: StartSpawning
         m_Mode: 1
         m_Arguments:
@@ -20220,8 +20211,8 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: InfiniteSpawner, Assembly-CSharp
+      - m_Target: {fileID: 1183887583}
+        m_TargetAssemblyTypeName: GateInfiniteSpawner, Assembly-CSharp
         m_MethodName: StartSpawning
         m_Mode: 1
         m_Arguments:
@@ -20232,20 +20223,8 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 130606704}
-        m_TargetAssemblyTypeName: InfiniteSpawner, Assembly-CSharp
-        m_MethodName: StartSpawning
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 2075574663}
-        m_TargetAssemblyTypeName: InfiniteSpawner, Assembly-CSharp
+      - m_Target: {fileID: 2075574664}
+        m_TargetAssemblyTypeName: GateInfiniteSpawner, Assembly-CSharp
         m_MethodName: StartSpawning
         m_Mode: 1
         m_Arguments:
@@ -20257,7 +20236,7 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
       - m_Target: {fileID: 1423695582}
-        m_TargetAssemblyTypeName: InfiniteSpawner, Assembly-CSharp
+        m_TargetAssemblyTypeName: GateInfiniteSpawner, Assembly-CSharp
         m_MethodName: StartSpawning
         m_Mode: 1
         m_Arguments:
@@ -20271,8 +20250,8 @@ MonoBehaviour:
   onSecondSegmentCleared:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: InfiniteSpawner, Assembly-CSharp
+      - m_Target: {fileID: 130606705}
+        m_TargetAssemblyTypeName: GateInfiniteSpawner, Assembly-CSharp
         m_MethodName: StartSpawning
         m_Mode: 1
         m_Arguments:
@@ -20284,7 +20263,7 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
       - m_Target: {fileID: 1516772}
-        m_TargetAssemblyTypeName: InfiniteSpawner, Assembly-CSharp
+        m_TargetAssemblyTypeName: GateInfiniteSpawner, Assembly-CSharp
         m_MethodName: StartSpawning
         m_Mode: 1
         m_Arguments:
@@ -25448,7 +25427,7 @@ Transform:
   m_GameObject: {fileID: 657038823}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 0.38268343, z: -0, w: 0.92387956}
-  m_LocalPosition: {x: -16.45, y: 0, z: -16.45}
+  m_LocalPosition: {x: -18, y: 0, z: -18}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -26950,9 +26929,17 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1642450565}
     m_Modifications:
+    - target: {fileID: -601328436246246337, guid: 59d5dd0e0c42d8c42948a627fb75c973, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6967735191444631665, guid: 59d5dd0e0c42d8c42948a627fb75c973, type: 3}
       propertyPath: m_Name
       value: Pipe_A
+      objectReference: {fileID: 0}
+    - target: {fileID: 6967735191444631665, guid: 59d5dd0e0c42d8c42948a627fb75c973, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7780406588803377867, guid: 59d5dd0e0c42d8c42948a627fb75c973, type: 3}
       propertyPath: m_LocalScale.x
@@ -33718,7 +33705,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &849326754
 Transform:
   m_ObjectHideFlags: 0
@@ -40715,6 +40702,14 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2812275044854361314, guid: 3797e8c631410b14585a05bceb39658e, type: 3}
+      propertyPath: m_Name
+      value: Door_Wall_B_Int
+      objectReference: {fileID: 0}
+    - target: {fileID: 2812275044854361314, guid: 3797e8c631410b14585a05bceb39658e, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4870816345593442053, guid: 3797e8c631410b14585a05bceb39658e, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -40754,14 +40749,6 @@ PrefabInstance:
     - target: {fileID: 4870816345593442053, guid: 3797e8c631410b14585a05bceb39658e, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2812275044854361314, guid: 3797e8c631410b14585a05bceb39658e, type: 3}
-      propertyPath: m_Name
-      value: Door_Wall_B_Int
-      objectReference: {fileID: 0}
-    - target: {fileID: 2812275044854361314, guid: 3797e8c631410b14585a05bceb39658e, type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8565082405493010128, guid: 3797e8c631410b14585a05bceb39658e, type: 3}
       propertyPath: m_Layer
@@ -45218,7 +45205,10 @@ MonoBehaviour:
   closedDoor: {fileID: 1039539196}
   startOnPlay: 0
   spawnOnStart: 1
-  enemyPool: []
+  enemyPool:
+  - {fileID: 1594945415}
+  - {fileID: 1302734620}
+  - {fileID: 1490908667}
   maxEnemiesAtOnce: 2
   enemiesPerMinute: 1.5
 --- !u!1001 &1187682939
@@ -49086,6 +49076,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3975202112610577128, guid: 60c26743dde63974da08b4c62edc479f, type: 3}
   m_PrefabInstance: {fileID: 1302123663}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1302734620 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2520706849553578126, guid: 5e6fc123e444e7f45ab78b704561dbb1, type: 3}
+  m_PrefabInstance: {fileID: 556561642}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 83fe3b4cdbc37de41b6601ca1c603747, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1303916093
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -53148,9 +53149,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 1423695580}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0e0f02a3bca1ac47a063ff04067c943, type: 3}
+  m_Script: {fileID: 11500000, guid: 42d72b2a475a9e5438de2d68c025d034, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  startSpawnPos: {fileID: 0}
+  endSpawnPos: {fileID: 1423695581}
+  openDoor: {fileID: 1856209422}
+  closedDoor: {fileID: 1856209421}
   startOnPlay: 0
   spawnOnStart: 1
   enemyPool:
@@ -55099,6 +55104,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8791309061555851591, guid: 447fe278ab3425f42b3c1ab12fd219b7, type: 3}
   m_PrefabInstance: {fileID: 1489184297}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1490908667 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2520706849553578126, guid: 5e6fc123e444e7f45ab78b704561dbb1, type: 3}
+  m_PrefabInstance: {fileID: 1868156610}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 83fe3b4cdbc37de41b6601ca1c603747, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1491499209
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -58894,6 +58910,14 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2812275044854361314, guid: 3797e8c631410b14585a05bceb39658e, type: 3}
+      propertyPath: m_Name
+      value: Door_Wall_B_Int
+      objectReference: {fileID: 0}
+    - target: {fileID: 2812275044854361314, guid: 3797e8c631410b14585a05bceb39658e, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4870816345593442053, guid: 3797e8c631410b14585a05bceb39658e, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -58933,14 +58957,6 @@ PrefabInstance:
     - target: {fileID: 4870816345593442053, guid: 3797e8c631410b14585a05bceb39658e, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2812275044854361314, guid: 3797e8c631410b14585a05bceb39658e, type: 3}
-      propertyPath: m_Name
-      value: Door_Wall_B_Int
-      objectReference: {fileID: 0}
-    - target: {fileID: 2812275044854361314, guid: 3797e8c631410b14585a05bceb39658e, type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8565082405493010128, guid: 3797e8c631410b14585a05bceb39658e, type: 3}
       propertyPath: m_Layer
@@ -59336,6 +59352,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8791309061555851591, guid: 447fe278ab3425f42b3c1ab12fd219b7, type: 3}
   m_PrefabInstance: {fileID: 1594307503}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1594945415 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2520706849553578126, guid: 5e6fc123e444e7f45ab78b704561dbb1, type: 3}
+  m_PrefabInstance: {fileID: 1140980337}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 83fe3b4cdbc37de41b6601ca1c603747, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1596214743
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -61766,6 +61793,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 2075359138}
     m_Modifications:
+    - target: {fileID: 678352614494522970, guid: 15ce3c616f3f5074da2c1f15bfe573a0, type: 3}
+      propertyPath: m_Name
+      value: Door_Wall_A_Int
+      objectReference: {fileID: 0}
+    - target: {fileID: 678352614494522970, guid: 15ce3c616f3f5074da2c1f15bfe573a0, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 749593354749126129, guid: 15ce3c616f3f5074da2c1f15bfe573a0, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.003484726
@@ -61806,14 +61841,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0.111
       objectReference: {fileID: 0}
-    - target: {fileID: 678352614494522970, guid: 15ce3c616f3f5074da2c1f15bfe573a0, type: 3}
-      propertyPath: m_Name
-      value: Door_Wall_A_Int
-      objectReference: {fileID: 0}
-    - target: {fileID: 678352614494522970, guid: 15ce3c616f3f5074da2c1f15bfe573a0, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 982818770645330852, guid: 15ce3c616f3f5074da2c1f15bfe573a0, type: 3}
       propertyPath: m_Layer
       value: 0
@@ -61833,6 +61860,28 @@ PrefabInstance:
       addedObject: {fileID: 41004412}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 15ce3c616f3f5074da2c1f15bfe573a0, type: 3}
+--- !u!114 &1659929002 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5932629455280820842, guid: 15ce3c616f3f5074da2c1f15bfe573a0, type: 3}
+  m_PrefabInstance: {fileID: 1659929001}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 76d647660a30d97468c0d34f6f0ccf78, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1659929003 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1400767037398857929, guid: 15ce3c616f3f5074da2c1f15bfe573a0, type: 3}
+  m_PrefabInstance: {fileID: 1659929001}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9323a20d47e70ca4393552116fa3bd26, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1660409597
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -65523,9 +65572,17 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 782168813}
     m_Modifications:
+    - target: {fileID: -601328436246246337, guid: 59d5dd0e0c42d8c42948a627fb75c973, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6967735191444631665, guid: 59d5dd0e0c42d8c42948a627fb75c973, type: 3}
       propertyPath: m_Name
       value: Pipe_A
+      objectReference: {fileID: 0}
+    - target: {fileID: 6967735191444631665, guid: 59d5dd0e0c42d8c42948a627fb75c973, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7780406588803377867, guid: 59d5dd0e0c42d8c42948a627fb75c973, type: 3}
       propertyPath: m_LocalScale.x
@@ -65791,6 +65848,14 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2812275044854361314, guid: 3797e8c631410b14585a05bceb39658e, type: 3}
+      propertyPath: m_Name
+      value: Door_Wall_B_Int
+      objectReference: {fileID: 0}
+    - target: {fileID: 2812275044854361314, guid: 3797e8c631410b14585a05bceb39658e, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4870816345593442053, guid: 3797e8c631410b14585a05bceb39658e, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -65830,14 +65895,6 @@ PrefabInstance:
     - target: {fileID: 4870816345593442053, guid: 3797e8c631410b14585a05bceb39658e, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2812275044854361314, guid: 3797e8c631410b14585a05bceb39658e, type: 3}
-      propertyPath: m_Name
-      value: Door_Wall_B_Int
-      objectReference: {fileID: 0}
-    - target: {fileID: 2812275044854361314, guid: 3797e8c631410b14585a05bceb39658e, type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8565082405493010128, guid: 3797e8c631410b14585a05bceb39658e, type: 3}
       propertyPath: m_Layer
@@ -66896,6 +66953,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1553541706}
     m_Modifications:
+    - target: {fileID: 678352614494522970, guid: 15ce3c616f3f5074da2c1f15bfe573a0, type: 3}
+      propertyPath: m_Name
+      value: Door_Wall_A_Int
+      objectReference: {fileID: 0}
+    - target: {fileID: 678352614494522970, guid: 15ce3c616f3f5074da2c1f15bfe573a0, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 749593354749126129, guid: 15ce3c616f3f5074da2c1f15bfe573a0, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -66936,14 +67001,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 678352614494522970, guid: 15ce3c616f3f5074da2c1f15bfe573a0, type: 3}
-      propertyPath: m_Name
-      value: Door_Wall_A_Int
-      objectReference: {fileID: 0}
-    - target: {fileID: 678352614494522970, guid: 15ce3c616f3f5074da2c1f15bfe573a0, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 982818770645330852, guid: 15ce3c616f3f5074da2c1f15bfe573a0, type: 3}
       propertyPath: m_Layer
       value: 0
@@ -66968,6 +67025,28 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 749593354749126129, guid: 15ce3c616f3f5074da2c1f15bfe573a0, type: 3}
   m_PrefabInstance: {fileID: 1827157365}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1827157367 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5932629455280820842, guid: 15ce3c616f3f5074da2c1f15bfe573a0, type: 3}
+  m_PrefabInstance: {fileID: 1827157365}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 76d647660a30d97468c0d34f6f0ccf78, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1827157368 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1400767037398857929, guid: 15ce3c616f3f5074da2c1f15bfe573a0, type: 3}
+  m_PrefabInstance: {fileID: 1827157365}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9323a20d47e70ca4393552116fa3bd26, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &1828421377 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6179740755574917468, guid: a2fcbc8f846e77d4fb7efec1b2b86808, type: 3}
@@ -67728,6 +67807,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1032654904}
     m_Modifications:
+    - target: {fileID: 678352614494522970, guid: 15ce3c616f3f5074da2c1f15bfe573a0, type: 3}
+      propertyPath: m_Name
+      value: Door_Wall_A_Int
+      objectReference: {fileID: 0}
+    - target: {fileID: 678352614494522970, guid: 15ce3c616f3f5074da2c1f15bfe573a0, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 749593354749126129, guid: 15ce3c616f3f5074da2c1f15bfe573a0, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -67768,14 +67855,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 678352614494522970, guid: 15ce3c616f3f5074da2c1f15bfe573a0, type: 3}
-      propertyPath: m_Name
-      value: Door_Wall_A_Int
-      objectReference: {fileID: 0}
-    - target: {fileID: 678352614494522970, guid: 15ce3c616f3f5074da2c1f15bfe573a0, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 982818770645330852, guid: 15ce3c616f3f5074da2c1f15bfe573a0, type: 3}
       propertyPath: m_Layer
       value: 0
@@ -67800,6 +67879,28 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 749593354749126129, guid: 15ce3c616f3f5074da2c1f15bfe573a0, type: 3}
   m_PrefabInstance: {fileID: 1856209419}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1856209421 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5932629455280820842, guid: 15ce3c616f3f5074da2c1f15bfe573a0, type: 3}
+  m_PrefabInstance: {fileID: 1856209419}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 76d647660a30d97468c0d34f6f0ccf78, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1856209422 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1400767037398857929, guid: 15ce3c616f3f5074da2c1f15bfe573a0, type: 3}
+  m_PrefabInstance: {fileID: 1856209419}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9323a20d47e70ca4393552116fa3bd26, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1856912770
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -74878,7 +74979,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2075574662}
-  - component: {fileID: 2075574663}
+  - component: {fileID: 2075574664}
   m_Layer: 0
   m_Name: RangedSpawners_L
   m_TagString: Untagged
@@ -74902,7 +75003,7 @@ Transform:
   - {fileID: 1248611009}
   m_Father: {fileID: 1230280358}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2075574663
+--- !u!114 &2075574664
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -74911,9 +75012,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 2075574661}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d0e0f02a3bca1ac47a063ff04067c943, type: 3}
+  m_Script: {fileID: 11500000, guid: 42d72b2a475a9e5438de2d68c025d034, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  startSpawnPos: {fileID: 0}
+  endSpawnPos: {fileID: 2075574662}
+  openDoor: {fileID: 1827157368}
+  closedDoor: {fileID: 1827157367}
   startOnPlay: 0
   spawnOnStart: 1
   enemyPool:
@@ -76370,6 +76475,14 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2812275044854361314, guid: 3797e8c631410b14585a05bceb39658e, type: 3}
+      propertyPath: m_Name
+      value: Door_Wall_B_Int
+      objectReference: {fileID: 0}
+    - target: {fileID: 2812275044854361314, guid: 3797e8c631410b14585a05bceb39658e, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4870816345593442053, guid: 3797e8c631410b14585a05bceb39658e, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -76409,14 +76522,6 @@ PrefabInstance:
     - target: {fileID: 4870816345593442053, guid: 3797e8c631410b14585a05bceb39658e, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2812275044854361314, guid: 3797e8c631410b14585a05bceb39658e, type: 3}
-      propertyPath: m_Name
-      value: Door_Wall_B_Int
-      objectReference: {fileID: 0}
-    - target: {fileID: 2812275044854361314, guid: 3797e8c631410b14585a05bceb39658e, type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8565082405493010128, guid: 3797e8c631410b14585a05bceb39658e, type: 3}
       propertyPath: m_Layer
@@ -77107,3 +77212,4 @@ SceneRoots:
   - {fileID: 606174261}
   - {fileID: 158699342}
   - {fileID: 1084439184}
+  - {fileID: 270704095}
