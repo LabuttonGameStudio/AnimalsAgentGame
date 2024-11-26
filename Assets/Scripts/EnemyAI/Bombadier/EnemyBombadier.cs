@@ -183,9 +183,9 @@ public class EnemyBombardier : IEnemy, IDamageable
     private Coroutine onTakeDamageVisual_Ref;
     private IEnumerator OnTakeDamageVisual_Coroutine()
     {
-        meshRenderer.sharedMaterial = EnemyMasterControl.Instance.onHitRangedEnemyMat;
+        meshRenderer.sharedMaterial = EnemyMasterControl.Instance.onHitBomberEnemyMat;
         yield return new WaitForSeconds(0.1f);
-        meshRenderer.sharedMaterial = EnemyMasterControl.Instance.defaultRangedEnemyMat;
+        meshRenderer.sharedMaterial = EnemyMasterControl.Instance.defaultBomberEnemyMat;
         onTakeDamageVisual_Ref = null;
     }
 

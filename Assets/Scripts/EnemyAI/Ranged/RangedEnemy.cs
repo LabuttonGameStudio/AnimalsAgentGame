@@ -53,8 +53,9 @@ public class RangedEnemy : IEnemy, IDamageable, ISoundReceiver
     #endregion
 
     #region Audios Variables
-    [Foldout("Audio Variables")]
+    [Foldout("Audio Variables",true)]
     [SerializeField] private AudioSource walkingAudio;
+    [SerializeField] public AudioSource onFireAudio;
     #endregion
 
     //-----Base Functions-----

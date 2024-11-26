@@ -12340,6 +12340,7 @@ Transform:
   - {fileID: 1201901318202721589}
   - {fileID: 3142862351491666094}
   - {fileID: 3144280940385288790}
+  - {fileID: 5764436400714077053}
   m_Father: {fileID: 1639567592218980733}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1923422573264989007
@@ -20123,7 +20124,7 @@ GameObject:
   - component: {fileID: 2489839203314743053}
   - component: {fileID: 1521064250219514519}
   m_Layer: 0
-  m_Name: BallLedgeGrab
+  m_Name: OnLedgeGrab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -35669,6 +35670,54 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc501e43644ebac459129210d998573c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &7555575833533590004
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5764436400714077053}
+  - component: {fileID: 4927267147467927084}
+  m_Layer: 12
+  m_Name: Ost
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5764436400714077053
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7555575833533590004}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6838619469181450299}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4927267147467927084
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7555575833533590004}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e2868a34aa7f3e4ca333b77b45febf9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  osts: []
+  startOnPlay: 0
+  minDurationInterval: 5
+  maxDurationInterval: 8
 --- !u!1 &7570212525422560583
 GameObject:
   m_ObjectHideFlags: 0

@@ -9,6 +9,7 @@ public class SandProjectile : MonoBehaviour
     private Rigidbody rb;
     public static float damageAmount;
     [SerializeField] private ParticleSystem onHitVFX;
+    [SerializeField] private AudioSource onFireSFX;
 
     private Vector3 originPoint;
     private Vector3 direction;
@@ -38,6 +39,7 @@ public class SandProjectile : MonoBehaviour
         transform.LookAt(transform.position + direction);
         this.direction = direction;
         gameObject.SetActive(true);
+        onFireSFX.Play();
     }
     private void OnTriggerEnter(Collider other)
     {
