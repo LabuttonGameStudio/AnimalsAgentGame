@@ -69,21 +69,28 @@ public class GateInfiniteSpawner : MonoBehaviour
                     {
                         if (enemy.isDead)
                         {
-                            Vector3 defaultPos = enemy.animator.transform.localPosition;
-                            float lerpTimer=0;
+                            enemy.animator.transform.parent = enemy.transform;
+                            enemy.transform.position = transform.position;
+                            enemy.transform.rotation = transform.rotation;
+                            Vector3 meshDelta = enemy.animator.transform.localPosition;
+                            float lerpTimer = 0;
                             float entranceDuration = 1f;
                             enemy.animator.transform.parent = null;
                             enemy.animator.transform.position = startSpawnPos.position;
                             enemy.animator.transform.rotation = startSpawnPos.rotation;
                             enemy.animator.gameObject.SetActive(true);
-                            while(lerpTimer<entranceDuration)
+                            closedDoor.OpenDoor();
+                            enemy.animator.SetBool("isWalking", true);
+                            while (lerpTimer < entranceDuration)
                             {
-                                enemy.animator.transform.localPosition = Vector3.Lerp(startSpawnPos.position, endSpawnPos.position, lerpTimer / entranceDuration);
-                                lerpTimer +=Time.deltaTime;
+                                enemy.animator.transform.localPosition = Vector3.Lerp(startSpawnPos.position + meshDelta, endSpawnPos.position + meshDelta, lerpTimer / entranceDuration);
+                                lerpTimer += Time.deltaTime;
                                 yield return null;
                             }
-                            enemy.animator.transform.localPosition = endSpawnPos.position;
-                            enemy.animator.transform.parent = null;
+                            openDoor.CloseDoor();
+                            enemy.animator.SetBool("isWalking", false);
+                            enemy.animator.transform.parent = enemy.transform;
+                            enemy.animator.transform.localPosition = meshDelta;
                             enemy.currentAIBehaviour = AIBehaviourEnums.AIBehaviour.Attacking;
                             enemy.Revive(transform.position, transform.rotation);
                         }
@@ -91,6 +98,25 @@ public class GateInfiniteSpawner : MonoBehaviour
                         {
                             enemy.transform.position = transform.position;
                             enemy.transform.rotation = transform.rotation;
+                            Vector3 meshDelta = enemy.animator.transform.localPosition;
+                            float lerpTimer = 0;
+                            float entranceDuration = 2f;
+                            enemy.animator.transform.parent = null;
+                            enemy.animator.transform.position = startSpawnPos.position;
+                            enemy.animator.transform.rotation = startSpawnPos.rotation;
+                            enemy.animator.gameObject.SetActive(true);
+                            closedDoor.OpenDoor();
+                            enemy.animator.SetBool("isWalking", true);
+                            while (lerpTimer < entranceDuration)
+                            {
+                                enemy.animator.transform.position = Vector3.Lerp(startSpawnPos.position + meshDelta, endSpawnPos.position + meshDelta, lerpTimer / entranceDuration);
+                                lerpTimer += Time.deltaTime;
+                                yield return null;
+                            }
+                            openDoor.CloseDoor();
+                            enemy.animator.SetBool("isWalking", false);
+                            enemy.animator.transform.parent = enemy.transform;
+                            enemy.animator.transform.localPosition = meshDelta;
                             enemy.currentAIBehaviour = AIBehaviourEnums.AIBehaviour.Attacking;
                             enemy.gameObject.SetActive(true);
                         }
