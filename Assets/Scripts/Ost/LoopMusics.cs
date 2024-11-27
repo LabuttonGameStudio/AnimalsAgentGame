@@ -51,9 +51,9 @@ public class LoopMusics : MonoBehaviour
                 osts[i].Play();
                 while (osts[i].isPlaying || isPaused)
                 {
-                    yield return new WaitForSeconds(0.5f);
+                    yield return new WaitForSecondsRealtime(0.5f);
                 }
-                yield return new WaitForSeconds(Random.Range(minDurationInterval, maxDurationInterval));
+                yield return new WaitForSecondsRealtime(Random.Range(minDurationInterval, maxDurationInterval));
             }
         }
     }

@@ -36331,6 +36331,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1736814740}
     m_Modifications:
+    - target: {fileID: -3442446552082645918, guid: 29667ba2aaf576545b4e9998221af85a, type: 3}
+      propertyPath: respawn
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -3442446552082645918, guid: 29667ba2aaf576545b4e9998221af85a, type: 3}
+      propertyPath: respawnTimer
+      value: 120
+      objectReference: {fileID: 0}
     - target: {fileID: 2530296088889064847, guid: 29667ba2aaf576545b4e9998221af85a, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -40702,6 +40710,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 152670900684968622, guid: 3797e8c631410b14585a05bceb39658e, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2812275044854361314, guid: 3797e8c631410b14585a05bceb39658e, type: 3}
       propertyPath: m_Name
       value: Door_Wall_B_Int
@@ -42515,6 +42527,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1736814740}
     m_Modifications:
+    - target: {fileID: -3442446552082645918, guid: 29667ba2aaf576545b4e9998221af85a, type: 3}
+      propertyPath: respawn
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -3442446552082645918, guid: 29667ba2aaf576545b4e9998221af85a, type: 3}
+      propertyPath: respawnTimer
+      value: 120
+      objectReference: {fileID: 0}
     - target: {fileID: 2530296088889064847, guid: 29667ba2aaf576545b4e9998221af85a, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -45200,11 +45220,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 42d72b2a475a9e5438de2d68c025d034, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startSpawnPos: {fileID: 0}
+  startSpawnPos: {fileID: 1441084982}
   endSpawnPos: {fileID: 1183887582}
   openDoor: {fileID: 1039539197}
   closedDoor: {fileID: 1039539196}
-  startOnPlay: 0
+  startOnPlay: 1
   spawnOnStart: 1
   enemyPool:
   - {fileID: 1594945415}
@@ -57683,9 +57703,33 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1639567592218980733, guid: eb11bd31773d7a64aa560b99e8e3727a, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 7.22
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639567592218980733, guid: eb11bd31773d7a64aa560b99e8e3727a, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639567592218980733, guid: eb11bd31773d7a64aa560b99e8e3727a, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639567592218980733, guid: eb11bd31773d7a64aa560b99e8e3727a, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0.7071068
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639567592218980733, guid: eb11bd31773d7a64aa560b99e8e3727a, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1639567592218980733, guid: eb11bd31773d7a64aa560b99e8e3727a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: -90
+      objectReference: {fileID: 0}
     - target: {fileID: 2012898067650594436, guid: eb11bd31773d7a64aa560b99e8e3727a, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 7.2199993
       objectReference: {fileID: 0}
     - target: {fileID: 2012898067650594436, guid: eb11bd31773d7a64aa560b99e8e3727a, type: 3}
       propertyPath: m_LocalPosition.y
@@ -57862,6 +57906,10 @@ PrefabInstance:
     - target: {fileID: 5627174916926076884, guid: eb11bd31773d7a64aa560b99e8e3727a, type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5707324081081399211, guid: eb11bd31773d7a64aa560b99e8e3727a, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 7.2199993
       objectReference: {fileID: 0}
     - target: {fileID: 5707324081081399211, guid: eb11bd31773d7a64aa560b99e8e3727a, type: 3}
       propertyPath: m_LocalRotation.w
@@ -66032,6 +66080,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1736814740}
     m_Modifications:
+    - target: {fileID: -3442446552082645918, guid: 29667ba2aaf576545b4e9998221af85a, type: 3}
+      propertyPath: respawn
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -3442446552082645918, guid: 29667ba2aaf576545b4e9998221af85a, type: 3}
+      propertyPath: respawnTimer
+      value: 120
+      objectReference: {fileID: 0}
     - target: {fileID: 2530296088889064847, guid: 29667ba2aaf576545b4e9998221af85a, type: 3}
       propertyPath: m_LocalPosition.x
       value: -21.5

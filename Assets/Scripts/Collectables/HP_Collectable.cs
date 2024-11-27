@@ -5,6 +5,9 @@ using UnityEngine;
 public class HP_Collectable : MonoBehaviour
 {
     [SerializeField] private float hpAmount;
+
+    [SerializeField]private bool respawn;
+    [SerializeField] private float respawnTimer;
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
@@ -17,6 +20,12 @@ public class HP_Collectable : MonoBehaviour
         if(ArmadilloPlayerController.Instance.hpControl.OnHeal(hpAmount))
         {
             gameObject.SetActive(false);
+            ArmadilloPlayerController.Instance.StartCoroutine(RespawnTimer_Coroutine());
         }
+    }
+    private IEnumerator RespawnTimer_Coroutine()
+    {
+        yield return new WaitForSeconds(respawnTimer);
+        gameObject.SetActive(true);
     }
 }

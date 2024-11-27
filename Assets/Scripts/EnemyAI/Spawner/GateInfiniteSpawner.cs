@@ -69,6 +69,21 @@ public class GateInfiniteSpawner : MonoBehaviour
                     {
                         if (enemy.isDead)
                         {
+                            Vector3 defaultPos = enemy.animator.transform.localPosition;
+                            float lerpTimer=0;
+                            float entranceDuration = 1f;
+                            enemy.animator.transform.parent = null;
+                            enemy.animator.transform.position = startSpawnPos.position;
+                            enemy.animator.transform.rotation = startSpawnPos.rotation;
+                            enemy.animator.gameObject.SetActive(true);
+                            while(lerpTimer<entranceDuration)
+                            {
+                                enemy.animator.transform.localPosition = Vector3.Lerp(startSpawnPos.position, endSpawnPos.position, lerpTimer / entranceDuration);
+                                lerpTimer +=Time.deltaTime;
+                                yield return null;
+                            }
+                            enemy.animator.transform.localPosition = endSpawnPos.position;
+                            enemy.animator.transform.parent = null;
                             enemy.currentAIBehaviour = AIBehaviourEnums.AIBehaviour.Attacking;
                             enemy.Revive(transform.position, transform.rotation);
                         }
