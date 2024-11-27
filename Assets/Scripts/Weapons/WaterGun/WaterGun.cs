@@ -94,7 +94,7 @@ public class WaterGun : Weapon
     #region
     public override void OnFireButtonPerformed(InputAction.CallbackContext performed)
     {
-        ToggleFire(true);
+        if(!isOnCooldown)ToggleFire(true);
     }
     public override void OnFireButtonCanceled(InputAction.CallbackContext performed)
     {
@@ -246,6 +246,7 @@ public class WaterGun : Weapon
         ToggleFire(false);
         visualHandler.ResetVisuals();
         isOnCooldown = false;
+        ToggleOnRun(false);
         ArmadilloPlayerController.Instance.movementControl.isFiring = false;
         ArmadilloPlayerController.Instance.movementControl.SprintCheck();
         if (reloadTimer_Ref != null)

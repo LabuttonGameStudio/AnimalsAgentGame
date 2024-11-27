@@ -101,11 +101,13 @@ public class WaterGunVisual : MonoBehaviour
 
     public void UpdateUI(int currentAmount, int totalAmount, int reserveAmount, int reserveTotal)
     {
-        Slider ammoSlider = ArmadilloPlayerController.Instance.weaponControl.Weaponammoslider;
-        ammoSlider.value = (float)currentAmount / (float)totalAmount;
-        ammoSlider.fillRect.GetComponent<Image>().color = Color.Lerp(Color.red, Color.white, ammoSlider.value);
-        ArmadilloPlayerController.Instance.weaponControl.currentWeaponUI.text = " x" + Mathf.Round(ammoSlider.value * 100).ToString() + "%";
-
+        if(ArmadilloPlayerController.Instance.weaponControl.currentWeaponID == 1)
+        {
+            Slider ammoSlider = ArmadilloPlayerController.Instance.weaponControl.Weaponammoslider;
+            ammoSlider.value = (float)currentAmount / (float)totalAmount;
+            ammoSlider.fillRect.GetComponent<Image>().color = Color.Lerp(Color.red, Color.white, ammoSlider.value);
+            ArmadilloPlayerController.Instance.weaponControl.currentWeaponUI.text = " x" + Mathf.Round(ammoSlider.value * 100).ToString() + "%";
+        }
         ChangeWeaponUI.Instance.weaponUIElements[1].ammoReserveSlider.value = (float)reserveAmount / (float)reserveTotal;
         ChangeWeaponUI.Instance.weaponUIElements[1].ammoReserveText.text = Mathf.Round((float)reserveAmount / (float)reserveTotal * 100).ToString() + "%";
     }

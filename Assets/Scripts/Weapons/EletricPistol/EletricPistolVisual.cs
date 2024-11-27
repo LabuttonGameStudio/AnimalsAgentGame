@@ -92,7 +92,7 @@ public class EletricPistolVisual : MonoBehaviour
             onHitParticle.transform.LookAt(onHitParticle.transform.position + (-1 * direction));
             onHitParticle.Play();
         }
-        if(onFireCoroutine_Ref !=null)StopCoroutine(onFireCoroutine_Ref);
+        if (onFireCoroutine_Ref != null) StopCoroutine(onFireCoroutine_Ref);
         onFireCoroutine_Ref = StartCoroutine(OnFireLight_Coroutine());
     }
 
@@ -111,7 +111,7 @@ public class EletricPistolVisual : MonoBehaviour
         {
             for (int i = 0; i < onFireLight.Length; i++)
             {
-                onFireLight[i].intensity = Mathf.Lerp(onFireLightCurrentValue[i], onFireLightDefaultValue[i],timer/duration);
+                onFireLight[i].intensity = Mathf.Lerp(onFireLightCurrentValue[i], onFireLightDefaultValue[i], timer / duration);
             }
             timer += Time.fixedDeltaTime;
             yield return new WaitForFixedUpdate();
@@ -121,7 +121,7 @@ public class EletricPistolVisual : MonoBehaviour
         {
             for (int i = 0; i < onFireLight.Length; i++)
             {
-                onFireLight[i].intensity = Mathf.Lerp(onFireLightDefaultValue[i],0, timer / duration);
+                onFireLight[i].intensity = Mathf.Lerp(onFireLightDefaultValue[i], 0, timer / duration);
             }
             timer += Time.fixedDeltaTime;
             yield return new WaitForFixedUpdate();
@@ -156,13 +156,15 @@ public class EletricPistolVisual : MonoBehaviour
         projectileLineRenderer.endColor = new Color(projectileLineRenderer.endColor.r, projectileLineRenderer.endColor.g, projectileLineRenderer.endColor.b, projectileLineRendererEndAlphaValue);
     }
 
-    public void UpdateUI(int currentAmount, int totalAmount, int reserveAmount,int reserveTotal)
+    public void UpdateUI(int currentAmount, int totalAmount, int reserveAmount, int reserveTotal)
     {
-        Slider ammoSlider = ArmadilloPlayerController.Instance.weaponControl.Weaponammoslider;
-        ammoSlider.value = (float)currentAmount / (float)totalAmount;
-        ammoSlider.fillRect.GetComponent<Image>().color = Color.Lerp(Color.red, Color.white, ammoSlider.value);
-        ArmadilloPlayerController.Instance.weaponControl.currentWeaponUI.text = " x" + Mathf.Round(ammoSlider.value * 100).ToString() + "%";
-
+        if (ArmadilloPlayerController.Instance.weaponControl.currentWeaponID == 0)
+        {
+            Slider ammoSlider = ArmadilloPlayerController.Instance.weaponControl.Weaponammoslider;
+            ammoSlider.value = (float)currentAmount / (float)totalAmount;
+            ammoSlider.fillRect.GetComponent<Image>().color = Color.Lerp(Color.red, Color.white, ammoSlider.value);
+            ArmadilloPlayerController.Instance.weaponControl.currentWeaponUI.text = " x" + Mathf.Round(ammoSlider.value * 100).ToString() + "%";
+        }
         ChangeWeaponUI.Instance.weaponUIElements[0].ammoReserveSlider.value = (float)reserveAmount / (float)reserveTotal;
         ChangeWeaponUI.Instance.weaponUIElements[0].ammoReserveText.text = Mathf.Round((float)reserveAmount / (float)reserveTotal * 100).ToString() + "%";
 

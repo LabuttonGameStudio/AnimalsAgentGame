@@ -75,6 +75,7 @@ public class ArmadilloWeaponControl : MonoBehaviour
     private float meleeHoldDuration;
     public void Melee(InputAction.CallbackContext performed)
     {
+        if (ArmadilloPlayerController.Instance.currentForm == ArmadilloPlayerController.Form.Ball) return;
         if (meleeIsOnCooldown || !ArmadilloPlayerController.Instance.visualControl.isArmVisible) return;
         if (pressOrHoldHit_Ref == null && hit_Ref == null)
         {
