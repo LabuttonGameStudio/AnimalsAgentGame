@@ -150,6 +150,7 @@ public class EnemyBoss : MonoBehaviour
         transform.parent.position = startPos;
         actionEnum = ActionsEnum.Idle;
         attack_Ref = null;
+        followPlayer = true;
     }
 
     public IEnumerator CircleAttackToSprayAttack_Coroutine()
