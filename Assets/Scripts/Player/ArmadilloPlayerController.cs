@@ -7,6 +7,7 @@ using UnityEngine.InputSystem;
 using System.Linq;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.Rendering;
+using System;
 
 public class ArmadilloPlayerController : MonoBehaviour
 {
@@ -37,6 +38,7 @@ public class ArmadilloPlayerController : MonoBehaviour
 
     //-----Player Forms-----
     #region Player Forms Variables
+    private bool unlockedChangeForm;
     [Header("Default Form")]
     [SerializeField] private IconActivate formChangeIcon;
     [SerializeField] public Collider[] playerCollider_Default;
@@ -57,6 +59,7 @@ public class ArmadilloPlayerController : MonoBehaviour
     //-----Sonar Ability-----
     #region Sonar Ability Variables
     [Header("Sonar Ability")]
+    private bool unlockedSonar;
     [SerializeField] private IconActivate sonarIcon;
     [SerializeField] private Camera sonarCamera;
     [SerializeField] private float sonarDuration;
@@ -66,6 +69,21 @@ public class ArmadilloPlayerController : MonoBehaviour
     [SerializeField] private CanvasGroup sonarCanvasGroup;
     [SerializeField] private Volume sonarPostProcess;
     private bool isSonarActive;
+    #endregion
+
+    //-----Save -----
+    #region Save 
+    public readonly string hpSaveKey = "PlayerHPSave";
+    public readonly string unlockedChangeFormSaveKey = "PlayerUnlockChangeForm";
+    public readonly string unlockedSonarSaveKey = "PlayerUnlockSonar";
+
+    public readonly string unlockedEletricPistolSaveKey = "PlayerUnlockEletricPistol";
+    public readonly string eletricPistolMagazineSaveKey = "PlayerEletricPistolCurrentMagazine";
+    public readonly string eletricPistolReservesSaveKey = "PlayerEletricPistolCurrentReserves";
+
+    public readonly string unlockedWaterGunSaveKey = "PlayerUnlockEletricPistol";
+    public readonly string waterGunMagazineSaveKey = "PlayerEletricPistolCurrentMagazine";
+    public readonly string waterGunReservesSaveKey = "PlayerEletricPistolCurrentReserves";
     #endregion
 
     [HideInInspector] public bool canSwitchWeapon;
@@ -143,8 +161,19 @@ public class ArmadilloPlayerController : MonoBehaviour
     }
     private void Start()
     {
-        if (startWithChangeFormAbility) UnlockChangeFormAbility();
-        if (startWithSonarAbility) UnlockSonarAbility();
+        //ChangeForm
+        if(PlayerPrefs.HasKey(unlockedChangeFormSaveKey))
+        {
+            if(PlayerPrefs.GetInt(unlockedChangeFormSaveKey)>=1) UnlockChangeFormAbility();
+        }
+        else if (startWithChangeFormAbility) UnlockChangeFormAbility();
+
+        //Sonar
+        if (PlayerPrefs.HasKey(unlockedSonarSaveKey))
+        {
+            if (PlayerPrefs.GetInt(unlockedSonarSaveKey) >= 1) UnlockSonarAbility();
+        }
+        else if (startWithSonarAbility) UnlockSonarAbility();
     }
     public void TeleportPlayer(Transform transform)
     {
@@ -175,6 +204,7 @@ public class ArmadilloPlayerController : MonoBehaviour
     #region Change Form Functions
     public void UnlockChangeFormAbility()
     {
+        unlockedChangeForm = true;
         inputControl.inputAction.Armadillo.Ability1.Enable();
         inputControl.inputAction.Armadillo.Ability1.performed += ChangeToBallForm;
     }
@@ -213,6 +243,7 @@ public class ArmadilloPlayerController : MonoBehaviour
     #region Sonar Ability
     public void UnlockSonarAbility()
     {
+        unlockedSonar = true;
         inputControl.inputAction.Armadillo.Ability2.Enable();
         inputControl.inputAction.Armadillo.Ability2.performed += SonarAbility;
     }
@@ -621,4 +652,58 @@ public class ArmadilloPlayerController : MonoBehaviour
         return currentLayer <= actionLayer;
     }
     #endregion
+
+    //-----Save -----
+    #region
+
+    public void SavePlayerData()
+    {
+        //HP
+        PlayerPrefs.SetFloat(hpSaveKey, hpControl.currentHp + hpControl.currentGreyHp);
+
+        //Skills
+        PlayerPrefs.SetInt(unlockedChangeFormSaveKey, unlockedChangeForm ? 1 : 0);
+        PlayerPrefs.SetInt(unlockedSonarSaveKey, unlockedSonar ? 1 : 0);
+
+        //Eletric Pistol
+        PlayerPrefs.SetInt(unlockedEletricPistolSaveKey, weaponControl.unlockedEletricPistol ? 1 : 0);
+        if (weaponControl.unlockedEletricPistol)
+        {
+            PlayerPrefs.SetInt(eletricPistolMagazineSaveKey, weaponControl.weaponsInInventory[0].currentAmmoAmount);
+            PlayerPrefs.SetInt(eletricPistolReservesSaveKey, weaponControl.weaponsInInventory[0].ammoReserveAmount);
+
+        }
+        //Water Gun
+        PlayerPrefs.SetInt(unlockedWaterGunSaveKey, weaponControl.unlockedWaterGun ? 1 : 0);
+        if (weaponControl.unlockedWaterGun)
+        {
+            PlayerPrefs.SetInt(waterGunMagazineSaveKey, weaponControl.weaponsInInventory[1].currentAmmoAmount);
+            PlayerPrefs.SetInt(waterGunReservesSaveKey, weaponControl.weaponsInInventory[1].ammoReserveAmount);
+        }
+        PlayerPrefs.Save();
+    }
+    public void ClearPlayerSaveData()
+    {
+        //HP
+        PlayerPrefs.DeleteKey(hpSaveKey);
+
+        //Skills
+        PlayerPrefs.DeleteKey(unlockedChangeFormSaveKey);
+        PlayerPrefs.DeleteKey(unlockedSonarSaveKey);
+
+        //Eletric Pistol
+        PlayerPrefs.DeleteKey(unlockedEletricPistolSaveKey);
+        PlayerPrefs.DeleteKey(eletricPistolMagazineSaveKey);
+        PlayerPrefs.DeleteKey(eletricPistolReservesSaveKey);
+
+        //Water Gun
+        PlayerPrefs.DeleteKey(unlockedWaterGunSaveKey);
+        PlayerPrefs.DeleteKey(waterGunMagazineSaveKey);
+        PlayerPrefs.DeleteKey(waterGunReservesSaveKey);
+
+        PlayerPrefs.Save();
+    }
+
+    #endregion
+
 }

@@ -39,6 +39,9 @@ public class ArmadilloWeaponControl : MonoBehaviour
     [Header("Weapons")]
     [SerializeField] public Transform eletricPistolSpawnPoint;
 
+    [HideInInspector] public bool unlockedEletricPistol;
+    [HideInInspector] public bool unlockedWaterGun;
+
     EletricPistol eletricPistol;
     WaterGun waterGun;
     PendriveSniper pendriveSniper;
@@ -191,7 +194,7 @@ public class ArmadilloWeaponControl : MonoBehaviour
         waterGun = new WaterGun(this);
         pendriveSniper = new PendriveSniper(this);
     }
-    //----- Give Player Functions -----
+    //----- Give Player Weapons Functions -----
     #region Give Player Weapons 
     public void GivePlayerMelee()
     {
@@ -202,6 +205,7 @@ public class ArmadilloWeaponControl : MonoBehaviour
     }
     public void GivePlayerEletricPistol()
     {
+        unlockedEletricPistol = true;
         weaponsInInventory[0] = eletricPistol;
         if (isGunPocketed)
         {
@@ -217,6 +221,7 @@ public class ArmadilloWeaponControl : MonoBehaviour
     }
     public void GivePlayerWaterGun()
     {
+        unlockedWaterGun = true;
         weaponsInInventory[1] = waterGun;
         if (isGunPocketed)
         {

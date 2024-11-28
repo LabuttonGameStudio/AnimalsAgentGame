@@ -2448,6 +2448,17 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 377028511}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &397221805 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6112989399156946717, guid: eb11bd31773d7a64aa560b99e8e3727a, type: 3}
+  m_PrefabInstance: {fileID: 3725515854391060306}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce3e9d5ee04de1d4791f5f5146dfcd62, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &398007378
 GameObject:
   m_ObjectHideFlags: 0
@@ -13165,7 +13176,6 @@ GameObject:
   - component: {fileID: 1940751842}
   - component: {fileID: 1940751841}
   - component: {fileID: 1940751840}
-  - component: {fileID: 1940751843}
   m_Layer: 0
   m_Name: CoconutArea
   m_TagString: Untagged
@@ -13189,14 +13199,25 @@ MonoBehaviour:
   consequences:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 3725515854391060308}
-        m_TargetAssemblyTypeName: ChangePlayerCamera, Assembly-CSharp
-        m_MethodName: ChangeCamOnObjectiveComplete
-        m_Mode: 2
+      - m_Target: {fileID: 397221805}
+        m_TargetAssemblyTypeName: ArmadilloPlayerController, Assembly-CSharp
+        m_MethodName: UnlockSonarAbility
+        m_Mode: 1
         m_Arguments:
-          m_ObjectArgument: {fileID: 33272229}
-          m_ObjectArgumentAssemblyTypeName: Cinemachine.CinemachineVirtualCamera,
-            Cinemachine
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 397221805}
+        m_TargetAssemblyTypeName: ArmadilloPlayerController, Assembly-CSharp
+        m_MethodName: SavePlayerData
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -13240,88 +13261,6 @@ Transform:
   - {fileID: 33272228}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1940751843
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1940751839}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9ed03f7f3dde066478b6c38b82f3efff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  pauseBetweenSentences: 0
-  dialogue:
-  - portraitBackground: {fileID: 0}
-    portrait: {fileID: 0}
-    localizedName:
-      m_TableReference:
-        m_TableCollectionName: GUID:70fd67b27938b584dbba757afe245231
-      m_TableEntryReference:
-        m_KeyId: 100422398091264
-        m_Key: 
-      m_FallbackState: 0
-      m_WaitForCompletion: 0
-      m_LocalVariables: []
-    localizedQuote:
-      m_TableReference:
-        m_TableCollectionName: GUID:1d0e44c143faa904097658f43e41089e
-      m_TableEntryReference:
-        m_KeyId: 78187962368
-        m_Key: 
-      m_FallbackState: 0
-      m_WaitForCompletion: 0
-      m_LocalVariables: []
-    eventOnDialogueBoxEnter: []
-  - portraitBackground: {fileID: 0}
-    portrait: {fileID: 0}
-    localizedName:
-      m_TableReference:
-        m_TableCollectionName: 
-      m_TableEntryReference:
-        m_KeyId: 0
-        m_Key: 
-      m_FallbackState: 0
-      m_WaitForCompletion: 0
-      m_LocalVariables: []
-    localizedQuote:
-      m_TableReference:
-        m_TableCollectionName: 
-      m_TableEntryReference:
-        m_KeyId: 0
-        m_Key: 
-      m_FallbackState: 0
-      m_WaitForCompletion: 0
-      m_LocalVariables: []
-    eventOnDialogueBoxEnter: []
-  - portraitBackground: {fileID: 0}
-    portrait: {fileID: 0}
-    localizedName:
-      m_TableReference:
-        m_TableCollectionName: GUID:70fd67b27938b584dbba757afe245231
-      m_TableEntryReference:
-        m_KeyId: 100422398091264
-        m_Key: 
-      m_FallbackState: 0
-      m_WaitForCompletion: 0
-      m_LocalVariables: []
-    localizedQuote:
-      m_TableReference:
-        m_TableCollectionName: GUID:1d0e44c143faa904097658f43e41089e
-      m_TableEntryReference:
-        m_KeyId: 78187962368
-        m_Key: 
-      m_FallbackState: 0
-      m_WaitForCompletion: 0
-      m_LocalVariables: []
-    eventOnDialogueBoxEnter: []
-  startDialogue: []
-  endDialogue: []
-  references:
-    version: 2
-    RefIds: []
 --- !u!1 &1941359986
 GameObject:
   m_ObjectHideFlags: 0
@@ -16335,7 +16274,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6112989399156946717, guid: eb11bd31773d7a64aa560b99e8e3727a, type: 3}
       propertyPath: startWithSonarAbility
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6112989399156946717, guid: eb11bd31773d7a64aa560b99e8e3727a, type: 3}
       propertyPath: startWithChangeFormAbility
@@ -16500,17 +16439,6 @@ PrefabInstance:
       addedObject: {fileID: 1618889922}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: eb11bd31773d7a64aa560b99e8e3727a, type: 3}
---- !u!114 &3725515854391060308 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8734186886445362205, guid: eb11bd31773d7a64aa560b99e8e3727a, type: 3}
-  m_PrefabInstance: {fileID: 3725515854391060306}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cc501e43644ebac459129210d998573c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &6610268592936862453
 PrefabInstance:
   m_ObjectHideFlags: 0
