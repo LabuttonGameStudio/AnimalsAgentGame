@@ -114,14 +114,14 @@ public class WaterGunVisual : MonoBehaviour
 
     public void OnBodyShot()
     {
-        Debug.Log("BodyShot");
+        ArmadilloUIControl.Instance.StartHitMarkerWaterDamage();
     }
     public void OnHeadshotShot()
     {
-        Debug.Log("HeadShot");
+        ArmadilloUIControl.Instance.StartHitMarkerWaterCrit();
     }
     public void OnLetalShot()
     {
-        Debug.Log("LetalShot");
+        ArmadilloUIControl.Instance.StartHitMarkerWaterLethal();
     }
 }

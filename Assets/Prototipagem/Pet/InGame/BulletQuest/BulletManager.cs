@@ -14,12 +14,9 @@ public class BulletManager : MonoBehaviour
     [SerializeField] private GameObject targetObject;
     [SerializeField] private string colorPropertyName = "_Color";
 
-    [Header("INTERACTIVE OBJECTIVES - ANTENAS")]
-    [SerializeField] private int totalAntenas;
-    [SerializeField] private int requiredAntenas;
-    [SerializeField] private List<Antena_Damageable> antenas;
-
-    private int activatedAntenas = 0;
+    [Header("INTERACTIVE OBJECTIVES - INIMIGOS")]
+    [SerializeField] private int requiredInimigos;
+     public int InimigosDestruidos = 0;
     private void Awake()
     {
         Graphic targetGraphic = targetObject.GetComponent<Graphic>();
@@ -60,15 +57,15 @@ public class BulletManager : MonoBehaviour
     public void Objetivo3()
     {
         ChangeColor(1.5f, 0.5f);
-        StartCoroutine(WaitAndUpdateText("furtividade", "Espreite através dos inimigos"));
+        StartCoroutine(WaitAndUpdateText("hora do combate!", "Avance pelos inimigos a frente"));
     }
-    public void OnAntennaActivated()
+    public void AllEnemiesDestroy()
     {
-        activatedAntenas++;
+        InimigosDestruidos++;
         // Atualiza o texto com o progresso atual
-        UpdateText("energize todas as antenas", $"Antenas Ativadas: {activatedAntenas}/{requiredAntenas}");
+        UpdateText("Acabe com eles Agente", $"inimigos destruidos: {InimigosDestruidos}/{requiredInimigos}");
 
-        if (activatedAntenas >= requiredAntenas)
+        if (InimigosDestruidos >= requiredInimigos)
         {
             ChangeColor(1.5f, 0.5f);
             StartCoroutine(WaitAndUpdateText("antenas ativadas!", "Vá até o portão"));
@@ -78,16 +75,16 @@ public class BulletManager : MonoBehaviour
         public void Objetivo4()
     {
         ChangeColor(1.5f, 0.5f);
-        requiredAntenas = 2;
-        StartCoroutine(WaitAndUpdateText("treine a mira", $"Ative todas as antenas: {activatedAntenas}/{requiredAntenas}"));
+        requiredInimigos = 1;
+        StartCoroutine(WaitAndUpdateText("treine a mira", $"Destrua o inimigo a frente: {InimigosDestruidos}/{requiredInimigos}"));
     }
 
     public void Objetivo5()
     {
         ChangeColor(1.5f, 0.5f);
-        activatedAntenas = 0;
-        requiredAntenas = 3;
-        StartCoroutine(WaitAndUpdateText("energize todas as antenas", $"Antenas Ativadas: {activatedAntenas}/{requiredAntenas}"));
+        InimigosDestruidos = 0;
+        requiredInimigos = 3;
+        StartCoroutine(WaitAndUpdateText("Acabe com eles Agente", $"inimigos destruidos: {InimigosDestruidos}/{requiredInimigos}"));
     }
     #endregion
 
