@@ -279,6 +279,7 @@ public class EnemyBombardier : IEnemy, IDamageable
     #region Check for Los
     public new float CheckForPlayerLOS()
     {
+        if (ArmadilloPlayerController.Instance == null) return 0;
         if (CheckForLOS(ArmadilloPlayerController.Instance.gameObject)) return 1;
         else return 0;
     }

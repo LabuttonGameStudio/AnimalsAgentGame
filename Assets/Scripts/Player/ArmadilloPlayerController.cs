@@ -81,9 +81,9 @@ public class ArmadilloPlayerController : MonoBehaviour
     public readonly string eletricPistolMagazineSaveKey = "PlayerEletricPistolCurrentMagazine";
     public readonly string eletricPistolReservesSaveKey = "PlayerEletricPistolCurrentReserves";
 
-    public readonly string unlockedWaterGunSaveKey = "PlayerUnlockEletricPistol";
-    public readonly string waterGunMagazineSaveKey = "PlayerEletricPistolCurrentMagazine";
-    public readonly string waterGunReservesSaveKey = "PlayerEletricPistolCurrentReserves";
+    public readonly string unlockedWaterGunSaveKey = "PlayerUnlockWaterGun";
+    public readonly string waterGunMagazineSaveKey = "PlayerWaterGunCurrentMagazine";
+    public readonly string waterGunReservesSaveKey = "PlayerWaterGunCurrentReserves";
     #endregion
 
     [HideInInspector] public bool canSwitchWeapon;

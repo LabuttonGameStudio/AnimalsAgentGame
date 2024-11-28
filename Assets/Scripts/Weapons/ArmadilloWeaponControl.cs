@@ -64,6 +64,7 @@ public class ArmadilloWeaponControl : MonoBehaviour
                 GivePlayerWaterGun();
                 weaponsInInventory[1].currentAmmoAmount = PlayerPrefs.GetInt(ArmadilloPlayerController.Instance.waterGunMagazineSaveKey);
                 weaponsInInventory[1].ammoReserveAmount = PlayerPrefs.GetInt(ArmadilloPlayerController.Instance.waterGunReservesSaveKey);
+                waterGun.OnGainAmmo();
             }
         }
         else if (startWithWaterGun) GivePlayerWaterGun();
@@ -77,6 +78,7 @@ public class ArmadilloWeaponControl : MonoBehaviour
                 GivePlayerEletricPistol();
                 weaponsInInventory[0].currentAmmoAmount = PlayerPrefs.GetInt(ArmadilloPlayerController.Instance.eletricPistolMagazineSaveKey);
                 weaponsInInventory[0].ammoReserveAmount = PlayerPrefs.GetInt(ArmadilloPlayerController.Instance.eletricPistolReservesSaveKey);
+                eletricPistol.OnGainAmmo();
             }
         }
         else if (startWithPistol) GivePlayerEletricPistol();
