@@ -21,7 +21,6 @@ public class ArmadilloWeaponControl : MonoBehaviour
 {
     private bool isGunPocketed;
 
-    [SerializeField] private bool startWithMelee;
     [SerializeField] private bool startWithPistol;
     [SerializeField] private bool startWithWaterGun;
     [SerializeField] private bool startWithPendriveSniper;
@@ -56,10 +55,31 @@ public class ArmadilloWeaponControl : MonoBehaviour
     {
         LoadWeapons();
         weaponsInInventory = new Weapon[3];
-        if (startWithMelee) GivePlayerMelee();
-        if (startWithWaterGun) GivePlayerWaterGun();
+        GivePlayerMelee();
+
+        if (PlayerPrefs.HasKey(ArmadilloPlayerController.Instance.unlockedWaterGunSaveKey))
+        {
+            if (PlayerPrefs.GetInt(ArmadilloPlayerController.Instance.unlockedWaterGunSaveKey) >= 1)
+            {
+                GivePlayerWaterGun();
+                weaponsInInventory[1].currentAmmoAmount = PlayerPrefs.GetInt(ArmadilloPlayerController.Instance.waterGunMagazineSaveKey);
+                weaponsInInventory[1].ammoReserveAmount = PlayerPrefs.GetInt(ArmadilloPlayerController.Instance.waterGunReservesSaveKey);
+            }
+        }
+        else if (startWithWaterGun) GivePlayerWaterGun();
+
         if (startWithPendriveSniper) GivePlayerPendriveSniper();
-        if (startWithPistol) GivePlayerEletricPistol();
+
+        if (PlayerPrefs.HasKey(ArmadilloPlayerController.Instance.unlockedEletricPistolSaveKey))
+        {
+            if (PlayerPrefs.GetInt(ArmadilloPlayerController.Instance.unlockedEletricPistolSaveKey) >= 1)
+            {
+                GivePlayerEletricPistol();
+                weaponsInInventory[0].currentAmmoAmount = PlayerPrefs.GetInt(ArmadilloPlayerController.Instance.eletricPistolMagazineSaveKey);
+                weaponsInInventory[0].ammoReserveAmount = PlayerPrefs.GetInt(ArmadilloPlayerController.Instance.eletricPistolReservesSaveKey);
+            }
+        }
+        else if (startWithPistol) GivePlayerEletricPistol();
     }
     //----- Melee Functions -----
     #region Melee
