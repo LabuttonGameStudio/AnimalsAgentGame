@@ -31,7 +31,7 @@ public abstract class IEnemy : MonoBehaviour, IRaycastableInLOS
     #region Variables
     #region Path Finding|NavMesh Variables
     [HideInInspector] public NavMeshAgent navMeshAgent;
-    [Foldout("Path Finding | Navmesh",true)]
+    [Foldout("Path Finding | Navmesh", true)]
     [HideInInspector, Tooltip("Static = O inimigo não se move")] public bool isStatic;
     protected enum PathLoopTypes
     {
@@ -299,7 +299,10 @@ public abstract class IEnemy : MonoBehaviour, IRaycastableInLOS
     protected abstract void OnFixedUpdate();
     private void OnDisable()
     {
-        StopCoroutine(fixedUpdate_Ref);
+        if (fixedUpdate_Ref != null)
+        {
+            StopCoroutine(fixedUpdate_Ref);
+        }
     }
     #endregion
 
@@ -852,7 +855,7 @@ public abstract class IEnemy : MonoBehaviour, IRaycastableInLOS
 
     //-----Revive Enemy----
     #region
-    public abstract void Revive(Vector3 respawnPos,Quaternion respawnRot);
+    public abstract void Revive(Vector3 respawnPos, Quaternion respawnRot);
     public abstract void Revive();
     #endregion
 

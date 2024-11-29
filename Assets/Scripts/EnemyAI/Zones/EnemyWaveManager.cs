@@ -52,4 +52,18 @@ public class EnemyWaveManager : MonoBehaviour
         }
         return true;
     }
+
+    public void ClearWave()
+    {
+        StartCoroutine(KillWave_Coroutine());
+    }
+    public IEnumerator KillWave_Coroutine()
+    {
+        ReleaseWave();
+        for (int i = 0; i < enemiesInWave.Length; i++)
+        {
+            (enemiesInWave[i] as IDamageable).TakeDamage(new Damage(100000, Damage.DamageType.Blunt, false, Vector3.zero));
+            yield return null;
+        }
+    }
 }

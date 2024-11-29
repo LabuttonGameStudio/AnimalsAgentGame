@@ -9,6 +9,8 @@ public class ChangePlayerCamera : MonoBehaviour
     public static ChangePlayerCamera Instance;
 
     private float duration;
+
+    public bool isDisabled;
     private void Awake()
     {
         Instance = this;
@@ -19,6 +21,7 @@ public class ChangePlayerCamera : MonoBehaviour
     }
     public void ChangeCamOnObjectiveComplete(CinemachineVirtualCamera newCam)
     {
+        if (isDisabled) return;
         if (duration != 0)
         {
             Change(newCam, duration, true);
@@ -31,6 +34,7 @@ public class ChangePlayerCamera : MonoBehaviour
     }
     public void Change(CinemachineVirtualCamera newCam, float duration, bool makePlayerInvincible)
     {
+        if (isDisabled) return;
         StartCoroutine(Change_Coroutine(newCam, duration, makePlayerInvincible));
     }
     private IEnumerator Change_Coroutine(CinemachineVirtualCamera newCam, float duration, bool makePlayerInvincible)
@@ -50,5 +54,14 @@ public class ChangePlayerCamera : MonoBehaviour
         ArmadilloPlayerController.Instance.cameraControl.weaponCamera.enabled = true;
 
         if (makePlayerInvincible) ArmadilloPlayerController.Instance.hpControl.canReceiveDamage = true;
+    }
+
+    public void Enable()
+    {
+        isDisabled = false;
+    }
+    public void Disable()
+    {
+        isDisabled = true;
     }
 }

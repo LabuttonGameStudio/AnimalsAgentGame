@@ -25,7 +25,6 @@ public class EletricPistol : Weapon
         description = "Pressione pra atirar, segure para carregar ";
         ammoSlider = armadilloWeaponControl.Weaponammoslider;
         weaponType = WeaponType.Zapgun;
-        LoadVisual();
 
         onFireSlow = new SpeedMultipler { value = 0.75f };
         onReloadSlow = new SpeedMultipler { value = 0.75f };
@@ -46,7 +45,6 @@ public class EletricPistol : Weapon
     readonly private float reloadDuration = 1.75f;
 
     //----- Visual -----
-    private EletricPistolVisual visualHandler;
 
     private bool isReloading;
 
@@ -57,21 +55,16 @@ public class EletricPistol : Weapon
 
     //Visual
     #region
-    private void LoadVisual()
-    {
-        visualHandler = EletricPistolVisual.Instance;
-        visualHandler.ToggleVisual(false);
-    }
 
     public override void ToggleVisual(bool state)
     {
-        visualHandler.ToggleVisual(state);
+        EletricPistolVisual.Instance.ToggleVisual(state);
     }
     public override void OnEquip(bool playAnimation)
     {
         if (playAnimation) ArmadilloPlayerController.Instance.visualControl.EquipEletricPistolAnim();
         else ArmadilloPlayerController.Instance.visualControl.EquipEletricPistol();
-        visualHandler.UpdateUI(currentAmmoAmount, maxAmmoAmount, ammoReserveAmount,maxAmmoReserveAmount);
+        EletricPistolVisual.Instance.UpdateUI(currentAmmoAmount, maxAmmoAmount, ammoReserveAmount,maxAmmoReserveAmount);
 
     }
     public override void OnUnequip()
@@ -82,7 +75,7 @@ public class EletricPistol : Weapon
     public IEnumerator OnUnequipAnimEnd()
     {
         yield return new WaitForSeconds(0.16f);
-        visualHandler.ToggleVisual(false);
+        EletricPistolVisual.Instance.ToggleVisual(false);
     }
     #endregion
 
@@ -137,7 +130,7 @@ public class EletricPistol : Weapon
             ArmadilloPlayerController.Instance.visualControl.OnEletricGunFire();
             currentAmmoAmount -= 1;
             currentAmmoAmount = Mathf.Max(currentAmmoAmount, 0);
-            visualHandler.UpdateUI(currentAmmoAmount, maxAmmoAmount, ammoReserveAmount, maxAmmoReserveAmount);
+            EletricPistolVisual.Instance.UpdateUI(currentAmmoAmount, maxAmmoAmount, ammoReserveAmount, maxAmmoReserveAmount);
             StartFireCooldownTimer();
         }
         else
@@ -168,17 +161,17 @@ public class EletricPistol : Weapon
                 else idamageable.TakeDamage(damage);
                 if(idamageable.isDead())
                 {
-                    visualHandler.OnLetalShot();
+                    EletricPistolVisual.Instance.OnLetalShot();
                 }
                 else
                 {
                     if (damage.wasCritical)
                     {
-                        visualHandler.OnHeadshotShot();
+                        EletricPistolVisual.Instance.OnHeadshotShot();
                     }
                     else
                     {
-                        visualHandler.OnBodyShot();
+                        EletricPistolVisual.Instance.OnBodyShot();
                     }
                 }
                 if (!raycastHit.collider.isTrigger)
@@ -199,7 +192,7 @@ public class EletricPistol : Weapon
                 }
             }
         }
-        visualHandler.OnUnchargedFire(hitPoint, camera.forward, hitSomething, !hitEnemy);
+        EletricPistolVisual.Instance.OnUnchargedFire(hitPoint, camera.forward, hitSomething, !hitEnemy);
     }
 
     #endregion
@@ -240,13 +233,13 @@ public class EletricPistol : Weapon
     {
         ArmadilloPlayerController.Instance.movementControl.speedMultiplerList.Add(onReloadSlow);
         ArmadilloPlayerController.Instance.visualControl.ToggleEletricPistolOverheat(true);
-        visualHandler.ToggleReload(true);
+        EletricPistolVisual.Instance.ToggleReload(true);
         yield return new WaitForSeconds(reloadDuration);
         ArmadilloPlayerController.Instance.movementControl.speedMultiplerList.Remove(onReloadSlow);
         ArmadilloPlayerController.Instance.visualControl.ToggleEletricPistolOverheat(false);
-        visualHandler.ToggleReload(false);
+        EletricPistolVisual.Instance.ToggleReload(false);
         ReplenishAmmo();
-        visualHandler.UpdateUI(currentAmmoAmount, maxAmmoAmount, ammoReserveAmount, maxAmmoReserveAmount);
+        EletricPistolVisual.Instance.UpdateUI(currentAmmoAmount, maxAmmoAmount, ammoReserveAmount, maxAmmoReserveAmount);
         isReloading = false;
         reload_Ref = null;
     }
@@ -270,7 +263,7 @@ public class EletricPistol : Weapon
     #region
     public override void ResetGun()
     {
-        visualHandler.ResetVisuals();
+        EletricPistolVisual.Instance.ResetVisuals();
         isOnCooldown = false;
         fireCooldown_Ref = null;
         ArmadilloPlayerController.Instance.visualControl.ToggleEletricPistolCharge(false);
@@ -282,7 +275,7 @@ public class EletricPistol : Weapon
             weaponControl.StopCoroutine(reload_Ref);
             ArmadilloPlayerController.Instance.movementControl.speedMultiplerList.Remove(onReloadSlow);
             ArmadilloPlayerController.Instance.visualControl.ToggleEletricPistolOverheat(false);
-            visualHandler.ToggleReload(false);
+            EletricPistolVisual.Instance.ToggleReload(false);
             isReloading = false;
             reload_Ref = null;
         }
@@ -301,7 +294,7 @@ public class EletricPistol : Weapon
     #region
     public void OnGainAmmo()
     {
-        visualHandler.UpdateUI(currentAmmoAmount, maxAmmoAmount, ammoReserveAmount, maxAmmoReserveAmount);
+        EletricPistolVisual.Instance.UpdateUI(currentAmmoAmount, maxAmmoAmount, ammoReserveAmount, maxAmmoReserveAmount);
     }
     #endregion
 }

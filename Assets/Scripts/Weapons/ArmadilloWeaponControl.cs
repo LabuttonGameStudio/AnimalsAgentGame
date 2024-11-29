@@ -21,9 +21,9 @@ public class ArmadilloWeaponControl : MonoBehaviour
 {
     private bool isGunPocketed;
 
-    [SerializeField] private bool startWithPistol;
-    [SerializeField] private bool startWithWaterGun;
-    [SerializeField] private bool startWithPendriveSniper;
+    public bool startWithPistol;
+    public bool startWithWaterGun;
+    public bool startWithPendriveSniper;
 
     [System.NonSerialized] public Weapon[] weaponsInInventory;
 
@@ -41,47 +41,21 @@ public class ArmadilloWeaponControl : MonoBehaviour
     [HideInInspector] public bool unlockedEletricPistol;
     [HideInInspector] public bool unlockedWaterGun;
 
-    EletricPistol eletricPistol;
-    WaterGun waterGun;
-    PendriveSniper pendriveSniper;
+    [HideInInspector]public EletricPistol eletricPistol;
+    [HideInInspector]public WaterGun waterGun;
+    [HideInInspector]public PendriveSniper pendriveSniper;
 
     private void Awake()
     {
         weakMeleeSpeedMultipler = new SpeedMultipler { value = 0.75f };
         HeavyMeleeSpeedMultipler = new SpeedMultipler { value = 0.75f };
-    }
 
-    public void Start()
-    {
-        LoadWeapons();
         weaponsInInventory = new Weapon[3];
+        LoadWeapons();
+    }
+    private void Start()
+    {
         GivePlayerMelee();
-
-        if (PlayerPrefs.HasKey(ArmadilloPlayerController.Instance.unlockedWaterGunSaveKey))
-        {
-            if (PlayerPrefs.GetInt(ArmadilloPlayerController.Instance.unlockedWaterGunSaveKey) >= 1)
-            {
-                GivePlayerWaterGun();
-                weaponsInInventory[1].currentAmmoAmount = PlayerPrefs.GetInt(ArmadilloPlayerController.Instance.waterGunMagazineSaveKey);
-                weaponsInInventory[1].ammoReserveAmount = PlayerPrefs.GetInt(ArmadilloPlayerController.Instance.waterGunReservesSaveKey);
-                waterGun.OnGainAmmo();
-            }
-        }
-        else if (startWithWaterGun) GivePlayerWaterGun();
-
-        if (startWithPendriveSniper) GivePlayerPendriveSniper();
-
-        if (PlayerPrefs.HasKey(ArmadilloPlayerController.Instance.unlockedEletricPistolSaveKey))
-        {
-            if (PlayerPrefs.GetInt(ArmadilloPlayerController.Instance.unlockedEletricPistolSaveKey) >= 1)
-            {
-                GivePlayerEletricPistol();
-                weaponsInInventory[0].currentAmmoAmount = PlayerPrefs.GetInt(ArmadilloPlayerController.Instance.eletricPistolMagazineSaveKey);
-                weaponsInInventory[0].ammoReserveAmount = PlayerPrefs.GetInt(ArmadilloPlayerController.Instance.eletricPistolReservesSaveKey);
-                eletricPistol.OnGainAmmo();
-            }
-        }
-        else if (startWithPistol) GivePlayerEletricPistol();
     }
     //----- Melee Functions -----
     #region Melee

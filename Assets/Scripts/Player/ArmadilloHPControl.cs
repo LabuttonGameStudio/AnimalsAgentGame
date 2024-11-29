@@ -36,10 +36,6 @@ public class ArmadilloHPControl : MonoBehaviour, IDamageable
     }
     private void Start()
     {
-        if (PlayerPrefs.HasKey(ArmadilloPlayerController.Instance.hpSaveKey))
-        {
-            currentHp = PlayerPrefs.GetFloat(ArmadilloPlayerController.Instance.hpSaveKey);
-        }
         UpdateHealthBar();
         DamageMaterial.SetFloat("_DamageStrength", 0);
         DamageMaterial.SetFloat("_DamageAmount", 0);

@@ -17,8 +17,10 @@ public class ArmadilloPlayerInputController : MonoBehaviour
     private void Start()
     {
         //Debug_ResetLevel
+        #if UNITY_EDITOR
         inputAction.Armadillo.Debug_Reset.Enable();
         inputAction.Armadillo.Debug_Reset.performed += ResetLevel;
+        #endif
     }
     private void OnDisable()
     {

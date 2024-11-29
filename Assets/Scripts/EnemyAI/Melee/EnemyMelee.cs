@@ -157,7 +157,7 @@ public class EnemyMelee : IEnemy, IDamageable, ISoundReceiver
     #region Take Damage Functions
     public void TakeDamage(Damage damage)
     {
-        if (isShieldActive) return;
+        if (isShieldActive && damage.wasMadeByPlayer) return;
         currentHp -= damage.damageAmount;
         if (currentHp <= 0 && isDead == false)
         {

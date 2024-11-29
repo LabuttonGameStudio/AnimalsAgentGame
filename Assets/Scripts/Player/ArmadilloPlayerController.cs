@@ -73,17 +73,18 @@ public class ArmadilloPlayerController : MonoBehaviour
 
     //-----Save -----
     #region Save 
-    public readonly string hpSaveKey = "PlayerHPSave";
-    public readonly string unlockedChangeFormSaveKey = "PlayerUnlockChangeForm";
-    public readonly string unlockedSonarSaveKey = "PlayerUnlockSonar";
+    public static readonly string hpSaveKey = "PlayerHPSave";
+    public static readonly string unlockedChangeFormSaveKey = "PlayerUnlockChangeForm";
+    public static readonly string unlockedSonarSaveKey = "PlayerUnlockSonar";
 
-    public readonly string unlockedEletricPistolSaveKey = "PlayerUnlockEletricPistol";
-    public readonly string eletricPistolMagazineSaveKey = "PlayerEletricPistolCurrentMagazine";
-    public readonly string eletricPistolReservesSaveKey = "PlayerEletricPistolCurrentReserves";
+    public static readonly string unlockedEletricPistolSaveKey = "PlayerUnlockEletricPistol";
+    public static readonly string eletricPistolMagazineSaveKey = "PlayerEletricPistolCurrentMagazine";
+    public static readonly string eletricPistolReservesSaveKey = "PlayerEletricPistolCurrentReserves";
 
-    public readonly string unlockedWaterGunSaveKey = "PlayerUnlockWaterGun";
-    public readonly string waterGunMagazineSaveKey = "PlayerWaterGunCurrentMagazine";
-    public readonly string waterGunReservesSaveKey = "PlayerWaterGunCurrentReserves";
+    public static readonly string unlockedWaterGunSaveKey = "PlayerUnlockWaterGun";
+    public static readonly string waterGunMagazineSaveKey = "PlayerWaterGunCurrentMagazine";
+    public static readonly string waterGunReservesSaveKey = "PlayerWaterGunCurrentReserves";
+
     #endregion
 
     [HideInInspector] public bool canSwitchWeapon;
@@ -142,6 +143,9 @@ public class ArmadilloPlayerController : MonoBehaviour
 
     private void Awake()
     {
+        #if UNITY_EDITOR
+        //ClearPlayerSaveData();
+        #endif  
         canSwitchWeapon = true;
         Instance = this;
         #region Assign Components
@@ -161,19 +165,171 @@ public class ArmadilloPlayerController : MonoBehaviour
     }
     private void Start()
     {
-        //ChangeForm
-        if(PlayerPrefs.HasKey(unlockedChangeFormSaveKey))
+        if (CheckPointManager.Instance != null)
         {
-            if(PlayerPrefs.GetInt(unlockedChangeFormSaveKey)>=1) UnlockChangeFormAbility();
-        }
-        else if (startWithChangeFormAbility) UnlockChangeFormAbility();
+            //CheckSpawnPoint
+            if (PlayerPrefs.HasKey(CheckPointManager.PlayerCurrentCheckPointSaveKey))
+            {
+                int checkPointIndex = PlayerPrefs.GetInt(CheckPointManager.PlayerCurrentCheckPointSaveKey);
+                Transform checkPointSpawn = CheckPointManager.Instance.GetReturnPoint(checkPointIndex);
+                movementControl.rb.position = checkPointSpawn.position;
+                movementControl.rb.rotation = checkPointSpawn.rotation;
 
-        //Sonar
-        if (PlayerPrefs.HasKey(unlockedSonarSaveKey))
-        {
-            if (PlayerPrefs.GetInt(unlockedSonarSaveKey) >= 1) UnlockSonarAbility();
+                //Hp
+                hpControl.currentHp = hpControl.maxHp;
+                //ChangeForm
+                if (PlayerPrefs.HasKey(unlockedChangeFormSaveKey))
+                {
+                    if (PlayerPrefs.GetInt(unlockedChangeFormSaveKey) >= 1) UnlockChangeFormAbility();
+                }
+                else if (startWithChangeFormAbility) UnlockChangeFormAbility();
+
+                //Sonar
+                if (PlayerPrefs.HasKey(unlockedSonarSaveKey))
+                {
+                    if (PlayerPrefs.GetInt(unlockedSonarSaveKey) >= 1) UnlockSonarAbility();
+                }
+                else if (startWithSonarAbility) UnlockSonarAbility();
+
+                #region Weapons
+                //WaterGun
+                if (PlayerPrefs.HasKey(unlockedWaterGunSaveKey))
+                {
+                    if (PlayerPrefs.GetInt(unlockedWaterGunSaveKey) >= 1)
+                    {
+                        weaponControl.GivePlayerWaterGun();
+                        weaponControl.weaponsInInventory[1].currentAmmoAmount = weaponControl.weaponsInInventory[1].maxAmmoAmount;
+                        weaponControl.weaponsInInventory[1].ammoReserveAmount = Mathf.Max(PlayerPrefs.GetInt(waterGunReservesSaveKey), Mathf.RoundToInt(weaponControl.weaponsInInventory[1].maxAmmoReserveAmount / 2f));
+                        weaponControl.waterGun.OnGainAmmo();
+                    }
+                }
+                else if (weaponControl.startWithWaterGun) weaponControl.GivePlayerWaterGun();
+
+                //PendriveSniper
+                if (weaponControl.startWithPendriveSniper) weaponControl.GivePlayerPendriveSniper();
+
+                //EletricPistol
+                if (PlayerPrefs.HasKey(unlockedEletricPistolSaveKey))
+                {
+                    if (PlayerPrefs.GetInt(unlockedEletricPistolSaveKey) >= 1)
+                    {
+                        weaponControl.GivePlayerEletricPistol();
+                        weaponControl.weaponsInInventory[0].currentAmmoAmount = weaponControl.weaponsInInventory[0].maxAmmoAmount;
+                        weaponControl.weaponsInInventory[0].ammoReserveAmount = Mathf.Max(PlayerPrefs.GetInt(eletricPistolReservesSaveKey), Mathf.RoundToInt(weaponControl.weaponsInInventory[0].maxAmmoReserveAmount / 2f)); ;
+                        weaponControl.eletricPistol.OnGainAmmo();
+                    }
+                }
+                else if (weaponControl.startWithPistol) weaponControl.GivePlayerEletricPistol();
+                ChangePlayerCamera.Instance.isDisabled = true;
+                CheckPointManager.Instance.OnLoadCheckpoint(checkPointIndex);
+                ChangePlayerCamera.Instance.Invoke("Enable", 2);
+                #endregion
+            }
+            else
+            {
+                //Hp
+                if (PlayerPrefs.HasKey(hpSaveKey))
+                {
+                    hpControl.currentHp = PlayerPrefs.GetFloat(hpSaveKey);
+                }
+                else hpControl.currentHp = hpControl.maxHp;
+                //ChangeForm
+                if (PlayerPrefs.HasKey(unlockedChangeFormSaveKey))
+                {
+                    if (PlayerPrefs.GetInt(unlockedChangeFormSaveKey) >= 1) UnlockChangeFormAbility();
+                }
+                else if (startWithChangeFormAbility) UnlockChangeFormAbility();
+
+                //Sonar
+                if (PlayerPrefs.HasKey(unlockedSonarSaveKey))
+                {
+                    if (PlayerPrefs.GetInt(unlockedSonarSaveKey) >= 1) UnlockSonarAbility();
+                }
+                else if (startWithSonarAbility) UnlockSonarAbility();
+                #region Weapons
+                //WaterGun
+                if (PlayerPrefs.HasKey(unlockedWaterGunSaveKey))
+                {
+                    if (PlayerPrefs.GetInt(unlockedWaterGunSaveKey) >= 1)
+                    {
+                        weaponControl.GivePlayerWaterGun();
+                        weaponControl.weaponsInInventory[1].currentAmmoAmount = PlayerPrefs.GetInt(waterGunMagazineSaveKey);
+                        weaponControl.weaponsInInventory[1].ammoReserveAmount = PlayerPrefs.GetInt(waterGunReservesSaveKey);
+                        weaponControl.waterGun.OnGainAmmo();
+                    }
+                }
+                else if (weaponControl.startWithWaterGun) weaponControl.GivePlayerWaterGun();
+
+                //PendriveSniper
+                if (weaponControl.startWithPendriveSniper) weaponControl.GivePlayerPendriveSniper();
+
+                //EletricPistol
+                if (PlayerPrefs.HasKey(unlockedEletricPistolSaveKey))
+                {
+                    if (PlayerPrefs.GetInt(unlockedEletricPistolSaveKey) >= 1)
+                    {
+                        weaponControl.GivePlayerEletricPistol();
+                        weaponControl.weaponsInInventory[0].currentAmmoAmount = PlayerPrefs.GetInt(eletricPistolMagazineSaveKey);
+                        weaponControl.weaponsInInventory[0].ammoReserveAmount = PlayerPrefs.GetInt(eletricPistolReservesSaveKey);
+                        weaponControl.eletricPistol.OnGainAmmo();
+                    }
+                }
+                else if (weaponControl.startWithPistol) weaponControl.GivePlayerEletricPistol();
+                #endregion
+            }
         }
-        else if (startWithSonarAbility) UnlockSonarAbility();
+        else
+        {
+            //Hp
+            if (PlayerPrefs.HasKey(hpSaveKey))
+            {
+                hpControl.currentHp = PlayerPrefs.GetFloat(hpSaveKey);
+            }
+            else hpControl.currentHp = hpControl.maxHp;
+            //ChangeForm
+            if (PlayerPrefs.HasKey(unlockedChangeFormSaveKey))
+            {
+                if (PlayerPrefs.GetInt(unlockedChangeFormSaveKey) >= 1) UnlockChangeFormAbility();
+            }
+            else if (startWithChangeFormAbility) UnlockChangeFormAbility();
+
+            //Sonar
+            if (PlayerPrefs.HasKey(unlockedSonarSaveKey))
+            {
+                if (PlayerPrefs.GetInt(unlockedSonarSaveKey) >= 1) UnlockSonarAbility();
+            }
+            else if (startWithSonarAbility) UnlockSonarAbility();
+            #region Weapons
+            //WaterGun
+            if (PlayerPrefs.HasKey(unlockedWaterGunSaveKey))
+            {
+                if (PlayerPrefs.GetInt(unlockedWaterGunSaveKey) >= 1)
+                {
+                    weaponControl.GivePlayerWaterGun();
+                    weaponControl.weaponsInInventory[1].currentAmmoAmount = PlayerPrefs.GetInt(waterGunMagazineSaveKey);
+                    weaponControl.weaponsInInventory[1].ammoReserveAmount = PlayerPrefs.GetInt(waterGunReservesSaveKey);
+                    weaponControl.waterGun.OnGainAmmo();
+                }
+            }
+            else if (weaponControl.startWithWaterGun) weaponControl.GivePlayerWaterGun();
+
+            //PendriveSniper
+            if (weaponControl.startWithPendriveSniper) weaponControl.GivePlayerPendriveSniper();
+
+            //EletricPistol
+            if (PlayerPrefs.HasKey(unlockedEletricPistolSaveKey))
+            {
+                if (PlayerPrefs.GetInt(unlockedEletricPistolSaveKey) >= 1)
+                {
+                    weaponControl.GivePlayerEletricPistol();
+                    weaponControl.weaponsInInventory[0].currentAmmoAmount = PlayerPrefs.GetInt(eletricPistolMagazineSaveKey);
+                    weaponControl.weaponsInInventory[0].ammoReserveAmount = PlayerPrefs.GetInt(eletricPistolReservesSaveKey);
+                    weaponControl.eletricPistol.OnGainAmmo();
+                }
+            }
+            else if (weaponControl.startWithPistol) weaponControl.GivePlayerEletricPistol();
+            #endregion
+        }
     }
     public void TeleportPlayer(Transform transform)
     {
@@ -439,7 +595,7 @@ public class ArmadilloPlayerController : MonoBehaviour
     //----- Die -----
     public void Die()
     {
-        Debug.Log("Player Die");
+
     }
     #endregion
 
@@ -655,7 +811,10 @@ public class ArmadilloPlayerController : MonoBehaviour
 
     //-----Save -----
     #region
-
+    private void OnApplicationQuit()
+    {
+        ClearPlayerSaveData();
+    }
     public void SavePlayerData()
     {
         //HP
@@ -682,8 +841,11 @@ public class ArmadilloPlayerController : MonoBehaviour
         }
         PlayerPrefs.Save();
     }
-    public void ClearPlayerSaveData()
+    public static void ClearPlayerSaveData()
     {
+        //CheckPoints
+        PlayerPrefs.DeleteKey(CheckPointManager.PlayerCurrentCheckPointSaveKey);
+
         //HP
         PlayerPrefs.DeleteKey(hpSaveKey);
 
@@ -705,5 +867,4 @@ public class ArmadilloPlayerController : MonoBehaviour
     }
 
     #endregion
-
 }

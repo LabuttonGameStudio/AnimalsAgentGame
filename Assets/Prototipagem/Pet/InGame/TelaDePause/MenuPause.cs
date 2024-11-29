@@ -28,6 +28,7 @@ public class MenuPause : MonoBehaviour
 
     private bool isMenuOpen;
 
+    [SerializeField]private TMP_Dropdown languageDropdown;
 
     private Resolution[] resolutions = new Resolution[]
      {
@@ -114,6 +115,18 @@ public class MenuPause : MonoBehaviour
         sensitivitySlider.onValueChanged.AddListener(OnSensitivityChange);
         #endregion
 
+        #region Language
+        int selectedLanguage = 0;
+        for (int i = 0;i< LocalizationSettings.AvailableLocales.Locales.Count;i++)
+        {
+            if (LocalizationSettings.SelectedLocale == LocalizationSettings.AvailableLocales.Locales[i])
+            {
+                selectedLanguage = i;
+                break;
+            }
+        }
+        languageDropdown.value = selectedLanguage;
+        #endregion
 
         if (ArmadilloPlayerController.Instance != null &&
             ArmadilloPlayerController.Instance.inputControl != null &&
@@ -353,6 +366,7 @@ public class MenuPause : MonoBehaviour
 
     public void ReturnInicialScreen()
     {
-        SceneManager.LoadScene("TelaInicialScene");
+        Time.timeScale = 1.0f;
+        SceneManager.LoadScene((int)SceneController.ScenesEnum.MenuPause);
     }
 }

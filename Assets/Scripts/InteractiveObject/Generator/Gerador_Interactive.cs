@@ -126,22 +126,7 @@ public class Gerador_Interactive : MonoBehaviour, IRequirements, InteractiveObje
     }
     public void Interact(InputAction.CallbackContext value)
     {
-        if (requirements != null && requirements.Length > 0)
-        {
-            if (charged && !isTurnedOn)
-            {
-                isTurnedOn = true;
-                StartCoroutine(LeverSwitchAnimation_Coroutine());
-            }
-        }
-        else
-        {
-            if (!isTurnedOn)
-            {
-                isTurnedOn = true;
-                StartCoroutine(LeverSwitchAnimation_Coroutine());
-            }
-        }
+        TurnOn();
         ArmadilloPlayerController.Instance.interactControl.UpdateInteractionHUD();
     }
     private IEnumerator LeverSwitchAnimation_Coroutine()
@@ -163,6 +148,26 @@ public class Gerador_Interactive : MonoBehaviour, IRequirements, InteractiveObje
         if (connectedObject != null)
         {
             connectedObject.OnRequirementChange();
+        }
+    }
+
+    public void TurnOn()
+    {
+        if (requirements != null && requirements.Length > 0)
+        {
+            if (charged && !isTurnedOn)
+            {
+                isTurnedOn = true;
+                StartCoroutine(LeverSwitchAnimation_Coroutine());
+            }
+        }
+        else
+        {
+            if (!isTurnedOn)
+            {
+                isTurnedOn = true;
+                StartCoroutine(LeverSwitchAnimation_Coroutine());
+            }
         }
     }
 }

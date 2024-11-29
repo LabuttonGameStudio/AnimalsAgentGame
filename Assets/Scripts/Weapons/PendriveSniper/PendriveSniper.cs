@@ -19,15 +19,12 @@ public class PendriveSniper : Weapon
         description = "Atire nos inimigos para infiltrar o sistema dos robos";
         ammoSlider = armadilloWeaponControl.Weaponammoslider;
         weaponType = WeaponType.Pendrivegun;
-        LoadVisual();
     }
 
     //----- Components -----
     private ArmadilloWeaponControl weaponControl;
-    private PendriveSniperVisualHandler visualHandler;
 
     //----- Fire Projectile Variables -----
-    private Transform firePivot;
 
     //-----Fire Variables -----
     private float bulletDamage = 50;
@@ -40,20 +37,13 @@ public class PendriveSniper : Weapon
 
     //Visual
     #region
-    private void LoadVisual()
-    {
-        visualHandler = PendriveSniperVisualHandler.Instance;
-        visualHandler.ToggleVisual(false);
-        firePivot = visualHandler.firePivot;
-    }
-
     public override void ToggleVisual(bool state)
     {
-        visualHandler.ToggleVisual(state);
+        PendriveSniperVisualHandler.Instance.ToggleVisual(state);
     }
     public override void OnEquip(bool playAnimation)
     {
-        visualHandler.OnEquip(playAnimation);
+        PendriveSniperVisualHandler.Instance.OnEquip(playAnimation);
         //if (playAnimation) ArmadilloPlayerController.Instance.visualControl.EquipWaterGunAnim();
         //else ArmadilloPlayerController.Instance.visualControl.EquipWaterGun();
 
@@ -67,7 +57,7 @@ public class PendriveSniper : Weapon
     public IEnumerator OnUnequipAnimEnd()
     {
         yield return new WaitForSeconds(0.16f);
-        visualHandler.ToggleVisual(false);
+        PendriveSniperVisualHandler.Instance.ToggleVisual(false);
     }
     #endregion
     //Fire
@@ -102,7 +92,7 @@ public class PendriveSniper : Weapon
             }
             else
             {
-                Fire(firePivot.position, firePivot.transform.up, isScoped);
+                Fire(PendriveSniperVisualHandler.Instance.firePivot.position, PendriveSniperVisualHandler.Instance.firePivot.transform.up, isScoped);
                 StartFireCooldownTimer();
             }
         }
@@ -133,12 +123,12 @@ public class PendriveSniper : Weapon
     public override void OnAltFireButtonPerformed(InputAction.CallbackContext performed)
     {
         isScoped = true;
-        visualHandler.ToggleScope(true);
+        PendriveSniperVisualHandler.Instance.ToggleScope(true);
     }
     public override void OnAltFireButtonCanceled(InputAction.CallbackContext performed)
     {
         isScoped = false;
-        visualHandler.ToggleScope(false);
+        PendriveSniperVisualHandler.Instance.ToggleScope(false);
     }
     #endregion
 
@@ -166,7 +156,7 @@ public class PendriveSniper : Weapon
     public IEnumerator ReloadTimer_Coroutine()
     {
         //ArmadilloPlayerController.Instance.visualControl.ReloadWaterGun();
-        visualHandler.OnReload();
+        PendriveSniperVisualHandler.Instance.OnReload();
         yield return new WaitForSeconds(3.563f + 0.25f);
         if (ammoReserveAmount >= maxAmmoAmount)
         {
@@ -189,9 +179,9 @@ public class PendriveSniper : Weapon
     #region Reset
     public override void ResetGun()
     {
-        visualHandler.ResetVisuals();
+        PendriveSniperVisualHandler.Instance.ResetVisuals();
         isScoped = false;
-        visualHandler.ToggleScope(false);
+        PendriveSniperVisualHandler.Instance.ToggleScope(false);
     }
     #endregion
 
@@ -199,7 +189,7 @@ public class PendriveSniper : Weapon
     #region Run
     public override void ToggleOnRun(bool state)
     {
-        visualHandler.ToggleOnRun(state);
+        PendriveSniperVisualHandler.Instance.ToggleOnRun(state);
     }
     #endregion
 }

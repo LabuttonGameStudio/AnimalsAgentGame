@@ -5,9 +5,11 @@ using UnityEngine.SceneManagement;
 
 public class SkipCheck : MonoBehaviour
 {
-    private readonly string tutorial = "1_Tutorial";
-    private readonly string loading = "TeladeCarregamentoScene";
-    private readonly string cutscene = "Cutscene";
+    [SerializeField]private float cutsceneDurationInSeconds;
+    private void Start()
+    {
+        StartCoroutine(OnFinishCutsceneTimer_Coroutine());
+    }
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
@@ -18,16 +20,24 @@ public class SkipCheck : MonoBehaviour
             }
         }
     }
+    private IEnumerator OnFinishCutsceneTimer_Coroutine()
+    {
+        yield return new WaitForSeconds(cutsceneDurationInSeconds);
+        if (levelLoad_Ref == null)
+        {
+            levelLoad_Ref = SceneController.Instance.StartCoroutine(LoadLevelAsync());
+        }
+    }
     Coroutine levelLoad_Ref;
     IEnumerator LoadLevelAsync()
     {
         // Carrega a cena da tela de carregamento
         Scene currentScene = SceneManager.GetActiveScene();
-        yield return SceneManager.LoadSceneAsync(loading, LoadSceneMode.Additive);
+        yield return SceneManager.LoadSceneAsync((int)SceneController.ScenesEnum.Loading, LoadSceneMode.Additive);
         SceneManager.UnloadSceneAsync(currentScene);
 
         // carrega de forma assin o tutorial
-        AsyncOperation levelLoadOperation = SceneManager.LoadSceneAsync(tutorial, LoadSceneMode.Additive);
+        AsyncOperation levelLoadOperation = SceneManager.LoadSceneAsync((int)SceneController.ScenesEnum.Tutorial, LoadSceneMode.Additive);
         //levelLoadOperation.allowSceneActivation = false;  // nao att imediatamente
 
         // delay para carregar a cena de tuto
@@ -50,6 +60,6 @@ public class SkipCheck : MonoBehaviour
         levelLoadOperation.allowSceneActivation = true;
 
         // descarrega loading
-        SceneManager.UnloadSceneAsync(loading);
+        SceneManager.UnloadSceneAsync((int)SceneController.ScenesEnum.Loading);
     }
 }

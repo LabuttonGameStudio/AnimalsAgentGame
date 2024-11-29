@@ -3,15 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.EventSystems;
+using static SceneController;
 
 
 public class InitialOptions : MonoBehaviour
 {
-
     [Header("LEVEL AND LOAD")]
-    public string levelToLoad;
-    public string loadingScreenScene;
-    public string actuallevel;
     private bool levelLoaded = false;
     public float delayBeforeLoading = 2f; // para o tutorial ir carregando
 
@@ -21,36 +18,47 @@ public class InitialOptions : MonoBehaviour
 
     private void Start()
     {
-        Cursor.SetCursor(cursorTexture, Vector2.zero, CursorMode.Auto);
+       // Cursor.SetCursor(cursorTexture, Vector2.zero, CursorMode.Auto);
     }
 
-
-    public void SaveAndLoad()
+    public void LoadTutorial()
+    {
+        ArmadilloPlayerController.ClearPlayerSaveData();
+        SceneManager.LoadScene((int)SceneController.ScenesEnum.Cutscene);
+    }
+    public void LoadCais()
+    {
+        SaveAndLoad(ScenesEnum.Cais);
+    }
+    public void LoadBoss()
+    {
+        SaveAndLoad(ScenesEnum.Bossfight);
+    }
+    public void SaveAndLoad(SceneController.ScenesEnum sceneEnum)
     {
         // save game
-
+        ArmadilloPlayerController.ClearPlayerSaveData();
         if (!levelLoaded) //  level nao carregado
         {
-            SceneController.Instance.StartCoroutine(LoadLevelAsync());
+            SceneController.Instance.StartCoroutine(LoadLevelAsync(sceneEnum));
             Debug.Log("Iniciando");
             levelLoaded = true;
         }
 
     }
 
-    //verificar dps Mori
-    IEnumerator LoadLevelAsync()
+    IEnumerator LoadLevelAsync(SceneController.ScenesEnum sceneEnum)
     {
         // anim 
         yield return new WaitForSeconds(2f);
 
         // Carrega a cena da tela de carregamento
         Scene currentScene = SceneManager.GetActiveScene();
-        yield return SceneManager.LoadSceneAsync(loadingScreenScene, LoadSceneMode.Additive);
+        yield return SceneManager.LoadSceneAsync((int)SceneController.ScenesEnum.Loading, LoadSceneMode.Additive);
         SceneManager.UnloadSceneAsync(currentScene);
 
         // carrega de forma assin o tutorial
-        AsyncOperation levelLoadOperation = SceneManager.LoadSceneAsync(levelToLoad, LoadSceneMode.Additive);
+        AsyncOperation levelLoadOperation = SceneManager.LoadSceneAsync((int)sceneEnum, LoadSceneMode.Additive);
         //levelLoadOperation.allowSceneActivation = false;  // nao att imediatamente
 
         // delay para carregar a cena de tuto
@@ -73,7 +81,7 @@ public class InitialOptions : MonoBehaviour
         }
 
         // descarrega loading
-        SceneManager.UnloadSceneAsync(loadingScreenScene);
+        SceneManager.UnloadSceneAsync((int)SceneController.ScenesEnum.Loading);
     }
 
     public void Exit()
