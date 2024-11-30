@@ -20,7 +20,7 @@ public class HP_Collectable : MonoBehaviour
         if(ArmadilloPlayerController.Instance.hpControl.OnHeal(hpAmount))
         {
             gameObject.SetActive(false);
-            ArmadilloPlayerController.Instance.StartCoroutine(RespawnTimer_Coroutine());
+            if(respawn)ArmadilloPlayerController.Instance.StartCoroutine(RespawnTimer_Coroutine());
         }
     }
     private IEnumerator RespawnTimer_Coroutine()

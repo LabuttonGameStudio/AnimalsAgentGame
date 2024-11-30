@@ -203,10 +203,10 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 868675212}
-        m_TargetAssemblyTypeName: TweenPopUpAuto, Assembly-CSharp
-        m_MethodName: StartScaleDown
-        m_Mode: 1
+      - m_Target: {fileID: 868675210}
+        m_TargetAssemblyTypeName: UnityEngine.Behaviour, UnityEngine
+        m_MethodName: set_enabled
+        m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -1342,7 +1342,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 868675212}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: TweenPopUpAuto, Assembly-CSharp
         m_MethodName: StartScaleDown
         m_Mode: 1
@@ -1487,17 +1487,17 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 868675212}
-        m_TargetAssemblyTypeName: TweenPopUpAuto, Assembly-CSharp
-        m_MethodName: StartScaleUP
-        m_Mode: 1
+      - m_Target: {fileID: 868675210}
+        m_TargetAssemblyTypeName: UnityEngine.Behaviour, UnityEngine
+        m_MethodName: set_enabled
+        m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
-          m_BoolArgument: 0
+          m_BoolArgument: 1
         m_CallState: 2
       - m_Target: {fileID: 454385269}
         m_TargetAssemblyTypeName: TweenOpenSystem, Assembly-CSharp
@@ -1962,7 +1962,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 868675212}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: TweenPopUpAuto, Assembly-CSharp
         m_MethodName: StartScaleDown
         m_Mode: 1
@@ -3671,7 +3671,6 @@ GameObject:
   - component: {fileID: 868675209}
   - component: {fileID: 868675211}
   - component: {fileID: 868675210}
-  - component: {fileID: 868675212}
   m_Layer: 5
   m_Name: Logo
   m_TagString: Untagged
@@ -3710,15 +3709,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 2100000, guid: 0684c4a33c67fd8448729aaa06c4cd26, type: 2}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Material: {fileID: 0}
+  m_Color: {r: 0.5348434, g: 0.84924215, b: 0.9528302, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 21300000, guid: 0cb41b8558c128c47965f806b57f28a3, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -3736,22 +3735,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 868675208}
   m_CullTransparentMesh: 1
---- !u!114 &868675212
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 868675208}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dba016cb770711a43a697d9fb4725c2f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  objectToScale: {fileID: 868675209}
-  scaleDuration: 0.2
-  TimeForStart: 0.5
-  lerpType: 1
 --- !u!1 &870057262 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6111466104271097989, guid: 64840a7248d35654f9929fe821f05e1f, type: 3}
@@ -6274,7 +6257,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 868675212}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: TweenPopUpAuto, Assembly-CSharp
         m_MethodName: StartScaleDown
         m_Mode: 1
@@ -7559,7 +7542,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 868675212}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: TweenPopUpAuto, Assembly-CSharp
         m_MethodName: StartScaleDown
         m_Mode: 1
