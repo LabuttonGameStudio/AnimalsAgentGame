@@ -10,6 +10,7 @@ public class PoisonPuddle : MonoBehaviour
         {
             if(TickDamage_Ref== null)
             {
+                OverlayEffects.Instance.ToggleImage(OverlayEffects.Instance.poisonOverlay, true);
                 TickDamage_Ref = StartCoroutine(TickDamage_Coroutine());
             }
         }
@@ -20,6 +21,7 @@ public class PoisonPuddle : MonoBehaviour
         {
             if (TickDamage_Ref != null)
             {
+                OverlayEffects.Instance.ToggleImage(OverlayEffects.Instance.poisonOverlay, false);
                 StopCoroutine(TickDamage_Ref);
                 TickDamage_Ref = null;
             }

@@ -8,6 +8,7 @@ public class SandSlowArea : MonoBehaviour
     {
         if(other.CompareTag("Player"))
         {
+            OverlayEffects.Instance.ToggleImage(OverlayEffects.Instance.sandOverlay, true);
             ArmadilloPlayerController.Instance.movementControl.speedMultiplier = 0.5f;
         }
     }
@@ -15,6 +16,7 @@ public class SandSlowArea : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
+            OverlayEffects.Instance.ToggleImage(OverlayEffects.Instance.sandOverlay, false);
             ArmadilloPlayerController.Instance.movementControl.speedMultiplier = 1f;
         }
     }
