@@ -9,6 +9,7 @@ public class BulletManager : MonoBehaviour
     [Header("TEXT")]
     [SerializeField] private TextMeshProUGUI titleText;
     [SerializeField] private TextMeshProUGUI descriptionText;
+    [SerializeField] private TextMeshProUGUI SubdescriptionText;
 
     [Header("ANIMACAO")]
     [SerializeField] private GameObject targetObject;
@@ -17,6 +18,11 @@ public class BulletManager : MonoBehaviour
     [Header("INTERACTIVE OBJECTIVES - INIMIGOS")]
     [SerializeField] private int requiredInimigos;
      public int InimigosDestruidos = 0;
+
+    [Header("INTERACTIVE OBJECTIVES - GERADORES")]
+    [SerializeField] private int requiredGeradores;
+    public int GeradoresAtivados = 0;
+
     private void Awake()
     {
         Graphic targetGraphic = targetObject.GetComponent<Graphic>();
@@ -26,6 +32,10 @@ public class BulletManager : MonoBehaviour
     {
         titleText.text = newTitle;
         descriptionText.text = newDescription;
+    }
+    public void UpdateDescription(string newDescription)
+    {
+        SubdescriptionText.text = newDescription;
     }
 
     public void ChangeColor(float newIntensity, float duration)
@@ -41,54 +51,116 @@ public class BulletManager : MonoBehaviour
         UpdateText(newTitle, newDescription); // Atualiza o texto após o tempo de espera
     }
 
+    IEnumerator WaitAndUpdateSubText(string newDescription)
+    {
+
+        yield return new WaitForSeconds(1f);
+        UpdateDescription(newDescription); 
+
+    }
+
     #region Tutorial - fase 1
     public void Objetivo1()
     {
-        ChangeColor(1.5f, 0.5f);
+        ChangeColor(6f, 0.5f);
         StartCoroutine(WaitAndUpdateText("reconhecimento de campo", "Escale a montanha para novas instruções"));
     }
 
     public void Objetivo2()
     {
-        ChangeColor(1.5f, 0.5f);
+        ChangeColor(6f, 0.5f);
         StartCoroutine(WaitAndUpdateText("modo tático: cascadura", "Explore o terreno no modo cascadura"));
     }
 
     public void Objetivo3()
     {
-        ChangeColor(1.5f, 0.5f);
+        ChangeColor(6f, 0.5f);
         StartCoroutine(WaitAndUpdateText("hora do combate!", "Avance pelos inimigos a frente"));
     }
     public void AllEnemiesDestroy()
     {
         InimigosDestruidos++;
         // Atualiza o texto com o progresso atual
-        UpdateText("Acabe com eles Agente", $"inimigos destruidos: {InimigosDestruidos}/{requiredInimigos}");
+        UpdateText("acabe com eles agente", $"inimigos destruidos: {InimigosDestruidos}/{requiredInimigos}");
 
         if (InimigosDestruidos >= requiredInimigos)
         {
-            ChangeColor(1.5f, 0.5f);
-            StartCoroutine(WaitAndUpdateText("antenas ativadas!", "Vá até o portão"));
+            ChangeColor(6f, 0.5f);
+            StartCoroutine(WaitAndUpdateText("ameaça eliminada!", "Vá até o portão"));
         }
     }
 
         public void Objetivo4()
     {
-        ChangeColor(1.5f, 0.5f);
+        ChangeColor(6f, 0.5f);
         requiredInimigos = 1;
         StartCoroutine(WaitAndUpdateText("treine a mira", $"Destrua o inimigo a frente: {InimigosDestruidos}/{requiredInimigos}"));
     }
 
     public void Objetivo5()
     {
-        ChangeColor(1.5f, 0.5f);
+        ChangeColor(6f, 0.5f);
         InimigosDestruidos = 0;
         requiredInimigos = 3;
-        StartCoroutine(WaitAndUpdateText("Acabe com eles Agente", $"inimigos destruidos: {InimigosDestruidos}/{requiredInimigos}"));
+        StartCoroutine(WaitAndUpdateText("acabe com eles agente", $"inimigos destruidos: {InimigosDestruidos}/{requiredInimigos}"));
     }
     #endregion
 
     #region Cais - fase 2
+
+    public void Objetivo6()
+    {
+        ChangeColor(6f, 0.5f);
+        StartCoroutine(WaitAndUpdateText("investigue a área", "Localize o sinal desconhecido"));
+    }
+
+    public void Objetivo7()
+    {
+        ChangeColor(6f, 0.5f);
+        requiredGeradores = 3;
+        StartCoroutine(WaitAndUpdateText("investigue a área", "Ache um caminho alternativo"));
+        StartCoroutine(WaitAndUpdateSubText($"Ative os interruptores de energia: { GeradoresAtivados}/{requiredGeradores}"));
+    }
+
+    public void AllGeradoresActivated()
+    {
+        GeradoresAtivados++;
+        UpdateDescription($"Ative os interruptores de energia: { GeradoresAtivados}/{requiredGeradores}");
+
+        if (GeradoresAtivados >= requiredGeradores)
+        {
+            ChangeColor(6f, 0.5f);
+            StartCoroutine(WaitAndUpdateSubText("Portão desativado"));
+        }
+    }
+
+    public void Objetivo8()
+    {
+        ChangeColor(6f, 0.5f);
+        InimigosDestruidos = 0;
+        requiredInimigos = 11;
+        StartCoroutine(WaitAndUpdateText("acabe com eles agente", $"inimigos destruidos: {InimigosDestruidos}/{requiredInimigos}"));
+    }
+
+    public void Objetivo9()
+    {
+        ChangeColor(6f, 0.5f);
+        StartCoroutine(WaitAndUpdateText("Encontre o 1° interruptor", "investigue a área"));
+    }
+
+    public void Objetivo10()
+    {
+        ChangeColor(6f, 0.5f);
+        InimigosDestruidos = 0;
+        requiredInimigos = 4;
+        StartCoroutine(WaitAndUpdateText("acabe com eles agente", $"inimigos destruidos: {InimigosDestruidos}/{requiredInimigos}"));
+    }
+
+    public void Objetivo11()
+    {
+        ChangeColor(6f, 0.5f);
+        StartCoroutine(WaitAndUpdateText("Encontre o 2° interruptor", "investigue a área"));
+    }
 
     #endregion
 
