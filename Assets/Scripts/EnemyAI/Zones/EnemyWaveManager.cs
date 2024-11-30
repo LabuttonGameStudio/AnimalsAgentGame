@@ -5,13 +5,13 @@ using UnityEngine.Events;
 
 public class EnemyWaveManager : MonoBehaviour
 {
-    [SerializeField]private IEnemy[] enemiesInWave;
+    [SerializeField] private IEnemy[] enemiesInWave;
     private bool hasBeenDefeated;
     [SerializeField] private UnityEvent onWaveReleased;
     [SerializeField] private UnityEvent onWaveDefeated;
     private void Start()
     {
-        foreach(IEnemy enemy in enemiesInWave)
+        foreach (IEnemy enemy in enemiesInWave)
         {
             enemy.onDeathEvent.AddListener(CheckOnWaveDefeated);
         }
@@ -19,7 +19,7 @@ public class EnemyWaveManager : MonoBehaviour
     public void ReleaseWave()
     {
         onWaveReleased.Invoke();
-        foreach(IEnemy enemy in enemiesInWave)
+        foreach (IEnemy enemy in enemiesInWave)
         {
             enemy.transform.parent.gameObject.SetActive(true);
         }
@@ -35,7 +35,7 @@ public class EnemyWaveManager : MonoBehaviour
                 defeated = false;
             }
         }
-        if(defeated)
+        if (defeated)
         {
             hasBeenDefeated = true;
             onWaveDefeated.Invoke();
@@ -60,6 +60,7 @@ public class EnemyWaveManager : MonoBehaviour
     public IEnumerator KillWave_Coroutine()
     {
         ReleaseWave();
+        yield return null;
         for (int i = 0; i < enemiesInWave.Length; i++)
         {
             (enemiesInWave[i] as IDamageable).TakeDamage(new Damage(100000, Damage.DamageType.Blunt, false, Vector3.zero));

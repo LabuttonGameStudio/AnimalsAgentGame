@@ -17,15 +17,30 @@ public class CheckPointManager : MonoBehaviour
 
     public void SaveCheckPoint(CheckPointArea checkPoint)
     {
-        for(int i = 0; i < checkpoints.Length; i++)
+        if (PlayerPrefs.HasKey(PlayerCurrentCheckPointSaveKey))
         {
-            if (checkpoints[i] == checkPoint)
+            int currentSaveKey = PlayerPrefs.GetInt(PlayerCurrentCheckPointSaveKey);
+            for (int i = currentSaveKey; i < checkpoints.Length; i++)
             {
-                PlayerPrefs.SetInt(PlayerCurrentCheckPointSaveKey, i);
-                return;
+                if (checkpoints[i] == checkPoint)
+                {
+                    PlayerPrefs.SetInt(PlayerCurrentCheckPointSaveKey, i);
+                    return;
+                }
             }
         }
-        Debug.Log("Error in finding checkpoint");
+        else
+        {
+            for (int i = 0; i < checkpoints.Length; i++)
+            {
+                if (checkpoints[i] == checkPoint)
+                {
+                    PlayerPrefs.SetInt(PlayerCurrentCheckPointSaveKey, i);
+                    return;
+                }
+            }
+            Debug.Log("Error in finding checkpoint");
+        }
     }
     public void ClearCheckpoints()
     {
@@ -38,7 +53,7 @@ public class CheckPointManager : MonoBehaviour
     }
     public void OnLoadCheckpoint(int checkpointIndex)
     {
-        for(int i = 0;i <=checkpointIndex; i++)
+        for (int i = 0; i <= checkpointIndex; i++)
         {
             checkpoints[i].onLoadIntoCheckpoint.Invoke();
         }

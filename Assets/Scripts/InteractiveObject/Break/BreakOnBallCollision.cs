@@ -47,7 +47,6 @@ public class BreakOnBallCollision : MonoBehaviour,IDamageable
 
     public void TakeDamage(Damage damage)
     {
-        Debug.Log(damage.damageAmount);
         switch(damage.damageType)
         {
             case Damage.DamageType.Blunt:

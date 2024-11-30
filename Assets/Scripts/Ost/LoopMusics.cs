@@ -49,23 +49,9 @@ public class LoopMusics : MonoBehaviour
             {
                 currentPlayingIndex = i;
                 osts[i].Play();
-                while (osts[i].isPlaying || isPaused)
-                {
-                    yield return new WaitForSecondsRealtime(0.5f);
-                }
+                yield return new WaitForSecondsRealtime(osts[i].clip.length);
                 yield return new WaitForSecondsRealtime(Random.Range(minDurationInterval, maxDurationInterval));
             }
         }
-    }
-
-    public void Pause()
-    {
-        isPaused= true;
-        osts[currentPlayingIndex].Pause();
-    }
-    public void Resume()
-    {
-        isPaused= false;
-        osts[currentPlayingIndex].UnPause();
     }
 }
