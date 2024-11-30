@@ -36,18 +36,17 @@ public class GateWall_Int : MonoBehaviour
     {
         if(segmentsOn >=3)
         {
-            ChangePlayerCamera.Instance.Change(virtualCamera, 4.5f, true); 
+            ChangePlayerCamera.Instance.Change(virtualCamera, 4f, true); 
             StartCoroutine(OpenGateWall_Coroutine());
         }
         else
         {
-            ChangePlayerCamera.Instance.Change(virtualCamera, 2, true); 
+            ChangePlayerCamera.Instance.Change(virtualCamera, 2f, true); 
             StartCoroutine(OpenSegment_Coroutine(segmentsOn-1));
         }
     }
     private IEnumerator OpenSegment_Coroutine(int segmentIndex)
     {
-        yield return new WaitForSeconds(0.5f);
         lamps[segmentIndex].material.SetInt("_Light_on_off", 1);
         float timer = 0;
         float duration = 2f;
@@ -69,7 +68,6 @@ public class GateWall_Int : MonoBehaviour
     }
     private IEnumerator OpenGateWall_Coroutine()
     {
-        yield return new WaitForSeconds(0.5f);
         yield return OpenSegment_Coroutine(segmentsOn - 1);
         yield return new WaitForSeconds(0.5f);
         Quaternion leftDoorStartRot = leftDoor.localRotation;
