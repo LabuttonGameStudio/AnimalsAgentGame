@@ -15,6 +15,7 @@ public class WaterGunProjectileManager : MonoBehaviour
 
     [HideInInspector] public List<WaterGunProjectile> watergunProjectilePool;
     [HideInInspector]public List<WaterGunProjectile> watergunProjectileInGame;
+    public float gravity;
 
     private GameObject projectilePoolParent;
     public float velocity;

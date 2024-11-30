@@ -11,6 +11,10 @@ public class WaterGunProjectile : MonoBehaviour
     [HideInInspector] public float timer;
     [HideInInspector] public float bulletDamage;
     [HideInInspector] public float minbulletDamage;
+    private void Start()
+    {
+    
+    }
     private void FixedUpdate()
     {
         timer += Time.fixedDeltaTime;
@@ -18,6 +22,7 @@ public class WaterGunProjectile : MonoBehaviour
         {
             DisableProjectile();
         }
+        rb.AddForce(Physics.gravity * WaterGunProjectileManager.Instance.gravity, ForceMode.Acceleration);
     }
     private void OnTriggerEnter(Collider other)
     {

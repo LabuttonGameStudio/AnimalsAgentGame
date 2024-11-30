@@ -77,6 +77,7 @@ MonoBehaviour:
   projectilePoolSize: 14
   watergunProjectilePool: []
   watergunProjectileInGame: []
+  gravity: 0.75
   velocity: 20
   waterPuddlePrefab: {fileID: 2495383037311547003, guid: 9f534df2e8ca5cb4580257464e6ba462, type: 3}
   waterPuddlePoolSize: 8
@@ -153,6 +154,9 @@ VisualEffect:
         m_Overridden: 1
       - m_Value: 0.01
         m_Name: SpawnRadius
+        m_Overridden: 1
+      - m_Value: 0.75
+        m_Name: Gravity
         m_Overridden: 1
     m_Vector2f:
       m_Array:

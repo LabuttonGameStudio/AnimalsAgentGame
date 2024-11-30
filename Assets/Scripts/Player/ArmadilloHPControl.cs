@@ -203,6 +203,7 @@ public class ArmadilloHPControl : MonoBehaviour, IDamageable
 
 IEnumerator DeathScreenFade(float targetAlpha, float fadeDuration)
     {
+        ArmadilloPlayerController.Instance.audioControl.onGameOver.Play();
         float startAlpha = DeathScreen.alpha;
         float elapsedTime = 0.0f;
         ArmadilloPlayerController.Instance.inputControl.TogglePlayerControls(false);

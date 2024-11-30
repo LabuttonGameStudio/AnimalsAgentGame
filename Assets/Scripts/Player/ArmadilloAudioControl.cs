@@ -30,9 +30,11 @@ public class ArmadilloAudioControl : MonoBehaviour
     public AudioSource onWeakMelee;
     public AudioSource onStrongMelee;
 
-    [Foldout("Damage")]
+    [Foldout("Damage",true)]
     public AudioSource[] onTakeDamageVariations;
     private int lastPlayedOnTakeDamageAudio;
+
+    public AudioSource onGameOver;
     private void Awake()
     {
         currentMovingSound = walkingSound;
