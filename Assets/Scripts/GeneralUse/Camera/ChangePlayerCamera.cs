@@ -10,7 +10,9 @@ public class ChangePlayerCamera : MonoBehaviour
 
     private float duration;
 
-    public bool isDisabled;
+    [HideInInspector]public bool isDisabled;
+
+    [SerializeField]private CinemachineBrain cinemachineBrain;
     private void Awake()
     {
         Instance = this;

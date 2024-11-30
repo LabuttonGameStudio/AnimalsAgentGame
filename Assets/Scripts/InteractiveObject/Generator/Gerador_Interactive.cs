@@ -109,15 +109,6 @@ public class Gerador_Interactive : MonoBehaviour, IRequirements, InteractiveObje
     public string GetObjectName()
     {
         return objectName.GetLocalizedString();
-        if (isTurnedOn) return "Gerador Ligado";
-        if (needRequeriments)
-        {
-            return charged ? "Gerador" : "Gerador inativo";
-        }
-        else
-        {
-            return "Gerador";
-        }
     }
     public void OnRequirementMet()
     {
@@ -157,6 +148,8 @@ public class Gerador_Interactive : MonoBehaviour, IRequirements, InteractiveObje
         {
             if (charged && !isTurnedOn)
             {
+                ArmadilloInteractController.Instance.ClearInteractButtonAction();
+                gameObject.layer = LayerMask.NameToLayer("Default");
                 isTurnedOn = true;
                 StartCoroutine(LeverSwitchAnimation_Coroutine());
             }
@@ -165,6 +158,8 @@ public class Gerador_Interactive : MonoBehaviour, IRequirements, InteractiveObje
         {
             if (!isTurnedOn)
             {
+                ArmadilloInteractController.Instance.ClearInteractButtonAction();
+                gameObject.layer = LayerMask.NameToLayer("Default");
                 isTurnedOn = true;
                 StartCoroutine(LeverSwitchAnimation_Coroutine());
             }
