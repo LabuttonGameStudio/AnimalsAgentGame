@@ -160,7 +160,7 @@ public class ArmadilloPlayerController : MonoBehaviour
         audioControl = GetComponent<ArmadilloAudioControl>();
         losControl = GetComponent<ArmadilloLOSControl>();
         #endregion
-        Application.targetFrameRate = 300;
+        Application.targetFrameRate = 144;
 
     }
     private void Start()

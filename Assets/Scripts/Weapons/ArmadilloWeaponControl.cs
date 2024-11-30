@@ -122,10 +122,10 @@ public class ArmadilloWeaponControl : MonoBehaviour
         MeleeAnimator.Instance.PlayRandomMeleeAnimation();
         ArmadilloPlayerController.Instance.movementControl.speedMultiplerList.Add(weakMeleeSpeedMultipler);
         yield return new WaitForSeconds(0.2f);
-        for (int i = 0; i < meleeHitbox.damageablesInHitbox.Count; ++i)
+        List<IDamageable> damageablesInList = meleeHitbox.GetListOfDamageables();
+        for (int i = 0; i < damageablesInList.Count; ++i)
         {
-            IDamageable damageable = meleeHitbox.damageablesInHitbox.ElementAt(i).Value;
-            damageable.TakeDamage(new Damage(meleeDamage, DamageType.Slash, true, ArmadilloPlayerController.Instance.transform.position));
+            damageablesInList[i].TakeDamage(new Damage(meleeDamage, DamageType.Slash, true, ArmadilloPlayerController.Instance.transform.position));
         }
         yield return new WaitForSeconds(0.469f - 0.2f);
         ArmadilloPlayerController.Instance.movementControl.speedMultiplerList.Remove(weakMeleeSpeedMultipler);
@@ -142,10 +142,10 @@ public class ArmadilloWeaponControl : MonoBehaviour
         MeleeAnimator.Instance.PlayTakedownAnimation();
         ArmadilloPlayerController.Instance.movementControl.speedMultiplerList.Add(HeavyMeleeSpeedMultipler);
         yield return new WaitForSeconds(0.42f);
-        for (int i = 0; i < meleeHitbox.damageablesInHitbox.Count; ++i)
+        List<IDamageable> damageablesInList = meleeHitbox.GetListOfDamageables();
+        for (int i = 0; i < damageablesInList.Count; ++i)
         {
-            IDamageable damageable = meleeHitbox.damageablesInHitbox.ElementAt(i).Value;
-            damageable.TakeDamage(new Damage(meleeDamage, DamageType.Slash, true, ArmadilloPlayerController.Instance.transform.position));
+            damageablesInList[i].TakeDamage(new Damage(meleeDamage, DamageType.Slash, true, ArmadilloPlayerController.Instance.transform.position));
         }
         yield return new WaitForSeconds(1.406f - 0.42f);
         ArmadilloPlayerController.Instance.movementControl.speedMultiplerList.Remove(HeavyMeleeSpeedMultipler);
