@@ -5,7 +5,7 @@ using TMPro;
 public class LoadingBar : MonoBehaviour
 {
     public Slider slider;
-    public TMP_Text progressText;
+    //public TMP_Text progressText;
     public float totalTime = 10f;
     public CanvasGroup canvasGroup;
     public CanvasGroup canvasGroup2;
@@ -22,11 +22,12 @@ public class LoadingBar : MonoBehaviour
     {
 
         canvasGroup.alpha = initialAlpha;
-    
+
+
         slider.minValue = 0f;
         slider.maxValue = 1f;
         slider.value = 0f;
-        UpdateProgressText();
+        //UpdateProgressText();
     }
 
     void Update()
@@ -44,7 +45,7 @@ public class LoadingBar : MonoBehaviour
             {
                 currentTime += Time.deltaTime;
                 slider.value = currentTime / totalTime;
-                UpdateProgressText();
+                //UpdateProgressText();
             }
             else
             {
@@ -104,9 +105,9 @@ public class LoadingBar : MonoBehaviour
         }
     }
 
-    void UpdateProgressText()
+   /* void UpdateProgressText()
     {
         float percentage = slider.value * 100f;
         progressText.text = percentage.ToString("F0") + "%";
-    }
+    }*/
 }

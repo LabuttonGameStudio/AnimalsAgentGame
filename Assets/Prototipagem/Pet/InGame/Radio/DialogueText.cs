@@ -1,16 +1,17 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
+using UnityEngine.Localization;
 
 [Serializable]
 public class DialogueText 
 {
     [Header("Infos")]
-    public Sprite portrait;
-    public string name;
-    public string quote;
+    public Sprite portraitBackground;
+    public Material portrait;
+
+    public LocalizedString localizedName;
+
+    public LocalizedString localizedQuote;
 
     [Header("Events")]
     public DialogueEvent[] eventOnDialogueBoxEnter;

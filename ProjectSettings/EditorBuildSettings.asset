@@ -6,12 +6,26 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Prototipagem/Pet/TelaInicialScene.unity
-    guid: 010dcc39132535446b31172d4d880900
+    path: Assets/Prototipagem/Pet/TelaInicialSceneV2.unity
+    guid: 3c348bb4976a8744c9e89c28ac08284e
   - enabled: 1
     path: Assets/Prototipagem/Pet/TeladeCarregamentoScene.unity
     guid: ee0d107c5c7340d418fbeca253eb4509
   - enabled: 1
-    path: Assets/Prototipagem/Pedro/TUTORIAL.unity
+    path: Assets/Scenes/Cutscene.unity
+    guid: 1121c624e30b8c74086ff5adac3ed5d2
+  - enabled: 1
+    path: Assets/Scenes/MainScenes/1_Tutorial/1_Tutorial.unity
     guid: 8489e7414a0c0044baacf44f6bceb276
-  m_configObjects: {}
+  - enabled: 1
+    path: Assets/Scenes/MainScenes/2_Cais/2_Cais.unity
+    guid: 8894c8c88c9ef344a9eb3607a9dc7ed5
+  - enabled: 1
+    path: Assets/Scenes/MainScenes/3_BossFight/3_BossFight.unity
+    guid: 361f0302d08c60142ad8f81f221c2737
+  m_configObjects:
+    com.unity.adaptiveperformance.loader_settings: {fileID: 11400000, guid: e9f8951ffc9eeb54fba40957ad5b3aae, type: 2}
+    com.unity.adaptiveperformance.simulator.provider_settings: {fileID: 11400000, guid: 997374bee096c3745851f13c5554ab94, type: 2}
+    com.unity.addressableassets: {fileID: 11400000, guid: e014dbee0057b404eb9a0249f7582c03, type: 2}
+    com.unity.localization.settings: {fileID: 11400000, guid: a7f32b9913fdcd540bf1e7c92ba350cb, type: 2}
+  m_UseUCBPForAssetBundles: 0

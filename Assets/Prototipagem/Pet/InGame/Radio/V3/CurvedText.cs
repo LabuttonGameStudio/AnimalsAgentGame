@@ -9,22 +9,23 @@ public class CurvedText : MonoBehaviour
     public AnimationCurve curve = AnimationCurve.Linear(0, 0, 1, 1);
     public float curveScale = 10f;
 
-    private TextMeshProUGUI textMeshPro;
+   public TextMeshProUGUI textMeshPro;
 
     void Start()
-    {
-        textMeshPro = GetComponent<TextMeshProUGUI>();
-        UpdateTextMesh();
-    }
-
-    void Update()
     {
         
         UpdateTextMesh();
     }
 
-    void UpdateTextMesh()
+    public void UpdateTextMesh()
     {
+        StartCoroutine(UpdateTextMeshCoroutine());
+    }
+
+    private IEnumerator UpdateTextMeshCoroutine()
+    {
+        // Espera um frame para garantir que o TMP tenha atualizado o texto
+        yield return new WaitForEndOfFrame();
         textMeshPro.ForceMeshUpdate();
 
         var textInfo = textMeshPro.textInfo;

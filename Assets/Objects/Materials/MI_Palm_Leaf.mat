@@ -28,7 +28,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0353a89b1f911e48b9e16bdc9f2e058, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  version: 7
+  version: 9
 --- !u!114 &-973704826194596127
 MonoBehaviour:
   m_ObjectHideFlags: 11
@@ -54,14 +54,14 @@ Material:
   m_Name: MI_Palm_Leaf
   m_Shader: {fileID: -6465566751694194690, guid: a4c23978300951347aaa685b47bf962e, type: 3}
   m_Parent: {fileID: 2100000, guid: 7a534dc3364de11488e1c8f90a5be082, type: 2}
-  m_ModifiedSerializedProperties: 28
+  m_ModifiedSerializedProperties: 30
   m_ValidKeywords: []
   m_InvalidKeywords:
   - _DISABLE_DECALS
   - _DISABLE_SSR_TRANSPARENT
   - _DOUBLESIDED_ON
-  m_LightmapFlags: 4
-  m_EnableInstancingVariants: 1
+  m_LightmapFlags: 2
+  m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: 2450
   stringTagMap:
@@ -96,6 +96,7 @@ Material:
     m_Floats:
     - _AlphaDstBlend: 0
     - _DiffusionProfileHash: 2.696938
+    - _Distance: 20
     - _DstBlend: 0
     - _Hue: 1
     - _Normal_Instensity: 0.5
@@ -115,3 +116,4 @@ Material:
     m_Colors:
     - _DiffusionProfileAsset: {r: 4.1614448e+14, g: 1.522632e+32, b: 0.012324537, a: -2.1426335e-23}
   m_BuildTextureStacks: []
+  m_AllowLocking: 1

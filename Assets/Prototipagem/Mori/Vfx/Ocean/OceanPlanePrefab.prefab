@@ -185,7 +185,19 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -7511558181221131132, guid: 960de346fd09ac647b986712b0c68828, type: 3}
-      propertyPath: m_Materials.Array.data[0]
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -7511558181221131132, guid: 960de346fd09ac647b986712b0c68828, type: 3}
+      propertyPath: m_MotionVectors
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -7511558181221131132, guid: 960de346fd09ac647b986712b0c68828, type: 3}
+      propertyPath: m_LightProbeUsage
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -7511558181221131132, guid: 960de346fd09ac647b986712b0c68828, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: 944b89fb64bf0d04fa836e816492118a, type: 2}
     - target: {fileID: 919132149155446097, guid: 960de346fd09ac647b986712b0c68828, type: 3}
@@ -226,7 +238,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   reflectionCamera: {fileID: 4542246114882706579}
   reflectionRenderTexture: {fileID: 8400000, guid: a636741ef4fdb3c48bd9871376169f61, type: 2}
-  reflectionResolution: 512
+  reflectionResolution: 128
   offset: {x: 0, y: 0, z: 0}
 --- !u!4 &7519639147538417613 stripped
 Transform:

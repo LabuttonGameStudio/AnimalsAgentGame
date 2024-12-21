@@ -2,92 +2,93 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UIElements;
+using UnityEngine.EventSystems;
+using static SceneController;
+
 
 public class InitialOptions : MonoBehaviour
 {
-
-    //nao utilizar string
-    public string levelToLoad;
-    public string loadingScreenScene;
-    public string actuallevel;
-
-    public GameObject Cinemachine1;
-    public GameObject mao;
-
+    [Header("LEVEL AND LOAD")]
     private bool levelLoaded = false;
-    public float delayBeforeLoading = 10f;
+    public float delayBeforeLoading = 2f; // para o tutorial ir carregando
 
-    public void iniciar()
+    [Header("MOUSE")]
+    public Texture2D cursorTexture;
+
+
+    private void Start()
+    {
+       // Cursor.SetCursor(cursorTexture, Vector2.zero, CursorMode.Auto);
+    }
+
+    public void LoadTutorial()
+    {
+        ArmadilloPlayerController.ClearPlayerSaveData();
+        SceneManager.LoadScene((int)SceneController.ScenesEnum.Cutscene);
+    }
+    public void LoadCais()
+    {
+        SaveAndLoad(ScenesEnum.Cais);
+    }
+    public void LoadBoss()
+    {
+        SaveAndLoad(ScenesEnum.Bossfight);
+    }
+    public void SaveAndLoad(SceneController.ScenesEnum sceneEnum)
     {
         // save game
-
-        if (!levelLoaded) //  level não carregado
+        ArmadilloPlayerController.ClearPlayerSaveData();
+        if (!levelLoaded) //  level nao carregado
         {
-            StartCoroutine(CinemachineRun());
-            StartCoroutine(LoadLevelAsync());
+            SceneController.Instance.StartCoroutine(LoadLevelAsync(sceneEnum));
             Debug.Log("Iniciando");
             levelLoaded = true;
         }
 
     }
 
-    //verificar dps
-    IEnumerator LoadLevelAsync()
+    IEnumerator LoadLevelAsync(SceneController.ScenesEnum sceneEnum)
     {
-
-        //salvar game
-
-        yield return new WaitForSeconds(5f);
-
-        // Obtém a referência para a cena atual
-        Scene currentScene = SceneManager.GetActiveScene();
-
-        // Descarrega a cena atual para evitar lags e bugs
-        SceneManager.UnloadSceneAsync(currentScene);
+        // anim 
+        yield return new WaitForSeconds(2f);
 
         // Carrega a cena da tela de carregamento
-        yield return SceneManager.LoadSceneAsync(loadingScreenScene, LoadSceneMode.Additive);
+        Scene currentScene = SceneManager.GetActiveScene();
+        yield return SceneManager.LoadSceneAsync((int)SceneController.ScenesEnum.Loading, LoadSceneMode.Additive);
+        SceneManager.UnloadSceneAsync(currentScene);
 
-        // Espera um tempo antes de carregar a próxima cena
-        yield return new WaitForSeconds(delayBeforeLoading);
+        // carrega de forma assin o tutorial
+        AsyncOperation levelLoadOperation = SceneManager.LoadSceneAsync((int)sceneEnum, LoadSceneMode.Additive);
+        //levelLoadOperation.allowSceneActivation = false;  // nao att imediatamente
 
-        // Carrega a próxima cena de forma assíncrona
-        AsyncOperation levelLoadOperation = SceneManager.LoadSceneAsync(levelToLoad, LoadSceneMode.Additive);
-        levelLoadOperation.allowSceneActivation = false;
+        // delay para carregar a cena de tuto
+        float elapsedTime = 0f;
+        while (elapsedTime < delayBeforeLoading)
+        {
+            elapsedTime += Time.deltaTime;
+            yield return null;  
+        }
 
-        // Aguarda até que a próxima cena esteja pronta para ser ativada
+        // aguarda se nao tiver carregado a cena
         while (!levelLoadOperation.isDone)
         {
             if (levelLoadOperation.progress >= 0.9f)
             {
-                // Ativa a próxima cena
+                //att quando estivar quase ompleto
                 levelLoadOperation.allowSceneActivation = true;
             }
             yield return null;
         }
 
-        // Descarrega a cena da tela de carregamento
-        SceneManager.UnloadSceneAsync(loadingScreenScene);
-        SceneManager.UnloadSceneAsync(actuallevel);
+        // descarrega loading
+        SceneManager.UnloadSceneAsync((int)SceneController.ScenesEnum.Loading);
     }
 
-    //IEnumerator WallDown()
-    //{
-        
-   // }
-
-    IEnumerator CinemachineRun()
+    public void Exit()
     {
-        Cinemachine1.SetActive(false);
-        mao.SetActive(false);
-        yield return null;
-       
-    }
-
-    public void opcoes()
-    {
-        // i don't now
+        Application.Quit();
     }
 
 }
+
+

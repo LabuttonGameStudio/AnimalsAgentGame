@@ -4,15 +4,9 @@ using UnityEngine;
 
 public class MEWSH : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    //  /\__/\
+   //  [  °^° ]
+   //  <(    )>
+   //    _||_
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }

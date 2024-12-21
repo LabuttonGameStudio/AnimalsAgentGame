@@ -127,18 +127,45 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Pause"",
+                    ""name"": ""Debug_Reset"",
                     ""type"": ""Button"",
-                    ""id"": ""fc398917-2a93-4cfa-80f3-bbd529fa0d16"",
+                    ""id"": ""9cec7742-1366-4e59-b85c-18b46c10fc0d"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Debug_Reset"",
+                    ""name"": ""Melee"",
                     ""type"": ""Button"",
-                    ""id"": ""9cec7742-1366-4e59-b85c-18b46c10fc0d"",
+                    ""id"": ""8f06edb5-8bd6-41f4-b0bc-91ccfa6e4190"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Weapon0"",
+                    ""type"": ""Button"",
+                    ""id"": ""b8b070ef-4d4b-4dee-a533-05a7334d2835"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Weapon1"",
+                    ""type"": ""Button"",
+                    ""id"": ""a76c2788-64a8-41e8-8394-a2654bc88b4d"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Weapon2"",
+                    ""type"": ""Button"",
+                    ""id"": ""03fe1c12-c5e8-41ce-922d-17f25221f061"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -203,8 +230,30 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
+                    ""id"": ""1ffe53c4-3017-4db7-95fe-62461731b830"",
+                    ""path"": ""<Gamepad>/leftStick"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Movement"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
                     ""id"": ""09e35993-c1db-455d-8934-3d3d402d3c64"",
                     ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Jump"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e616bcbb-2a72-48c6-bdd1-d8d1f8410030"",
+                    ""path"": ""<Gamepad>/buttonSouth"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -225,8 +274,30 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
+                    ""id"": ""05aabeec-016b-487b-8d98-a7d88bdcb827"",
+                    ""path"": ""<Gamepad>/rightStick"",
+                    ""interactions"": """",
+                    ""processors"": ""ScaleVector2(x=4,y=4)"",
+                    ""groups"": """",
+                    ""action"": ""Look"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
                     ""id"": ""ea784fb1-96a1-4840-a8fe-f3fd28584d18"",
                     ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Interact"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e4472a70-1415-4c4a-abce-5a9b3461390e"",
+                    ""path"": ""<Gamepad>/buttonEast"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -247,8 +318,30 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
+                    ""id"": ""95bb7b6f-9dba-46fb-ac2f-c249932cadfd"",
+                    ""path"": ""<Gamepad>/rightTrigger"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Fire"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
                     ""id"": ""5790b939-e7a2-4fb0-b080-9f2ef7b6a8b8"",
                     ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""AltFire"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""4bb529bb-736c-465d-aa1a-cda952f34d6b"",
+                    ""path"": ""<Gamepad>/leftTrigger"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -269,8 +362,30 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
+                    ""id"": ""6d2c6d21-3660-41cf-ae09-e3d6448fab1b"",
+                    ""path"": ""<Gamepad>/leftShoulder"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Ability1"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
                     ""id"": ""3e0bcc69-d3f9-42df-b4b7-4d4dd496a456"",
                     ""path"": ""<Keyboard>/r"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Reload"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e7cdcd74-ee84-42b0-964c-26773ad00335"",
+                    ""path"": ""<Gamepad>/buttonWest"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -291,8 +406,30 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
+                    ""id"": ""5612a683-3e43-405e-8970-7409a653a74f"",
+                    ""path"": ""<Gamepad>/leftStickPress"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Sprint"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
                     ""id"": ""d892bb9f-218c-400b-840b-fd1bd91e6455"",
                     ""path"": ""<Keyboard>/leftCtrl"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Lurk"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ebb2e11f-360c-46fb-9292-be700e34d8be"",
+                    ""path"": ""<Gamepad>/dpad/down"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -313,6 +450,17 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
+                    ""id"": ""e02eb56f-f79f-451e-b540-a77a3e7251e9"",
+                    ""path"": ""<Gamepad>/rightShoulder"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Ability2"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
                     ""id"": ""415bbaec-a4c9-4e57-9eed-10d63c5501ef"",
                     ""path"": ""<Keyboard>/p"",
                     ""interactions"": """",
@@ -324,12 +472,222 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""761d1c2c-c05b-4679-835d-41249b44df4c"",
+                    ""id"": ""0176b23c-f055-4d77-9ca3-8efb14f8af1b"",
+                    ""path"": ""<Keyboard>/v"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Melee"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c223b400-d62e-4c39-b97c-9fe783799ad8"",
+                    ""path"": ""<Gamepad>/rightStickPress"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Melee"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""0c6d5fba-9d00-41c7-8148-ed3e44211345"",
+                    ""path"": ""<Keyboard>/1"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Weapon0"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f169ac41-bb82-46b7-83de-ff8252ec3df5"",
+                    ""path"": ""<Keyboard>/2"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Weapon1"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a26eb02f-cbb1-4e76-a2df-bc50cfda566a"",
+                    ""path"": ""<Keyboard>/3"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Weapon2"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
+        },
+        {
+            ""name"": ""HoldObject"",
+            ""id"": ""a4a2383a-74d8-493e-8adb-d5f555f4c8ef"",
+            ""actions"": [
+                {
+                    ""name"": ""Throw"",
+                    ""type"": ""Button"",
+                    ""id"": ""c9504c13-79be-43a7-a859-42f5f68e2e6a"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""RotateToggle"",
+                    ""type"": ""Button"",
+                    ""id"": ""c0f59797-ac9f-4d24-830a-a1ab8d50ef11"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Rotate"",
+                    ""type"": ""Value"",
+                    ""id"": ""18af9ca9-edef-4625-9368-ab916d8df7fd"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""ResetRotation"",
+                    ""type"": ""Button"",
+                    ""id"": ""20c4a678-0154-4550-99a1-a8f03ce6fee7"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""3c4e0faf-e834-4d12-86e4-b9fa9f381405"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Throw"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""2b1966a0-a722-4ccd-b386-46e331d16091"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""RotateToggle"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""5682f412-7dc9-4129-89ef-375928ca4d16"",
+                    ""path"": ""<Mouse>/delta"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Rotate"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""4398b354-3aed-4196-851b-357c1fc0ede2"",
+                    ""path"": ""<Gamepad>/rightStick"",
+                    ""interactions"": """",
+                    ""processors"": ""ScaleVector2(x=4,y=4)"",
+                    ""groups"": """",
+                    ""action"": ""Rotate"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""1eb9e1bf-aba2-4085-a8fa-0a2043004dd2"",
+                    ""path"": ""<Mouse>/middleButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ResetRotation"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
+        },
+        {
+            ""name"": ""Dialogue"",
+            ""id"": ""68ddf00f-fff2-4ad4-8187-c722095f71da"",
+            ""actions"": [
+                {
+                    ""name"": ""SkipDialogue"",
+                    ""type"": ""Button"",
+                    ""id"": ""dad0d012-1d38-4a69-9cfe-4ace31774564"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""bb4eae33-3a9c-464c-9243-98ea42ea131c"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SkipDialogue"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
+        },
+        {
+            ""name"": ""Pause"",
+            ""id"": ""bf819547-5ca8-4bf8-a760-37d9c0a5f1d1"",
+            ""actions"": [
+                {
+                    ""name"": ""EnterPause"",
+                    ""type"": ""Button"",
+                    ""id"": ""d00abdd3-46d2-46fb-99ce-2a4de24ab9d2"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""c4051fdd-d854-40cb-acb2-58b41584cadd"",
                     ""path"": ""<Keyboard>/m"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Pause"",
+                    ""action"": ""EnterPause"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""235be19d-d425-4dbc-97fd-d7e8117cf1a9"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""EnterPause"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -351,8 +709,23 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
         m_Armadillo_Ability2 = m_Armadillo.FindAction("Ability2", throwIfNotFound: true);
         m_Armadillo_Sprint = m_Armadillo.FindAction("Sprint", throwIfNotFound: true);
         m_Armadillo_Lurk = m_Armadillo.FindAction("Lurk", throwIfNotFound: true);
-        m_Armadillo_Pause = m_Armadillo.FindAction("Pause", throwIfNotFound: true);
         m_Armadillo_Debug_Reset = m_Armadillo.FindAction("Debug_Reset", throwIfNotFound: true);
+        m_Armadillo_Melee = m_Armadillo.FindAction("Melee", throwIfNotFound: true);
+        m_Armadillo_Weapon0 = m_Armadillo.FindAction("Weapon0", throwIfNotFound: true);
+        m_Armadillo_Weapon1 = m_Armadillo.FindAction("Weapon1", throwIfNotFound: true);
+        m_Armadillo_Weapon2 = m_Armadillo.FindAction("Weapon2", throwIfNotFound: true);
+        // HoldObject
+        m_HoldObject = asset.FindActionMap("HoldObject", throwIfNotFound: true);
+        m_HoldObject_Throw = m_HoldObject.FindAction("Throw", throwIfNotFound: true);
+        m_HoldObject_RotateToggle = m_HoldObject.FindAction("RotateToggle", throwIfNotFound: true);
+        m_HoldObject_Rotate = m_HoldObject.FindAction("Rotate", throwIfNotFound: true);
+        m_HoldObject_ResetRotation = m_HoldObject.FindAction("ResetRotation", throwIfNotFound: true);
+        // Dialogue
+        m_Dialogue = asset.FindActionMap("Dialogue", throwIfNotFound: true);
+        m_Dialogue_SkipDialogue = m_Dialogue.FindAction("SkipDialogue", throwIfNotFound: true);
+        // Pause
+        m_Pause = asset.FindActionMap("Pause", throwIfNotFound: true);
+        m_Pause_EnterPause = m_Pause.FindAction("EnterPause", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -425,8 +798,11 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
     private readonly InputAction m_Armadillo_Ability2;
     private readonly InputAction m_Armadillo_Sprint;
     private readonly InputAction m_Armadillo_Lurk;
-    private readonly InputAction m_Armadillo_Pause;
     private readonly InputAction m_Armadillo_Debug_Reset;
+    private readonly InputAction m_Armadillo_Melee;
+    private readonly InputAction m_Armadillo_Weapon0;
+    private readonly InputAction m_Armadillo_Weapon1;
+    private readonly InputAction m_Armadillo_Weapon2;
     public struct ArmadilloActions
     {
         private @PlayerInputAction m_Wrapper;
@@ -442,8 +818,11 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
         public InputAction @Ability2 => m_Wrapper.m_Armadillo_Ability2;
         public InputAction @Sprint => m_Wrapper.m_Armadillo_Sprint;
         public InputAction @Lurk => m_Wrapper.m_Armadillo_Lurk;
-        public InputAction @Pause => m_Wrapper.m_Armadillo_Pause;
         public InputAction @Debug_Reset => m_Wrapper.m_Armadillo_Debug_Reset;
+        public InputAction @Melee => m_Wrapper.m_Armadillo_Melee;
+        public InputAction @Weapon0 => m_Wrapper.m_Armadillo_Weapon0;
+        public InputAction @Weapon1 => m_Wrapper.m_Armadillo_Weapon1;
+        public InputAction @Weapon2 => m_Wrapper.m_Armadillo_Weapon2;
         public InputActionMap Get() { return m_Wrapper.m_Armadillo; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -486,12 +865,21 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
             @Lurk.started += instance.OnLurk;
             @Lurk.performed += instance.OnLurk;
             @Lurk.canceled += instance.OnLurk;
-            @Pause.started += instance.OnPause;
-            @Pause.performed += instance.OnPause;
-            @Pause.canceled += instance.OnPause;
             @Debug_Reset.started += instance.OnDebug_Reset;
             @Debug_Reset.performed += instance.OnDebug_Reset;
             @Debug_Reset.canceled += instance.OnDebug_Reset;
+            @Melee.started += instance.OnMelee;
+            @Melee.performed += instance.OnMelee;
+            @Melee.canceled += instance.OnMelee;
+            @Weapon0.started += instance.OnWeapon0;
+            @Weapon0.performed += instance.OnWeapon0;
+            @Weapon0.canceled += instance.OnWeapon0;
+            @Weapon1.started += instance.OnWeapon1;
+            @Weapon1.performed += instance.OnWeapon1;
+            @Weapon1.canceled += instance.OnWeapon1;
+            @Weapon2.started += instance.OnWeapon2;
+            @Weapon2.performed += instance.OnWeapon2;
+            @Weapon2.canceled += instance.OnWeapon2;
         }
 
         private void UnregisterCallbacks(IArmadilloActions instance)
@@ -529,12 +917,21 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
             @Lurk.started -= instance.OnLurk;
             @Lurk.performed -= instance.OnLurk;
             @Lurk.canceled -= instance.OnLurk;
-            @Pause.started -= instance.OnPause;
-            @Pause.performed -= instance.OnPause;
-            @Pause.canceled -= instance.OnPause;
             @Debug_Reset.started -= instance.OnDebug_Reset;
             @Debug_Reset.performed -= instance.OnDebug_Reset;
             @Debug_Reset.canceled -= instance.OnDebug_Reset;
+            @Melee.started -= instance.OnMelee;
+            @Melee.performed -= instance.OnMelee;
+            @Melee.canceled -= instance.OnMelee;
+            @Weapon0.started -= instance.OnWeapon0;
+            @Weapon0.performed -= instance.OnWeapon0;
+            @Weapon0.canceled -= instance.OnWeapon0;
+            @Weapon1.started -= instance.OnWeapon1;
+            @Weapon1.performed -= instance.OnWeapon1;
+            @Weapon1.canceled -= instance.OnWeapon1;
+            @Weapon2.started -= instance.OnWeapon2;
+            @Weapon2.performed -= instance.OnWeapon2;
+            @Weapon2.canceled -= instance.OnWeapon2;
         }
 
         public void RemoveCallbacks(IArmadilloActions instance)
@@ -552,6 +949,168 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
         }
     }
     public ArmadilloActions @Armadillo => new ArmadilloActions(this);
+
+    // HoldObject
+    private readonly InputActionMap m_HoldObject;
+    private List<IHoldObjectActions> m_HoldObjectActionsCallbackInterfaces = new List<IHoldObjectActions>();
+    private readonly InputAction m_HoldObject_Throw;
+    private readonly InputAction m_HoldObject_RotateToggle;
+    private readonly InputAction m_HoldObject_Rotate;
+    private readonly InputAction m_HoldObject_ResetRotation;
+    public struct HoldObjectActions
+    {
+        private @PlayerInputAction m_Wrapper;
+        public HoldObjectActions(@PlayerInputAction wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Throw => m_Wrapper.m_HoldObject_Throw;
+        public InputAction @RotateToggle => m_Wrapper.m_HoldObject_RotateToggle;
+        public InputAction @Rotate => m_Wrapper.m_HoldObject_Rotate;
+        public InputAction @ResetRotation => m_Wrapper.m_HoldObject_ResetRotation;
+        public InputActionMap Get() { return m_Wrapper.m_HoldObject; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(HoldObjectActions set) { return set.Get(); }
+        public void AddCallbacks(IHoldObjectActions instance)
+        {
+            if (instance == null || m_Wrapper.m_HoldObjectActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_HoldObjectActionsCallbackInterfaces.Add(instance);
+            @Throw.started += instance.OnThrow;
+            @Throw.performed += instance.OnThrow;
+            @Throw.canceled += instance.OnThrow;
+            @RotateToggle.started += instance.OnRotateToggle;
+            @RotateToggle.performed += instance.OnRotateToggle;
+            @RotateToggle.canceled += instance.OnRotateToggle;
+            @Rotate.started += instance.OnRotate;
+            @Rotate.performed += instance.OnRotate;
+            @Rotate.canceled += instance.OnRotate;
+            @ResetRotation.started += instance.OnResetRotation;
+            @ResetRotation.performed += instance.OnResetRotation;
+            @ResetRotation.canceled += instance.OnResetRotation;
+        }
+
+        private void UnregisterCallbacks(IHoldObjectActions instance)
+        {
+            @Throw.started -= instance.OnThrow;
+            @Throw.performed -= instance.OnThrow;
+            @Throw.canceled -= instance.OnThrow;
+            @RotateToggle.started -= instance.OnRotateToggle;
+            @RotateToggle.performed -= instance.OnRotateToggle;
+            @RotateToggle.canceled -= instance.OnRotateToggle;
+            @Rotate.started -= instance.OnRotate;
+            @Rotate.performed -= instance.OnRotate;
+            @Rotate.canceled -= instance.OnRotate;
+            @ResetRotation.started -= instance.OnResetRotation;
+            @ResetRotation.performed -= instance.OnResetRotation;
+            @ResetRotation.canceled -= instance.OnResetRotation;
+        }
+
+        public void RemoveCallbacks(IHoldObjectActions instance)
+        {
+            if (m_Wrapper.m_HoldObjectActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        public void SetCallbacks(IHoldObjectActions instance)
+        {
+            foreach (var item in m_Wrapper.m_HoldObjectActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_HoldObjectActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    public HoldObjectActions @HoldObject => new HoldObjectActions(this);
+
+    // Dialogue
+    private readonly InputActionMap m_Dialogue;
+    private List<IDialogueActions> m_DialogueActionsCallbackInterfaces = new List<IDialogueActions>();
+    private readonly InputAction m_Dialogue_SkipDialogue;
+    public struct DialogueActions
+    {
+        private @PlayerInputAction m_Wrapper;
+        public DialogueActions(@PlayerInputAction wrapper) { m_Wrapper = wrapper; }
+        public InputAction @SkipDialogue => m_Wrapper.m_Dialogue_SkipDialogue;
+        public InputActionMap Get() { return m_Wrapper.m_Dialogue; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(DialogueActions set) { return set.Get(); }
+        public void AddCallbacks(IDialogueActions instance)
+        {
+            if (instance == null || m_Wrapper.m_DialogueActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_DialogueActionsCallbackInterfaces.Add(instance);
+            @SkipDialogue.started += instance.OnSkipDialogue;
+            @SkipDialogue.performed += instance.OnSkipDialogue;
+            @SkipDialogue.canceled += instance.OnSkipDialogue;
+        }
+
+        private void UnregisterCallbacks(IDialogueActions instance)
+        {
+            @SkipDialogue.started -= instance.OnSkipDialogue;
+            @SkipDialogue.performed -= instance.OnSkipDialogue;
+            @SkipDialogue.canceled -= instance.OnSkipDialogue;
+        }
+
+        public void RemoveCallbacks(IDialogueActions instance)
+        {
+            if (m_Wrapper.m_DialogueActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        public void SetCallbacks(IDialogueActions instance)
+        {
+            foreach (var item in m_Wrapper.m_DialogueActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_DialogueActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    public DialogueActions @Dialogue => new DialogueActions(this);
+
+    // Pause
+    private readonly InputActionMap m_Pause;
+    private List<IPauseActions> m_PauseActionsCallbackInterfaces = new List<IPauseActions>();
+    private readonly InputAction m_Pause_EnterPause;
+    public struct PauseActions
+    {
+        private @PlayerInputAction m_Wrapper;
+        public PauseActions(@PlayerInputAction wrapper) { m_Wrapper = wrapper; }
+        public InputAction @EnterPause => m_Wrapper.m_Pause_EnterPause;
+        public InputActionMap Get() { return m_Wrapper.m_Pause; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(PauseActions set) { return set.Get(); }
+        public void AddCallbacks(IPauseActions instance)
+        {
+            if (instance == null || m_Wrapper.m_PauseActionsCallbackInterfaces.Contains(instance)) return;
+            m_Wrapper.m_PauseActionsCallbackInterfaces.Add(instance);
+            @EnterPause.started += instance.OnEnterPause;
+            @EnterPause.performed += instance.OnEnterPause;
+            @EnterPause.canceled += instance.OnEnterPause;
+        }
+
+        private void UnregisterCallbacks(IPauseActions instance)
+        {
+            @EnterPause.started -= instance.OnEnterPause;
+            @EnterPause.performed -= instance.OnEnterPause;
+            @EnterPause.canceled -= instance.OnEnterPause;
+        }
+
+        public void RemoveCallbacks(IPauseActions instance)
+        {
+            if (m_Wrapper.m_PauseActionsCallbackInterfaces.Remove(instance))
+                UnregisterCallbacks(instance);
+        }
+
+        public void SetCallbacks(IPauseActions instance)
+        {
+            foreach (var item in m_Wrapper.m_PauseActionsCallbackInterfaces)
+                UnregisterCallbacks(item);
+            m_Wrapper.m_PauseActionsCallbackInterfaces.Clear();
+            AddCallbacks(instance);
+        }
+    }
+    public PauseActions @Pause => new PauseActions(this);
     public interface IArmadilloActions
     {
         void OnMovement(InputAction.CallbackContext context);
@@ -565,7 +1124,25 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
         void OnAbility2(InputAction.CallbackContext context);
         void OnSprint(InputAction.CallbackContext context);
         void OnLurk(InputAction.CallbackContext context);
-        void OnPause(InputAction.CallbackContext context);
         void OnDebug_Reset(InputAction.CallbackContext context);
+        void OnMelee(InputAction.CallbackContext context);
+        void OnWeapon0(InputAction.CallbackContext context);
+        void OnWeapon1(InputAction.CallbackContext context);
+        void OnWeapon2(InputAction.CallbackContext context);
+    }
+    public interface IHoldObjectActions
+    {
+        void OnThrow(InputAction.CallbackContext context);
+        void OnRotateToggle(InputAction.CallbackContext context);
+        void OnRotate(InputAction.CallbackContext context);
+        void OnResetRotation(InputAction.CallbackContext context);
+    }
+    public interface IDialogueActions
+    {
+        void OnSkipDialogue(InputAction.CallbackContext context);
+    }
+    public interface IPauseActions
+    {
+        void OnEnterPause(InputAction.CallbackContext context);
     }
 }

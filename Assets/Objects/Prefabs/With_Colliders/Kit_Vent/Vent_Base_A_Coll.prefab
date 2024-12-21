@@ -48,6 +48,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -7511558181221131132, guid: 9356397583790634d8adc35f8c5decd4, type: 3}
+      propertyPath: m_ReceiveGI
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 9356397583790634d8adc35f8c5decd4, type: 3}
       propertyPath: m_Name
       value: Vent_Base_A_Coll
@@ -92,6 +96,6 @@ MeshCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 5
-  m_Convex: 0
+  m_Convex: 1
   m_CookingOptions: 30
-  m_Mesh: {fileID: -5495902117074765545, guid: 9356397583790634d8adc35f8c5decd4, type: 3}
+  m_Mesh: {fileID: -3329902420748629119, guid: 6cec616884742d24588e6abcfee63372, type: 3}

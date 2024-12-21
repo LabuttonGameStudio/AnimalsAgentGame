@@ -5,18 +5,17 @@ using UnityEngine.SceneManagement;
 
 public class DeathScreen : MonoBehaviour
 {
-    //não usar string
-    public string sceneInicial;
-
-    public string sceneActual;
-
     public void ReturninicialScreen()
     {
-        SceneManager.LoadScene(sceneInicial);
+        Time.timeScale = 1;
+        ArmadilloPlayerController.Instance.inputControl.TogglePlayerControls(true);
+        SceneManager.LoadScene((int)SceneController.ScenesEnum.MenuPause);
     }
 
     public void ReturnGame()
     {
-        SceneManager.LoadScene(sceneActual);
+        Time.timeScale = 1;
+        ArmadilloPlayerController.Instance.inputControl.TogglePlayerControls(true);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 }

@@ -56,9 +56,13 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: -7511558181221131132, guid: f46571da588870c4ebb07b60acbf8b17, type: 3}
+      propertyPath: m_ReceiveGI
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: f46571da588870c4ebb07b60acbf8b17, type: 3}
       propertyPath: m_Name
-      value: Box_GG_A_Col
+      value: Box_GG_A_Coll
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: f46571da588870c4ebb07b60acbf8b17, type: 3}
       propertyPath: m_Layer
@@ -100,6 +104,6 @@ MeshCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 5
-  m_Convex: 0
+  m_Convex: 1
   m_CookingOptions: 30
-  m_Mesh: {fileID: 7285641324128850035, guid: f46571da588870c4ebb07b60acbf8b17, type: 3}
+  m_Mesh: {fileID: 4493585093827132993, guid: b158618cbc84adc4cbbcd5557c39efbd, type: 3}

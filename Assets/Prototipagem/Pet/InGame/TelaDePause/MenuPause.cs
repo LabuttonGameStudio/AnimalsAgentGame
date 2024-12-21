@@ -5,11 +5,13 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using TMPro;
 using UnityEngine.InputSystem;
+using UnityEngine.Localization.Settings;
 
 public class MenuPause : MonoBehaviour
 {
     [Header("OPTIONS")]
     public GameObject Menu;
+    public GameObject Background;
     public GameObject Configs;
     public GameObject Controls;
     public GameObject Exiit;
@@ -23,6 +25,10 @@ public class MenuPause : MonoBehaviour
     public Toggle highQualityToggle;
     public Toggle UltraQualityToggle;
     public Slider sensitivitySlider;
+
+    private bool isMenuOpen;
+
+    [SerializeField]private TMP_Dropdown languageDropdown;
 
     private Resolution[] resolutions = new Resolution[]
      {
@@ -42,7 +48,6 @@ public class MenuPause : MonoBehaviour
     private const string SensitivityPrefKey = "MouseSensitivity";
 
     public ArmadilloVisualControl visualControl;
-
     void Start()
     {
         #region Sound
@@ -54,7 +59,7 @@ public class MenuPause : MonoBehaviour
         AudioListener.volume = savedVolume;
         Volume.value = savedVolume;
 
-       Volume.onValueChanged.AddListener(SetVolume);
+        Volume.onValueChanged.AddListener(SetVolume);
 
         #endregion
 
@@ -72,7 +77,7 @@ public class MenuPause : MonoBehaviour
         #endregion
 
         #region WindowMode
-        
+
         int savedScreenMode = PlayerPrefs.GetInt(ScreenModePrefKey, 1);
 
         ApplyScreenMode(savedScreenMode);
@@ -103,31 +108,75 @@ public class MenuPause : MonoBehaviour
         #endregion
 
         #region Sensibility
-        float savedSensitivity = PlayerPrefs.GetFloat(SensitivityPrefKey, 10f);
+        float savedSensitivity = PlayerPrefs.GetFloat(SensitivityPrefKey, 0.25f);
 
         sensitivitySlider.value = savedSensitivity;
-
+        OnSensitivityChange(savedSensitivity);
         sensitivitySlider.onValueChanged.AddListener(OnSensitivityChange);
         #endregion
 
+        #region Language
+        int selectedLanguage = 0;
+        for (int i = 0;i< LocalizationSettings.AvailableLocales.Locales.Count;i++)
+        {
+            if (LocalizationSettings.SelectedLocale == LocalizationSettings.AvailableLocales.Locales[i])
+            {
+                selectedLanguage = i;
+                break;
+            }
+        }
+        languageDropdown.value = selectedLanguage;
+        #endregion
 
-        ArmadilloPlayerController.Instance.inputControl.inputAction.Armadillo.Pause.Enable();
-        ArmadilloPlayerController.Instance.inputControl.inputAction.Armadillo.Pause.performed += MenuOpen;
+        if (ArmadilloPlayerController.Instance != null &&
+            ArmadilloPlayerController.Instance.inputControl != null &&
+            ArmadilloPlayerController.Instance.inputControl.inputAction != null)
+        {
+            ArmadilloPlayerController.Instance.inputControl.inputAction.Pause.EnterPause.Enable();
+            ArmadilloPlayerController.Instance.inputControl.inputAction.Pause.EnterPause.performed += MenuOpen;
+        }
+
     }
 
-
-    void Update()
-    {
-
-    }
     public void MenuOpen(InputAction.CallbackContext value)
+
     {
-        Cursor.visible = !Cursor.visible;
-        Cursor.lockState = Cursor.visible ? CursorLockMode.None : CursorLockMode.Locked;
+        isMenuOpen = !isMenuOpen;
+        Cursor.visible = isMenuOpen;
+        Cursor.lockState = isMenuOpen ? CursorLockMode.None : CursorLockMode.Locked;
 
-        Menu.SetActive(Cursor.visible);
-
-       visualControl.OnPause(Cursor.visible);
+        Background.SetActive(isMenuOpen);
+        Menu.SetActive(isMenuOpen);
+        if (ArmadilloPlayerController.Instance.cameraControl != null)
+        {
+            if(isMenuOpen)
+            {
+                Time.timeScale = 0;
+                ArmadilloPlayerController.Instance.inputControl.TogglePlayerControls(false);
+                ArmadilloPlayerController.Instance.inputControl.ToggleDialogueControls(false);
+            }
+            else
+            { 
+                Time.timeScale = 1;
+                ArmadilloPlayerController.Instance.inputControl.TogglePlayerControls(true);
+                ArmadilloPlayerController.Instance.inputControl.ToggleDialogueControls(true);
+            }
+        }
+        if (isMenuOpen)
+        {
+            if(visualControl != null)
+            {
+                visualControl.OnPause();
+            }
+                
+        }
+        else
+        {
+            if (visualControl != null)
+            {
+                visualControl.ReturnPause();
+            }
+        }
     }
     public void ClickConfigs()
     {
@@ -247,17 +296,17 @@ public class MenuPause : MonoBehaviour
             case 1: //medio
                 QualitySettings.shadowResolution = ShadowResolution.Medium;
                 QualitySettings.globalTextureMipmapLimit = 1;
-                QualitySettings.pixelLightCount = 2; 
+                QualitySettings.pixelLightCount = 2;
                 break;
             case 2: //alto
                 QualitySettings.shadowResolution = ShadowResolution.High;
-                QualitySettings.globalTextureMipmapLimit = 0; 
-                QualitySettings.pixelLightCount = 4; 
+                QualitySettings.globalTextureMipmapLimit = 0;
+                QualitySettings.pixelLightCount = 4;
                 break;
             case 3: //Ultra
                 QualitySettings.shadowResolution = ShadowResolution.VeryHigh;
-                QualitySettings.globalTextureMipmapLimit = 0; 
-                QualitySettings.pixelLightCount = 8; 
+                QualitySettings.globalTextureMipmapLimit = 0;
+                QualitySettings.pixelLightCount = 8;
 
                 break;
         }
@@ -281,18 +330,15 @@ public class MenuPause : MonoBehaviour
     #endregion
 
     #region Sensibility
-    private void OnSensitivityChange(float newSensitivity)
+    public void OnSensitivityChange(float newSensitivity)
     {
-        
         ApplyMouseSensitivity(newSensitivity);
-
-        
         SaveSensitivitySettings(newSensitivity);
     }
 
     private void ApplyMouseSensitivity(float sensitivity)
     {
-        PlayerCamera.Instance.firstPersonSensibility = new Vector2(sensitivity,sensitivity);
+        if(PlayerCamera.Instance != null)PlayerCamera.Instance.ChangeSensibility(new Vector2(sensitivity, sensitivity));
     }
 
     private void SaveSensitivitySettings(float sensitivity)
@@ -305,6 +351,14 @@ public class MenuPause : MonoBehaviour
     #endregion
 
 
+    #region Language
+
+    public void OnLanguageSelected(int languageIndex)
+    {
+        if (LocalizationSettings.AvailableLocales.Locales.Count <= 0 || languageIndex> LocalizationSettings.AvailableLocales.Locales.Count) return;
+        LocalizationSettings.SelectedLocale = LocalizationSettings.AvailableLocales.Locales[(int)languageIndex];
+    }
+    #endregion
     public void Exit()
     {
         Application.Quit();
@@ -312,6 +366,7 @@ public class MenuPause : MonoBehaviour
 
     public void ReturnInicialScreen()
     {
-        SceneManager.LoadScene("TelaInicialScene");
+        Time.timeScale = 1.0f;
+        SceneManager.LoadScene((int)SceneController.ScenesEnum.MenuPause);
     }
 }
