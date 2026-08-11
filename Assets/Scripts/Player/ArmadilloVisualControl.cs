@@ -113,7 +113,7 @@ public class ArmadilloVisualControl : MonoBehaviour
         Vector3 velocity;
         while (true)
         {
-            velocity = ArmadilloPlayerController.Instance.movementControl.rb.velocity;
+            velocity = ArmadilloPlayerController.Instance.movementControl.rb.linearVelocity;
             velocity.y = Mathf.Max(0, velocity.y * 1.5f);
             ballTransform.Rotate(Time.deltaTime * -1 * velocity.magnitude * ballRollVelocity, 0, 0);
             yield return null;
@@ -133,10 +133,10 @@ public class ArmadilloVisualControl : MonoBehaviour
     {
         Vector3 defaultPosition = fpAnimator.transform.localPosition;
         Rigidbody rb = ArmadilloPlayerController.Instance.movementControl.rb;
-        Vector3 currentOffset = rb.transform.InverseTransformDirection(rb.velocity) / 100;
+        Vector3 currentOffset = rb.transform.InverseTransformDirection(rb.linearVelocity) / 100;
         while (true)
         {
-            currentOffset = Vector3.Lerp(currentOffset, rb.transform.InverseTransformDirection(rb.velocity), Time.fixedDeltaTime * 10);
+            currentOffset = Vector3.Lerp(currentOffset, rb.transform.InverseTransformDirection(rb.linearVelocity), Time.fixedDeltaTime * 10);
             if (currentOffset != Vector3.zero)
             {
                 Vector3 offset = currentOffset;

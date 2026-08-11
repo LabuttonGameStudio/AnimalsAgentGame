@@ -94,7 +94,7 @@ public class RangedEnemyAttackingState : RangedEnemyState
             {
                 if (hitInfo.collider.CompareTag("Player"))
                 {
-                    iEnemy.weakAttackLaser.target = playerRb.position + playerRb.velocity / 10;
+                    iEnemy.weakAttackLaser.target = playerRb.position + playerRb.linearVelocity / 10;
                 }
                 else
                 {

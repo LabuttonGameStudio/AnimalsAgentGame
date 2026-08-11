@@ -25,7 +25,7 @@ public class ArmadilloDefaultState : MovementState
         movementCtrl.rb.useGravity = !movementCtrl.isOnSlope;
         if (movementCtrl.grounded)
         {
-            if (new Vector2(movementCtrl.rb.velocity.x, movementCtrl.rb.velocity.z).magnitude > 0.5f) ArmadilloPlayerController.Instance.audioControl.PlayMovingAudio();
+            if (new Vector2(movementCtrl.rb.linearVelocity.x, movementCtrl.rb.linearVelocity.z).magnitude > 0.5f) ArmadilloPlayerController.Instance.audioControl.PlayMovingAudio();
             else ArmadilloPlayerController.Instance.audioControl.StopMovingAudio();
         }
         else
@@ -75,7 +75,7 @@ public class ArmadilloDefaultState : MovementState
             movementApplied *= 1+(movementCtrl.sprintLurkSpeedMultiplier-1)/2;
             movementApplied = movementApplied * movementCtrl.speedMultiplier;
             LedgeGrab();
-            if (movementCtrl.rb.velocity.y < 0)
+            if (movementCtrl.rb.linearVelocity.y < 0)
             {
                 movementCtrl.rb.AddForce((Vector3.up * Physics.gravity.y * stats.gravityMultiplier * movementCtrl.timeSinceTouchedGround / 15) * (movementCtrl.rb.mass / 50), ForceMode.Acceleration);
             }
@@ -86,7 +86,7 @@ public class ArmadilloDefaultState : MovementState
     public override void Jump()
     {
         movementCtrl.readyToJump = false;
-        movementCtrl.rb.velocity = new Vector3(movementCtrl.rb.velocity.x, 0, movementCtrl.rb.velocity.z);
+        movementCtrl.rb.linearVelocity = new Vector3(movementCtrl.rb.linearVelocity.x, 0, movementCtrl.rb.linearVelocity.z);
         movementCtrl.rb.AddForce(movementCtrl.transform.up * stats.jumpForce, ForceMode.VelocityChange);
     }
     private void LedgeGrab()

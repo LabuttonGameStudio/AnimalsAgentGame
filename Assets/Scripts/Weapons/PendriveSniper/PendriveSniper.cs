@@ -112,7 +112,7 @@ public class PendriveSniper : Weapon
         pendriveProjectile.bulletDamage = bulletDamage;
         pendriveProjectile.playerPos = weaponControl.transform.position;
         pendriveProjectile.gameObject.SetActive(true);
-        pendriveProjectile.rb.velocity = direction * manager.velocity;
+        pendriveProjectile.rb.linearVelocity = direction * manager.velocity;
         currentAmmoAmount -= 1;
 
     }

@@ -29,7 +29,7 @@ public class ArmadilloBallState : MovementState
 
     public override void FixedUpdateState()
     {
-        currentVelocity = movementCtrl.rb.velocity;
+        currentVelocity = movementCtrl.rb.linearVelocity;
         MovePlayer();
     }
 
@@ -54,7 +54,7 @@ public class ArmadilloBallState : MovementState
     }
     public void OnBreakObject()
     {
-        movementCtrl.rb.velocity = currentVelocity;
+        movementCtrl.rb.linearVelocity = currentVelocity;
     }
     //-----Player Movement-----
     private void MovePlayer()
@@ -79,7 +79,7 @@ public class ArmadilloBallState : MovementState
         else
         {
             Vector3 movementInAir = moveDirection.normalized * stats.moveSpeedMax * stats.onAirSpeedMultiplier * 10;
-            if (movementCtrl.rb.velocity.y < 0)
+            if (movementCtrl.rb.linearVelocity.y < 0)
             {
                 movementCtrl.rb.AddForce((Vector3.up * Physics.gravity.y * 2.0f * movementCtrl.timeSinceTouchedGround * 3 / 1.5f) * (movementCtrl.rb.mass / 50), ForceMode.Acceleration);
             }
@@ -96,13 +96,13 @@ public class ArmadilloBallState : MovementState
     public override void Jump()
     {
         movementCtrl.readyToJump = false;
-        movementCtrl.rb.velocity = new Vector3(movementCtrl.rb.velocity.x, 0, movementCtrl.rb.velocity.z);
+        movementCtrl.rb.linearVelocity = new Vector3(movementCtrl.rb.linearVelocity.x, 0, movementCtrl.rb.linearVelocity.z);
         movementCtrl.rb.AddForce(Vector3.up * stats.jumpForce, ForceMode.VelocityChange);
         ArmadilloPlayerController.Instance.audioControl.onBallJump.Play();
     }
     private void SpeedControl()
     {
-        if (new Vector2(movementCtrl.rb.velocity.x, movementCtrl.rb.velocity.z).magnitude > 0.5f)
+        if (new Vector2(movementCtrl.rb.linearVelocity.x, movementCtrl.rb.linearVelocity.z).magnitude > 0.5f)
         {
             if (!isPlayerRollingAudio)
             {

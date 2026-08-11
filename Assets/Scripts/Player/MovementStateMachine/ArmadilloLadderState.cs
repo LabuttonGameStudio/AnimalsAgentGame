@@ -17,7 +17,7 @@ public class ArmadilloLadderState : MovementState
     public override void EnterState(ArmadilloMovementController movementControl)
     {
         movementCtrl = movementControl;
-        movementCtrl.rb.velocity = Vector3.zero;
+        movementCtrl.rb.linearVelocity = Vector3.zero;
         movementCtrl.rb.angularVelocity = Vector3.zero;
         movementCtrl.rb.useGravity = false;
         Vector3 movePosition;

@@ -31,7 +31,7 @@ public class WaterGunProjectile : MonoBehaviour
         {
             WaterGunProjectileManager.Instance.SpawnPuddle(rb.position);
 
-            Vector3 insidePoint = other.ClosestPointOnBounds(rb.position-rb.velocity*0.025f);
+            Vector3 insidePoint = other.ClosestPointOnBounds(rb.position-rb.linearVelocity*0.025f);
             WaterGunProjectileManager.Instance.OnHit(insidePoint);
             DisableProjectile();
         }
@@ -62,7 +62,7 @@ public class WaterGunProjectile : MonoBehaviour
     private void DisableProjectile()
     {
         timer = 0;
-        rb.velocity = Vector3.zero;
+        rb.linearVelocity = Vector3.zero;
         WaterGunProjectileManager.Instance.ReturnProjectileToPool(this);
         gameObject.SetActive(false);
     }

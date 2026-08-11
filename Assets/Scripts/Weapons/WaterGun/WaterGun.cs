@@ -19,7 +19,7 @@ public class WaterGun : Weapon
         ammoReserveAmount = 80;
         maxAmmoReserveAmount = 120;
         name = "Arma de Agua";
-        description = "Atire nos inimigos para infringir dano e no chão para criar poças";
+        description = "Atire nos inimigos para infringir dano e no chï¿½o para criar poï¿½as";
         ammoSlider = armadilloWeaponControl.Weaponammoslider;
         weaponType = WeaponType.Watergun;
 
@@ -152,7 +152,7 @@ public class WaterGun : Weapon
         waterGunProjectile.minbulletDamage = minbulletDamage;
         waterGunProjectile.playerPos = weaponControl.transform.position;
         waterGunProjectile.gameObject.SetActive(true);
-        waterGunProjectile.rb.velocity = direction * manager.velocity + bodyVelocity;
+        waterGunProjectile.rb.linearVelocity = direction * manager.velocity + bodyVelocity;
     }
 
     Coroutine UpdateWaterSprayVelocity_Ref;
@@ -161,7 +161,7 @@ public class WaterGun : Weapon
         Rigidbody rb = ArmadilloPlayerController.Instance.movementControl.rb;
         while (true)
         {
-            Vector3 velocity = rb.velocity / 2;
+            Vector3 velocity = rb.linearVelocity / 2;
             velocity.y = velocity.y/2;
             bodyVelocity = velocity;
             WaterGunVisual.Instance.UpdateSprayVelocity(velocity);

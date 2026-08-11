@@ -21,7 +21,7 @@ public class BossPoisonOrb : MonoBehaviour
     }
     private void FixedUpdate()
     {
-        meshTransform.LookAt(rb.position + rb.velocity);
+        meshTransform.LookAt(rb.position + rb.linearVelocity);
     }
     private void OnCollisionEnter(Collision collision)
     {

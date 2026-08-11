@@ -377,7 +377,7 @@ public class ArmadilloMovementController : MonoBehaviour
             }
             hasUsedLedgeGrab = false;
             timeSinceTouchedGround = 0;
-            rb.drag = stats.groundDrag;
+            rb.linearDamping = stats.groundDrag;
 
             if (Physics.Raycast(groundCheckPos, Vector3.down, out slopeHit, 0.5f, whatIsGround, QueryTriggerInteraction.Ignore))
             {
@@ -395,7 +395,7 @@ public class ArmadilloMovementController : MonoBehaviour
             }
             isOnSlope = false;
             timeSinceTouchedGround += Time.deltaTime;
-            rb.drag = stats.airDrag;
+            rb.linearDamping = stats.airDrag;
         }
     }
     public bool CheckMatchOfCurrentLadder(Transform ladderObject)

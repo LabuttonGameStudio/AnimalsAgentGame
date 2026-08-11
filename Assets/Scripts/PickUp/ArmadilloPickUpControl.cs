@@ -8,7 +8,7 @@ using static IPickUpObject;
 public class ArmadilloPickUpControl : MonoBehaviour
 {
     [Header("ConnectedObject")]
-    [SerializeField] private PhysicMaterial holdObjectPhysicMaterial;
+    [SerializeField] private PhysicsMaterial holdObjectPhysicMaterial;
     private Rigidbody objectRb;
     private IPickUpObject objectInLOS;
     [HideInInspector] public IPickUpObject connectedObject;
@@ -25,7 +25,7 @@ public class ArmadilloPickUpControl : MonoBehaviour
     [SerializeField] private float bigObjectThrowForce;
 
     [Header("Connected Object Default Configs")]
-    private PhysicMaterial objectDefaultPhysicMaterial;
+    private PhysicsMaterial objectDefaultPhysicMaterial;
     private Collider objectDefaultCollider;
     private float objectDefaultDrag;
     private RigidbodyConstraints objectDefaultConstraints;
@@ -159,14 +159,14 @@ public class ArmadilloPickUpControl : MonoBehaviour
                     collider.sharedMaterial = holdObjectPhysicMaterial;
                 }
 
-                objectDefaultDrag = objectRb.drag;
+                objectDefaultDrag = objectRb.linearDamping;
                 objectDefaultConstraints = objectRb.constraints;
                 objectDefaultInterpolation = objectRb.interpolation;
                 objectDefaultCollisionDetectionMode = objectRb.collisionDetectionMode;
                 objectDefaultFreezeRotation = objectRb.freezeRotation;
 
                 objectRb.freezeRotation = true;
-                objectRb.drag = 10;
+                objectRb.linearDamping = 10;
                 objectRb.useGravity = false;
                 objectRb.interpolation = RigidbodyInterpolation.Extrapolate;
                 objectRb.collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
@@ -221,7 +221,7 @@ public class ArmadilloPickUpControl : MonoBehaviour
                     objectDefaultPhysicMaterial = null;
                 }
 
-                objectRb.drag = objectDefaultDrag;
+                objectRb.linearDamping = objectDefaultDrag;
                 objectDefaultDrag = 0;
 
                 objectRb.constraints = objectDefaultConstraints;
@@ -291,7 +291,7 @@ public class ArmadilloPickUpControl : MonoBehaviour
             Vector3 holdArea = cameraTransform.position + cameraTransform.forward * (connectedObject.m_objectSize + 1.5f);
 
             Vector3 moveDirection = holdArea - connectedObject.GetObjectDeltaCenter() - objectRb.position;
-            Vector3 moveForce = moveDirection * mediumObjectPickUpForce + rigidbodyOfPlayer.velocity * 600;
+            Vector3 moveForce = moveDirection * mediumObjectPickUpForce + rigidbodyOfPlayer.linearVelocity * 600;
             //HorizontalForce
 
             objectRb.AddForce(moveForce * Time.deltaTime, ForceMode.Acceleration);
@@ -349,7 +349,7 @@ public class ArmadilloPickUpControl : MonoBehaviour
                 throwForce.y = 0;
                 break;
         }
-        connectedRigidbody.velocity = Vector3.zero;
+        connectedRigidbody.linearVelocity = Vector3.zero;
         connectedRigidbody.AddForce(throwForce, ForceMode.Impulse);
     }
     #endregion

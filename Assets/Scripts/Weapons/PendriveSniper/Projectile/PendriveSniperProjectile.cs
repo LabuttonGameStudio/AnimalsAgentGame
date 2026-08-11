@@ -30,7 +30,7 @@ public class PendriveSniperProjectile : MonoBehaviour
     private void DisableProjectile()
     {
         timer = 0;
-        rb.velocity = Vector3.zero;
+        rb.linearVelocity = Vector3.zero;
         PendriveSniperProjectileManager.Instance.ReturnProjectileToPool(this);
         gameObject.SetActive(false);
     }
