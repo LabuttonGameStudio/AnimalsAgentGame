@@ -31,7 +31,7 @@ public class ChangePlayerCamera : MonoBehaviour
         }
         else
         {
-            Change(newCam, 2, true);
+            Change(newCam, 3, true);
         }
     }
     public void Change(CinemachineVirtualCamera newCam, float duration, bool makePlayerInvincible)

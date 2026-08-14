@@ -1,0 +1,75 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: MI_Bricks_Darker_Tilling 1
+  m_Shader: {fileID: -6465566751694194690, guid: c93524ff0f68e8b44b27c1b1137b678e, type: 3}
+  m_Parent: {fileID: 2100000, guid: b3dcac15a007094459b29b40e5bd36b0, type: 2}
+  m_ModifiedSerializedProperties: 6
+  m_ValidKeywords: []
+  m_InvalidKeywords:
+  - _EMISSION
+  m_LightmapFlags: 2
+  m_EnableInstancingVariants: 1
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses:
+  - MOTIONVECTORS
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _BaseMap:
+        m_Texture: {fileID: 2800000, guid: d87a587378bbaed469b54d4058fbf809, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MaskMap:
+        m_Texture: {fileID: 2800000, guid: c723c111bad69a84aa77eaa7a1827735, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _NormalMap:
+        m_Texture: {fileID: 2800000, guid: ce5c92c8abe416c41be1a2853b48c128, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SampleTexture2D_9732d06c2a8944548a2c734d1c875627_Texture_1_Texture2D:
+        m_Texture: {fileID: 2800000, guid: b5c026347680e4347892cfaac48aebdd, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Triplanar_36db8c4e0fbf4d01aca72a8dc718308b_Texture_1_Texture2D:
+        m_Texture: {fileID: 2800000, guid: b5c026347680e4347892cfaac48aebdd, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Triplanar_7c9f4cfdda6744048a51911d2a438544_Texture_1_Texture2D:
+        m_Texture: {fileID: 2800000, guid: b5c026347680e4347892cfaac48aebdd, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _HUE: 1
+    - _Mask_HUE: 160.8
+    - _Mask_Saturation: 2.02
+    - _Saturation: 1
+    m_Colors:
+    - _Color_Tint: {r: 0.68780065, g: 0.34456214, b: 0.8396226, a: 0}
+    - _UV: {r: 3.77, g: -0.75, b: 0, a: 0}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1
+--- !u!114 &2207037160031691447
+MonoBehaviour:
+  m_ObjectHideFlags: 11
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0353a89b1f911e48b9e16bdc9f2e058, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  version: 10
